@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ADAMANT Messenger</string>
+    <string name="activity_login_et_pass_phrase">Ключевая фраза</string>
+    <string name="activity_login_tx_pass_phrase">Введите вашу ключевую фразу</string>
+    <string name="activity_login_btn_enter">Вход</string>
+    <string name="title_activity_chats">Список чатов</string>
+</resources>

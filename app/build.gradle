@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "com.dremanovich.adamant_android"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    sourceSets.main {
+        jni.srcDirs = []
+        jniLibs.srcDirs = ['src/main/jniLibs']
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
+    }
+}
+
+ext {
+    supportLibraryVersion = "26.1.0"
+    moxyVersion = "1.4.6"
+    daggerVersion = "2.16"
+    butterKnifeVersion = "8.8.1"
+    retrofitVersion = "2.4.0"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
+    implementation "com.android.support.constraint:constraint-layout:1.1.0"
+    implementation "net.java.dev.jna:jna:4.5.1@aar"
+    implementation "com.goterl.lazycode:lazysodium-android:2.1.0@aar"
+    implementation "io.github.novacrypto:BIP39:0.1.9"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:2.0.2"
+    implementation "com.arello-mobile:moxy:$moxyVersion"
+    implementation "com.arello-mobile:moxy-app-compat:$moxyVersion"
+    implementation "ru.terrakok.cicerone:cicerone:3.0.0"
+    implementation "com.jakewharton:butterknife:$butterKnifeVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:3.8.0"
+    implementation "com.google.dagger:dagger:$daggerVersion"
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation "com.jakewharton:butterknife:$butterKnifeVersion"
+    annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
+    annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "com.android.support.test:runner:1.0.2"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+}
