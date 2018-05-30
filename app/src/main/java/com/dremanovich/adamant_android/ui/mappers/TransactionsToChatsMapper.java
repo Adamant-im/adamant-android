@@ -1,30 +1,26 @@
 package com.dremanovich.adamant_android.ui.mappers;
 
-import android.util.Log;
-
-import com.dremanovich.adamant_android.core.encryption.MessageEncryptor;
+import com.dremanovich.adamant_android.core.encryption.Encryptor;
 import com.dremanovich.adamant_android.core.entities.Transaction;
 import com.dremanovich.adamant_android.core.helpers.interfaces.AuthorizationStorage;
 import com.dremanovich.adamant_android.core.helpers.interfaces.PublicKeyStorage;
-import com.dremanovich.adamant_android.core.responses.PublicKeyResponse;
 import com.dremanovich.adamant_android.core.responses.TransactionList;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.entities.Message;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import io.reactivex.functions.Function;
 
 public class TransactionsToChatsMapper implements Function<TransactionList, List<Chat>> {
-    private MessageEncryptor encryptor;
+    private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
     private AuthorizationStorage authorizationStorage;
 
     public TransactionsToChatsMapper(
-            MessageEncryptor encryptor,
+            Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
             AuthorizationStorage authorizationStorage
     ) {
@@ -56,7 +52,7 @@ public class TransactionsToChatsMapper implements Function<TransactionList, List
             boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
 
             String encryptedMessage = transaction.getAsset().getChat().getMessage();
-            String encryptedNonce = transaction.getAsset().getChat().getOwn_message();
+            String encryptedNonce = transaction.getAsset().getChat().getOwnMessage();
             String senderPublicKey = transaction.getSenderPublicKey();
 
             String decriptedMessage = "";

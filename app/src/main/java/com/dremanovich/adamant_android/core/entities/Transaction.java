@@ -1,8 +1,14 @@
 package com.dremanovich.adamant_android.core.entities;
 
+import com.dremanovich.adamant_android.core.encryption.Hex;
+
+import java.math.BigInteger;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.List;
 
-public class Transaction {
+public class Transaction implements WithBytesDigest {
     private TransactionAsset asset;
 
     //TODO: maybe not a string
@@ -14,17 +20,17 @@ public class Transaction {
 
     private String senderId;
 
-    private String type;
+    private int type;
 
     private String id;
 
-    private String timestamp;
+    private int timestamp;
 
-    private String amount;
+    private long amount;
 
-    private String fee;
+    private long fee;
 
-    private String height;
+    private int height;
 
     private String recipientId;
 
@@ -88,12 +94,12 @@ public class Transaction {
         this.senderId = senderId;
     }
 
-    public String getType ()
+    public int getType ()
     {
         return type;
     }
 
-    public void setType (String type)
+    public void setType (int type)
     {
         this.type = type;
     }
@@ -108,42 +114,42 @@ public class Transaction {
         this.id = id;
     }
 
-    public String getTimestamp ()
+    public int getTimestamp ()
     {
         return timestamp;
     }
 
-    public void setTimestamp (String timestamp)
+    public void setTimestamp (int timestamp)
     {
         this.timestamp = timestamp;
     }
 
-    public String getAmount ()
+    public long getAmount ()
     {
         return amount;
     }
 
-    public void setAmount (String amount)
+    public void setAmount (long amount)
     {
         this.amount = amount;
     }
 
-    public String getFee ()
+    public long getFee ()
     {
         return fee;
     }
 
-    public void setFee (String fee)
+    public void setFee (long fee)
     {
         this.fee = fee;
     }
 
-    public String getHeight ()
+    public int getHeight ()
     {
         return height;
     }
 
-    public void setHeight (String height)
+    public void setHeight (int height)
     {
         this.height = height;
     }
@@ -213,4 +219,51 @@ public class Transaction {
     {
         return  this.getClass().getCanonicalName() + " [asset = " + asset + ", confirmations = " + confirmations + ", signatures = " + signatures + ", requesterPublicKey = " + requesterPublicKey + ", senderId = " + senderId + ", type = " + type + ", id = " + id + ", timestamp = " + timestamp + ", amount = " + amount + ", fee = " + fee + ", height = " + height + ", recipientId = " + recipientId + ", signSignature = " + signSignature + ", blockId = " + blockId + ", recipientPublicKey = " + recipientPublicKey + ", senderPublicKey = " + senderPublicKey + ", signature = " + signature + "]";
     }
+
+    public byte[] getBytesDigest() {
+        int assetSize = 0;
+        byte[] assetBytes = null;
+
+        if (type == 8 && asset != null){
+            assetBytes = asset.getChat().getBytesDigest();
+            assetSize = assetBytes.length;
+        }
+
+        ByteBuffer bytesBuffer = ByteBuffer.allocate(1 + 4 + 32 + 8 + 8 + 64 + 64 + assetSize);
+        bytesBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+        bytesBuffer.put((byte) type);
+        bytesBuffer.putInt(timestamp);
+        bytesBuffer.put(Hex.encodeStringToHexArray(senderPublicKey));
+        bytesBuffer.put(Hex.encodeStringToHexArray(requesterPublicKey));
+
+        if (recipientId != null && !recipientId.isEmpty()){
+            byte[] recipientIdBytes = new BigInteger(recipientId.substring(1)).toByteArray();
+            for (int i = 0; i < recipientIdBytes.length; i++){
+                bytesBuffer.put(recipientIdBytes[i]);
+            }
+        } else {
+            bytesBuffer.put(new byte[8]);
+        }
+
+        bytesBuffer.putLong(amount);
+
+        if (assetSize > 0){
+            bytesBuffer.put(assetBytes);
+        }
+
+        if (signature != null && !signature.isEmpty()){
+            bytesBuffer.put(Hex.encodeStringToHexArray(signature));
+        }
+
+        int position = bytesBuffer.position();
+        ByteBuffer trimmedBuffer = ByteBuffer.allocate(position);
+        for (int i = 0; i < position; i++){
+            trimmedBuffer.put(bytesBuffer.get(i));
+        }
+
+
+        return trimmedBuffer.array();
+    }
+
 }

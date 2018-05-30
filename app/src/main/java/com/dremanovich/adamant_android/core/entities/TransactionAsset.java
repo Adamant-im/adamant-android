@@ -1,14 +1,14 @@
 package com.dremanovich.adamant_android.core.entities;
 
 public class TransactionAsset {
-    private TransactionChat chat;
+    private TransactionMessage chat;
 
-    public TransactionChat getChat ()
+    public TransactionMessage getChat ()
     {
         return chat;
     }
 
-    public void setChat (TransactionChat chat)
+    public void setChat (TransactionMessage chat)
     {
         this.chat = chat;
     }

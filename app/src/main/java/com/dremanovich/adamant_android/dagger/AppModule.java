@@ -1,8 +1,8 @@
 package com.dremanovich.adamant_android.dagger;
 
 import com.dremanovich.adamant_android.core.AdamantApi;
+import com.dremanovich.adamant_android.core.encryption.Encryptor;
 import com.dremanovich.adamant_android.core.encryption.KeyGenerator;
-import com.dremanovich.adamant_android.core.encryption.MessageEncryptor;
 import com.dremanovich.adamant_android.core.helpers.NaiveAuthorizationStorageImpl;
 import com.dremanovich.adamant_android.core.helpers.NaivePublicKeyStorageImpl;
 import com.dremanovich.adamant_android.core.helpers.NaiveServerSelectorImpl;
@@ -14,7 +14,6 @@ import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.ChatsScreen;
 import com.dremanovich.adamant_android.ui.LoginScreen;
 import com.dremanovich.adamant_android.ui.MessagesScreen;
-import com.dremanovich.adamant_android.ui.adapters.MessagesAdapter;
 import com.dremanovich.adamant_android.ui.mappers.TransactionsToChatsMapper;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
@@ -22,7 +21,6 @@ import com.goterl.lazycode.lazysodium.SodiumAndroid;
 
 import javax.inject.Singleton;
 
-import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
@@ -73,14 +71,14 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static MessageEncryptor providesMessageEncryptor(LazySodium sodium) {
-        return new MessageEncryptor(sodium);
+    public static Encryptor providesMessageEncryptor(LazySodium sodium) {
+        return new Encryptor(sodium);
     }
 
     @Singleton
     @Provides
     public static TransactionsToChatsMapper providesTransactionsToChatsMapper(
-            MessageEncryptor encryptor,
+            Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
             AuthorizationStorage authorizationStorage
     ){
@@ -145,9 +143,11 @@ public abstract class AppModule {
     public static ChatsInteractor provideChatsInteractor(
             AdamantApi api,
             AuthorizationStorage storage,
-            TransactionsToChatsMapper mapper
+            TransactionsToChatsMapper mapper,
+            Encryptor encryptor,
+            PublicKeyStorage publicKeyStorage
     ){
-        return new ChatsInteractor(api, storage, mapper);
+        return new ChatsInteractor(api, storage, mapper, encryptor, publicKeyStorage);
     }
 
 

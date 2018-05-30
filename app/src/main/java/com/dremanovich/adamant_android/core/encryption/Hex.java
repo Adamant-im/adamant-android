@@ -12,20 +12,39 @@ public class Hex {
     }
 
     public static byte[] encodeStringToHexArray(String string) {
-        //TODO: Refactor this. Check String Length
-        byte[] dstBytes = new byte[string.length() / 2];
+        if (string == null){return new byte[0];}
+        if (string.length() % 2 != 0){return new byte[0];}
 
-        int sourceIndex = 0;
-        int dstIndex = 0;
-        while (sourceIndex < string.length()){
-            String byteString = string.substring(sourceIndex, sourceIndex + 2);
+        try {
+            byte[] dstBytes = new byte[string.length() / 2];
 
-            dstBytes[dstIndex] = (byte)Integer.parseInt(byteString, 16);
+            int sourceIndex = 0;
+            int dstIndex = 0;
+            while (sourceIndex < string.length()){
+                String byteString = string.substring(sourceIndex, sourceIndex + 2);
 
-            sourceIndex += 2;
-            dstIndex++;
+                dstBytes[dstIndex] = (byte)Integer.parseInt(byteString, 16);
+
+                sourceIndex += 2;
+                dstIndex++;
+            }
+
+            return dstBytes;
+        }catch (Exception ex) {
+            ex.printStackTrace();
+            return new byte[0];
+        }
+    }
+
+    public static int[] getUnsignedBytes(byte[] bytes){
+        if (bytes == null){ return new int[0];}
+
+        int[] unsignedBytes = new int[bytes.length];
+
+        for (int i = 0; i < bytes.length; i++){
+            unsignedBytes[i] = bytes[i] & 0xff;
         }
 
-        return dstBytes;
+        return unsignedBytes;
     }
 }

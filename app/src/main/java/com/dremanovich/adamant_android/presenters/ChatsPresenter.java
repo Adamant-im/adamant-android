@@ -1,5 +1,7 @@
 package com.dremanovich.adamant_android.presenters;
 
+import android.util.Log;
+
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 import com.dremanovich.adamant_android.Screens;
@@ -33,7 +35,10 @@ public class ChatsPresenter extends MvpPresenter<ChatsView> {
                     (list -> {
                         getViewState().showChats(list);
                     }),
-                    ((error) -> router.showSystemMessage(error.getMessage()))
+                    ((error) -> {
+                        router.showSystemMessage(error.getMessage());
+                        Log.e("Chats", error.getMessage(), error);
+                    })
                 );
 
         subscriptions.add(subscription);

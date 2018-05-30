@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -36,11 +37,12 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:multidex:1.0.3'
     implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
     implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
     implementation "com.android.support.constraint:constraint-layout:1.1.0"
     implementation "net.java.dev.jna:jna:4.5.1@aar"
-    implementation "com.goterl.lazycode:lazysodium-android:2.1.0@aar"
+    implementation "com.goterl.lazycode:lazysodium-android:2.2.0@aar"
     implementation "io.github.novacrypto:BIP39:0.1.9"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"

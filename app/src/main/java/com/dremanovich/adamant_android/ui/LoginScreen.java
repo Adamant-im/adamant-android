@@ -15,6 +15,10 @@ import com.dremanovich.adamant_android.Screens;
 import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.presenters.LoginPresenter;
 import com.dremanovich.adamant_android.ui.mvp_view.LoginView;
+import com.goterl.lazycode.lazysodium.LazySodium;
+import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
+import com.goterl.lazycode.lazysodium.interfaces.Sign;
+import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 
 import java.util.Arrays;
@@ -57,6 +61,8 @@ public class LoginScreen extends BaseActivity implements LoginView {
     //--ButterKnife
     @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
 
+    @Inject
+    LazySodium sodium;
 
     //--Activity
     @Override

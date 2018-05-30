@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -17,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import ru.terrakok.cicerone.NavigatorHolder;
 
@@ -43,10 +46,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     //--ButterKnife
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
+    @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
+    @BindView(R.id.activity_messages_btn_send) Button buttonSend;
 
 
     //--Activity
-
     @Override
     public int getLayoutId() {
         return R.layout.activity_messages_screen;
@@ -68,15 +72,30 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         messagesList.setAdapter(adapter);
 
         if (getIntent() != null && getIntent().hasExtra(ARG_CHAT)){
-            Chat chat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
-            if (chat != null){
-                adapter.updateDataset(chat.getMessages());
-            }
+            Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
+            presenter.onShowChat(currentChat);
         }
     }
 
     @Override
-    public void showChatMessages(Chat chat) {
+    protected void onResume() {
+        super.onResume();
 
+    }
+
+    @Override
+    public void showChatMessages(Chat chat) {
+        if (chat != null){
+            adapter.updateDataset(chat.getMessages());
+        }
+    }
+
+    @OnClick(R.id.activity_messages_btn_send)
+    protected void onClickSendButton() {
+        presenter.onClickSendMessage(
+            newMessageText.getText().toString()
+        );
+
+        newMessageText.setText("");
     }
 }
