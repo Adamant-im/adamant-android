@@ -4,24 +4,38 @@ package com.dremanovich.adamant_android.ui.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class Chat implements Serializable{
-    private String interlocutorId;
-    private List<Message> messages = new ArrayList<>();
+public class Chat implements Serializable {
+    private String companionId;
+    private Message lastMessage;
 
-    public String getInterlocutorId() {
-        return interlocutorId;
+    public String getCompanionId() {
+        return companionId;
     }
 
-    public void setInterlocutorId(String interlocutorId) {
-        this.interlocutorId = interlocutorId;
+    public void setCompanionId(String companionId) {
+        this.companionId = companionId;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public Message getLastMessage() {
+        return lastMessage;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setLastMessage(Message lastMessage) {
+        this.lastMessage = lastMessage;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Chat chat = (Chat) o;
+        return Objects.equals(companionId, chat.companionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(companionId);
     }
 }

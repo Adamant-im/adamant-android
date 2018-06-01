@@ -1,12 +1,24 @@
 package com.dremanovich.adamant_android.ui.entities;
 
-import java.io.Serializable;
+import android.support.annotation.NonNull;
 
-public class Message implements Serializable {
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Objects;
+import java.util.Random;
+
+public class Message implements Serializable, Comparable<Message> {
     private boolean iSay;
     private String message;
-    private String date;
+    private long date;
     private boolean processed;
+    private String transactionId;
+    private String companionId;
+
+    public Message() {
+        //This is a temporary identifier so that messages that are not confirmed in the blockchain do not merge into one
+        transactionId = "temp_" + Double.toHexString(Math.random() * 100_000);
+    }
 
     public String getMessage() {
         return message;
@@ -16,11 +28,11 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 
@@ -38,5 +50,46 @@ public class Message implements Serializable {
 
     public void setiSay(boolean iSay) {
         this.iSay = iSay;
+    }
+
+    public String getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(String transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getCompanionId() {
+        return companionId;
+    }
+
+    public void setCompanionId(String companionId) {
+        this.companionId = companionId;
+    }
+
+    @Override
+    public int compareTo(@NonNull Message message) {
+        long dateDiff = date - message.date;
+        if((dateDiff) > 0) {
+            return 1;
+        } else if (dateDiff == 0){
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Message message = (Message) o;
+        return Objects.equals(transactionId, message.transactionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(transactionId);
     }
 }

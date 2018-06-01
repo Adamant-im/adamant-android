@@ -7,5 +7,5 @@ import com.dremanovich.adamant_android.ui.entities.Message;
 import java.util.List;
 
 public interface MessagesView extends MvpView {
-    void showChatMessages(Chat chat);
+    void showChatMessages(List<Message> messages);
 }

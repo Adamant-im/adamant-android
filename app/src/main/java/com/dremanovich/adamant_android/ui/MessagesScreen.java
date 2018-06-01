@@ -13,7 +13,11 @@ import com.dremanovich.adamant_android.R;
 import com.dremanovich.adamant_android.presenters.MessagesPresenter;
 import com.dremanovich.adamant_android.ui.adapters.MessagesAdapter;
 import com.dremanovich.adamant_android.ui.entities.Chat;
+import com.dremanovich.adamant_android.ui.entities.Message;
 import com.dremanovich.adamant_android.ui.mvp_view.MessagesView;
+
+import java.util.List;
+import java.util.SortedSet;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -63,12 +67,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         messagesList.setLayoutManager(layoutManager);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                messagesList.getContext(),
-                DividerItemDecoration.VERTICAL
-        );
-        messagesList.addItemDecoration(dividerItemDecoration);
         messagesList.setAdapter(adapter);
 
         if (getIntent() != null && getIntent().hasExtra(ARG_CHAT)){
@@ -84,9 +82,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void showChatMessages(Chat chat) {
-        if (chat != null){
-            adapter.updateDataset(chat.getMessages());
+    public void showChatMessages(List<Message> messages) {
+        if (messages != null){
+            adapter.updateDataset(
+                    messages
+            );
         }
     }
 

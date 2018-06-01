@@ -13,19 +13,18 @@ import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class LoginPresenter extends MvpPresenter<LoginView> {
+public class LoginPresenter extends BasePresenter<LoginView> {
     private Router router;
     private AuthorizeInteractor authorizeInteractor;
-    private CompositeDisposable subscriptions;
 
     public LoginPresenter(
             Router router,
             AuthorizeInteractor authorizeInteractor,
             CompositeDisposable subscriptions
     ) {
+        super(subscriptions);
         this.router = router;
         this.authorizeInteractor = authorizeInteractor;
-        this.subscriptions = subscriptions;
     }
 
     public void onClickLoginButton(String passPhrase) {
@@ -46,4 +45,5 @@ public class LoginPresenter extends MvpPresenter<LoginView> {
 
        subscriptions.add(subscription);
     }
+
 }

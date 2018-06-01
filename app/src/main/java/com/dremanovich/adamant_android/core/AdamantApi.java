@@ -16,11 +16,15 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface AdamantApi {
+    int MAX_TRANSACTIONS_PER_REQUEST = 100;
+    String ORDER_BY_TIMESTAMP_DESC = "timestamp:desc";
+    String ORDER_BY_TIMESTAMP_ASC = "timestamp:asc";
+
     @GET("accounts")
     Observable<Authorization> authorize(@Query("publicKey") String publicKey);
 
     @GET("chats/get")
-    Observable<TransactionList> getChats(@Query("isIn") String address, @Query("fromHeight") int height);
+    Observable<TransactionList> getTransactions(@Query("isIn") String address, @Query("fromHeight") int height, @Query("orderBy") String order);
 
     @GET("accounts/getPublicKey")
     Observable<PublicKeyResponse> getPublicKey(@Query("address") String address);

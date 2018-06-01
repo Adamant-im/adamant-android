@@ -11,6 +11,8 @@ import com.dremanovich.adamant_android.ui.entities.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
     private List<Message> messages = new ArrayList<>();

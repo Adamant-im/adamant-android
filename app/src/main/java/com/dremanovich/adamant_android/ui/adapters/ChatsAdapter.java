@@ -58,7 +58,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         Chat chat = chats.get(position);
         if (chat != null){
-            holder.mTextView.setText(chat.getInterlocutorId());
+            holder.mTextView.setText(chat.getCompanionId());
         }
     }
 

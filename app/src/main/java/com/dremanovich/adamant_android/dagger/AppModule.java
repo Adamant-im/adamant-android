@@ -14,7 +14,8 @@ import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.ChatsScreen;
 import com.dremanovich.adamant_android.ui.LoginScreen;
 import com.dremanovich.adamant_android.ui.MessagesScreen;
-import com.dremanovich.adamant_android.ui.mappers.TransactionsToChatsMapper;
+import com.dremanovich.adamant_android.ui.mappers.TransactionToChatMapper;
+import com.dremanovich.adamant_android.ui.mappers.TransactionToMessageMapper;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
@@ -77,17 +78,23 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static TransactionsToChatsMapper providesTransactionsToChatsMapper(
+    public static TransactionToMessageMapper providesTransactionsToMessageMapper(
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
             AuthorizationStorage authorizationStorage
-    ){
-        return new TransactionsToChatsMapper(encryptor, publicKeyStorage, authorizationStorage);
+    ) {
+        return new TransactionToMessageMapper(encryptor, publicKeyStorage, authorizationStorage);
     }
 
     @Singleton
     @Provides
-    public static AdamantApi provideApi(ServerSelector serverSelector){
+    public static TransactionToChatMapper providesTransactionsToChatMapper(AuthorizationStorage authorizationStorage) {
+        return new TransactionToChatMapper(authorizationStorage);
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantApi provideApi(ServerSelector serverSelector) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -134,7 +141,7 @@ public abstract class AppModule {
             AdamantApi api,
             AuthorizationStorage storage,
             KeyGenerator keyGenerator
-    ){
+    ) {
         return new AuthorizeInteractor(api, storage, keyGenerator);
     }
 
@@ -143,11 +150,12 @@ public abstract class AppModule {
     public static ChatsInteractor provideChatsInteractor(
             AdamantApi api,
             AuthorizationStorage storage,
-            TransactionsToChatsMapper mapper,
+            TransactionToMessageMapper messageMapper,
+            TransactionToChatMapper chatMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ){
-        return new ChatsInteractor(api, storage, mapper, encryptor, publicKeyStorage);
+        return new ChatsInteractor(api, storage, messageMapper, chatMapper, encryptor, publicKeyStorage);
     }
 
 
