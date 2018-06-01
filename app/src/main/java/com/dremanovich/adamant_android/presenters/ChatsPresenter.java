@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.dremanovich.adamant_android.Screens;
+import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.mvp_view.ChatsView;
@@ -38,22 +39,20 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     public void attachView(ChatsView view) {
         super.attachView(view);
 
-        syncSubscription = Observable
-                .interval(6, TimeUnit.SECONDS)
-                .subscribe((longItem) -> {
-                    interactor
-                            .synchronizeWithBlockchain()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError((error) -> {
-                                router.showSystemMessage(error.getMessage());
-                                Log.e("Chats", error.getMessage(), error);
-                            })
-                            .subscribe(
-                                    (() -> {
-                                        getViewState().showChats(interactor.getChatList());
-                                    })
-                            );
-                });
+        syncSubscription = interactor
+                .synchronizeWithBlockchain()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError((error) -> {
+                    router.showSystemMessage(error.getMessage());
+                    Log.e("Chats", error.getMessage(), error);
+                })
+                .doOnComplete(
+                        () -> {
+                            getViewState().showChats(interactor.getChatList());
+                        }
+                )
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNHRONIZE_DELEAY_SECONDS, TimeUnit.SECONDS))
+                .subscribe();
 
         subscriptions.add(syncSubscription);
     }

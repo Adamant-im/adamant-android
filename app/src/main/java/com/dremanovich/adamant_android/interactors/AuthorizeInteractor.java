@@ -6,6 +6,7 @@ import com.dremanovich.adamant_android.core.helpers.interfaces.AuthorizationStor
 import com.dremanovich.adamant_android.core.responses.Authorization;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -26,7 +27,7 @@ public class AuthorizeInteractor {
         this.keyGenerator = keyGenerator;
     }
 
-    public Observable<Authorization> authorize(String passPhrase){
+    public Flowable<Authorization> authorize(String passPhrase){
         try {
             KeyPair keyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
             return api.authorize(keyPair.getPublicKeyString().toLowerCase())
@@ -39,7 +40,7 @@ public class AuthorizeInteractor {
                     }));
         }catch (Exception ex){
             ex.printStackTrace();
-            return Observable.error(ex);
+            return Flowable.error(ex);
         }
 
     }

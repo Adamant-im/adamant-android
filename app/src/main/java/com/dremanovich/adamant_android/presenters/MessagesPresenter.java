@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
+import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.entities.Message;
@@ -39,24 +40,19 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void attachView(MessagesView view) {
         super.attachView(view);
 
-        //TODO: Implement correct repetition via retryWhen and move this block of code in a separate class
-        syncSubscription = Observable
-                .interval(6, TimeUnit.SECONDS)
-                .subscribe((longItem) -> {
-                    interactor
-                            .synchronizeWithBlockchain()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError((error) -> {
-                                router.showSystemMessage(error.getMessage());
-                                Log.e("Messages", error.getMessage(), error);
-                            })
-                            .subscribe(
-                                    (() -> {
-                                        messages = interactor.getMessagesByCompanionId(currentChat.getCompanionId());
-                                        getViewState().showChatMessages(messages);
-                                    })
-                            );
-                });
+        syncSubscription = interactor
+                .synchronizeWithBlockchain()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError((error) -> {
+                    router.showSystemMessage(error.getMessage());
+                    Log.e("Messages", error.getMessage(), error);
+                })
+                .doOnComplete(() -> {
+                    messages = interactor.getMessagesByCompanionId(currentChat.getCompanionId());
+                    getViewState().showChatMessages(messages);
+                })
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNHRONIZE_DELEAY_SECONDS, TimeUnit.SECONDS))
+                .subscribe();
 
         subscriptions.add(syncSubscription);
     }
