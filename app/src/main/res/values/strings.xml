@@ -5,4 +5,25 @@
     <string name="activity_login_btn_enter">Вход</string>
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="title_activity_chats">Список чатов</string>
+
+    <string-array name="months">
+        <item>янв</item>
+        <item>фев</item>
+        <item>мар</item>
+        <item>апр</item>
+        <item>мая</item>
+        <item>июн</item>
+        <item>июл</item>
+        <item>авг</item>
+        <item>сен</item>
+        <item>окт</item>
+        <item>ноя</item>
+        <item>дек</item>
+    </string-array>
+    
+    <string-array name="time_strings">
+        <item>сейчас</item>
+        <item>сегодня</item>
+        <item>вчера</item>
+    </string-array>
 </resources>

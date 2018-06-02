@@ -11,11 +11,9 @@ import com.dremanovich.adamant_android.ui.mvp_view.ChatsView;
 
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
 import ru.terrakok.cicerone.Router;
 
@@ -51,7 +49,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                             getViewState().showChats(interactor.getChatList());
                         }
                 )
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNHRONIZE_DELEAY_SECONDS, TimeUnit.SECONDS))
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
         subscriptions.add(syncSubscription);

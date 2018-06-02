@@ -68,12 +68,6 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(layoutManager);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                chatList.getContext(),
-                DividerItemDecoration.VERTICAL
-        );
-        chatList.addItemDecoration(dividerItemDecoration);
         chatList.setAdapter(adapter);
     }
 

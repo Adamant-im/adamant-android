@@ -24,6 +24,24 @@ public class Message implements Serializable, Comparable<Message> {
         return message;
     }
 
+    public String getShortedMessage(int limit) {
+        final String dots = "...";
+        int newLinePosition = message.indexOf('\r');
+
+        String shortString = null;
+        if (newLinePosition > 0){
+            shortString = message.substring(0, newLinePosition - 1);
+        } else {
+            shortString = message;
+        }
+
+        if (shortString.length() > (limit + dots.length())) {
+            shortString = shortString.substring(0, limit) + dots;
+        }
+
+        return shortString;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }

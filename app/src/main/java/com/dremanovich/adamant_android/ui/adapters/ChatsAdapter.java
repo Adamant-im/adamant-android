@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.dremanovich.adamant_android.R;
 import com.dremanovich.adamant_android.ui.entities.Chat;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,10 +18,15 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     private SelectItemListener listener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTextView;
+        public TextView chatView;
+        public TextView lastMessageView;
+        public RelativeTimeTextView dateView;
         public ViewHolder(View v) {
             super(v);
-            mTextView = v.findViewById(R.id.list_item_chat_name);
+            chatView = v.findViewById(R.id.list_item_chat_name);
+            lastMessageView = v.findViewById(R.id.list_item_chat_last_message);
+            dateView = v.findViewById(R.id.list_item_chat_last_message_date);
+
             v.setOnClickListener(this);
         }
 
@@ -58,7 +64,15 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         Chat chat = chats.get(position);
         if (chat != null){
-            holder.mTextView.setText(chat.getCompanionId());
+            holder.chatView.setText(chat.getCompanionId());
+            if (chat.getLastMessage() != null){
+                holder.lastMessageView.setText(chat.getLastMessage().getShortedMessage(50));
+                holder.dateView.setReferenceTime(chat.getLastMessage().getDate());
+            } else {
+                holder.lastMessageView.setText("");
+                holder.dateView.setReferenceTime(0);
+            }
+
         }
     }
 

@@ -8,6 +8,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_chats_rv_chats"
+        android:background="@drawable/tile_bg"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

@@ -3,7 +3,6 @@ package com.dremanovich.adamant_android.presenters;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.entities.Chat;
@@ -13,7 +12,6 @@ import com.dremanovich.adamant_android.ui.mvp_view.MessagesView;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -51,7 +49,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     messages = interactor.getMessagesByCompanionId(currentChat.getCompanionId());
                     getViewState().showChatMessages(messages);
                 })
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNHRONIZE_DELEAY_SECONDS, TimeUnit.SECONDS))
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
         subscriptions.add(syncSubscription);

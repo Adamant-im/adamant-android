@@ -57,6 +57,7 @@ dependencies {
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
     implementation "com.android.support:design:$supportLibraryVersion"
     implementation "com.jakewharton:butterknife:$butterKnifeVersion"
+    implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
     annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"

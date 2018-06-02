@@ -16,7 +16,8 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface AdamantApi {
-    int SYNHRONIZE_DELEAY_SECONDS = 6;
+    long BASE_TIMESTAMP = 1504371600000L; //2017-08-02 17:00:00
+    int SYNCHRONIZE_DELAY_SECONDS = 6;
     int MAX_TRANSACTIONS_PER_REQUEST = 100;
     String ORDER_BY_TIMESTAMP_DESC = "timestamp:desc";
     String ORDER_BY_TIMESTAMP_ASC = "timestamp:asc";
