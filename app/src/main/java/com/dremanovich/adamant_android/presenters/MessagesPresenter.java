@@ -91,6 +91,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     }));
 
             subscriptions.add(subscription);
+
+            getViewState().goToLastMessage();
         }
 
     }
@@ -99,7 +101,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         Message messageEntity = new Message();
         messageEntity.setiSay(true);
         messageEntity.setMessage(message);
-        messageEntity.setDate(System.currentTimeMillis() / 1000);
+        messageEntity.setDate(System.currentTimeMillis());
         messageEntity.setProcessed(false);
 
         if (messages != null){

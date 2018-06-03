@@ -75,6 +75,17 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
             presenter.onShowChat(currentChat);
         }
+
+
+        //TODO: fix bug: when user scrolled recyclerview to top, adapter will scroll recyclerview to down
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onChanged() {
+
+                goToLastMessage();
+                super.onChanged();
+            }
+        });
     }
 
     @Override
@@ -90,6 +101,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                     messages
             );
         }
+    }
+
+    @Override
+    public void goToLastMessage() {
+        messagesList.scrollToPosition(
+                adapter.getItemCount() - 1
+        );
     }
 
     @OnClick(R.id.activity_messages_btn_send)

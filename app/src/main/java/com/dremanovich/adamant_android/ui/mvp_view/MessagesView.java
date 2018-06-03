@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface MessagesView extends MvpView {
     void showChatMessages(List<Message> messages);
+    void goToLastMessage();
 }

@@ -1,5 +1,7 @@
 package com.dremanovich.adamant_android.ui.mappers;
 
+import android.util.Log;
+
 import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.core.encryption.Encryptor;
 import com.dremanovich.adamant_android.core.entities.Transaction;
@@ -7,7 +9,7 @@ import com.dremanovich.adamant_android.core.helpers.interfaces.AuthorizationStor
 import com.dremanovich.adamant_android.core.helpers.interfaces.PublicKeyStorage;
 import com.dremanovich.adamant_android.ui.entities.Message;
 
-import java.time.ZoneId;
+import java.util.TimeZone;
 
 import io.reactivex.functions.Function;
 
@@ -68,17 +70,21 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
 
         String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
 
-        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
-        long customTimestamp = (transaction.getTimestamp() * 1000L) + AdamantApi.BASE_TIMESTAMP;
-
         message = new Message();
         message.setMessage(decryptedMessage);
         message.setiSay(ownAddress.equals(transaction.getSenderId()));
-        message.setDate(customTimestamp);
+        message.setDate(messageMagicTimestamp(
+                transaction.getTimestamp()
+        ));
         message.setCompanionId(companionId);
         message.setProcessed(true);
         message.setTransactionId(transaction.getId());
 
         return message;
+    }
+
+    private long messageMagicTimestamp(long receivedTimestamp) {
+        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
+        return (receivedTimestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 }
