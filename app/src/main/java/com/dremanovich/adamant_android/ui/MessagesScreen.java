@@ -1,9 +1,11 @@
 package com.dremanovich.adamant_android.ui;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -95,6 +97,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         presenter.onClickSendMessage(
             newMessageText.getText().toString()
         );
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.hideSoftInputFromWindow(newMessageText.getWindowToken(), 0);
+        }
 
         newMessageText.setText("");
     }

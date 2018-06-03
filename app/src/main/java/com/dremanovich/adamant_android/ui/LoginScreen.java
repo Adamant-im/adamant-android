@@ -1,8 +1,10 @@
 package com.dremanovich.adamant_android.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -81,6 +83,10 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick(){
         presenter.onClickLoginButton(passPhrase.getText().toString());
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.hideSoftInputFromWindow(passPhrase.getWindowToken(), 0);
+        }
     }
 
     @Override

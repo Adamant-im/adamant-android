@@ -8,22 +8,19 @@ import android.widget.TextView;
 
 import com.dremanovich.adamant_android.R;
 import com.dremanovich.adamant_android.ui.entities.Message;
+import com.dremanovich.adamant_android.ui.holders.ReceivedMessageHolder;
+import com.dremanovich.adamant_android.ui.holders.SendedMessageHolder;
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.zip.Inflater;
 
-public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int SENDED_MESSAGE_HOLDER_TYPE = 1;
+    private static final int RECEIVED_MESSAGE_HOLDER_TYPE = 2;
+
     private List<Message> messages = new ArrayList<>();
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView mTextView;
-        public ViewHolder(View v) {
-            super(v);
-            mTextView = v.findViewById(R.id.list_item_message_text);
-        }
-    }
 
     public MessagesAdapter(List<Message> messages) {
         if (messages != null){
@@ -32,18 +29,45 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_message, parent, false);
+    public int getItemViewType(int position) {
+        Message message = messages.get(position);
 
-        return new ViewHolder(v);
+        if (message.isiSay()){
+            return SENDED_MESSAGE_HOLDER_TYPE;
+        } else {
+            return RECEIVED_MESSAGE_HOLDER_TYPE;
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+
+        switch (viewType){
+            case SENDED_MESSAGE_HOLDER_TYPE : {
+                View v = inflater.inflate(R.layout.list_item_message_sended, parent, false);
+                return new SendedMessageHolder(v);
+            }
+            case RECEIVED_MESSAGE_HOLDER_TYPE : {
+                View v = inflater.inflate(R.layout.list_item_message_received, parent, false);
+                return new ReceivedMessageHolder(v);
+            }
+            default: {
+                return null;
+            }
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
-        if (message != null){
-            holder.mTextView.setText(message.getMessage());
+
+        switch (holder.getItemViewType()) {
+            case SENDED_MESSAGE_HOLDER_TYPE:
+                ((SendedMessageHolder) holder).bind(message);
+                break;
+            case RECEIVED_MESSAGE_HOLDER_TYPE:
+                ((ReceivedMessageHolder) holder).bind(message);
         }
     }
 
