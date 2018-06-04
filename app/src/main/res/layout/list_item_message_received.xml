@@ -30,12 +30,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginStart="14dp"
         android:layout_marginTop="8dp"
         android:maxWidth="@dimen/list_item_message_bubble_max_width"
         android:padding="@dimen/list_item_message_padding"
         app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.04"
         app:layout_constraintStart_toEndOf="@+id/list_item_message_companion_logo"
         app:layout_constraintTop_toTopOf="parent">
 

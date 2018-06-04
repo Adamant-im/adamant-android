@@ -1,6 +1,9 @@
 package com.dremanovich.adamant_android.ui;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
@@ -16,5 +19,12 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
 
         setContentView(getLayoutId());
         ButterKnife.bind(this);
+    }
+
+    protected void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 }

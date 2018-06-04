@@ -1,29 +1,14 @@
 <resources>
-    <string name="app_name">ADAMANT Messenger</string>
-    <string name="activity_login_et_pass_phrase">Ключевая фраза</string>
-    <string name="activity_login_tx_pass_phrase">Введите вашу ключевую фразу</string>
+    <string name="app_name">АДАМАНТ Мессенджер</string>
+
+    <string name="activity_login_tv_title">АДАМАНТ</string>
+    <string name="activity_login_tv_subtitle">Самый анонимный мессенджер, зашифрованный в Blockchain</string>
+    <string name="activity_login_tv_create_new_suggestion">Или создайте новый анонимный адрес:</string>
+    <string name="activity_login_tv_new_password_label">Это пароль для нового Кошелька и Мессенджера. <b>Сохраните его</b>! Для входа в Кошелек не нужно логина, только этот пароль. Восстановление пароля невозможно.</string>
+    <string name="activity_login_et_pass_phrase">Введите пароль, чтобы войти</string>
     <string name="activity_login_btn_enter">Вход</string>
+    <string name="activity_login_btn_new_account">Создать новый</string>
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="title_activity_chats">Список чатов</string>
 
-    <string-array name="months">
-        <item>янв</item>
-        <item>фев</item>
-        <item>мар</item>
-        <item>апр</item>
-        <item>мая</item>
-        <item>июн</item>
-        <item>июл</item>
-        <item>авг</item>
-        <item>сен</item>
-        <item>окт</item>
-        <item>ноя</item>
-        <item>дек</item>
-    </string-array>
-    
-    <string-array name="time_strings">
-        <item>сейчас</item>
-        <item>сегодня</item>
-        <item>вчера</item>
-    </string-array>
 </resources>

@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:hardwareAccelerated="true"
         android:name=".AdamantApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -12,7 +13,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.LoginScreen">
+        <activity
+            android:name=".ui.LoginScreen"
+            android:windowSoftInputMode="stateUnchanged|adjustResize"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
