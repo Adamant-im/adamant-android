@@ -7,6 +7,21 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/ActionBar.Solid.MyAppTheme</item>
+        <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
+        <item name="buttonStyle">@style/AppTheme.Button</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">@font/montserrat</item>
+    </style>
+
+    <style name="AppTheme.ButtonTextAppearance" parent="AppTheme.TextAppearance">
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">300</item>
+    </style>
+
+    <style name="AppTheme.Button" parent="@style/Widget.AppCompat.Button">
+        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
     </style>
 
     <style name="ActionBar.Solid.MyAppTheme" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
