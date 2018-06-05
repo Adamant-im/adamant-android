@@ -59,6 +59,7 @@ dependencies {
     implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     implementation "com.alexzh:circleimageview:1.2.0"
+    implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -16,6 +17,7 @@ import com.dremanovich.adamant_android.presenters.ChatsPresenter;
 import com.dremanovich.adamant_android.ui.adapters.ChatsAdapter;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.mvp_view.ChatsView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.io.Serializable;
 import java.util.List;
@@ -53,6 +55,7 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
 
     //--ButterKnife
     @BindView(R.id.activity_chats_rv_chats) RecyclerView chatList;
+    @BindView(R.id.shimmer_view_container)  ShimmerFrameLayout shimmer;
 
 
     //--Activity
@@ -66,6 +69,9 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
+        chatList.setVisibility(View.GONE);
+        shimmer.startShimmerAnimation();
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
@@ -74,6 +80,8 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
+        shimmer.stopShimmerAnimation();
+        chatList.setVisibility(View.VISIBLE);
     }
 
     @Override

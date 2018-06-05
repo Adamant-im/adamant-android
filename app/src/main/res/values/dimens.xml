@@ -3,6 +3,15 @@
     <dimen name="list_item_chat_text_size">16sp</dimen>
     <dimen name="list_item_chat_padding">20dp</dimen>
 
+    <dimen name="list_item_chat_placeholder_name_width">120dp</dimen>
+    <dimen name="list_item_chat_placeholder_name_height">20dp</dimen>
+
+    <dimen name="list_item_chat_placeholder_message_width">200dp</dimen>
+    <dimen name="list_item_chat_placeholder_message_height">18dp</dimen>
+
+    <dimen name="list_item_chat_placeholder_date_width">60dp</dimen>
+    <dimen name="list_item_chat_placeholder_date_height">18dp</dimen>
+
     <dimen name="activity_messages_new_message_height">42dp</dimen>
     <dimen name="activity_login_max_form_width">400dp</dimen>
     <dimen name="activity_login_title_text_size">30sp</dimen>
