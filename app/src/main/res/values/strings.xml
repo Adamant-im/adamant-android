@@ -11,4 +11,7 @@
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="title_activity_chats">Список чатов</string>
 
+
+    <!--ERRORS-->
+    <string name="wrong_passphrase">Неправильный пароль</string>
 </resources>

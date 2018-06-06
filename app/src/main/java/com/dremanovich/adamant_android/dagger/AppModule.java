@@ -29,7 +29,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
+import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
+import io.github.novacrypto.bip39.wordlists.English;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -62,6 +64,12 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static MnemonicGenerator provideMnemonic(){
+        return new MnemonicGenerator(English.INSTANCE);
+    }
+
+    @Singleton
+    @Provides
     public static LazySodium provideLazySodium() {
         SodiumAndroid sodium = new SodiumAndroid();
         return new LazySodiumAndroid(sodium);
@@ -69,8 +77,8 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static KeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, LazySodium sodium) {
-        return new KeyGenerator(seedCalculator, sodium);
+    public static KeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
+        return new KeyGenerator(seedCalculator, mnemonicGenerator, sodium);
     }
 
     @Singleton

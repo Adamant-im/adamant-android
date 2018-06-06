@@ -2,6 +2,7 @@ package com.dremanovich.adamant_android.core;
 
 import com.dremanovich.adamant_android.core.entities.Transaction;
 import com.dremanovich.adamant_android.core.entities.UnnormalizedTransactionMessage;
+import com.dremanovich.adamant_android.core.requests.NewAccount;
 import com.dremanovich.adamant_android.core.requests.ProcessTransaction;
 import com.dremanovich.adamant_android.core.responses.Authorization;
 import com.dremanovich.adamant_android.core.responses.PublicKeyResponse;
@@ -47,4 +48,7 @@ public interface AdamantApi {
 
     @POST("chats/process")
     Flowable<TransactionWasProcessed> processTransaction(@Body ProcessTransaction transaction);
+
+    @POST("accounts/new")
+    Flowable<Authorization> createNewAccount(@Body NewAccount accountKey);
 }

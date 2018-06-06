@@ -129,7 +129,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/view" />
 
             <Button
-                android:id="@+id/activity_login_btn_create_new"
+                android:id="@+id/activity_login_btn_generate_new_passphrase"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -143,6 +143,7 @@
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/activity_login_cl_new_account_form"
+                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
@@ -152,27 +153,28 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_login_btn_create_new">
+                app:layout_constraintTop_toBottomOf="@+id/activity_login_btn_generate_new_passphrase">
 
                 <EditText
-                    android:id="@+id/editText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:id="@+id/activity_login_et_new_passphrase"
+                    android:layout_width="0dp"
+                    android:layout_height="82dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:inputType="none"
+                    android:editable="false"
                     android:lines="3"
                     android:textIsSelectable="true"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    tools:ignore="Deprecated"
+                    app:layout_constraintEnd_toStartOf="@+id/activity_login_btn_copy_new_passphrase"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView4"
+                    android:id="@+id/warn_message"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
@@ -180,10 +182,22 @@
                     android:text="@string/activity_login_tv_new_password_label"
                     android:textAlignment="center"
                     android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/editText" />
+                    app:layout_constraintTop_toBottomOf="@+id/activity_login_et_new_passphrase" />
+
+                <ImageButton
+                    android:id="@+id/activity_login_btn_copy_new_passphrase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="46dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="8dp"
+                    android:src="@drawable/ic_baseline_file_copy_24px"
+                    app:layout_constraintBottom_toTopOf="@+id/warn_message"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
 
             </android.support.constraint.ConstraintLayout>
 

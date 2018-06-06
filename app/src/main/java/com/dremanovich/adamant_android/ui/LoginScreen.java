@@ -1,41 +1,30 @@
 package com.dremanovich.adamant_android.ui;
 
-import android.content.Context;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.dremanovich.adamant_android.R;
 import com.dremanovich.adamant_android.Screens;
-import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.presenters.LoginPresenter;
 import com.dremanovich.adamant_android.ui.mvp_view.LoginView;
 import com.goterl.lazycode.lazysodium.LazySodium;
-import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
-import com.goterl.lazycode.lazysodium.interfaces.Sign;
-import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
-
-import java.util.Arrays;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import io.github.novacrypto.SecureCharBuffer;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
@@ -62,6 +51,9 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
     //--ButterKnife
     @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
+    @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
+    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
+    @BindView(R.id.activity_login_btn_login) Button loginButton;
 
     @Inject
     LazySodium sodium;
@@ -87,9 +79,24 @@ public class LoginScreen extends BaseActivity implements LoginView {
     }
 
     @OnClick(R.id.activity_login_btn_login)
-    public void loginButtonClick(){
+    public void loginButtonClick() {
         presenter.onClickLoginButton(passPhrase.getText().toString());
         hideKeyboard(passPhrase);
+    }
+
+    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
+    public void generateNewPassphraseClick() {
+        presenter.onClickGeneratePassphrase();
+    }
+
+    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
+    public void copyNewPassPhraseToClipboardClick() {
+        ClipData clip = ClipData.newPlainText("passphrase", newPassPhrase.getText().toString());
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+        if(clipboard != null){
+            clipboard.setPrimaryClip(clip);
+        }
     }
 
     @Override
@@ -102,6 +109,27 @@ public class LoginScreen extends BaseActivity implements LoginView {
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+    }
+
+    @Override
+    public void passPhraseWasGenerated(CharSequence passphrase) {
+        newPassPhrase.setText(passphrase);
+        newPassPhraseForm.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void loginError(int resourceId) {
+        Toast.makeText(getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void lockAuthorization() {
+        loginButton.setEnabled(false);
+    }
+
+    @Override
+    public void unLockAuthorization() {
+        loginButton.setEnabled(true);
     }
 
     private Navigator navigator = new Navigator() {
@@ -127,5 +155,4 @@ public class LoginScreen extends BaseActivity implements LoginView {
             }
         }
     };
-
 }

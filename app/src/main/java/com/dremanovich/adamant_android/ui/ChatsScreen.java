@@ -70,6 +70,7 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         super.onCreate(savedInstanceState);
 
         chatList.setVisibility(View.GONE);
+        shimmer.setVisibility(View.VISIBLE);
         shimmer.startShimmerAnimation();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -82,6 +83,7 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         adapter.updateDataset(chats);
         shimmer.stopShimmerAnimation();
         chatList.setVisibility(View.VISIBLE);
+        shimmer.setVisibility(View.GONE);
     }
 
     @Override
