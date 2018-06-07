@@ -36,10 +36,12 @@
 
         <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/list_item_chat_last_message_date"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
             android:background="@android:color/transparent"
             android:textSize="@dimen/list_item_chat_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
