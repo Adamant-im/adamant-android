@@ -12,10 +12,13 @@ import com.dremanovich.adamant_android.core.helpers.interfaces.ServerSelector;
 import com.dremanovich.adamant_android.interactors.AuthorizeInteractor;
 import com.dremanovich.adamant_android.interactors.ChatsInteractor;
 import com.dremanovich.adamant_android.ui.ChatsScreen;
+import com.dremanovich.adamant_android.ui.CreateChatScreen;
 import com.dremanovich.adamant_android.ui.LoginScreen;
 import com.dremanovich.adamant_android.ui.MessagesScreen;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToChatMapper;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToMessageMapper;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
@@ -184,4 +187,8 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {MessagesScreenModule.class})
     public abstract MessagesScreen messagesScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {CreateChatScreenModule.class})
+    public abstract CreateChatScreen createChatScreenInjector();
 }

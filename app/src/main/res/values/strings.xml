@@ -8,10 +8,18 @@
     <string name="activity_login_et_pass_phrase">Введите пароль, чтобы войти</string>
     <string name="activity_login_btn_enter">Вход</string>
     <string name="activity_login_btn_new_account">Создать новый</string>
+
+    <string name="activity_chats_title">Список чатов</string>
+    <string name="activity_chats_action_create_new">Новый чат</string>
+
+    <string name="activity_create_chat_recipient">Адрес получателя</string>
+    <string name="activity_create_chat_send">Отправить</string>
+
     <string name="activity_messages_btn_send">Отправить</string>
-    <string name="title_activity_chats">Список чатов</string>
 
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Неправильный пароль</string>
+    <string name="wrong_address">Адрес получателя неверный</string>
+    <string name="empty_message">Сообщение не может быть пустым</string>
 </resources>

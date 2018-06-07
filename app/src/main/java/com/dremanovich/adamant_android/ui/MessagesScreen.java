@@ -63,6 +63,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
+    public boolean withBackButton() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
@@ -106,6 +111,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         messagesList.scrollToPosition(
                 adapter.getItemCount() - 1
         );
+    }
+
+    @Override
+    public void changeTitle(String title) {
+        setTitle(title);
     }
 
     @OnClick(R.id.activity_messages_btn_send)

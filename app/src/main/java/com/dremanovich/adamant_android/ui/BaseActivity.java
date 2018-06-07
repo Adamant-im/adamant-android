@@ -1,5 +1,6 @@
 package com.dremanovich.adamant_android.ui;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
@@ -13,12 +14,22 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
 
     public abstract int getLayoutId();
 
+    public abstract boolean withBackButton();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(getLayoutId());
         ButterKnife.bind(this);
+
+        if (withBackButton()){
+            android.support.v7.app.ActionBar supportActionBar = getSupportActionBar();
+            if (supportActionBar != null) {
+                supportActionBar.setHomeButtonEnabled(true);
+                supportActionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }
     }
 
     protected void hideKeyboard(View view) {

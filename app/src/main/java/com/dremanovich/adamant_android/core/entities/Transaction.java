@@ -220,7 +220,7 @@ public class Transaction implements WithBytesDigest {
         return  this.getClass().getCanonicalName() + " [asset = " + asset + ", confirmations = " + confirmations + ", signatures = " + signatures + ", requesterPublicKey = " + requesterPublicKey + ", senderId = " + senderId + ", type = " + type + ", id = " + id + ", timestamp = " + timestamp + ", amount = " + amount + ", fee = " + fee + ", height = " + height + ", recipientId = " + recipientId + ", signSignature = " + signSignature + ", blockId = " + blockId + ", recipientPublicKey = " + recipientPublicKey + ", senderPublicKey = " + senderPublicKey + ", signature = " + signature + "]";
     }
 
-    public byte[] getBytesDigest() {
+    public byte[] getBytesDigest(){
         int assetSize = 0;
         byte[] assetBytes = null;
 
@@ -235,13 +235,16 @@ public class Transaction implements WithBytesDigest {
         bytesBuffer.put((byte) type);
         bytesBuffer.putInt(timestamp);
         bytesBuffer.put(Hex.encodeStringToHexArray(senderPublicKey));
-        bytesBuffer.put(Hex.encodeStringToHexArray(requesterPublicKey));
+
+        if (requesterPublicKey != null){
+            bytesBuffer.put(Hex.encodeStringToHexArray(requesterPublicKey));
+        }
 
         if (recipientId != null && !recipientId.isEmpty()){
-            byte[] recipientIdBytes = new BigInteger(recipientId.substring(1)).toByteArray();
-            for (int i = 0; i < recipientIdBytes.length; i++){
-                bytesBuffer.put(recipientIdBytes[i]);
-            }
+            //TODO: Test: if recipienId more than max long value
+            long recipientLongId = new BigInteger(recipientId.substring(1)).longValue();
+            bytesBuffer.putLong(Long.reverseBytes(recipientLongId));
+
         } else {
             bytesBuffer.put(new byte[8]);
         }

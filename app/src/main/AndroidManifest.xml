@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:hardwareAccelerated="true"
         android:name=".AdamantApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -15,9 +15,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.LoginScreen"
-            android:windowSoftInputMode="stateUnchanged|adjustResize"
             android:theme="@style/AppTheme.NoActionBar"
-            >
+            android:windowSoftInputMode="stateUnchanged|adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,8 +25,11 @@
         </activity>
         <activity
             android:name=".ui.ChatsScreen"
-            android:label="@string/title_activity_chats"/>
+            android:label="@string/activity_chats_title" />
         <activity android:name=".ui.MessagesScreen" />
+        <activity
+            android:name=".ui.CreateChatScreen"
+            android:label="@string/activity_chats_action_create_new" />
     </application>
 
 </manifest>

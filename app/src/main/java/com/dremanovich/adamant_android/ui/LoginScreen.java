@@ -65,6 +65,11 @@ public class LoginScreen extends BaseActivity implements LoginView {
     }
 
     @Override
+    public boolean withBackButton() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);

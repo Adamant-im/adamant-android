@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -65,6 +68,11 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
     }
 
     @Override
+    public boolean withBackButton() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
@@ -103,6 +111,27 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         navigatorHolder.removeNavigator();
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_chats_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_create_new_chat : {
+                presenter.onClickCreateNewChatButton();
+            }
+        }
+
+        return true;
+    }
+
     private Navigator navigator = new Navigator() {
         @Override
         public void applyCommands(Command[] commands) {
@@ -123,6 +152,13 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
 
                         startActivity(intent);
                     }
+                    break;
+
+                    case Screens.CREATE_CHAT_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
+                        startActivity(intent);
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;

@@ -69,6 +69,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                 chat.getCompanionId()
         );
 
+        getViewState().changeTitle(currentChat.getCompanionId());
+
         getViewState()
             .showChatMessages(
                 messages

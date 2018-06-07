@@ -29,12 +29,14 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     public void onClickLoginButton(String passPhrase) {
+        passPhrase = passPhrase.trim();
         if (!authorizeInteractor.isValidPassphrase(passPhrase)){
             getViewState().loginError(R.string.wrong_passphrase);
         }
 
         getViewState().lockAuthorization();
 
+        String finalPassPhrase = passPhrase;
         Disposable subscription = authorizeInteractor.authorize(passPhrase).subscribe(
                 (authorize)->{
                     if (authorize.isSuccess()){
@@ -44,7 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                         //TODO: Oh my god, somebody fix this, please.
                         //PWA adamantServerApi.js, line: 129
                         if ("Account not found".equalsIgnoreCase(authorize.getError())) {
-                            onClickCreateNewAccount(passPhrase);
+                            onClickCreateNewAccount(finalPassPhrase);
                         } else {
                             Log.e("ERR", authorize.getError());
                             router.showSystemMessage(authorize.getError());
@@ -67,6 +69,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
     public void onClickCreateNewAccount(String passPhrase) {
+        passPhrase = passPhrase.trim();
+
         if (!authorizeInteractor.isValidPassphrase(passPhrase)){
             getViewState().loginError(R.string.wrong_passphrase);
         }

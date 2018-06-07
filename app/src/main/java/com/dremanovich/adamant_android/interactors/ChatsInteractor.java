@@ -4,11 +4,14 @@ import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.core.encryption.Encryptor;
 import com.dremanovich.adamant_android.core.entities.Account;
 import com.dremanovich.adamant_android.core.entities.Transaction;
+import com.dremanovich.adamant_android.core.entities.TransactionAsset;
+import com.dremanovich.adamant_android.core.entities.TransactionMessage;
 import com.dremanovich.adamant_android.core.entities.UnnormalizedTransactionMessage;
 import com.dremanovich.adamant_android.core.helpers.interfaces.AuthorizationStorage;
 import com.dremanovich.adamant_android.core.helpers.interfaces.PublicKeyStorage;
 import com.dremanovich.adamant_android.core.requests.ProcessTransaction;
 import com.dremanovich.adamant_android.core.responses.TransactionList;
+import com.dremanovich.adamant_android.core.responses.TransactionWasNormalized;
 import com.dremanovich.adamant_android.core.responses.TransactionWasProcessed;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.entities.Message;
@@ -223,4 +226,10 @@ public class ChatsInteractor {
         return requestedMessages;
     }
 
+    public void addNewChat(Chat chat) {
+        if (chats.indexOf(chat) == -1){
+            chats.add(chat);
+            messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
+        }
+    }
 }
