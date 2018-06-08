@@ -15,6 +15,7 @@ import com.dremanovich.adamant_android.core.responses.TransactionWasNormalized;
 import com.dremanovich.adamant_android.core.responses.TransactionWasProcessed;
 import com.dremanovich.adamant_android.ui.entities.Chat;
 import com.dremanovich.adamant_android.ui.entities.Message;
+import com.dremanovich.adamant_android.ui.mappers.LocalizedMessageMapper;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToMessageMapper;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToChatMapper;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
@@ -36,6 +37,7 @@ public class ChatsInteractor {
     private AuthorizationStorage authorizationStorage;
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
+    private LocalizedMessageMapper localizedMessageMapper;
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
 
@@ -54,6 +56,7 @@ public class ChatsInteractor {
             AuthorizationStorage authorizationStorage,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
+            LocalizedMessageMapper localizedMessageMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ) {
@@ -63,6 +66,7 @@ public class ChatsInteractor {
         this.messageMapper = messageMapper;
         this.encryptor = encryptor;
         this.publicKeyStorage = publicKeyStorage;
+        this.localizedMessageMapper = localizedMessageMapper;
     }
 
     //TODO: Refactor this. Too long method
@@ -109,6 +113,7 @@ public class ChatsInteractor {
                              })
                              .doOnNext(transaction -> {
                                  Message message = messageMapper.apply(transaction);
+                                 message = localizedMessageMapper.apply(message);
                                  List<Message> messages = messagesByChats.get(message.getCompanionId());
                                  if (messages != null) {
                                      //If we sent this message and it's already in the list

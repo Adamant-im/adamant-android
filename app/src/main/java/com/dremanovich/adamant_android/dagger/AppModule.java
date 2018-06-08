@@ -1,5 +1,9 @@
 package com.dremanovich.adamant_android.dagger;
 
+import android.app.Application;
+import android.content.Context;
+
+import com.dremanovich.adamant_android.AdamantApplication;
 import com.dremanovich.adamant_android.core.AdamantApi;
 import com.dremanovich.adamant_android.core.encryption.Encryptor;
 import com.dremanovich.adamant_android.core.encryption.KeyGenerator;
@@ -15,6 +19,7 @@ import com.dremanovich.adamant_android.ui.ChatsScreen;
 import com.dremanovich.adamant_android.ui.CreateChatScreen;
 import com.dremanovich.adamant_android.ui.LoginScreen;
 import com.dremanovich.adamant_android.ui.MessagesScreen;
+import com.dremanovich.adamant_android.ui.mappers.LocalizedMessageMapper;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToChatMapper;
 import com.dremanovich.adamant_android.ui.mappers.TransactionToMessageMapper;
 import com.google.gson.Gson;
@@ -28,6 +33,7 @@ import java.util.TimeZone;
 
 import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
@@ -108,6 +114,12 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static LocalizedMessageMapper providesLocalizedMessageMapper(Context ctx) {
+        return new LocalizedMessageMapper(ctx);
+    }
+
+    @Singleton
+    @Provides
     public static AdamantApi provideApi(ServerSelector serverSelector) {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -166,10 +178,19 @@ public abstract class AppModule {
             AuthorizationStorage storage,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
+            LocalizedMessageMapper localizedMessageMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ){
-        return new ChatsInteractor(api, storage, messageMapper, chatMapper, encryptor, publicKeyStorage);
+        return new ChatsInteractor(
+                api,
+                storage,
+                messageMapper,
+                chatMapper,
+                localizedMessageMapper,
+                encryptor,
+                publicKeyStorage
+        );
     }
 
 
