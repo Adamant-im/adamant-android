@@ -80,11 +80,6 @@ public class Encryptor {
 
             sign = Hex.bytesToHex(signBytes);
 
-            Log.e("UBITES", Arrays.toString(Hex.getUnsignedBytes(transactionBytes)));
-            Log.e("hashbytes", Arrays.toString(Hex.getUnsignedBytes(hash)));
-            Log.e("SignBytes", Arrays.toString(Hex.getUnsignedBytes(signBytes)));
-            Log.e("SIGN", sign);
-
         } catch ( NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

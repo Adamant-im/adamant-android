@@ -3,43 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
-    <com.alexzh.circleimageview.CircleImageView
-        android:id="@+id/list_item_message_companion_logo"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:src="@drawable/ic_anonymus_companion"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:view_backgroundColor="@android:color/white"
-        app:view_borderColor="@android:color/darker_gray"
-        app:view_borderWidth="1dp"
-        app:view_selectedColor="@color/colorPrimaryDark"
-        app:view_shadowColor="@color/colorPrimary"
-        app:view_shadowDx="0dp"
-        app:view_shadowDy="0dp"
-        app:view_shadowRadius="2dp" />
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <android.support.v7.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="24dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:maxWidth="@dimen/list_item_message_bubble_max_width"
         android:padding="@dimen/list_item_message_padding"
         app:cardElevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.04"
-        app:layout_constraintStart_toEndOf="@+id/list_item_message_companion_logo"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.constraint.ConstraintLayout

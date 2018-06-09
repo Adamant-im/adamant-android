@@ -6,13 +6,12 @@ import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.Sign;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
-import java.nio.CharBuffer;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
-import io.github.novacrypto.SecureCharBuffer;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.Words;

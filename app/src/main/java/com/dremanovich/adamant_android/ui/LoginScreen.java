@@ -24,7 +24,6 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import io.github.novacrypto.SecureCharBuffer;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;

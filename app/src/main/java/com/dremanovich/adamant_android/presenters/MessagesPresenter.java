@@ -24,6 +24,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     private Chat currentChat;
     private List<Message> messages;
+    private int currentMessageCount = 0;
 
     private Disposable syncSubscription;
 
@@ -46,8 +47,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     Log.e("Messages", error.getMessage(), error);
                 })
                 .doOnComplete(() -> {
-                    messages = interactor.getMessagesByCompanionId(currentChat.getCompanionId());
-                    getViewState().showChatMessages(messages);
+                    if (currentMessageCount != messages.size()){
+                        getViewState().showChatMessages(messages);
+                        currentMessageCount = messages.size();
+                    }
                 })
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();

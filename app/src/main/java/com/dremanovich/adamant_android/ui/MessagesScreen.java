@@ -81,12 +81,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             presenter.onShowChat(currentChat);
         }
 
-        //TODO: fix bug: when user scrolled recyclerview to top, adapter will scroll recyclerview to down
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onChanged() {
-                goToLastMessage();
-                super.onChanged();
+        newMessageText.setOnFocusChangeListener( (view, isFocused) -> {
+            if (!isFocused){
+                hideKeyboard(newMessageText);
             }
         });
     }
@@ -103,6 +100,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             adapter.updateDataset(
                     messages
             );
+
+            goToLastMessage();
         }
     }
 
