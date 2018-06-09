@@ -7,8 +7,8 @@ import com.dremanovich.adamant_android.ui.entities.Message;
 import io.reactivex.functions.Function;
 
 public class LocalizedMessageMapper implements Function<Message, Message> {
-    private static final String WELCOME_MESSAGE = "ncwjzchats.welcome_messagefr";
-    private static final String MESSAGE_CTNCR = "hchats.ico_messagectncr";
+    private static final String WELCOME_MESSAGE_ADDR = "U15423595369615486571";
+    private static final String MESSAGE_CTNCR_ADDR = "U7047165086065693428";
 
     private Context context;
 
@@ -20,12 +20,12 @@ public class LocalizedMessageMapper implements Function<Message, Message> {
     public Message apply(Message message) {
         String messageText = message.getMessage();
 
-        switch (message.getMessage()){
-            case WELCOME_MESSAGE : {
+        switch (message.getCompanionId()){
+            case WELCOME_MESSAGE_ADDR: {
                 messageText = context.getString(R.string.hello_message_baunty);
             }
             break;
-            case MESSAGE_CTNCR : {
+            case MESSAGE_CTNCR_ADDR: {
                 messageText = context.getString(R.string.hello_message_ico);
             }
             break;
