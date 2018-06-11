@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dremanovich.adamant_android">
+    package="im.adamant.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".AdamantApplication"
+        android:name="im.adamant.android.AdamantApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.LoginScreen"
+            android:name="im.adamant.android.ui.LoginScreen"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateUnchanged|adjustResize">
             <intent-filter>
@@ -24,11 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ChatsScreen"
+            android:name="im.adamant.android.ui.ChatsScreen"
             android:label="@string/activity_chats_title" />
-        <activity android:name=".ui.MessagesScreen" />
+        <activity android:name="im.adamant.android.ui.MessagesScreen" />
         <activity
-            android:name=".ui.CreateChatScreen"
+            android:name="im.adamant.android.ui.CreateChatScreen"
             android:label="@string/activity_chats_action_create_new" />
     </application>
 
