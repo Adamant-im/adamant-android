@@ -1,14 +1,17 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     defaultConfig {
         applicationId "im.adamant.android"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "0.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        lintOptions {
+            abortOnError false
+        }
     }
     buildTypes {
         release {
@@ -27,7 +30,7 @@ android {
 }
 
 ext {
-    supportLibraryVersion = "26.1.0"
+    supportLibraryVersion = "27.1.1"
     moxyVersion = "1.4.6"
     daggerVersion = "2.16"
     butterKnifeVersion = "8.8.1"
