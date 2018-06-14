@@ -37,7 +37,11 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "adamant-v" + scmVersion.version + "(" + defaultConfig.versionCode +")" + ".apk"
+            if (variant.buildType.name == "debug"){
+                outputFileName = "adamant-v" + scmVersion.version + "(" + defaultConfig.versionCode +")" + ".apk"
+            } else {
+                outputFileName = "adamant-" + variant.buildType.name + ".apk"
+            }
         }
     }
 }

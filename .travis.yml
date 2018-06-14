@@ -1,34 +1,58 @@
 language: android
 sudo: required
 jdk: oraclejdk8
-
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - $HOME/.gradle/caches/
+  - $HOME/.gradle/wrapper/
+  - $HOME/.android/build-cache
 env:
   global:
-    - ANDROID_API=27
-    - EMULATOR_API=19
-    - ANDROID_BUILD_TOOLS=27.1.1
-    - ADB_INSTALL_TIMEOUT=5 # minutes
-
+  - ANDROID_API=27
+  - EMULATOR_API=19
+  - ANDROID_BUILD_TOOLS=27.0.3
+  - ADB_INSTALL_TIMEOUT=5
+  - secure: RF3fMzWV49WZZj9bHXZWTkgTFISxBf+QiOErRSPck9f2rOzG3EdYFNAh4YGNzIZYZi6llSNshh9Ya9ZRiazyRGHpv5cNVnVPQ8tlUU4oUxxrsvlZuVGSA7OjcmCcwWGUQ6uDwqXoPAfx8SOtHbFO40QazyBBA2Q4BzE9AfE1m8PuH6WuppXpg7ZBqnR/DmS2/KDmTge5I/9LlTaPuqiDW0QCUMmpxklrGhlUPaRnIeB8omMUwOhD27bdw6rNcARU9N3HgjMSqoBo+JS+XzBXgifSLfJwDopKvt78csBa7Qga9gYZkCsSP/6nxCRXz012zjS0fGdOg79JmNXguxGYgbr0YUVKj7fzRbPl6XieLPSvTFwMVWQioMTFEDfs2Zlg67PfaibIKwHeAn4rS6rdSEP4W+0prTDayDvV2QKfK9WW+b6mO6beIOvgzdxgkxQL1OXwO05+WgS84N+rSN1prF/Pr5nrl3Y6fCqvkDT5ZV4lzXNBsC0A29asGx7mHznKU13nBzhYd9m0DU/+wY0zXH5A0xm+/8OJaDoMAI7EbCS32aSGyVZvl3GQ8nhjuwAYYR5WSuOX6Du4k6ZzuI+vOGSd6OkvdAeiKSyNwJ/LVTYJ4krG+MAbx8ihraSGcRvq3e+aMf7ANQiv0Y6F0wHCoKTmloSgEWyGCNM9qyIAEzE=
+  - secure: UADSwGA96X1kf72R765VeYkfI+KH3q19HcwG6QSlROJSzdozJ+JLqlfH6vNUDmRiUdT7maiLi0my+jvvsFWX4NhsHsD8a5Atv5cmc2DuOJbEigHzsxx3fx4qs9jpxPzFIGPqxPaQvaw5eo12D1akj2DEDhalyDzLKnbkZJ0eD10Mq80RVNFErGWVQ2zA97Qs0M+3+xnZ/3JO40pbbdaawk0PGv4kkHtk+Kt16CHZK2ngBwNl757nlH8mfdezt5sYHv8KHcNCnJoQAvH2Lx+2EdRVSE2Y8gV0pRmLQhCQRoaTVIXCQZSQBFIOVllnRkNL4WgVr5NPzsX/Jh65n3+4X1PTbo0qSwU6O57h51r84M9jWYg30yiYQN18WoFwzIrPTjAYpV3QalnuAwEz/5r0+DFiVW9I2J8fIXxjAkpLzZ2m8OuTCr7LuuZsVwNcVNiCjfWeXPHVVKgy6NVIoq7gqMFcDdUQ2JNKpY1v8T0/JQOlF8qSWREY946lsdg6OXigUsGMy8C6bhhjS0HfceZTGLmX0BQ9tJtJEtSxfRFCYEz2F2work3ZjlUmRRY6EMLRpv55jL5Kz1zroOlKPQ7mIbc+1clBAHzMI7kmkCYlNgM+/lzNPASYiK23h8ympOiWcg7oYufaMaxYFWspNxlp7vO/Wg7TpQ1XsokX9fzOnNs=
+  - secure: rInQqZIT/nprtEJDa3CJxTEO7+fl8WhYBbTGN1dTuATRHf7QkiPsDdh8tYnKzb2GZyTi1NnuIcqwM/S+ZHvOFqgbY+A3gGo5QrayYnBTbgWTUhcsLtAJUDpCYuJt38UB6biLNrfD+yYpPZ6/kHjgmJTW5gf6AzrLlcMuXNIppgyO0KaRTuRyCn0noQHz8bWB/ael+a/GtXE1oS2x4Lg86tgRaH8B3Ke3qt4CLsLwWtGRvhHducFsnBd6PFO0+vHvDwD+HFCwDsSBEPLZtwb4Y1N0ckbHctzIk9StbeJp6B+1MUJIes9Q9byRmv7hbk8Dnl1gPEYp9fML1mv3GiIpY6iqiJnTbhmRu9hQ4ObLatFxqYoPGAQ2Hye+Nnl03exd59dFYg1C9uZfuZw4X8w/RBx6JztTNoWg+fDe04Y7Zg49hny/WSt8JQ5mWqYy4sIIE6GrpUYX6Q09WLH0FJB5r0PQx75msKZBvAJoWJo8seWziXctAtPn37F6DNDp8xkLe7fpYt4SkuVpNsiZyAAL6rj6piIuyMLC9Anj9e35dRfOpwRy5sRdRFfVjZtViqqX1mozlfMkls9S95VWfmQEZ1hsgZBxBYjj76LCMeLOcCjjB3Q4/qVrLtcTwwFzpNPTGXoA3cZsVax+EhWam+RO/AXONMVWK96wy21+GQ/5AoQ=
 android:
   components:
-    - tools
-    - platform-tools
-    - build-tools-$ANDROID_BUILD_TOOLS
-    - android-$ANDROID_API
-    - android-$EMULATOR_API_LEVEL
-    - extra-google-m2repository
-    - extra-android-m2repository # for design library
-    - addon-google_apis-google-19 # google play services
-    - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
-    - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
-
+  - tools
+  - platform-tools
+  - build-tools-$ANDROID_BUILD_TOOLS
+  - android-$ANDROID_API
+  - android-$EMULATOR_API_LEVEL
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - addon-google_apis-google-19
+  - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
+  - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
   licenses:
-    - android-sdk-preview-license-.+
-    - android-sdk-license-.+
-    - google-gdk-license-.+
-
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
 before_install:
   - yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
-
 script:
   - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_55d187b8a40f_key -iv $encrypted_55d187b8a40f_iv
+    -in keystore.jks.enc -out keystore.jks -d
+  - cd app/build/outputs/apk/release
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks -storepass $storepass -keypass $keypass adamant-release.apk adamant-travis
+  - jarsigner -verify adamant-release.apk
+  - "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 adamant-release.apk adamant.apk"
+  - cd -
+  - scripts/tag.sh
+deploy:
+  provider: releases
+  on:
+    branch: master
+  api_key:
+    secure: "nT0ELSZ4RLnc2ktCtRZHZMA0c8j1VGm+dpI6P3O7UlkjKtm4Rc7qkr2oBB1qCDXtkuqLlA2K9Kwkrk1Cpc78Tl3dUxxYtNwYLAszzYr2WFcOECxLmYdbiLRHUq76wRlSLZEB9hP7Skizqx/qX6P9xCMfnaUkDjR8qRSMteqWvF2jfKmUCK3+dYSC/k3Lvd3FQKTks0Z8S/yPtaeBsXSyECg2vEwvJ2aPLtyp0Duqn9YWUDVktyKFYRScJAPzGa56glV0MwV2iXboa4JdKjZdmEYrdbfzJQXuN7FEgK4xVDfSbfCRsTKJ+xtn+lom2DuWRv0J81DR2R6GWqH31mgVyHlY2lZlaMgInZRuu/xBAeli5nMZHKd95fvqlPGyUfAasbhXYeyp5+a1sBXZ2cRRXBji/z4SgGwtBEovNJ642t4EncOge+LHP68UWzSI7U5pwntczZBfcv2g2P7+VEWv9c32vwm9+AfXgGPa/Wkg2i2ukWui9VyOZnzfxL3/p5S4JBo/szRPRKPrDDWlIttwXgA5QWgohECD5BPs1fAYwMEMcWPmruOis528bkwUnvaDosgTmX1Ui2g+jpe7af8m9ygj3DIZEZOYYGe/cYMpdTuGWylxUojOJFd0aczJkeSJ5qCJ4ngmGLtYRfsG1uNnG7MoapTE0ny4TxUaJzOVWZI="
+  file: "app/build/outputs/apk/release/adamant.apk"
+  overwrite: true
+  skip_cleanup: true
