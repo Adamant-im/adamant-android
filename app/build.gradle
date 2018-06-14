@@ -1,33 +1,63 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
+
     defaultConfig {
         applicationId "im.adamant.android"
         minSdkVersion 19
-        targetSdkVersion 26
-        versionCode 1
-        versionName "0.0.1"
+        targetSdkVersion 27
+        versionCode getVersionCode(minSdkVersion, scmVersion.version)
+        versionName scmVersion.version
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        lintOptions {
+            abortOnError false
+        }
     }
+
     buildTypes {
+        debug {
+            minifyEnabled false
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     sourceSets.main {
         jni.srcDirs = []
         jniLibs.srcDirs = ['src/main/jniLibs']
     }
+
     compileOptions {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == "debug"){
+                outputFileName = "adamant-v" + scmVersion.version + "(" + defaultConfig.versionCode +")" + ".apk"
+            } else {
+                outputFileName = "adamant-" + variant.buildType.name + ".apk"
+            }
+        }
+    }
+}
+
+scmVersion {
+    localOnly = true
+}
+
+static def getVersionCode(minSdk, versionName) {
+    def (cleanVersion, other) = versionName.tokenize('-')
+    def(major, minor, path) = cleanVersion.tokenize('.')
+    return minSdk.apiLevel * 10000000 + major.toInteger() * 10000 + minor.toInteger() * 100 + path.toInteger()
 }
 
 ext {
-    supportLibraryVersion = "26.1.0"
+    supportLibraryVersion = "27.1.1"
     moxyVersion = "1.4.6"
     daggerVersion = "2.16"
     butterKnifeVersion = "8.8.1"
