@@ -41,7 +41,7 @@ before_deploy:
 - openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv
   -in adamant-keystore.jks.enc -out adamant-keystore.jks -d
 - cd app/build/outputs/apk/release
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks
   -storepass $storepass -keypass $keypass adamant-release.apk adamant
 - jarsigner -verify adamant-release.apk
 - "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 adamant-release.apk
@@ -50,7 +50,7 @@ before_deploy:
 deploy:
   provider: releases
   api_key:
-    secure: IED9BQrSJoR3xA4mR4RYzqn4kS+3BplnGOJnvRs820IkokaOASidlCXPRnoJF95BY4nMgnkm26Dskpvyk8csTcJ0o3ubp5fkpXUGL+1m4eUCQfaI70qKq2gU6tP9GGYel7eNgWtZ9fDUQsJKWFXNS+alo6IcaV/23LgbyQq065f5qdJA1eScHo43kaAIiOvwgKUnyzTJqhJKfVVOxieg9ilC8NXrGtGUAO4XWuVq9vVkqJ2PErQn560ycDJ16xIJ/qfECAWalbyIlgycqRQjv5sY1ybcXP5NtZjEbpEurIeF646/6ac9J56X8+jPnnh/pR6Zrvlla1Ey+O3TjQDlKf4ofzgX53Y1YyIJo56VpKEfgXcsYp3C48SS9IOaXyKlHL3tonmuuiJVN2Q9ErBEF7Ie4sF2k6axe9DfWDAvEpHv3+EOTRXR6U0qGJkRBd3oQE2fyPgOXKnqk5PP6/720QNb+V2jpCwjcro3AI1syf6PXu+MPgtCiXC2yBk7MC1XACepTyh9FDKbZwAvEIuvNhj0Xw6H22uEbBvmE9qDpsS2REAk4O4u6EHeEtheR5eka4i1CzXpQEZU8lO6tIR4GxvWpmAdMW6GPrBpayvgqYPmfNJoecG+89qZVECKFiCJiSUyursfeWOvyaDHbxycw0MU4rXTL9L/31WI/uuP6o0=
+    secure: "HirFiRAJSRrGbYz3aSAYmAUd4A82P0BI9GIsXnomNugxSm/EnxAvXGt6sZnyNWV4YjPO5muyOeF/LHVOtsp4PL7k41mfAkcVi2mgIeNI4PmTTMj4KJ8EynGtuwpk0BI9aL4M+eWoTvRgqvK2Aoz3Rzw5meOuHbYZFuNSdcXtXATmtZfboOx319UdW3zVUrCRxrgR6fYl6IpZTEb6YaxxcFIBC6BPZF/qhRSqvyk/eBP4tM6YgxM5V87PXgK41Z9+cwOOS+KjGz0UTkFrP7JumFkQsiob1SlzlFa+x1f9rt+qSENCx4MF9IuZ4QtUZdVIxorNCTfGfpUQYCWHg5+ZmUAgwi5WHB9LwKuac2q1Ax83olmCMTP0O/0jA4X++GivZz2jFG9tfDzfVpi73ojQCQhQS5/f5Q7Y6LriHz7V2OMdUqtYQ2xMoYDJiSTXMjX8KK5FFiLTG9sg73ky7PZhUw717nVhLEUc/FzUzePZMCNhh4Bc4sQesy0N1f1ca5wiYNfEBLniZPvCgbzKkO9ImZja+7QH3cTzqXxUhRjmXz5V8ipLDtNeWFLqfaK4ZAd7QoTDnZFktAfZqAuLiRrj0eszOzfbyvaFFYTcCqclp7b6XO8hU/Yas9bfIJXkkQN5HCjPiw2SgV8MX4UT28R0VH/MO6AKSi9IHVMlWnzuhY8="
   file: app/build/outputs/apk/release/adamant.apk
   on:
     repo: Adamant-im/adamant-android
