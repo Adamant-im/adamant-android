@@ -1,0 +1,58 @@
+language: android
+sudo: required
+jdk: oraclejdk8
+before_cache:
+- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+- rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+  - "$HOME/.gradle/caches/"
+  - "$HOME/.gradle/wrapper/"
+  - "$HOME/.android/build-cache"
+env:
+  global:
+  - ANDROID_API=27
+  - EMULATOR_API=19
+  - ANDROID_BUILD_TOOLS=27.0.3
+  - ADB_INSTALL_TIMEOUT=5
+  - secure: fQDdh7kT/rat1IXYz0MBUHPKTCh5tQgg6irf/X91SRha4kP014O55kk649FqZIYKfdf2dC+5efpmF93RtevSv1500EKC2kHS8ZMEvx8NjDM6TdizjmdkpSM1Z18KXSgW1C33TXNcG6adxKWGsFtgBScbaqW1gZ+8crS07wWZRjg5OZf4FFGkgMmToRwJcUom+HuHs2d37JlfLZDf2Ak/SfEisxMHlghYlqMNUQXJPzcxDU5rgc4cGCl4O+sF93v/Umx9IVdEAC7sfBUfks3TqVdiBQ6cB2y5kZ/kU5lfy8e38KcauC3o3e2/LYh6Z9Uz9bzP+bV+a3j2odbNVSdz7amdBx4bA+30QpVsSkGFczwGzQLd5T+xR+MuCO56m5RUYjvSYMsbJs28+zaqfJUtrZH89t86wxpwLD7v1sg8dRObac8MGplGigEeLNSGGCyxYmw5yp46360+Z9EkvK9b45y41GJC4eh29WbX8NIm7/Zx1HVlue+y7D2hn8uYYySoLo8qqYEjBjIzo/X0xnGqbshBRAaIKDW2+Bz8gmC2kaRQgjxy7+Uj6ZK91MFFLcDAH8PmIjoDxan1Zzr1V0ZnmkXEBxXjjzg6cav2AzDvF5iLvi59lbrHWde7UqnZWVwhz30d5mrb+6AsVXu68Ql12VSCUn0tE5aR9i5os4vS3c4=
+  - secure: PwgiNiIIHThXC4pRc1e9TRw4iF2oYBjR8fXxN4QR+R/gTbBBww/BOpr3UavxkeqBcGeWlEXXEDvKhrN94juMgs4Iv+XAIcnkw0y7hefoAsgzkc1VkXpOEWFG9RkgZhe38JVomtrzUtPdFJUULUgI6yaEcUVMaYeh2kE5vagGfMsasmKQVgLt+lqwEpitqgZfMTbycTIauwtG+hbdYrm7V/dizR5mVYSNNDDyb88pxq8xmCtBBOflxFWpsTETlodAODG6m6TBvUaFCQecomFvy1moFMwt3blSYletIr4ynVa+eVjaGnUY+D8IXCsUMxruRimSzlUg5sT9x3XeAOkEF5GNEnDerZlKIp40vLg6580D/eMEa3zDM/3i9+iQ0S5LD6rX+p4QuZmHAeuaVsAjeXXbLjY8HvM6h2IXUKQJyxB1pCbhmYwwEIQUq+FUq/3XKJ2oAF+53RaoS2cll2xcpaEhZaG5C4uHFR0ZB9nSb+tmblu63py1KxBUtk6lo96jAlq9RGNeKqc+TdEzV+dKZgz8wvfF3qBkomSbFTmhB7+6toeNfwRW5pF510Zos+y0s6XayAjgNvkH+WfPkuaOovqExenVN48OUULLXOVk8ZG66YoIyM6PsG0NuR3/nN7nbi8St2Sb2/dETC5aAv2w3A6ca58qYUpk2U/tKHSE68I=
+android:
+  components:
+  - tools
+  - platform-tools
+  - build-tools-$ANDROID_BUILD_TOOLS
+  - android-$ANDROID_API
+  - android-$EMULATOR_API_LEVEL
+  - extra-google-m2repository
+  - extra-android-m2repository
+  - addon-google_apis-google-19
+  - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
+  - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
+  licenses:
+  - android-sdk-preview-license-.+
+  - android-sdk-license-.+
+  - google-gdk-license-.+
+before_install:
+- yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+script:
+- "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+before_deploy:
+- openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv
+  -in adamant-keystore.jks.enc -out adamant-keystore.jks -d
+- cd app/build/outputs/apk/release
+- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/keystore.jks
+  -storepass $storepass -keypass $keypass adamant-release.apk adamant
+- jarsigner -verify adamant-release.apk
+- "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 adamant-release.apk
+  adamant.apk"
+- cd -
+deploy:
+  provider: releases
+  api_key:
+    secure: IED9BQrSJoR3xA4mR4RYzqn4kS+3BplnGOJnvRs820IkokaOASidlCXPRnoJF95BY4nMgnkm26Dskpvyk8csTcJ0o3ubp5fkpXUGL+1m4eUCQfaI70qKq2gU6tP9GGYel7eNgWtZ9fDUQsJKWFXNS+alo6IcaV/23LgbyQq065f5qdJA1eScHo43kaAIiOvwgKUnyzTJqhJKfVVOxieg9ilC8NXrGtGUAO4XWuVq9vVkqJ2PErQn560ycDJ16xIJ/qfECAWalbyIlgycqRQjv5sY1ybcXP5NtZjEbpEurIeF646/6ac9J56X8+jPnnh/pR6Zrvlla1Ey+O3TjQDlKf4ofzgX53Y1YyIJo56VpKEfgXcsYp3C48SS9IOaXyKlHL3tonmuuiJVN2Q9ErBEF7Ie4sF2k6axe9DfWDAvEpHv3+EOTRXR6U0qGJkRBd3oQE2fyPgOXKnqk5PP6/720QNb+V2jpCwjcro3AI1syf6PXu+MPgtCiXC2yBk7MC1XACepTyh9FDKbZwAvEIuvNhj0Xw6H22uEbBvmE9qDpsS2REAk4O4u6EHeEtheR5eka4i1CzXpQEZU8lO6tIR4GxvWpmAdMW6GPrBpayvgqYPmfNJoecG+89qZVECKFiCJiSUyursfeWOvyaDHbxycw0MU4rXTL9L/31WI/uuP6o0=
+  file: app/build/outputs/apk/release/adamant.apk
+  on:
+    repo: Adamant-im/adamant-android
+    tags: true
+  skip_cleanup: true
