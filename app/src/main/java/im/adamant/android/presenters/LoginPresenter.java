@@ -32,6 +32,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         passPhrase = passPhrase.trim();
         if (!authorizeInteractor.isValidPassphrase(passPhrase)){
             getViewState().loginError(R.string.wrong_passphrase);
+            return;
         }
 
         getViewState().lockAuthorization();
