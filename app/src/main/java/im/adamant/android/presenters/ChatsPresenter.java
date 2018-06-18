@@ -70,7 +70,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
 
     public void onClickCreateNewChatButton() {
         router.navigateTo(Screens.CREATE_CHAT_SCREEN);
-
     }
 
 }

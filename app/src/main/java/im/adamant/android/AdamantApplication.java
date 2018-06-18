@@ -2,6 +2,7 @@ package im.adamant.android;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 
 import javax.inject.Inject;
 

@@ -13,7 +13,6 @@ import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
 import im.adamant.android.core.helpers.interfaces.ServerSelector;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
-import im.adamant.android.ui.ChatsScreenActivity;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;

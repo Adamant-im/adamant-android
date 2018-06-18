@@ -15,8 +15,6 @@ import im.adamant.android.R;
 public abstract class BaseFragment extends MvpAppCompatFragment {
     public abstract int getLayoutId();
 
-    public abstract String getTitle();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -25,10 +23,5 @@ public abstract class BaseFragment extends MvpAppCompatFragment {
         ButterKnife.bind(this, view);
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 }

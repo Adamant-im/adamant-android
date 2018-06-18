@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
-import dagger.android.AndroidInjection;
 import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.R;
 import im.adamant.android.presenters.ChatsPresenter;
@@ -69,13 +71,14 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     }
 
     @Override
-    public int getLayoutId() {
-        return R.layout.fragment_chats_screen;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
-    public String getTitle() {
-        return getString(R.string.bottom_menu_title_chats);
+    public int getLayoutId() {
+        return R.layout.fragment_chats_screen;
     }
 
     @Override
@@ -106,5 +109,21 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @Override
     public void itemWasSelected(Chat chat) {
         presenter.onChatWasSelected(chat);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.fragment_chats_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_create_new_chat:
+                presenter.onClickCreateNewChatButton();
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

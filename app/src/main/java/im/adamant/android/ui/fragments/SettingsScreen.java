@@ -25,10 +25,4 @@ public class SettingsScreen extends BaseFragment {
         return R.layout.fragment_settings_screen;
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.bottom_menu_title_settings);
-    }
-
-
 }

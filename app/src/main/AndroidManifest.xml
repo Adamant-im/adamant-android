@@ -23,9 +23,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.ChatsScreenActivity"
-            android:label="@string/activity_chats_title" />
         <activity android:name=".ui.MessagesScreen" />
         <activity
             android:name=".ui.CreateChatScreen"

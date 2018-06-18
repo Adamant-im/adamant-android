@@ -1,5 +1,6 @@
 package im.adamant.android.ui.adapters;
 
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -7,27 +8,34 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.adamant.android.ui.fragments.BaseFragment;
+import im.adamant.android.ui.holders.FragmentClassHolder;
+
 public class FragmentsAdapter extends FragmentStatePagerAdapter {
-    private List<Class> classes = new ArrayList<>();
+    private List<FragmentClassHolder> classHolders = new ArrayList<>();
+    private List<BaseFragment> fragments = new ArrayList<>();
 
     public FragmentsAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public FragmentsAdapter(FragmentManager fm, List<Class> classes) {
+    public FragmentsAdapter(FragmentManager fm, List<FragmentClassHolder> classHolders) {
         super(fm);
 
-        if (classes != null){
-            this.classes = classes;
+        if (classHolders != null){
+            this.classHolders = classHolders;
         }
     }
 
     @Override
     public Fragment getItem(int position) {
 
-        if((position >= 0) && (position < classes.size())){
+        if((position >= 0) && (position < classHolders.size())){
             try {
-               return (Fragment) classes.get(position).newInstance();
+                FragmentClassHolder holder = classHolders.get(position);
+                Fragment fragment = holder.getFragmentClass().newInstance();
+                fragments.add((BaseFragment) fragment);
+                return fragment;
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -38,6 +46,18 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return classes.size();
+        return classHolders.size();
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        String title = "";
+        try {
+            title = classHolders.get(position).getTitle();
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return title;
     }
 }

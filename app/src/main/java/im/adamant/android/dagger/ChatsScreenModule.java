@@ -3,7 +3,6 @@ package im.adamant.android.dagger;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.presenters.ChatsPresenter;
-import im.adamant.android.ui.ChatsScreenActivity;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 
 import javax.inject.Named;

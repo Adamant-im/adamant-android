@@ -6,6 +6,10 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.view.menu.MenuBuilder;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -93,8 +97,28 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
             return false;
         });
 
+        content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                setTitle(mainAdapter.getPageTitle(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         content.setAdapter(mainAdapter);
+        setTitle(mainAdapter.getPageTitle(0));
     }
+
+
 
     @Override
     protected void onResume() {
@@ -108,10 +132,12 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         navigatorHolder.removeNavigator();
     }
 
+
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentDispatchingAndroidInjector;
     }
+
 
     private Navigator navigator = new Navigator() {
         @Override

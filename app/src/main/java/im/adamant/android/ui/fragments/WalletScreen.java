@@ -25,10 +25,4 @@ public class WalletScreen extends BaseFragment {
         return R.layout.fragment_wallet_screen;
     }
 
-    @Override
-    public String getTitle() {
-        return getString(R.string.bottom_menu_title_wallet);
-    }
-
-
 }
