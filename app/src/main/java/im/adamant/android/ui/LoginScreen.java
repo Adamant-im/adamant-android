@@ -150,7 +150,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
                 Forward forward = (Forward)command;
                 switch (forward.getScreenKey()){
                     case Screens.CHATS_SCREEN: {
-                        startActivity(new Intent(getApplicationContext(), ChatsScreen.class));
+                        startActivity(new Intent(getApplicationContext(), MainScreen.class));
                         finish();
                     }
                 }

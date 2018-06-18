@@ -126,6 +126,7 @@ public class ChatsInteractor {
                                      currentHeight = transaction.getHeight();
                                  }
                              })
+                             .doOnError(Throwable::printStackTrace)
                              .doOnComplete(() -> {
                                  //Setting last message to chats
                                  for(Chat chat : chats){

@@ -2,68 +2,69 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
-import im.adamant.android.R;
-import im.adamant.android.Screens;
-import im.adamant.android.presenters.ChatsPresenter;
-import im.adamant.android.ui.adapters.ChatsAdapter;
-import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.mvp_view.ChatsView;
-import com.facebook.shimmer.ShimmerFrameLayout;
-
 import java.io.Serializable;
-import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+import im.adamant.android.R;
+import im.adamant.android.Screens;
+import im.adamant.android.presenters.MainPresenter;
+import im.adamant.android.ui.adapters.FragmentsAdapter;
+import im.adamant.android.ui.fragments.BaseFragment;
+import im.adamant.android.ui.mvp_view.MainView;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
-public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter.SelectItemListener {
+public class MainScreen extends BaseActivity implements MainView, HasSupportFragmentInjector {
 
     @Inject
     NavigatorHolder navigatorHolder;
 
     @Inject
-    Provider<ChatsPresenter> presenterProvider;
-
-    @Inject
-    ChatsAdapter adapter;
+    Provider<MainPresenter> presenterProvider;
 
     //--Moxy
     @InjectPresenter
-    ChatsPresenter presenter;
+    MainPresenter presenter;
 
     @ProvidePresenter
-    public ChatsPresenter getPresenter(){
+    public MainPresenter getPresenter(){
         return presenterProvider.get();
     }
 
-    //--ButterKnife
-    @BindView(R.id.activity_chats_rv_chats) RecyclerView chatList;
-    @BindView(R.id.shimmer_view_container)  ShimmerFrameLayout shimmer;
+    @Inject
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
+    @Named("main")
+    @Inject
+    FragmentsAdapter mainAdapter;
 
-    //--Activity
+    @BindView(R.id.main_screen_content) ViewPager content;
+    @BindView(R.id.main_screen_navigation) BottomNavigationView navigation;
+
     @Override
     public int getLayoutId() {
-        return R.layout.activity_chats_screen;
+        return R.layout.activity_main;
     }
 
     @Override
@@ -76,26 +77,23 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        chatList.setVisibility(View.GONE);
-        shimmer.setVisibility(View.VISIBLE);
-        shimmer.startShimmerAnimation();
+        navigation.setOnNavigationItemSelectedListener(item -> {
+            BaseFragment fragment = null;
+            switch (item.getItemId()) {
+                case R.id.navigation_wallet:
+                    presenter.onSelectedWalletTab();
+                    return true;
+                case R.id.navigation_chats:
+                    presenter.onSelectedChatsTab();
+                    return true;
+                case R.id.navigation_settings:
+                    presenter.onSelectedSettingsTab();
+                    return true;
+            }
+            return false;
+        });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        chatList.setLayoutManager(layoutManager);
-        chatList.setAdapter(adapter);
-    }
-
-    @Override
-    public void showChats(List<Chat> chats) {
-        adapter.updateDataset(chats);
-        shimmer.stopShimmerAnimation();
-        chatList.setVisibility(View.VISIBLE);
-        shimmer.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void itemWasSelected(Chat chat) {
-        presenter.onChatWasSelected(chat);
+        content.setAdapter(mainAdapter);
     }
 
     @Override
@@ -110,25 +108,9 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
         navigatorHolder.removeNavigator();
     }
 
-
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_chats_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_create_new_chat : {
-                presenter.onClickCreateNewChatButton();
-            }
-        }
-
-        return true;
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
     }
 
     private Navigator navigator = new Navigator() {
@@ -156,6 +138,21 @@ public class ChatsScreen extends BaseActivity implements ChatsView, ChatsAdapter
                     case Screens.CREATE_CHAT_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
                         startActivity(intent);
+                    }
+                    break;
+
+                    case Screens.WALLET_SCREEN: {
+                        content.setCurrentItem(0);
+                    }
+                    break;
+
+                    case Screens.CHATS_SCREEN: {
+                        content.setCurrentItem(1);
+                    }
+                    break;
+
+                    case Screens.SETTINGS_SCREEN: {
+                        content.setCurrentItem(2);
                     }
                     break;
                 }

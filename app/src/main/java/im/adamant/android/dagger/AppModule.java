@@ -13,9 +13,10 @@ import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
 import im.adamant.android.core.helpers.interfaces.ServerSelector;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
-import im.adamant.android.ui.ChatsScreen;
+import im.adamant.android.ui.ChatsScreenActivity;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
+import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
@@ -194,9 +195,9 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {LoginScreenModule.class})
     public abstract LoginScreen loginScreenInjector();
 
-    @ActivityScope
-    @ContributesAndroidInjector(modules = {ChatsScreenModule.class})
-    public abstract ChatsScreen chatsScreenInjector();
+//    @ActivityScope
+//    @ContributesAndroidInjector(modules = {ChatsScreenModule.class})
+//    public abstract ChatsScreenActivity chatsScreenInjector();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {MessagesScreenModule.class})
@@ -205,4 +206,8 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {CreateChatScreenModule.class})
     public abstract CreateChatScreen createChatScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {MainScreenModule.class})
+    public abstract MainScreen createMainScreenInjector();
 }

@@ -13,6 +13,7 @@ android {
         lintOptions {
             abortOnError false
         }
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -37,8 +38,8 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            if (variant.buildType.name == "debug"){
-                outputFileName = "adamant-v" + scmVersion.version + "(" + defaultConfig.versionCode +")" + ".apk"
+            if (variant.buildType.name == "debug") {
+                outputFileName = "adamant-v" + scmVersion.version + "(" + defaultConfig.versionCode + ")" + ".apk"
             } else {
                 outputFileName = "adamant-" + variant.buildType.name + ".apk"
             }
@@ -52,7 +53,7 @@ scmVersion {
 
 static def getVersionCode(minSdk, versionName) {
     def (cleanVersion, other) = versionName.tokenize('-')
-    def(major, minor, path) = cleanVersion.tokenize('.')
+    def (major, minor, path) = cleanVersion.tokenize('.')
     return minSdk.apiLevel * 10000000 + major.toInteger() * 10000 + minor.toInteger() * 100 + path.toInteger()
 }
 
@@ -90,6 +91,9 @@ dependencies {
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
 
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.android.support:support-vector-drawable:27.1.1'
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
     annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"

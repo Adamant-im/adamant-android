@@ -91,4 +91,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         notifyDataSetChanged();
     }
 
+
+    public void setListener(SelectItemListener listener) {
+        this.listener = listener;
+    }
 }
