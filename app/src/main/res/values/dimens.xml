@@ -21,6 +21,8 @@
     <dimen name="list_item_message_bubble_max_width">232dp</dimen>
     <dimen name="list_item_message_bubble_content_max_width">200dp</dimen>
     <dimen name="list_item_message_bubble_content_min_width">80dp</dimen>
+
+    <dimen name="wallet_rounded_panel_height">66dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

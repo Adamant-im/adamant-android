@@ -65,12 +65,6 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
 
     @Override
-    public void onAttach(Context context) {
-        AndroidSupportInjection.inject(this);
-        super.onAttach(context);
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);

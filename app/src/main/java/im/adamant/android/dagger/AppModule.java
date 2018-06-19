@@ -11,6 +11,7 @@ import im.adamant.android.core.helpers.NaiveServerSelectorImpl;
 import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
 import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
 import im.adamant.android.core.helpers.interfaces.ServerSelector;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.ui.CreateChatScreen;
@@ -162,6 +163,14 @@ public abstract class AppModule {
             KeyGenerator keyGenerator
     ) {
         return new AuthorizeInteractor(api, storage, keyGenerator);
+    }
+
+    @Singleton
+    @Provides
+    public static AccountInteractor provideAccountInteractor(
+            AuthorizationStorage storage
+    ) {
+        return new AccountInteractor(storage);
     }
 
     @Singleton

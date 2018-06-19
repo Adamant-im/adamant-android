@@ -46,6 +46,9 @@
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
 
+    <string name="fragment_wallet_adamant_address_title">Идентификатор кошелька</string>
+    <string name="fragment_wallet_adamant_balance_title">Баланс в адамантах</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

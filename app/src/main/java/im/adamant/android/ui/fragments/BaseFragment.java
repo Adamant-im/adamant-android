@@ -10,10 +10,17 @@ import android.view.ViewGroup;
 import com.arellomobile.mvp.MvpAppCompatFragment;
 
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.R;
 
 public abstract class BaseFragment extends MvpAppCompatFragment {
     public abstract int getLayoutId();
+
+    @Override
+    public void onAttach(Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
