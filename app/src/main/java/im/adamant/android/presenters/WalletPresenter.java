@@ -3,6 +3,8 @@ package im.adamant.android.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
+import java.math.BigDecimal;
+
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.mvp_view.WalletView;
 
@@ -19,6 +21,20 @@ public class WalletPresenter extends MvpPresenter<WalletView> {
         super.attachView(view);
 
         getViewState().displayAdamantAddress(interactor.getAdamantAddress());
-        getViewState().displayAdamantBalance(interactor.getAdamantBalance());
+
+        BigDecimal balance = interactor.getAdamantBalance();
+        getViewState().displayAdamantBalance(balance);
+
+        if (BigDecimal.ZERO.compareTo(balance) == 0){
+            getViewState().displayShowFreeTokenPageButton();
+        }
+    }
+
+    public void onClickGetFreeTokenButton(){
+        getViewState().showFreeTokenPage(interactor.getAdamantAddress());
+    }
+
+    public void onClickJoinIcoButton(){
+        getViewState().showJoinIcoPage(interactor.getAdamantAddress());
     }
 }

@@ -1,7 +1,10 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +44,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
 
     @BindView(R.id.fragment_wallet_tv_adamant_id) TextView adamantAddressView;
     @BindView(R.id.fragment_wallet_tv_adamant_balance) TextView adamantBalanceView;
+    @BindView(R.id.fragment_wallet_cl_free_tokens) View freeTokenButton;
+    @BindView(R.id.fragment_wallet_cl_join_ico) View joinToIcoButton;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -53,6 +58,21 @@ public class WalletScreen extends BaseFragment implements WalletView {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        freeTokenButton.setOnClickListener((v) -> {
+            presenter.onClickGetFreeTokenButton();
+        });
+
+        joinToIcoButton.setOnClickListener((v) -> {
+            presenter.onClickJoinIcoButton();
+        });
+
+        return view;
+    }
+
+    @Override
     public void displayAdamantAddress(String address) {
         adamantAddressView.setText(address);
     }
@@ -60,5 +80,24 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public void displayAdamantBalance(BigDecimal balance) {
         adamantBalanceView.setText(String.format(Locale.ENGLISH, "%.3f", balance));
+    }
+
+    @Override
+    public void displayShowFreeTokenPageButton() {
+        freeTokenButton.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showFreeTokenPage(String address) {
+        String url = getString(R.string.free_token_url) + address;
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
+    }
+
+    @Override
+    public void showJoinIcoPage(String address) {
+        String url = getString(R.string.join_ico_url) + address;
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(browserIntent);
     }
 }
