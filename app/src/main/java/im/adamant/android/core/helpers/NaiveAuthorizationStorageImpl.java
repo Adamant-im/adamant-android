@@ -29,4 +29,10 @@ public class NaiveAuthorizationStorageImpl implements AuthorizationStorage {
     public boolean isAuth() {
         return account != null && keyPair != null;
     }
+
+    @Override
+    public void dropAuth() {
+        account = null;
+        keyPair = null;
+    }
 }

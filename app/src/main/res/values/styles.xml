@@ -9,6 +9,8 @@
         <item name="actionBarStyle">@style/ActionBar.Solid.MyAppTheme</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
         <item name="buttonStyle">@style/AppTheme.Button</item>
+        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
+        <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
 
     <style name="AppTheme.TextAppearance" parent="@android:style/TextAppearance.Small">
@@ -18,6 +20,7 @@
     <style name="AppTheme.ButtonTextAppearance" parent="AppTheme.TextAppearance">
         <item name="android:textSize">12sp</item>
         <item name="android:fontWeight">300</item>
+        <item name="fontWeight">300</item>
     </style>
 
     <style name="AppTheme.Button" parent="@style/Widget.AppCompat.Button">
@@ -32,6 +35,8 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
+        <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" >
@@ -44,5 +49,15 @@
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="android:windowTitleStyle">@style/AlertDialogTitle</item>
+    </style>
+
+    <style name="AlertDialogTitle">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
+    </style>
 
 </resources>

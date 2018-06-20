@@ -24,9 +24,12 @@
     <string name="fragment_wallet_adamant_address_title">Идентификатор кошелька</string>
     <string name="fragment_wallet_adamant_balance_title">Баланс в адамантах</string>
     <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
+    <string name="fragment_wallet_exit_title">Выход</string>
 
 
     <string name="address_was_copied">Ваш адрес успешно скопирован</string>
+    <string name="dialog_logout_title">Выход</string>
+    <string name="dialog_logout_message">Вы уверены что хотите выйти?</string>
 
 
     <!--ERRORS-->

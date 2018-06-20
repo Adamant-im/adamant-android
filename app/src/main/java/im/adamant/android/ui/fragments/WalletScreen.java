@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +53,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_tv_adamant_balance) TextView adamantBalanceView;
     @BindView(R.id.fragment_wallet_cl_free_tokens) View freeTokenButton;
     @BindView(R.id.fragment_wallet_cl_adamant_id) View copyAdamantAddressButton;
+    @BindView(R.id.fragment_wallet_cl_exit) View exitButton;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -85,6 +87,19 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
+        exitButton.setOnClickListener((v) -> {
+            Activity activity = getActivity();
+            if (activity != null){
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder
+                        .setTitle(R.string.dialog_logout_title)
+                        .setMessage(R.string.dialog_logout_message)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onClickExitButton())
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+            }
+        });
+
         return view;
     }
 
@@ -102,5 +117,5 @@ public class WalletScreen extends BaseFragment implements WalletView {
     public void displayFreeTokenPageButton() {
         freeTokenButton.setVisibility(View.VISIBLE);
     }
-    
+
 }

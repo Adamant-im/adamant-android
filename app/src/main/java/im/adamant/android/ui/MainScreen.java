@@ -170,6 +170,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     }
                     break;
 
+                    case Screens.LOGIN_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        MainScreen.this.finish();
+                    }
+                    break;
+
                     case Screens.WALLET_SCREEN: {
                         content.setCurrentItem(0);
                     }

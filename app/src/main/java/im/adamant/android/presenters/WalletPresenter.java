@@ -6,6 +6,7 @@ import com.arellomobile.mvp.MvpPresenter;
 import java.math.BigDecimal;
 
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.mvp_view.WalletView;
 import ru.terrakok.cicerone.Router;
@@ -34,8 +35,13 @@ public class WalletPresenter extends MvpPresenter<WalletView> {
         }
     }
 
-    public void onClickGetFreeTokenButton(){
+    public void onClickGetFreeTokenButton() {
         router.navigateTo(WalletView.SHOW_FREE_TOKEN_PAGE, interactor.getAdamantAddress());
+    }
+
+    public void onClickExitButton() {
+        interactor.exit();
+        router.navigateTo(Screens.LOGIN_SCREEN);
     }
 
 }

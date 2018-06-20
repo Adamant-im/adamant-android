@@ -9,4 +9,5 @@ public interface AuthorizationStorage {
     Account getAccount();
     KeyPair getKeyPair();
     boolean isAuth();
+    void dropAuth();
 }
