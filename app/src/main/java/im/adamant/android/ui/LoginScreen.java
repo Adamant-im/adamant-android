@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
@@ -149,8 +150,16 @@ public class LoginScreen extends BaseActivity implements LoginView {
             if (command instanceof Forward) {
                 Forward forward = (Forward)command;
                 switch (forward.getScreenKey()){
+                    case Screens.SETTINGS_SCREEN:
+                    case Screens.WALLET_SCREEN:
                     case Screens.CHATS_SCREEN: {
-                        startActivity(new Intent(getApplicationContext(), MainScreen.class));
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forward.getScreenKey());
+
+                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                        intent.putExtras(bundle);
+
+                        startActivity(intent);
                         finish();
                     }
                 }

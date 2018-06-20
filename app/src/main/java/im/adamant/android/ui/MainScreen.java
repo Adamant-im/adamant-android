@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -33,6 +34,7 @@ import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.BaseFragment;
 import im.adamant.android.ui.mvp_view.MainView;
+import im.adamant.android.ui.mvp_view.WalletView;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
@@ -40,6 +42,7 @@ import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MainScreen extends BaseActivity implements MainView, HasSupportFragmentInjector {
+    public static final String ARG_CURRENT_SCREEN = "current_screen";
 
     @Inject
     NavigatorHolder navigatorHolder;
@@ -179,6 +182,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
                     case Screens.SETTINGS_SCREEN: {
                         content.setCurrentItem(2);
+                    }
+                    break;
+
+                    case WalletView.SHOW_FREE_TOKEN_PAGE : {
+                        String url = getString(R.string.free_token_url) + forward.getTransitionData();
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(browserIntent);
                     }
                     break;
                 }

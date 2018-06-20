@@ -1,6 +1,9 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -24,12 +28,14 @@ import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.presenters.WalletPresenter;
 import im.adamant.android.ui.mvp_view.WalletView;
+import ru.terrakok.cicerone.NavigatorHolder;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class WalletScreen extends BaseFragment implements WalletView {
-
     @Inject
     Provider<WalletPresenter> presenterProvider;
 
@@ -45,7 +51,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_tv_adamant_id) TextView adamantAddressView;
     @BindView(R.id.fragment_wallet_tv_adamant_balance) TextView adamantBalanceView;
     @BindView(R.id.fragment_wallet_cl_free_tokens) View freeTokenButton;
-    @BindView(R.id.fragment_wallet_cl_join_ico) View joinToIcoButton;
+    @BindView(R.id.fragment_wallet_cl_adamant_id) View copyAdamantAddressButton;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -65,8 +71,18 @@ public class WalletScreen extends BaseFragment implements WalletView {
             presenter.onClickGetFreeTokenButton();
         });
 
-        joinToIcoButton.setOnClickListener((v) -> {
-            presenter.onClickJoinIcoButton();
+        //Do not use the presenter in order to avoid duplication of operations when switching fragments.
+        copyAdamantAddressButton.setOnClickListener((v) -> {
+            Activity activity = getActivity();
+            if (activity != null){
+                ClipData clip = ClipData.newPlainText("address", adamantAddressView.getText().toString());
+                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
+
+                if(clipboard != null){
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(activity.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
+                }
+            }
         });
 
         return view;
@@ -83,21 +99,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
     }
 
     @Override
-    public void displayShowFreeTokenPageButton() {
+    public void displayFreeTokenPageButton() {
         freeTokenButton.setVisibility(View.VISIBLE);
     }
-
-    @Override
-    public void showFreeTokenPage(String address) {
-        String url = getString(R.string.free_token_url) + address;
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
-    }
-
-    @Override
-    public void showJoinIcoPage(String address) {
-        String url = getString(R.string.join_ico_url) + address;
-        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(browserIntent);
-    }
+    
 }

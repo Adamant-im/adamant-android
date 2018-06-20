@@ -80,6 +80,10 @@ public class AuthorizeInteractor {
                 }));
     }
 
+    public boolean isAuthorized() {
+        return storage.isAuth();
+    }
+
     private void setAuthorization(Authorization authorization, KeyPair keyPair){
         if (authorization.isSuccess()){
             storage.setAuth(authorization.getAccount(), keyPair);

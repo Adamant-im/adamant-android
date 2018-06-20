@@ -28,6 +28,15 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         this.authorizeInteractor = authorizeInteractor;
     }
 
+    @Override
+    public void attachView(LoginView view) {
+        super.attachView(view);
+
+        if (authorizeInteractor.isAuthorized()){
+            router.navigateTo(Screens.WALLET_SCREEN);
+        }
+    }
+
     public void onClickLoginButton(String passPhrase) {
         passPhrase = passPhrase.trim();
         if (!authorizeInteractor.isValidPassphrase(passPhrase)){
@@ -41,7 +50,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         Disposable subscription = authorizeInteractor.authorize(passPhrase).subscribe(
                 (authorize)->{
                     if (authorize.isSuccess()){
-                        router.navigateTo(Screens.CHATS_SCREEN);
+                        router.navigateTo(Screens.WALLET_SCREEN);
                     } else {
 
                         //TODO: Oh my god, somebody fix this, please.
@@ -83,7 +92,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 .subscribe(
                         (authorize)->{
                             if (authorize.isSuccess()){
-                                router.navigateTo(Screens.CHATS_SCREEN);
+                                router.navigateTo(Screens.WALLET_SCREEN);
                             } else {
                                 Log.e("ERR", authorize.getError());
                                 router.showSystemMessage(authorize.getError());

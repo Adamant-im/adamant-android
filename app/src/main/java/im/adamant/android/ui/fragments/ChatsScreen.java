@@ -36,9 +36,6 @@ import ru.terrakok.cicerone.NavigatorHolder;
  */
 public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter.SelectItemListener {
     @Inject
-    NavigatorHolder navigatorHolder;
-
-    @Inject
     Provider<ChatsPresenter> presenterProvider;
 
     @Inject

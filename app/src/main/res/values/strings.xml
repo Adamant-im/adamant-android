@@ -17,6 +17,17 @@
 
     <string name="activity_messages_btn_send">Отправить</string>
 
+    <string name="bottom_menu_title_wallet">Кошелек</string>
+    <string name="bottom_menu_title_chats">Чаты</string>
+    <string name="bottom_menu_title_settings">Настройки</string>
+
+    <string name="fragment_wallet_adamant_address_title">Идентификатор кошелька</string>
+    <string name="fragment_wallet_adamant_balance_title">Баланс в адамантах</string>
+    <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
+
+
+    <string name="address_was_copied">Ваш адрес успешно скопирован</string>
+
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Неправильный пароль</string>
@@ -42,18 +53,8 @@
 
 Не отвечайте на это сообщение, этот адрес служебный. Если же у вас остались вопросы, напишите в аккаунт U15677078342684640219.</string>
 
-    <string name="bottom_menu_title_wallet">Кошелек</string>
-    <string name="bottom_menu_title_chats">Чаты</string>
-    <string name="bottom_menu_title_settings">Настройки</string>
-
-    <string name="fragment_wallet_adamant_address_title">Идентификатор кошелька</string>
-    <string name="fragment_wallet_adamant_balance_title">Баланс в адамантах</string>
-    <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
-    <string name="fragment_wallet_join_ico_title">Участвовать в ICO</string>
-
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
-    <string name="join_ico_url">https://adamant.im/ru-ico/?wallet=</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
