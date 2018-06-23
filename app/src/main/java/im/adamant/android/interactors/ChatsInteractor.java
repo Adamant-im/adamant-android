@@ -1,12 +1,13 @@
 package im.adamant.android.interactors;
 
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
-import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasProcessed;
@@ -27,8 +28,7 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChatsInteractor {
-    private AdamantApi api;
-    private AuthorizationStorage authorizationStorage;
+    private AdamantApiWrapper api;
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
     private LocalizedMessageMapper localizedMessageMapper;
@@ -46,8 +46,7 @@ public class ChatsInteractor {
 
     //TODO: Decrease the count of parameters
     public ChatsInteractor(
-            AdamantApi api,
-            AuthorizationStorage authorizationStorage,
+            AdamantApiWrapper api,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
@@ -55,7 +54,6 @@ public class ChatsInteractor {
             PublicKeyStorage publicKeyStorage
     ) {
         this.api = api;
-        this.authorizationStorage = authorizationStorage;
         this.chatMapper = chatMapper;
         this.messageMapper = messageMapper;
         this.encryptor = encryptor;
@@ -66,13 +64,6 @@ public class ChatsInteractor {
     //TODO: Refactor this. Too long method
 
     public Completable synchronizeWithBlockchain(){
-        Account account = authorizationStorage.getAccount();
-
-        if (account == null){
-            return Completable.error(new Exception("You are not authorized."));
-        }
-
-        String address = account.getAddress();
 
         //TODO: Schedulers must be injected through Dagger for comfort unit-testing
 
@@ -80,14 +71,18 @@ public class ChatsInteractor {
 
         //TODO: Use database for save received transactions
 
+        //TODO: Well test the erroneous execution path, replace where you need doOnError
+
+        if (!api.isAuthorized()){return Completable.error(new Exception("Not authorized"));}
+
           return Flowable
                  .defer(() -> Flowable.just(currentHeight))
                  .flatMap((height) -> {
                      Flowable<TransactionList> transactionFlowable = null;
                      if (offsetItems > 0){
-                         transactionFlowable = api.getTransactions(address, AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetItems);
+                         transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetItems);
                      } else {
-                         transactionFlowable = api.getTransactions(address, height, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
+                         transactionFlowable = api.getTransactions(height, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
                      }
 
                      return transactionFlowable.subscribeOn(Schedulers.io())
@@ -155,12 +150,11 @@ public class ChatsInteractor {
     }
 
     public Single<TransactionWasProcessed> sendMessage(String message, String address){
-        KeyPair keyPair = authorizationStorage.getKeyPair();
-        Account account = authorizationStorage.getAccount();
 
-        if (keyPair == null || account == null){
-            return Single.error(new Exception("You are not authorized."));
-        }
+        if (!api.isAuthorized()){return Single.error(new Exception("Not authorized"));}
+
+        KeyPair keyPair = api.getKeyPair();
+        Account account = api.getAccount();
 
         return Single
                 .fromCallable(() -> publicKeyStorage.getPublicKey(address))

@@ -5,7 +5,6 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import java.math.BigDecimal;
 
-import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.mvp_view.WalletView;
@@ -40,7 +39,7 @@ public class WalletPresenter extends MvpPresenter<WalletView> {
     }
 
     public void onClickExitButton() {
-        interactor.exit();
+        interactor.logout();
         router.navigateTo(Screens.LOGIN_SCREEN);
     }
 

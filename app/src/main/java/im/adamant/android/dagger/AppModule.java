@@ -1,15 +1,16 @@
 package im.adamant.android.dagger;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyGenerator;
-import im.adamant.android.core.helpers.NaiveAuthorizationStorageImpl;
-import im.adamant.android.core.helpers.NaivePublicKeyStorageImpl;
-import im.adamant.android.core.helpers.NaiveServerSelectorImpl;
+import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
+import im.adamant.android.helpers.Settings;
 import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
-import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.helpers.interfaces.ServerSelector;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
@@ -49,15 +50,22 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static ServerSelector provideServerSelector() {
-        return new NaiveServerSelectorImpl();
+    public static Settings provideSettings(Context context) {
+        SharedPreferences preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
+        return new Settings(preferences);
     }
 
-    @Singleton
-    @Provides
-    public static AuthorizationStorage provideAuthorizationStorage() {
-        return new NaiveAuthorizationStorageImpl();
-    }
+//    @Singleton
+//    @Provides
+//    public static ServerSelector provideServerSelector(Settings settings) {
+//        return new NaiveServerSelectorImpl(settings);
+//    }
+
+//    @Singleton
+//    @Provides
+//    public static AuthorizationStorage provideAuthorizationStorage() {
+//        return new NaiveAuthorizationStorageImpl();
+//    }
 
     @Singleton
     @Provides
@@ -95,15 +103,15 @@ public abstract class AppModule {
     public static TransactionToMessageMapper providesTransactionsToMessageMapper(
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
-            AuthorizationStorage authorizationStorage
+            AdamantApiWrapper api
     ) {
-        return new TransactionToMessageMapper(encryptor, publicKeyStorage, authorizationStorage);
+        return new TransactionToMessageMapper(encryptor, publicKeyStorage, api);
     }
 
     @Singleton
     @Provides
-    public static TransactionToChatMapper providesTransactionsToChatMapper(AuthorizationStorage authorizationStorage) {
-        return new TransactionToChatMapper(authorizationStorage);
+    public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api) {
+        return new TransactionToChatMapper(api);
     }
 
     @Singleton
@@ -114,26 +122,32 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApi provideApi(ServerSelector serverSelector) {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.addInterceptor(logging);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(serverSelector.select())
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .build();
-
-        return retrofit.create(AdamantApi.class);
+    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
+        return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
     }
+
+//    @Singleton
+//    @Provides
+//    public static AdamantApi provideApi(ServerSelector serverSelector) {
+//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+//
+//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+//        httpClient.addInterceptor(logging);
+//
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(serverSelector.select())
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+//                .client(httpClient.build())
+//                .build();
+//
+//        return retrofit.create(AdamantApi.class);
+//    }
 
     @Singleton
     @Provides
-    public static PublicKeyStorage providePublicKeyStorage(AdamantApi api) {
+    public static PublicKeyStorage providePublicKeyStorage(AdamantApiWrapper api) {
         return new NaivePublicKeyStorageImpl(api);
     }
 
@@ -158,26 +172,24 @@ public abstract class AppModule {
     @Singleton
     @Provides
     public static AuthorizeInteractor provideAuthorizationInteractor(
-            AdamantApi api,
-            AuthorizationStorage storage,
+            AdamantApiWrapper api,
             KeyGenerator keyGenerator
     ) {
-        return new AuthorizeInteractor(api, storage, keyGenerator);
+        return new AuthorizeInteractor(api, keyGenerator);
     }
 
     @Singleton
     @Provides
     public static AccountInteractor provideAccountInteractor(
-            AuthorizationStorage storage
+            AdamantApiWrapper api
     ) {
-        return new AccountInteractor(storage);
+        return new AccountInteractor(api);
     }
 
     @Singleton
     @Provides
     public static ChatsInteractor provideChatsInteractor(
-            AdamantApi api,
-            AuthorizationStorage storage,
+            AdamantApiWrapper api,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
@@ -186,7 +198,6 @@ public abstract class AppModule {
     ){
         return new ChatsInteractor(
                 api,
-                storage,
                 messageMapper,
                 chatMapper,
                 localizedMessageMapper,
@@ -202,10 +213,6 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {LoginScreenModule.class})
     public abstract LoginScreen loginScreenInjector();
-
-//    @ActivityScope
-//    @ContributesAndroidInjector(modules = {ChatsScreenModule.class})
-//    public abstract ChatsScreenActivity chatsScreenInjector();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {MessagesScreenModule.class})

@@ -1,11 +1,9 @@
 package im.adamant.android.interactors;
 
-import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyGenerator;
 import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
-import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.responses.Authorization;
-import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
@@ -15,33 +13,24 @@ import io.github.novacrypto.bip39.Validation.WordNotFoundException;
 import io.github.novacrypto.bip39.wordlists.English;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 
 public class AuthorizeInteractor {
-    private AdamantApi api;
-    private AuthorizationStorage storage;
+    private AdamantApiWrapper api;
     private KeyGenerator keyGenerator;
 
     public AuthorizeInteractor(
-            AdamantApi api,
-            AuthorizationStorage storage,
+            AdamantApiWrapper api,
             KeyGenerator keyGenerator
     ) {
         this.api = api;
-        this.storage = storage;
         this.keyGenerator = keyGenerator;
     }
 
     public Flowable<Authorization> authorize(String passPhrase){
         try {
-            KeyPair keyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
-            return api.authorize(keyPair.getPublicKeyString().toLowerCase())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext((authorization -> {
-                        setAuthorization(authorization, keyPair);
-                    }));
+            return api.authorize(passPhrase)
+                    .observeOn(AndroidSchedulers.mainThread());
         }catch (Exception ex){
             ex.printStackTrace();
             return Flowable.error(ex);
@@ -67,26 +56,11 @@ public class AuthorizeInteractor {
     }
 
     public Flowable<Authorization> createNewAccount(String passPhrase) {
-        KeyPair keyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
-
-        NewAccount newAccount = new NewAccount();
-        newAccount.setPublicKey(keyPair.getPublicKeyString().toLowerCase());
-
-        return api.createNewAccount(newAccount)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext((authorization -> {
-                    setAuthorization(authorization, keyPair);
-                }));
+        return api.createNewAccount(passPhrase)
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public boolean isAuthorized() {
-        return storage.isAuth();
-    }
-
-    private void setAuthorization(Authorization authorization, KeyPair keyPair){
-        if (authorization.isSuccess()){
-            storage.setAuth(authorization.getAccount(), keyPair);
-        }
+        return api.isAuthorized();
     }
 }

@@ -1,10 +1,11 @@
 package im.adamant.android.ui.mappers;
 
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
-import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Message;
 
 import io.reactivex.functions.Function;
@@ -12,16 +13,16 @@ import io.reactivex.functions.Function;
 public class TransactionToMessageMapper implements Function<Transaction, Message> {
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
-    private AuthorizationStorage authorizationStorage;
+    private AdamantApiWrapper api;
 
     public TransactionToMessageMapper(
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
-            AuthorizationStorage authorizationStorage
+            AdamantApiWrapper api
     ) {
         this.encryptor = encryptor;
         this.publicKeyStorage = publicKeyStorage;
-        this.authorizationStorage = authorizationStorage;
+        this.api = api;
     }
 
     //TODO: Refactor this. The length of the method is too long.
@@ -29,12 +30,12 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
     public Message apply(Transaction transaction) throws Exception {
         Message message = null;
 
-        if (authorizationStorage.getKeyPair() == null || authorizationStorage.getAccount() == null){
+        if (api.getKeyPair() == null || api.getAccount() == null){
             throw new Exception("You are not authorized.");
         }
 
-        String ownAddress = authorizationStorage.getAccount().getAddress();
-        String ownSecretKey = authorizationStorage.getKeyPair().getSecretKeyString().toLowerCase();
+        String ownAddress = api.getAccount().getAddress();
+        String ownSecretKey = api.getKeyPair().getSecretKeyString().toLowerCase();
 
         if (transaction.getAsset() == null){ return message; }
         if (transaction.getAsset().getChat() == null){ return message; }

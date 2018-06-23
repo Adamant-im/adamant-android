@@ -26,6 +26,9 @@
     <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
+    <string name="fragment_settings_new_node">Новая нода</string>
+    <string name="fragment_settings_add_new_node">Добавить ноду</string>
+    <string name="fragment_settings_version">Версия приложения: %s</string>
 
     <string name="address_was_copied">Ваш адрес успешно скопирован</string>
     <string name="dialog_logout_title">Выход</string>

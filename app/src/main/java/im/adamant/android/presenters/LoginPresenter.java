@@ -65,6 +65,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                 },
                 (error) -> {
                     router.showSystemMessage(error.getMessage());
+                    getViewState().unLockAuthorization();
                 },
                 () -> getViewState().unLockAuthorization()
         );

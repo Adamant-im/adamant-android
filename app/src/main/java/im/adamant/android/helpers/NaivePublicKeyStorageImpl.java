@@ -1,16 +1,16 @@
-package im.adamant.android.core.helpers;
+package im.adamant.android.helpers;
 
 import im.adamant.android.core.AdamantApi;
-import im.adamant.android.core.helpers.interfaces.PublicKeyStorage;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.responses.PublicKeyResponse;
 
 import java.util.HashMap;
 
 public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
     private HashMap<String, String> publicKeys = new HashMap<>();
-    private AdamantApi api;
+    private AdamantApiWrapper api;
 
-    public NaivePublicKeyStorageImpl(AdamantApi api) {
+    public NaivePublicKeyStorageImpl(AdamantApiWrapper api) {
         this.api = api;
     }
 
