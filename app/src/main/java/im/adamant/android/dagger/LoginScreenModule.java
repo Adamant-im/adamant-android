@@ -1,6 +1,7 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeParser;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.presenters.LoginPresenter;
 
@@ -28,5 +29,12 @@ public class LoginScreenModule {
     @Named(value = Screens.LOGIN_SCREEN)
     public CompositeDisposable provideComposite() {
         return new CompositeDisposable();
+    }
+
+    @ActivityScope
+    @Provides
+    @Named(value = Screens.LOGIN_SCREEN)
+    public QrCodeParser provideQrCodeParser() {
+        return new QrCodeParser();
     }
 }

@@ -3,6 +3,8 @@
     package="im.adamant.android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:name=".AdamantApplication"
@@ -27,8 +29,10 @@
         <activity
             android:name=".ui.CreateChatScreen"
             android:label="@string/activity_chats_action_create_new" />
+        <activity android:name=".ui.MainScreen" />
         <activity
-            android:name=".ui.MainScreen"/>
+            android:name=".ui.ScanQrCodeScreen"
+            android:label="@string/activity_scan_qrcode_title"/>
     </application>
 
 </manifest>

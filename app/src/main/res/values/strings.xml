@@ -16,6 +16,7 @@
     <string name="activity_create_chat_send">Отправить</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
+    <string name="activity_scan_qrcode_title">Сканировать Qr-код</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>

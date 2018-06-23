@@ -18,6 +18,7 @@ import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
+import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
@@ -203,10 +204,6 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {LoginScreenModule.class})
     public abstract LoginScreen loginScreenInjector();
 
-//    @ActivityScope
-//    @ContributesAndroidInjector(modules = {ChatsScreenModule.class})
-//    public abstract ChatsScreenActivity chatsScreenInjector();
-
     @ActivityScope
     @ContributesAndroidInjector(modules = {MessagesScreenModule.class})
     public abstract MessagesScreen messagesScreenInjector();
@@ -218,4 +215,8 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {MainScreenModule.class})
     public abstract MainScreen createMainScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {ScanQrCodeScreenModule.class})
+    public abstract ScanQrCodeScreen createScanQrCodeScreenInjector();
 }
