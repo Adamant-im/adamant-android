@@ -94,6 +94,8 @@ dependencies {
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
     implementation "me.dm7.barcodescanner:zxing:1.9.8"
+    implementation "com.github.kenglxn.QRGen:android:2.5.0"
+    implementation "gun0912.ted:tedpermission:2.2.0"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

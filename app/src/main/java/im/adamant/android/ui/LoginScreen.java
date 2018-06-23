@@ -1,5 +1,6 @@
 package im.adamant.android.ui;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
@@ -12,16 +13,25 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import net.glxn.qrgen.android.QRCode;
+import net.glxn.qrgen.core.image.ImageType;
 
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.QrCodeParser;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,7 +51,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
     @Inject
     @Named(value = Screens.LOGIN_SCREEN)
-    QrCodeParser qrCodeParser;
+    QrCodeHelper qrCodeHelper;
 
     @Inject
     NavigatorHolder navigatorHolder;
@@ -122,6 +132,14 @@ public class LoginScreen extends BaseActivity implements LoginView {
         startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
     }
 
+    @OnClick(R.id.activity_login_btn_create_qrcode)
+    public void generateQrCodeClick(){
+        TedPermission.with(this)
+                .setPermissionListener(permissionlistener)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -181,7 +199,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
                     final Uri imageUri = data.getData();
                     try {
                         final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        String qrCode = qrCodeParser.parse(imageStream);
+                        String qrCode = qrCodeHelper.parse(imageStream);
 
                         if (qrCode != null){
                             passPhrase.setText(qrCode);
@@ -232,6 +250,28 @@ public class LoginScreen extends BaseActivity implements LoginView {
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+    };
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
+            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
+                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri contentUri = Uri.fromFile(qrCodeFile);
+                mediaScanIntent.setData(contentUri);
+                LoginScreen.this.sendBroadcast(mediaScanIntent);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
         }
     };
 }

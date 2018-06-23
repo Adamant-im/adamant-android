@@ -1,11 +1,16 @@
 package im.adamant.android.ui;
 
+import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.google.zxing.Result;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
@@ -36,8 +41,11 @@ public class ScanQrCodeScreen extends BaseActivity implements ScanQrCodeView, ZX
     @Override
     protected void onResume() {
         super.onResume();
-        scannerView.setResultHandler(this); // Register ourselves as a handler for scan results.
-        scannerView.startCamera();
+        TedPermission.with(this)
+                .setPermissionListener(permissionlistener)
+                .setPermissions(Manifest.permission.CAMERA)
+                .check();
+
     }
 
     @Override
@@ -54,4 +62,17 @@ public class ScanQrCodeScreen extends BaseActivity implements ScanQrCodeView, ZX
         setResult(RESULT_OK, data);
         finish();
     }
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            scannerView.setResultHandler(ScanQrCodeScreen.this); // Register ourselves as a handler for scan results.
+            scannerView.startCamera();
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
+        }
+    };
 }
