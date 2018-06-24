@@ -223,7 +223,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/activity_login_btn_create_qrcode"
                 app:layout_constraintStart_toEndOf="@+id/activity_login_btn_scan_qrcode"
                 app:layout_constraintTop_toTopOf="@+id/activity_login_btn_create_qrcode"
-                app:srcCompat="@drawable/ic_scan_qr" />
+                app:srcCompat="@drawable/ic_qrcode_frome_gallery" />
 
             <ImageButton
                 android:id="@+id/activity_login_btn_create_qrcode"
@@ -233,7 +233,7 @@
                 android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/activity_login_btn_login"
-                app:srcCompat="@drawable/ic_scan_qr" />
+                app:srcCompat="@drawable/ic_generate_qrcode" />
 
 
         </android.support.constraint.ConstraintLayout>
