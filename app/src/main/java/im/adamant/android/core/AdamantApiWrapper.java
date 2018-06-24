@@ -64,11 +64,7 @@ public class AdamantApiWrapper {
         return api
                 .getTransactions(account.getAddress(), height, order)
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new TransactionList());
-                })
-                .retry()
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -79,10 +75,7 @@ public class AdamantApiWrapper {
         return api
                 .getTransactions(account.getAddress(), order, offset)
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new TransactionList());
-                })
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -90,10 +83,7 @@ public class AdamantApiWrapper {
         return api
                 .getPublicKey(address)
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new PublicKeyResponse());
-                })
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -101,10 +91,7 @@ public class AdamantApiWrapper {
         return api
                 .getNormalizedTransaction(unnormalizedTransactionMessage)
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new TransactionWasNormalized());
-                })
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -112,10 +99,7 @@ public class AdamantApiWrapper {
         return api
                 .processTransaction(transaction)
                 .subscribeOn(Schedulers.io())
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new TransactionWasProcessed());
-                })
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -132,10 +116,7 @@ public class AdamantApiWrapper {
                     this.keyPair = tempKeyPair;
                     this.passPhrase = passPhrase;
                 }))
-                .onErrorResumeNext((error) -> {
-                    checkNodeError(error);
-                    return Flowable.just(new Authorization());
-                })
+                .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 

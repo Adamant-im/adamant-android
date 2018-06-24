@@ -21,6 +21,7 @@ import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -85,7 +86,7 @@ public class ChatsInteractor {
                          transactionFlowable = api.getTransactions(height, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
                      }
 
-                     return transactionFlowable.subscribeOn(Schedulers.io())
+                     return transactionFlowable
                              .observeOn(Schedulers.computation())
                              .flatMap(transactionList -> {
                                  if (transactionList.isSuccess()){

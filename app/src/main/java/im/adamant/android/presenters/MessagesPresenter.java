@@ -52,6 +52,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                         currentMessageCount = messages.size();
                     }
                 })
+                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 

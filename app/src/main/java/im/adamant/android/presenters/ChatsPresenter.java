@@ -49,6 +49,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                             getViewState().showChats(interactor.getChatList());
                         }
                 )
+                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
