@@ -1,13 +1,11 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -18,18 +16,30 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
+import net.glxn.qrgen.android.QRCode;
+import net.glxn.qrgen.core.image.ImageType;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.WalletPresenter;
+import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.mvp_view.WalletView;
-import ru.terrakok.cicerone.NavigatorHolder;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
 
@@ -37,6 +47,11 @@ import static android.content.Context.CLIPBOARD_SERVICE;
  * A simple {@link Fragment} subclass.
  */
 public class WalletScreen extends BaseFragment implements WalletView {
+
+    @Inject
+    @Named(Screens.WALLET_SCREEN)
+    QrCodeHelper qrCodeHelper;
+
     @Inject
     Provider<WalletPresenter> presenterProvider;
 
@@ -54,6 +69,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_cl_free_tokens) View freeTokenButton;
     @BindView(R.id.fragment_wallet_cl_adamant_id) View copyAdamantAddressButton;
     @BindView(R.id.fragment_wallet_cl_exit) View exitButton;
+    @BindView(R.id.fragment_wallet_cl_create_qr_code) View createQrCodeButton;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -100,6 +116,17 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
+        createQrCodeButton.setOnClickListener((v) -> {
+            Activity activity = getActivity();
+            if (activity != null){
+                TedPermission.with(activity)
+                        .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+                        .setPermissionListener(permissionlistener)
+                        .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        .check();
+            }
+        });
+
         return view;
     }
 
@@ -117,5 +144,26 @@ public class WalletScreen extends BaseFragment implements WalletView {
     public void displayFreeTokenPageButton() {
         freeTokenButton.setVisibility(View.VISIBLE);
     }
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            Activity activity = getActivity();
+            if (activity != null){
+                File qrCodeFile = qrCodeHelper.makeImageFile("address_");
+                try (OutputStream stream = new FileOutputStream(qrCodeFile)){
+                    QRCode.from(adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                    qrCodeHelper.registerImageInGallery(activity, qrCodeFile);
+                }catch (Exception ex){
+                    ex.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
+        }
+    };
 
 }

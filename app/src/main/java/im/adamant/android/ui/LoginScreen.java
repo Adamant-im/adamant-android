@@ -1,26 +1,40 @@
 package im.adamant.android.ui;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 
+import net.glxn.qrgen.android.QRCode;
+import net.glxn.qrgen.core.image.ImageType;
+
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
-import com.goterl.lazycode.lazysodium.LazySodium;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
@@ -34,6 +48,10 @@ import ru.terrakok.cicerone.commands.SystemMessage;
 
 
 public class LoginScreen extends BaseActivity implements LoginView {
+
+    @Inject
+    @Named(value = Screens.LOGIN_SCREEN)
+    QrCodeHelper qrCodeHelper;
 
     @Inject
     NavigatorHolder navigatorHolder;
@@ -55,9 +73,6 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
     @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
     @BindView(R.id.activity_login_btn_login) Button loginButton;
-
-    @Inject
-    LazySodium sodium;
 
     //--Activity
     @Override
@@ -105,6 +120,27 @@ public class LoginScreen extends BaseActivity implements LoginView {
         }
     }
 
+    @OnClick(R.id.activity_login_btn_scan_qrcode)
+    public void scanQrCodeClick() {
+        presenter.onClickScanQrCodeButton();
+    }
+
+    @OnClick(R.id.activity_login_btn_load_qrcode_from_gallery)
+    public void loadQrCodeClick() {
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
+    }
+
+    @OnClick(R.id.activity_login_btn_create_qrcode)
+    public void generateQrCodeClick(){
+        TedPermission.with(this)
+                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+                .setPermissionListener(permissionlistener)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -138,6 +174,48 @@ public class LoginScreen extends BaseActivity implements LoginView {
         loginButton.setEnabled(true);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data == null){return;}
+
+        if (resultCode == RESULT_OK){
+            switch (requestCode){
+                case Constants.SCAN_QR_CODE_RESULT: {
+                    if (data.getData() == null) {return;}
+
+                    String qrCode = data.getData().toString();
+
+                    if (qrCode != null){
+                        passPhrase.setText(qrCode);
+                        presenter.onClickLoginButton(qrCode);
+                    }
+                }
+                break;
+
+                case Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT: {
+                    if (data.getData() == null) {return;}
+
+                    final Uri imageUri = data.getData();
+                    try {
+                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
+                        String qrCode = qrCodeHelper.parse(imageStream);
+
+                        if (qrCode != null){
+                            passPhrase.setText(qrCode);
+                            presenter.onClickLoginButton(qrCode);
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
     private Navigator navigator = new Navigator() {
         @Override
         public void applyCommands(Command[] commands) {
@@ -162,11 +240,35 @@ public class LoginScreen extends BaseActivity implements LoginView {
                         startActivity(intent);
                         finish();
                     }
+                    break;
+                    case Screens.SCAN_QRCODE_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+    };
+
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
+            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
+                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
         }
     };
 }

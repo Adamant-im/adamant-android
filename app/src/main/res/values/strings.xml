@@ -16,6 +16,7 @@
     <string name="activity_create_chat_send">Отправить</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
+    <string name="activity_scan_qrcode_title">Сканировать Qr-код</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
@@ -24,6 +25,7 @@
     <string name="fragment_wallet_adamant_address_title">Идентификатор кошелька</string>
     <string name="fragment_wallet_adamant_balance_title">Баланс в адамантах</string>
     <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
+    <string name="fragment_wallet_create_qrcode_title">Создать qr-код адреса</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_new_node">Новая нода</string>
@@ -33,6 +35,7 @@
     <string name="address_was_copied">Ваш адрес успешно скопирован</string>
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Вы уверены что хотите выйти?</string>
+    <string name="rationale_qrcode_write_permission">Для записи qr-кода в галерею, необходимо соответсвующее разрешение.</string>
 
 
     <!--ERRORS-->

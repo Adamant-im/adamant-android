@@ -7,4 +7,5 @@ public interface Screens {
     String CHATS_SCREEN = "chats_screen";
     String CREATE_CHAT_SCREEN = "create_chat_screen";
     String MESSAGES_SCREEN = "messages_screen";
+    String SCAN_QRCODE_SCREEN = "scan_qrcode_screen";
 }

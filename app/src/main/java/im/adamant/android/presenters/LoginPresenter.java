@@ -107,4 +107,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
         subscriptions.add(subscription);
     }
+
+    public void onClickScanQrCodeButton() {
+        router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
+    }
 }
