@@ -1,7 +1,10 @@
 package im.adamant.android.helpers;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 
@@ -20,6 +23,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+
+import im.adamant.android.ui.LoginScreen;
 
 public class QrCodeHelper {
 
@@ -66,4 +71,11 @@ public class QrCodeHelper {
         return new File(imageDirectory, prefix + timeStamp + ".png");
     }
 
+
+    public void registerImageInGallery(Context ctx, File file) {
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri contentUri = Uri.fromFile(file);
+        mediaScanIntent.setData(contentUri);
+        ctx.sendBroadcast(mediaScanIntent);
+    }
 }

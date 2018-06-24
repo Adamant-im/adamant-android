@@ -135,6 +135,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @OnClick(R.id.activity_login_btn_create_qrcode)
     public void generateQrCodeClick(){
         TedPermission.with(this)
+                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
                 .setPermissionListener(permissionlistener)
                 .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .check();
@@ -259,11 +260,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
             File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
             try (OutputStream stream = new FileOutputStream(qrCodeFile)){
                 QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
-
-                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                Uri contentUri = Uri.fromFile(qrCodeFile);
-                mediaScanIntent.setData(contentUri);
-                LoginScreen.this.sendBroadcast(mediaScanIntent);
+                qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
             }catch (Exception ex){
                 ex.printStackTrace();
             }
