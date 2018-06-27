@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
@@ -81,7 +80,7 @@ public class ServerNodesPingService extends Service {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(serverNode -> settings.getNodes().update(serverNode))
+                .doOnNext(serverNode -> settings.getNodes().wasUpdated(serverNode))
                 .repeatWhen((completed) -> completed.delay(BuildConfig.PING_SECONDS_DELAY, TimeUnit.SECONDS))
                 .subscribe();
 

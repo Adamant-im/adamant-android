@@ -5,6 +5,7 @@ import android.webkit.URLUtil;
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.R;
+import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,5 +33,9 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             getViewState().hideKeyboard();
         }
 
+    }
+
+    public void onClickDeleteNode(ServerNode serverNode){
+        interactor.deleteNode(serverNode);
     }
 }

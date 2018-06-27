@@ -60,6 +60,15 @@ public class Settings {
 
     private void loadNodes(){
         Set<String> nodeUrls = preferences.getStringSet(NODES_KEY, getDefaultNodes());
+
+        if (nodeUrls.size() == 0){
+            nodeUrls = getDefaultNodes();
+            preferences
+                    .edit()
+                    .putStringSet(NODES_KEY, nodeUrls)
+                    .apply();
+        }
+
         for (String nodeUrl : nodeUrls) {
             nodes.add(new ServerNode(nodeUrl));
         }

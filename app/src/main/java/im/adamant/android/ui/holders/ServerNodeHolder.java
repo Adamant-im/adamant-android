@@ -4,27 +4,34 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
+import io.reactivex.subjects.PublishSubject;
 
 public class ServerNodeHolder extends RecyclerView.ViewHolder {
     private Context context;
+    private PublishSubject<Integer> subject;
+
     private TextView serverNameView;
     private TextView serverStatusView;
+    private ImageButton deleteButton;
 
-    public ServerNodeHolder(View itemView, Context context) {
+
+    public ServerNodeHolder(View itemView, Context context, PublishSubject<Integer> subject) {
         super(itemView);
 
         this.context = context;
 
-        serverNameView = itemView.findViewById(R.id.list_item_servernode_name);
-        serverStatusView = itemView.findViewById(R.id.list_item_servernode_status);
+        serverNameView = itemView.findViewById(R.id.list_item_servernode_tv_name);
+        serverStatusView = itemView.findViewById(R.id.list_item_servernode_tv_status);
+        deleteButton = itemView.findViewById(R.id.list_item_servernode_ibtn_delete);
+
+        deleteButton.setOnClickListener(v -> subject.onNext(getAdapterPosition()));
     }
 
     public void bind(ServerNode serverNode){

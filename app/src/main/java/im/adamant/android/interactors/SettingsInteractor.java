@@ -17,4 +17,6 @@ public class SettingsInteractor {
     public void addServerNode(String nodeUrl){
         settings.addNode(new ServerNode(nodeUrl));
     }
+
+    public void deleteNode(ServerNode node){settings.removeNode(node);}
 }

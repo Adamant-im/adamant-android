@@ -14,9 +14,13 @@ import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.ui.holders.ServerNodeHolder;
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
+    private PublishSubject<Integer> removeClickSubject = PublishSubject.create();
     private ObservableRxList<ServerNode> items = new ObservableRxList<>();
     private Disposable subscription;
 
@@ -36,7 +40,7 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public ServerNodeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_servernodes, parent, false);
-        return new ServerNodeHolder(v, parent.getContext());
+        return new ServerNodeHolder(v, parent.getContext(), removeClickSubject);
     }
 
     @Override
@@ -48,6 +52,12 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     @Override
     public int getItemCount() {
         return this.items.size();
+    }
+
+
+    public Observable<ServerNode> getRemoveObservable() {
+        return removeClickSubject
+                .map(i -> items.get(i));
     }
 
 }

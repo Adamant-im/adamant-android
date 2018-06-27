@@ -1,6 +1,7 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,12 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
-import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -28,8 +27,8 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
-import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.disposables.Disposable;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,6 +37,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Inject
     ServerNodeAdapter adapter;
+
+    Disposable adapterDisposable;
 
     @Inject
     Provider<SettingsPresenter> presenterProvider;
@@ -83,6 +84,35 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapterDisposable = adapter
+                .getRemoveObservable()
+                .subscribe(serverNode -> {
+                    Activity activity = getActivity();
+                    if (activity != null){
+                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(activity);
+                        builder
+                                .setTitle(R.string.warning)
+                                .setMessage(R.string.fragment_settings_dialog_delete_node)
+                                .setPositiveButton(android.R.string.yes, (d,w) -> {
+                                    presenter.onClickDeleteNode(serverNode);
+                                })
+                                .setNegativeButton(android.R.string.no, (d,w) -> {})
+                                .show();
+                    }
+                });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adapterDisposable != null){
+            adapterDisposable.dispose();
+        }
     }
 
     @OnClick(R.id.fragment_settings_btn_add_new_node)

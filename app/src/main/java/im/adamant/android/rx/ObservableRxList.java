@@ -1,15 +1,15 @@
 package im.adamant.android.rx;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
 public class ObservableRxList<T> {
-    protected final List<T> list = new ArrayList<T>();
+    protected final List<T> list = new CopyOnWriteArrayList<>();
     protected final PublishSubject<RxList<T>> subject;
 
     public ObservableRxList() {
@@ -42,14 +42,8 @@ public class ObservableRxList<T> {
         return list.contains(item);
     }
 
-    public void update(T value) {
-        for (ListIterator<T> it = list.listIterator(); it.hasNext(); ) {
-            if (value.equals(it.next())) {
-                it.set(value);
-                subject.onNext(new RxList<T>(ChangeType.UPDATE, value));
-                return;
-            }
-        }
+    public void wasUpdated(T value) {
+            subject.onNext(new RxList<T>(ChangeType.UPDATE, value));
     }
 
     public T get(int index) {

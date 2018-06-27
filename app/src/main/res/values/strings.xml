@@ -31,6 +31,7 @@
     <string name="fragment_settings_new_node">Новая нода</string>
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
     <string name="fragment_settings_version">Версия приложения: %s</string>
+    <string name="fragment_settings_dialog_delete_node">Вы действительно хотите удалить ноду из списка?</string>
     <string name="fragment_settings_node_status">Нода %s, Пинг: %.2f милисекунд</string>
 
     <string name="address_was_copied">Ваш адрес успешно скопирован</string>
@@ -73,6 +74,12 @@
     <string name="node_status_connected">подключена</string>
     <string name="node_status_unavailable">недоступна</string>
     <string name="node_status_connecting">подключение…</string>
+
+
+    <!--GENERAL-->
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="warning">Предупреждение</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
