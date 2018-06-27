@@ -13,15 +13,14 @@ import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class CreateChatPresenter extends MvpPresenter<CreateChatView>{
+public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     private Router router;
     private ChatsInteractor interactor;
-    private CompositeDisposable subscriptions;
 
     public CreateChatPresenter(Router router, ChatsInteractor interactor, CompositeDisposable subscriptions) {
+        super(subscriptions);
         this.router = router;
         this.interactor = interactor;
-        this.subscriptions = subscriptions;
     }
 
     public void onClickCreateNewChat(String address) {

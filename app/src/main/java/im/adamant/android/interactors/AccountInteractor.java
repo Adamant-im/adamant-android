@@ -3,9 +3,7 @@ package im.adamant.android.interactors;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
 
 public class AccountInteractor {
     private static final BigDecimal HUNDRED_MILLION = new BigDecimal(100_000_000L);

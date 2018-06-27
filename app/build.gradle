@@ -16,6 +16,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"
+        buildConfigField "String", "API_BASE", "\"/api/\""
+
     }
 
     buildTypes {

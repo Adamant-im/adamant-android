@@ -31,6 +31,7 @@
     <string name="fragment_settings_new_node">Новая нода</string>
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
     <string name="fragment_settings_version">Версия приложения: %s</string>
+    <string name="fragment_settings_node_status">%s, Пинг: %d милисекунд</string>
 
     <string name="address_was_copied">Ваш адрес успешно скопирован</string>
     <string name="dialog_logout_title">Выход</string>
@@ -64,6 +65,13 @@
 
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
+
+
+    <!--STATUSES-->
+    <string name="node_status_active">Активна</string>
+    <string name="node_status_connected">Подключена</string>
+    <string name="node_status_unavailable">Недоступна</string>
+    <string name="node_status_connecting">Подключение…</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

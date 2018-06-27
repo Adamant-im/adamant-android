@@ -2,7 +2,6 @@ package im.adamant.android.ui.mappers;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
 import im.adamant.android.ui.entities.Chat;
 
 import io.reactivex.functions.Function;

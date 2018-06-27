@@ -27,12 +27,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:hint="@string/fragment_settings_new_node"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_settings_add_new_node"
+            app:layout_constraintEnd_toStartOf="@+id/fragment_settings_btn_add_new_node"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_settings_rv_list_of_nodes" />
 
         <Button
-            android:id="@+id/fragment_settings_add_new_node"
+            android:id="@+id/fragment_settings_btn_add_new_node"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"

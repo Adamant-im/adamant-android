@@ -8,14 +8,16 @@ import java.math.BigDecimal;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.mvp_view.WalletView;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class WalletPresenter extends MvpPresenter<WalletView> {
+public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
     private AccountInteractor interactor;
 
-    public WalletPresenter(Router router, AccountInteractor interactor) {
+    public WalletPresenter(Router router, AccountInteractor interactor, CompositeDisposable subscription) {
+        super(subscription);
         this.interactor = interactor;
         this.router = router;
     }

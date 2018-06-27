@@ -4,4 +4,9 @@
     <color name="colorPrimaryDark">#4a4a4a</color>
     <color name="colorAccent">#2e7eed</color>
     <color name="placeholder_bg">#dddddd</color>
+
+    <color name="status_active">#1E6E50</color>
+    <color name="status_connected">#1562E0</color>
+    <color name="status_unavailable">#8D182B</color>
+    <color name="status_connecting">#6D6F72</color>
 </resources>

@@ -2,7 +2,6 @@ package im.adamant.android.interactors;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyGenerator;
-import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
 import im.adamant.android.core.responses.Authorization;
 
 import io.github.novacrypto.bip39.MnemonicValidator;

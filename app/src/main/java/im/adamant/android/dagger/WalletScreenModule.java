@@ -8,6 +8,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.presenters.WalletPresenter;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @Module
@@ -16,9 +17,10 @@ public class WalletScreenModule {
     @Provides
     public WalletPresenter provideWalletPresenter(
             Router router,
-            AccountInteractor interactor
+            AccountInteractor interactor,
+            @Named(value = Screens.WALLET_SCREEN) CompositeDisposable subscriptions
     ){
-        return new WalletPresenter(router, interactor);
+        return new WalletPresenter(router, interactor, subscriptions);
     }
 
     @FragmentScope
@@ -26,5 +28,12 @@ public class WalletScreenModule {
     @Named(value = Screens.WALLET_SCREEN)
     public QrCodeHelper provideQrCodeParser() {
         return new QrCodeHelper();
+    }
+
+    @FragmentScope
+    @Provides
+    @Named(value = Screens.WALLET_SCREEN)
+    public CompositeDisposable provideComposite() {
+        return new CompositeDisposable();
     }
 }

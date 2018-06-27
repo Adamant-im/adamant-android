@@ -3,7 +3,6 @@ package im.adamant.android.core;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
-import java.util.List;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.KeyGenerator;
@@ -16,6 +15,8 @@ import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
+import im.adamant.android.rx.ObservableRxList;
+import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -27,15 +28,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
-    private List<String> nodes;
+    private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
     private Account account;
     private String passPhrase;
     private KeyGenerator keyGenerator;
 
+    private ServerNode currentServerNode;
+
     private int errorsCount;
 
-    public AdamantApiWrapper(List<String> nodes, KeyGenerator keyGenerator) {
+    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, KeyGenerator keyGenerator) {
         this.nodes = nodes;
         this.keyGenerator = keyGenerator;
 
@@ -151,8 +154,15 @@ public class AdamantApiWrapper {
             httpClient.addInterceptor(logging);
         }
 
+        if (currentServerNode != null){
+            currentServerNode.setStatus(ServerNode.Status.CONNECTING);
+        }
+
+        currentServerNode = serverSelect();
+        currentServerNode.setStatus(ServerNode.Status.CONNECTED);
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(serverSelect())
+                .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .client(httpClient.build())
@@ -161,7 +171,7 @@ public class AdamantApiWrapper {
         api = retrofit.create(AdamantApi.class);
     }
 
-    private String serverSelect() {
+    private ServerNode serverSelect() {
         int index =  (int) Math.round(Math.floor(Math.random() * nodes.size()));
         if (index >= nodes.size()){index = nodes.size() - 1;}
 

@@ -3,18 +3,16 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyGenerator;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.core.helpers.interfaces.AuthorizationStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
-import im.adamant.android.core.helpers.interfaces.ServerSelector;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
+import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
@@ -37,11 +35,6 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.wordlists.English;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ru.terrakok.cicerone.Cicerone;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
@@ -185,6 +178,14 @@ public abstract class AppModule {
             AdamantApiWrapper api
     ) {
         return new AccountInteractor(api);
+    }
+
+    @Singleton
+    @Provides
+    public static SettingsInteractor provideSettingsInteractor(
+            Settings settings
+    ) {
+        return new SettingsInteractor(settings);
     }
 
     @Singleton
