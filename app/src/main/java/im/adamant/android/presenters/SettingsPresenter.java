@@ -1,7 +1,10 @@
 package im.adamant.android.presenters;
 
+import android.webkit.URLUtil;
+
 import com.arellomobile.mvp.InjectViewState;
 
+import im.adamant.android.R;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
@@ -23,6 +26,11 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     }
 
     public void onClickAddNewNode(String nodeUrl) {
-        interactor.addServerNode(nodeUrl);
+        if (URLUtil.isValidUrl(nodeUrl)){
+            interactor.addServerNode(nodeUrl);
+            getViewState().clearNodeTextField();
+            getViewState().hideKeyboard();
+        }
+
     }
 }

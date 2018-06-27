@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -22,6 +23,7 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
@@ -74,11 +76,29 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         nodeListView.setLayoutManager(layoutManager);
         nodeListView.setAdapter(adapter);
 
+        newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
+            if (!isFocused){
+                hideKeyboard();
+            }
+        });
+
         return view;
     }
 
     @OnClick(R.id.fragment_settings_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
+    }
+
+    @Override
+    public void clearNodeTextField() {
+        newNodeAddressView.setText("");
+    }
+
+    @Override
+    public void hideKeyboard() {
+        if (getActivity() != null){
+            AdamantApplication.hideKeyboard(getActivity(), newNodeAddressView);
+        }
     }
 }

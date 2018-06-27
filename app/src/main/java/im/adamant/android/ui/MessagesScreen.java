@@ -9,6 +9,7 @@ import android.widget.EditText;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
@@ -80,7 +81,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
         newMessageText.setOnFocusChangeListener( (view, isFocused) -> {
             if (!isFocused){
-                hideKeyboard(newMessageText);
+                AdamantApplication.hideKeyboard(this, newMessageText);
             }
         });
     }

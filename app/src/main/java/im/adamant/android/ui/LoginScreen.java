@@ -19,6 +19,7 @@ import com.gun0912.tedpermission.TedPermission;
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.image.ImageType;
 
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
@@ -94,7 +95,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
         passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
             if (!isFocused){
-                hideKeyboard(passPhrase);
+                AdamantApplication.hideKeyboard(this, passPhrase);
             }
         });
     }
@@ -102,7 +103,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
         presenter.onClickLoginButton(passPhrase.getText().toString());
-        hideKeyboard(passPhrase);
+        AdamantApplication.hideKeyboard(this, passPhrase);
     }
 
     @OnClick(R.id.activity_login_btn_generate_new_passphrase)

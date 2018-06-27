@@ -13,6 +13,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
+import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
@@ -231,4 +232,11 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {ScanQrCodeScreenModule.class})
     public abstract ScanQrCodeScreen createScanQrCodeScreenInjector();
+
+
+    //--Services
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {ServerNodePingServiceModule.class})
+    public abstract ServerNodesPingService createServerNodePingService();
 }

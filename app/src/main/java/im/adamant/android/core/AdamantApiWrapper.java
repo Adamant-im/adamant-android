@@ -1,5 +1,7 @@
 package im.adamant.android.core;
 
+import android.util.Log;
+
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
@@ -18,6 +20,8 @@ import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -35,6 +39,7 @@ public class AdamantApiWrapper {
     private KeyGenerator keyGenerator;
 
     private ServerNode currentServerNode;
+    private Disposable wrapperBuildSubscription;
 
     private int errorsCount;
 
@@ -146,29 +151,40 @@ public class AdamantApiWrapper {
 
     private void buildApi() {
 
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-        if (BuildConfig.DEBUG){
-            HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            httpClient.addInterceptor(logging);
+        if (wrapperBuildSubscription != null){
+            wrapperBuildSubscription.dispose();
         }
 
-        if (currentServerNode != null){
-            currentServerNode.setStatus(ServerNode.Status.CONNECTING);
-        }
+        wrapperBuildSubscription = Observable.fromCallable(() -> {
+                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-        currentServerNode = serverSelect();
-        currentServerNode.setStatus(ServerNode.Status.CONNECTED);
+                    if (BuildConfig.DEBUG){
+                        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                        httpClient.addInterceptor(logging);
+                    }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .client(httpClient.build())
-                .build();
+                    if (currentServerNode != null){
+                        currentServerNode.setStatus(ServerNode.Status.CONNECTING);
+                    }
 
-        api = retrofit.create(AdamantApi.class);
+                    currentServerNode = serverSelect();
+                    currentServerNode.setStatus(ServerNode.Status.CONNECTED);
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                        .client(httpClient.build())
+                        .build();
+
+                    return  retrofit.create(AdamantApi.class);
+                })
+                .doOnNext(buildedApi -> api = buildedApi)
+                .doOnError(Throwable::printStackTrace)
+                .retry(1000)
+                .subscribe();
+
     }
 
     private ServerNode serverSelect() {

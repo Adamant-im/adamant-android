@@ -7,4 +7,6 @@ import java.util.List;
 import im.adamant.android.core.entities.ServerNode;
 
 public interface SettingsView extends MvpView {
+    void clearNodeTextField();
+    void hideKeyboard();
 }

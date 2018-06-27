@@ -3,6 +3,7 @@ package im.adamant.android.core.entities;
 import java.util.Objects;
 
 public class ServerNode {
+    public static final float UNAVAILABLE_PING = 999999.0000f;
 
     public enum Status {
         CONNECTING,
@@ -12,7 +13,7 @@ public class ServerNode {
     }
 
     private String url;
-    private int pingInMilliseconds = 0;
+    private float pingInMilliseconds = UNAVAILABLE_PING;
     private Status status = Status.CONNECTING;
 
     public ServerNode() {
@@ -30,11 +31,11 @@ public class ServerNode {
         this.url = url;
     }
 
-    public int getPingInMilliseconds() {
+    public float getPingInMilliseconds() {
         return pingInMilliseconds;
     }
 
-    public void setPingInMilliseconds(int pingInMilliseconds) {
+    public void setPingInMilliseconds(float pingInMilliseconds) {
         this.pingInMilliseconds = pingInMilliseconds;
     }
 
