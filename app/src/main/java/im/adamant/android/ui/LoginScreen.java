@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,9 +27,7 @@ import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -179,41 +176,11 @@ public class LoginScreen extends BaseActivity implements LoginView {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (data == null){return;}
+        String qrCode = qrCodeHelper.parseActivityResult(this, requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK){
-            switch (requestCode){
-                case Constants.SCAN_QR_CODE_RESULT: {
-                    if (data.getData() == null) {return;}
-
-                    String qrCode = data.getData().toString();
-
-                    if (qrCode != null){
-                        passPhrase.setText(qrCode);
-                        presenter.onClickLoginButton(qrCode);
-                    }
-                }
-                break;
-
-                case Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT: {
-                    if (data.getData() == null) {return;}
-
-                    final Uri imageUri = data.getData();
-                    try {
-                        final InputStream imageStream = getContentResolver().openInputStream(imageUri);
-                        String qrCode = qrCodeHelper.parse(imageStream);
-
-                        if (qrCode != null){
-                            passPhrase.setText(qrCode);
-                            presenter.onClickLoginButton(qrCode);
-                        }
-
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                break;
-            }
+        if (!qrCode.isEmpty()){
+            passPhrase.setText(qrCode);
+            presenter.onClickLoginButton(qrCode);
         }
     }
 

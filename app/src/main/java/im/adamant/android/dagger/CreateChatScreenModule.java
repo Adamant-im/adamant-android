@@ -1,6 +1,7 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.presenters.CreateChatPresenter;
 
@@ -28,5 +29,12 @@ public class CreateChatScreenModule {
     @Named(value = Screens.CREATE_CHAT_SCREEN)
     public CompositeDisposable provideComposite() {
         return new CompositeDisposable();
+    }
+
+    @ActivityScope
+    @Provides
+    @Named(value = Screens.CREATE_CHAT_SCREEN)
+    public QrCodeHelper provideQrCodeParser() {
+        return new QrCodeHelper();
     }
 }

@@ -20,11 +20,15 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import im.adamant.android.Constants;
 import im.adamant.android.ui.LoginScreen;
+
+import static android.app.Activity.RESULT_OK;
 
 public class QrCodeHelper {
 
@@ -77,5 +81,45 @@ public class QrCodeHelper {
         Uri contentUri = Uri.fromFile(file);
         mediaScanIntent.setData(contentUri);
         ctx.sendBroadcast(mediaScanIntent);
+    }
+
+    public String parseActivityResult(Context context, int requestCode, int resultCode, Intent data) {
+        String qrCodeString = "";
+        if (data == null){return qrCodeString;}
+
+        if (resultCode == RESULT_OK){
+            switch (requestCode){
+                case Constants.SCAN_QR_CODE_RESULT: {
+                    if (data.getData() == null) {return qrCodeString;}
+
+                    String qrCode = data.getData().toString();
+
+                    if (qrCode != null){
+                        qrCodeString = qrCode;
+                    }
+                }
+                break;
+
+                case Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT: {
+                    if (data.getData() == null) {return qrCodeString;}
+
+                    final Uri imageUri = data.getData();
+                    try {
+                        final InputStream imageStream = context.getContentResolver().openInputStream(imageUri);
+                        String qrCode = parse(imageStream);
+
+                        if (qrCode != null){
+                            qrCodeString = qrCode;
+                        }
+
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            }
+        }
+
+        return qrCodeString;
     }
 }
