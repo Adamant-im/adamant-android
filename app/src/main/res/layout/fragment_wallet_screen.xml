@@ -107,9 +107,11 @@
             android:id="@+id/fragment_wallet_cl_create_qr_code"
             android:layout_width="match_parent"
             android:layout_height="@dimen/wallet_rounded_panel_height"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/rounded_wallet_panel"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_cl_free_tokens">
 

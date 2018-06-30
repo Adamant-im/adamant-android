@@ -91,8 +91,6 @@ public class LoginScreen extends BaseActivity implements LoginView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        //TODO: Необходим список ключевых слов единый для всех систем (Для генерации ключевых фраз)
-
         passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
             if (!isFocused){
                 AdamantApplication.hideKeyboard(this, passPhrase);

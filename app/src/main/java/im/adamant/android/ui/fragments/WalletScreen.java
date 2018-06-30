@@ -104,14 +104,19 @@ public class WalletScreen extends BaseFragment implements WalletView {
         });
 
         exitButton.setOnClickListener((v) -> {
+            //VERY IMPORTANT: Do not delete the lock code of the button as this will result in a memory leak and crash the application.
+            exitButton.setEnabled(false);
             Activity activity = getActivity();
             if (activity != null){
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder
                         .setTitle(R.string.dialog_logout_title)
                         .setMessage(R.string.dialog_logout_message)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.onClickExitButton())
-                        .setNegativeButton(android.R.string.cancel, null)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            presenter.onClickExitButton();
+                            exitButton.setEnabled(true);
+                        })
+                        .setNegativeButton(android.R.string.cancel, (dialog, which) -> exitButton.setEnabled(true))
                         .show();
             }
         });
