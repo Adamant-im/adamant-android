@@ -19,8 +19,10 @@ import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
+import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -63,6 +65,33 @@ public class AdamantApiWrapper {
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Completable updateBalance(){
+        try {
+            return api
+                    .authorize(keyPair.getPublicKeyString().toLowerCase())
+                    .subscribeOn(Schedulers.io())
+                    .doOnNext((authorization -> {
+                        if (authorization.getAccount() == null){return;}
+
+                        if (this.account == null){
+                            this.account = authorization.getAccount();
+                            return;
+                        }
+
+                        this.account.setBalance(authorization.getAccount().getBalance());
+                        this.account.setUnconfirmedBalance(authorization.getAccount().getUnconfirmedBalance());
+
+                    }))
+                    .doOnError(this::checkNodeError)
+                    .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                    .ignoreElements();
+        } catch (Exception ex){
+            return Completable.error(ex);
+        }
+
+
     }
 
     public Flowable<TransactionList> getTransactions(int height, String order) {

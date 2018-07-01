@@ -90,11 +90,15 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     .sendMessage(message, currentChat.getCompanionId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
-                        if (transaction.isSuccess()){
-                            messageEntity.setProcessed(true);
-                            messageEntity.setTransactionId(transaction.getTransactionId());
-                        }
-                    }));
+                            if (transaction.isSuccess()){
+                                messageEntity.setProcessed(true);
+                                messageEntity.setTransactionId(transaction.getTransactionId());
+                            }
+
+                            getViewState().messageWasSended(messageEntity);
+                        }),
+                        (error) -> router.showSystemMessage(error.getMessage())
+                    );
 
             subscriptions.add(subscription);
 
@@ -116,4 +120,5 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
         return messageEntity;
     }
+
 }

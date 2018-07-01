@@ -3,7 +3,7 @@ package im.adamant.android.core.entities;
 public class Account {
     private String address;
     private long balance;
-    private long uncofirmedBalance;
+    private long unconfirmedBalance;
     private String publicKey;
 
     public long getBalance() {
@@ -14,12 +14,12 @@ public class Account {
         this.balance = balance;
     }
 
-    public long getUncofirmedBalance() {
-        return uncofirmedBalance;
+    public long getUnconfirmedBalance() {
+        return unconfirmedBalance;
     }
 
-    public void setUncofirmedBalance(long uncofirmedBalance) {
-        this.uncofirmedBalance = uncofirmedBalance;
+    public void setUnconfirmedBalance(long unconfirmedBalance) {
+        this.unconfirmedBalance = unconfirmedBalance;
     }
 
     public String getPublicKey() {

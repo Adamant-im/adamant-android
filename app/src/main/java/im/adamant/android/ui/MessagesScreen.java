@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -25,7 +26,10 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MessagesScreen extends BaseActivity implements MessagesView {
     public static final String ARG_CHAT = "chat";
@@ -89,7 +93,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @Override
     protected void onResume() {
         super.onResume();
+        navigatorHolder.setNavigator(navigator);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        navigatorHolder.removeNavigator();
     }
 
     @Override
@@ -115,6 +125,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         setTitle(title);
     }
 
+    @Override
+    public void messageWasSended(Message message) {
+        if (balanceUpdateService != null){
+            balanceUpdateService.updateBalanceImmediately();
+        }
+    }
+
     @OnClick(R.id.activity_messages_btn_send)
     protected void onClickSendButton() {
         presenter.onClickSendMessage(
@@ -123,4 +140,20 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
         newMessageText.setText("");
     }
+
+    private Navigator navigator = new Navigator() {
+        @Override
+        public void applyCommands(Command[] commands) {
+            for (Command command : commands){
+                apply(command);
+            }
+        }
+
+        private void apply(Command command){
+            if(command instanceof SystemMessage){
+                SystemMessage message = (SystemMessage) command;
+                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }

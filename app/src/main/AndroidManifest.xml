@@ -33,9 +33,14 @@
         <activity android:name=".ui.MainScreen" />
         <activity
             android:name=".ui.ScanQrCodeScreen"
-            android:label="@string/activity_scan_qrcode_title"/>
+            android:label="@string/activity_scan_qrcode_title" />
 
-        <service android:name=".services.ServerNodesPingService" android:exported="false"/>
+        <service
+            android:name=".services.ServerNodesPingService"
+            android:exported="false" />
+        <service
+            android:name=".services.AdamantBalanceUpdateService"
+            android:exported="false" />
     </application>
 
 </manifest>

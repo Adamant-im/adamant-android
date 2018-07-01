@@ -6,6 +6,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
@@ -198,7 +199,7 @@ public class ChatsInteractor {
 
                         return Single.just(transaction);
                     } else {
-                        throw new Exception(transactionWasNormalized.getError());
+                        return Single.error(new Exception(transactionWasNormalized.getError()));
                     }
                 }))
                 .flatMap(transaction -> Single.fromPublisher(

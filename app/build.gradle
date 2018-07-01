@@ -17,6 +17,7 @@ android {
 
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"
         buildConfigField "int", "PING_SECONDS_DELAY", "4"
+        buildConfigField "int", "UPDATE_BALANCE_SECONDS_DELAY", "30"
         buildConfigField "String", "API_BASE", "\"/api/\""
 
     }

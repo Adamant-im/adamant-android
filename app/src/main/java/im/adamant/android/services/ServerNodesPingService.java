@@ -95,9 +95,5 @@ public class ServerNodesPingService extends Service {
         }
     }
 
-    public class LocalBinder extends Binder {
-        ServerNodesPingService getService() {
-            return ServerNodesPingService.this;
-        }
-    }
+    public class LocalBinder extends Binder {}
 }

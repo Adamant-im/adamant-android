@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import im.adamant.android.core.AdamantApiWrapper;
+import io.reactivex.Flowable;
 
 public class AccountInteractor {
     private static final BigDecimal HUNDRED_MILLION = new BigDecimal(100_000_000L);
@@ -22,19 +23,21 @@ public class AccountInteractor {
         return address;
     }
 
-    public BigDecimal getAdamantBalance() {
-        BigDecimal balance = BigDecimal.ZERO;
-        if (api.isAuthorized()){
-            balance = (new BigDecimal(
-                            api.getAccount().getBalance()
-                    ))
-                    .divide(
-                            HUNDRED_MILLION,
-                            3,
-                            RoundingMode.HALF_EVEN
-                    );
-        }
-        return balance;
+    public Flowable<BigDecimal> getAdamantBalance() {
+        return Flowable.fromCallable(() -> {
+            if (api.isAuthorized()){
+                return (new BigDecimal(
+                        api.getAccount().getUnconfirmedBalance()
+                ))
+                .divide(
+                        HUNDRED_MILLION,
+                        3,
+                        RoundingMode.HALF_EVEN
+                );
+            } else {
+                return BigDecimal.ZERO;
+            }
+        });
     }
 
     public void logout() {

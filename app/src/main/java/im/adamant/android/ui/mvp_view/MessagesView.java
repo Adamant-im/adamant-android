@@ -10,4 +10,5 @@ public interface MessagesView extends MvpView {
     void showChatMessages(List<Message> messages);
     void goToLastMessage();
     void changeTitle(String title);
+    void messageWasSended(Message message);
 }

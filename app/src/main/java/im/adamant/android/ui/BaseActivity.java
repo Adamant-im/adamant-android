@@ -1,22 +1,22 @@
 package im.adamant.android.ui;
 
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
 import butterknife.ButterKnife;
+import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
 
 public abstract class BaseActivity extends MvpAppCompatActivity {
-    private boolean bound = false;
+    private boolean pingServiceBound = false;
+    private boolean admServiceBound = false;
+    protected AdamantBalanceUpdateService balanceUpdateService;
 
     public abstract int getLayoutId();
 
@@ -42,17 +42,25 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        Intent intent = new Intent(this, ServerNodesPingService.class);
-        bindService(intent, pingServiceConnection, Context.BIND_AUTO_CREATE);
+        Intent serverNodePingIntent = new Intent(this, ServerNodesPingService.class);
+        bindService(serverNodePingIntent, pingServiceConnection, Context.BIND_AUTO_CREATE);
+
+        Intent admBalanceIntent = new Intent(this, AdamantBalanceUpdateService.class);
+        bindService(admBalanceIntent, admBalanceServiceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        if (bound) {
+        if (pingServiceBound) {
             unbindService(pingServiceConnection);
-            bound = false;
+            pingServiceBound = false;
+        }
+
+        if (admServiceBound) {
+            unbindService(admBalanceServiceConnection);
+            admServiceBound = false;
         }
     }
 
@@ -67,12 +75,28 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
 
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
-            bound = true;
+            pingServiceBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName arg0) {
-            bound = false;
+            pingServiceBound = false;
+        }
+    };
+
+    private ServiceConnection admBalanceServiceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            admServiceBound = true;
+            AdamantBalanceUpdateService.LocalBinder binder = (AdamantBalanceUpdateService.LocalBinder) service;
+            balanceUpdateService = binder.getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            admServiceBound = false;
+            balanceUpdateService = null;
         }
     };
 }

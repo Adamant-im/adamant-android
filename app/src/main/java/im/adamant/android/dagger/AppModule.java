@@ -13,6 +13,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
+import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
@@ -49,18 +50,6 @@ public abstract class AppModule {
         SharedPreferences preferences = context.getSharedPreferences("settings", Context.MODE_PRIVATE);
         return new Settings(preferences);
     }
-
-//    @Singleton
-//    @Provides
-//    public static ServerSelector provideServerSelector(Settings settings) {
-//        return new NaiveServerSelectorImpl(settings);
-//    }
-
-//    @Singleton
-//    @Provides
-//    public static AuthorizationStorage provideAuthorizationStorage() {
-//        return new NaiveAuthorizationStorageImpl();
-//    }
 
     @Singleton
     @Provides
@@ -120,25 +109,6 @@ public abstract class AppModule {
     public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
         return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
     }
-
-//    @Singleton
-//    @Provides
-//    public static AdamantApi provideApi(ServerSelector serverSelector) {
-//        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-//
-//        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-//        httpClient.addInterceptor(logging);
-//
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(serverSelector.select())
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-//                .client(httpClient.build())
-//                .build();
-//
-//        return retrofit.create(AdamantApi.class);
-//    }
 
     @Singleton
     @Provides
@@ -239,4 +209,8 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {ServerNodePingServiceModule.class})
     public abstract ServerNodesPingService createServerNodePingService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {AdamantBalanceUpdateServiceModule.class})
+    public abstract AdamantBalanceUpdateService createBalanceUpdateService();
 }
