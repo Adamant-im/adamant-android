@@ -29,6 +29,7 @@ import im.adamant.android.ui.mvp_view.LoginView;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -87,8 +88,6 @@ public class LoginScreen extends BaseActivity implements LoginView {
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        //TODO: Необходим список ключевых слов единый для всех систем (Для генерации ключевых фраз)
 
         passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
             if (!isFocused){
@@ -222,12 +221,13 @@ public class LoginScreen extends BaseActivity implements LoginView {
         }
     };
 
+    //TODO: Refactor this. This code must be in presenter. If its not possible when it should be called from presenter.
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
         public void onPermissionGranted() {
             File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
             try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                QRCode.from("adm:" + passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
                 qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
             }catch (Exception ex){
                 ex.printStackTrace();

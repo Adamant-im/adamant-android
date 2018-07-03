@@ -69,7 +69,7 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
         super.onCreate(savedInstanceState);
     }
 
-    @OnClick(R.id.activity_create_chat_ibtn_scan_qrcode)
+    @OnClick(R.id.activity_create_chat_btn_create)
     public void createNewChatClick() {
         presenter.onClickCreateNewChat(
                 addressView.getText().toString()
@@ -136,11 +136,13 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
 
                         startActivity(intent);
                     }
+                    break;
 
                     case Screens.SCAN_QRCODE_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
+                    break;
                 }
             }
         }
