@@ -1,6 +1,8 @@
 package im.adamant.android.ui.holders;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,12 +18,13 @@ public class ReceivedMessageHolder extends RecyclerView.ViewHolder {
         super(itemView);
 
         messageView = itemView.findViewById(R.id.list_item_message_text);
+        messageView.setMovementMethod(LinkMovementMethod.getInstance());
         dateView = itemView.findViewById(R.id.list_item_message_date);
     }
 
     public void bind(Message message){
         if (message != null){
-            messageView.setText(message.getMessage());
+            messageView.setText(Html.fromHtml(message.getMessage()));
             dateView.setReferenceTime(message.getDate());
         } else {
             messageView.setText("");

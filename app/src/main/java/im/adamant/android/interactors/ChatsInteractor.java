@@ -6,7 +6,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
-import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
@@ -21,7 +21,6 @@ import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -33,6 +32,7 @@ public class ChatsInteractor {
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
     private LocalizedMessageMapper localizedMessageMapper;
+    private AdamantAddressProcessor adamantAddressProcessor;
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
 
@@ -51,6 +51,7 @@ public class ChatsInteractor {
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
+            AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ) {
@@ -60,6 +61,7 @@ public class ChatsInteractor {
         this.encryptor = encryptor;
         this.publicKeyStorage = publicKeyStorage;
         this.localizedMessageMapper = localizedMessageMapper;
+        this.adamantAddressProcessor = adamantAddressProcessor;
     }
 
     //TODO: Refactor this. Too long method
@@ -104,6 +106,9 @@ public class ChatsInteractor {
                              .doOnNext(transaction -> {
                                  Message message = messageMapper.apply(transaction);
                                  message = localizedMessageMapper.apply(message);
+
+                                 message.setMessage(adamantAddressProcessor.getHtmlString(message.getMessage()));
+
                                  List<Message> messages = messagesByChats.get(message.getCompanionId());
                                  if (messages != null) {
                                      //If we sent this message and it's already in the list

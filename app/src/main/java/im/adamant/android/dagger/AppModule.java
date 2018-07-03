@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -161,11 +162,18 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static AdamantAddressProcessor provideAdamantAddressProcessor() {
+        return new AdamantAddressProcessor();
+    }
+
+    @Singleton
+    @Provides
     public static ChatsInteractor provideChatsInteractor(
             AdamantApiWrapper api,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
+            AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ){
@@ -174,6 +182,7 @@ public abstract class AppModule {
                 messageMapper,
                 chatMapper,
                 localizedMessageMapper,
+                adamantAddressProcessor,
                 encryptor,
                 publicKeyStorage
         );
