@@ -1,6 +1,6 @@
 # Adamant Android Client
 
-https://travis-ci.org/Adamant-im/adamant-android.svg?branch=master
+![travis](https://travis-ci.org/Adamant-im/adamant-android.svg?branch=master)
 
 Android native client for ADAMANT Messenger.
 
