@@ -36,6 +36,17 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
                 listener.itemWasSelected(chats.get(getAdapterPosition()));
             }
         }
+
+        public void bind(Chat chat) {
+            chatView.setText(chat.getCompanionId());
+            if (chat.getLastMessage() != null){
+                lastMessageView.setText(chat.getLastMessage().getShortedMessage(50));
+                dateView.setReferenceTime(chat.getLastMessage().getDate());
+            } else {
+                lastMessageView.setText("");
+                dateView.setReferenceTime(System.currentTimeMillis());
+            }
+        }
     }
 
     public interface SelectItemListener {
@@ -64,15 +75,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public void onBindViewHolder(ViewHolder holder, int position) {
         Chat chat = chats.get(position);
         if (chat != null){
-            holder.chatView.setText(chat.getCompanionId());
-            if (chat.getLastMessage() != null){
-                holder.lastMessageView.setText(chat.getLastMessage().getShortedMessage(50));
-                holder.dateView.setReferenceTime(chat.getLastMessage().getDate());
-            } else {
-                holder.lastMessageView.setText("");
-                holder.dateView.setReferenceTime(0);
-            }
-
+            holder.bind(chat);
         }
     }
 

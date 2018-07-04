@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -157,6 +158,12 @@ public abstract class AppModule {
             Settings settings
     ) {
         return new SettingsInteractor(settings);
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantAddressProcessor provideAdamantAddressProcessor() {
+        return new AdamantAddressProcessor();
     }
 
     @Singleton

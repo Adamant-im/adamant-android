@@ -4,8 +4,17 @@ import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import net.glxn.qrgen.android.QRCode;
+import net.glxn.qrgen.core.image.ImageType;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.mvp_view.LoginView;
 
@@ -111,4 +120,5 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public void onClickScanQrCodeButton() {
         router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
     }
+
 }
