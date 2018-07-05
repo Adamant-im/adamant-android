@@ -1,5 +1,11 @@
 package im.adamant.android.ui.mappers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
@@ -36,16 +42,39 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
         String ownAddress = api.getAccount().getAddress();
         String ownSecretKey = api.getKeyPair().getSecretKeyString().toLowerCase();
 
-        if (transaction.getAsset() == null){ return message; }
-        if (transaction.getAsset().getChat() == null){ return message; }
-
         boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
+        String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
+
+        String decryptedMessage = decryptMessage(transaction, iRecipient, ownSecretKey);
+
+
+        message = new Message();
+        message.setMessage(decryptedMessage);
+        message.setiSay(ownAddress.equals(transaction.getSenderId()));
+        message.setDate(messageMagicTimestamp(
+                transaction.getTimestamp()
+        ));
+        message.setCompanionId(companionId);
+        message.setProcessed(true);
+        message.setTransactionId(transaction.getId());
+
+        return message;
+    }
+
+    private long messageMagicTimestamp(long receivedTimestamp) {
+        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
+        return (receivedTimestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
+    }
+
+    private String decryptMessage(Transaction transaction, boolean iRecipient, String ownSecretKey) {
+        String decryptedMessage = "";
+
+        if (transaction.getAsset() == null){ return decryptedMessage; }
+        if (transaction.getAsset().getChat() == null){ return decryptedMessage; }
 
         String encryptedMessage = transaction.getAsset().getChat().getMessage();
         String encryptedNonce = transaction.getAsset().getChat().getOwnMessage();
         String senderPublicKey = transaction.getSenderPublicKey();
-
-        String decryptedMessage = "";
 
         if (iRecipient){
             decryptedMessage = encryptor.decryptMessage(
@@ -64,23 +93,26 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
             );
         }
 
-        String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
+        if (transaction.getAsset().getChat().getType() == 2){
+            decryptedMessage = addFallback(decryptedMessage);
+        }
 
-        message = new Message();
-        message.setMessage(decryptedMessage);
-        message.setiSay(ownAddress.equals(transaction.getSenderId()));
-        message.setDate(messageMagicTimestamp(
-                transaction.getTimestamp()
-        ));
-        message.setCompanionId(companionId);
-        message.setProcessed(true);
-        message.setTransactionId(transaction.getId());
-
-        return message;
+        return decryptedMessage;
     }
 
-    private long messageMagicTimestamp(long receivedTimestamp) {
-        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
-        return (receivedTimestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
+    //TODO: Develop a architecture of processing different types of messages
+
+    private String addFallback(String decryptedMessage) {
+        try {
+            JsonElement jelement = new JsonParser().parse(decryptedMessage);
+            JsonObject  jobject = jelement.getAsJsonObject();
+            JsonPrimitive textFallback = jobject.getAsJsonPrimitive("text_fallback");
+
+            return textFallback.getAsString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 }
