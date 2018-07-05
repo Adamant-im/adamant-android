@@ -45,6 +45,7 @@
     <string name="wrong_address">Неверный адрес получателя</string>
     <string name="empty_message">Сообщение не может быть пустым</string>
     <string name="wrong_node_address">Некорректный адрес ноды</string>
+    <string name="unsupported_message_type">Неподдерживаемое сообщение: %s</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>

@@ -44,11 +44,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         switch (viewType){
             case SENDED_MESSAGE_HOLDER_TYPE : {
                 View v = inflater.inflate(R.layout.list_item_message_sended, parent, false);
-                return new SendedMessageHolder(v);
+                return new SendedMessageHolder(parent.getContext(), v);
             }
             case RECEIVED_MESSAGE_HOLDER_TYPE : {
                 View v = inflater.inflate(R.layout.list_item_message_received, parent, false);
-                return new ReceivedMessageHolder(v);
+                return new ReceivedMessageHolder(parent.getContext(), v);
             }
             default: {
                 return null;

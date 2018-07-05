@@ -10,6 +10,7 @@ import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Message;
 
@@ -47,7 +48,6 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
 
         String decryptedMessage = decryptMessage(transaction, iRecipient, ownSecretKey);
 
-
         message = new Message();
         message.setMessage(decryptedMessage);
         message.setiSay(ownAddress.equals(transaction.getSenderId()));
@@ -57,6 +57,16 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
         message.setCompanionId(companionId);
         message.setProcessed(true);
         message.setTransactionId(transaction.getId());
+
+        //Fallbacks
+        boolean existsAsset = (transaction.getAsset() != null) && (transaction.getAsset().getChat() != null);
+        if (existsAsset){
+            TransactionMessage transactionMessage = transaction.getAsset().getChat();
+
+            if (transactionMessage.getType() == TransactionMessage.REACH_MESSAGE_TYPE){
+                addFallback(message);
+            }
+        }
 
         return message;
     }
@@ -93,26 +103,30 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
             );
         }
 
-        if (transaction.getAsset().getChat().getType() == 2){
-            decryptedMessage = addFallback(decryptedMessage);
-        }
-
         return decryptedMessage;
     }
 
     //TODO: Develop a architecture of processing different types of messages
 
-    private String addFallback(String decryptedMessage) {
+    private void addFallback(Message message) {
         try {
-            JsonElement jelement = new JsonParser().parse(decryptedMessage);
+            message.setFallback(true);
+            JsonElement jelement = new JsonParser().parse(message.getMessage());
             JsonObject  jobject = jelement.getAsJsonObject();
+
             JsonPrimitive textFallback = jobject.getAsJsonPrimitive("text_fallback");
 
-            return textFallback.getAsString();
+            if (textFallback != null){
+                message.setFallBackMessage(textFallback.getAsString());
+            }
+
+            JsonPrimitive reachType = jobject.getAsJsonPrimitive("type");
+
+            if (reachType != null){
+                message.setReachType(reachType.getAsString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return "";
     }
 }
