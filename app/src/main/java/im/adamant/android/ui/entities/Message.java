@@ -12,6 +12,9 @@ public class Message implements Serializable, Comparable<Message> {
     private boolean processed;
     private String transactionId;
     private String companionId;
+    private boolean isFallback = false;
+    private String fallBackMessage = "";
+    private String reachType = "none";
 
     public Message() {
         //This is a temporary identifier so that messages that are not confirmed in the blockchain do not merge into one
@@ -82,6 +85,30 @@ public class Message implements Serializable, Comparable<Message> {
 
     public void setCompanionId(String companionId) {
         this.companionId = companionId;
+    }
+
+    public boolean isFallback() {
+        return isFallback;
+    }
+
+    public void setFallback(boolean fallback) {
+        isFallback = fallback;
+    }
+
+    public String getFallBackMessage() {
+        return fallBackMessage;
+    }
+
+    public void setFallBackMessage(String fallBackMessage) {
+        this.fallBackMessage = fallBackMessage;
+    }
+
+    public String getReachType() {
+        return reachType;
+    }
+
+    public void setReachType(String reachType) {
+        this.reachType = reachType;
     }
 
     @Override

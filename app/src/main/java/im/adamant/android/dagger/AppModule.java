@@ -21,6 +21,7 @@ import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
@@ -107,6 +108,12 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static LocalizedChatMapper providesLocalizedChatMapper(Context ctx) {
+        return new LocalizedChatMapper(ctx);
+    }
+
+    @Singleton
+    @Provides
     public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
         return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
     }
@@ -174,6 +181,7 @@ public abstract class AppModule {
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
             AdamantAddressProcessor adamantAddressProcessor,
+            LocalizedChatMapper localizedChatMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ){
@@ -182,6 +190,7 @@ public abstract class AppModule {
                 messageMapper,
                 chatMapper,
                 localizedMessageMapper,
+                localizedChatMapper,
                 adamantAddressProcessor,
                 encryptor,
                 publicKeyStorage

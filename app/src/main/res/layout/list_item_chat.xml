@@ -31,6 +31,7 @@
             android:background="@android:color/transparent"
             android:text="TextView"
             android:textSize="@dimen/list_item_chat_text_size"
+            android:textStyle="italic"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/list_item_chat_name" />
 

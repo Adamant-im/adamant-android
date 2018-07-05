@@ -2,13 +2,12 @@ package im.adamant.android.ui.mappers;
 
 import android.content.Context;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.ui.entities.Message;
 import io.reactivex.functions.Function;
 
 public class LocalizedMessageMapper implements Function<Message, Message> {
-    private static final String WELCOME_MESSAGE_ADDR = "U15423595369615486571";
-    private static final String MESSAGE_CTNCR_ADDR = "U7047165086065693428";
 
     private Context context;
 
@@ -21,11 +20,11 @@ public class LocalizedMessageMapper implements Function<Message, Message> {
         String messageText = message.getMessage();
 
         switch (message.getCompanionId()){
-            case WELCOME_MESSAGE_ADDR: {
+            case BuildConfig.WELCOME_MESSAGE_ADDR: {
                 messageText = context.getString(R.string.hello_message_baunty);
             }
             break;
-            case MESSAGE_CTNCR_ADDR: {
+            case BuildConfig.MESSAGE_CTNCR_ADDR: {
                 messageText = context.getString(R.string.hello_message_ico);
             }
             break;

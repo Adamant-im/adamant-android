@@ -7,6 +7,7 @@ import java.util.Objects;
 public class Chat implements Serializable {
     private String companionId;
     private Message lastMessage;
+    private String title;
 
     public String getCompanionId() {
         return companionId;
@@ -22,6 +23,14 @@ public class Chat implements Serializable {
 
     public void setLastMessage(Message lastMessage) {
         this.lastMessage = lastMessage;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
