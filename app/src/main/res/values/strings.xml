@@ -32,7 +32,7 @@
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
     <string name="fragment_settings_version">Версия приложения: %s</string>
     <string name="fragment_settings_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
-    <string name="fragment_settings_node_status">Нода %s, Пинг: % мс</string>
+    <string name="fragment_settings_node_status">Нода %s, Пинг: %.0f мс</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
     <string name="dialog_logout_title">Выход</string>

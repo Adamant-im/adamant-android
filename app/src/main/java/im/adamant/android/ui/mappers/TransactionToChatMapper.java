@@ -22,6 +22,7 @@ public class TransactionToChatMapper implements Function<Transaction, Chat> {
 
         Chat chat = new Chat();
         chat.setCompanionId(companionId);
+        chat.setTitle(companionId);
 
         return chat;
     }

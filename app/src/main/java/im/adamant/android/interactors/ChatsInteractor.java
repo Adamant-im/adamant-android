@@ -13,6 +13,7 @@ import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.Message;
+import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
@@ -33,6 +34,7 @@ public class ChatsInteractor {
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
     private LocalizedMessageMapper localizedMessageMapper;
+    private LocalizedChatMapper localizedChatMapper;
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
 
@@ -51,6 +53,7 @@ public class ChatsInteractor {
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
+            LocalizedChatMapper localizedChatMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ) {
@@ -60,6 +63,7 @@ public class ChatsInteractor {
         this.encryptor = encryptor;
         this.publicKeyStorage = publicKeyStorage;
         this.localizedMessageMapper = localizedMessageMapper;
+        this.localizedChatMapper = localizedChatMapper;
     }
 
     //TODO: Refactor this. Too long method
@@ -97,6 +101,7 @@ public class ChatsInteractor {
                              })
                              .doOnNext(transaction -> {
                                  Chat chat = chatMapper.apply(transaction);
+                                 chat = localizedChatMapper.apply(chat);
                                  if (!chats.contains(chat)){
                                      chats.add(chat);
                                  }

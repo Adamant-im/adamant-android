@@ -38,7 +38,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         }
 
         public void bind(Chat chat) {
-            chatView.setText(chat.getCompanionId());
+            chatView.setText(chat.getTitle());
             if (chat.getLastMessage() != null){
                 lastMessageView.setText(chat.getLastMessage().getShortedMessage(50));
                 dateView.setReferenceTime(chat.getLastMessage().getDate());
