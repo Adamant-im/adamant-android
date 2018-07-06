@@ -105,6 +105,7 @@ dependencies {
     implementation "com.github.kenglxn.QRGen:android:2.5.0"
     implementation "gun0912.ted:tedpermission:2.2.0"
     implementation "com.github.stealthcopter:AndroidNetworkTools:0.4.0"
+    implementation "com.andrognito.pinlockview:pinlockview:2.1.0"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
