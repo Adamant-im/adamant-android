@@ -6,7 +6,8 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.Message;
+import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private ChatsInteractor interactor;
 
     private Chat currentChat;
-    private List<Message> messages;
+    private List<AbstractMessage> messages;
     private int currentMessageCount = 0;
 
     private Disposable syncSubscription;
@@ -85,7 +86,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         //TODO: verify message length and balance
 
         if (currentChat != null){
-            Message messageEntity = addUnsendedMessageToChat(message);
+            AbstractMessage messageEntity = addUnsendedMessageToChat(message);
             Disposable subscription = interactor
                     .sendMessage(message, currentChat.getCompanionId())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -107,10 +108,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     }
 
-    private Message addUnsendedMessageToChat(String message) {
-        Message messageEntity = new Message();
+    private AbstractMessage addUnsendedMessageToChat(String message) {
+        AdamantBasicMessage messageEntity = new AdamantBasicMessage();
         messageEntity.setiSay(true);
-        messageEntity.setMessage(message);
+        messageEntity.setText(message);
         messageEntity.setDate(System.currentTimeMillis());
         messageEntity.setProcessed(false);
 

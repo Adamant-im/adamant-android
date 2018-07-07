@@ -36,6 +36,10 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
+import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.wordlists.English;
@@ -86,12 +90,31 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static MessageFactoryProvider provideMessageFactoryProvider() {
+        MessageFactoryProvider provider = new MessageFactoryProvider();
+
+        provider.registerFactory(
+                SupportedMessageTypes.ADAMANT_BASIC,
+                new AdamantBasicMessageFactory()
+        );
+
+        provider.registerFactory(
+                SupportedMessageTypes.FALLBACK,
+                new FallbackMessageFactory()
+        );
+
+        return provider;
+    }
+
+    @Singleton
+    @Provides
     public static TransactionToMessageMapper providesTransactionsToMessageMapper(
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
-            AdamantApiWrapper api
+            AdamantApiWrapper api,
+            MessageFactoryProvider factoryProvider
     ) {
-        return new TransactionToMessageMapper(encryptor, publicKeyStorage, api);
+        return new TransactionToMessageMapper(encryptor, publicKeyStorage, api, factoryProvider);
     }
 
     @Singleton

@@ -15,7 +15,7 @@ import im.adamant.android.R;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.Message;
+import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
@@ -103,7 +103,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void showChatMessages(List<Message> messages) {
+    public void showChatMessages(List<AbstractMessage> messages) {
         if (messages != null){
             adapter.updateDataset(
                     messages
@@ -126,7 +126,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void messageWasSended(Message message) {
+    public void messageWasSended(AbstractMessage message) {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }

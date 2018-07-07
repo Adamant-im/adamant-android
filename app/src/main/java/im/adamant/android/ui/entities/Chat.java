@@ -4,9 +4,11 @@ package im.adamant.android.ui.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
+import im.adamant.android.ui.entities.messages.AbstractMessage;
+
 public class Chat implements Serializable {
     private String companionId;
-    private Message lastMessage;
+    private AbstractMessage lastMessage;
     private String title;
 
     public String getCompanionId() {
@@ -17,11 +19,11 @@ public class Chat implements Serializable {
         this.companionId = companionId;
     }
 
-    public Message getLastMessage() {
+    public AbstractMessage getLastMessage() {
         return lastMessage;
     }
 
-    public void setLastMessage(Message lastMessage) {
+    public void setLastMessage(AbstractMessage lastMessage) {
         this.lastMessage = lastMessage;
     }
 

@@ -1,51 +1,27 @@
-package im.adamant.android.ui.entities;
+package im.adamant.android.ui.entities.messages;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Message implements Serializable, Comparable<Message> {
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+
+public abstract class AbstractMessage implements Serializable, Comparable<AbstractMessage> {
+    private SupportedMessageTypes supportedType = SupportedMessageTypes.UNDEFINED;
     private boolean iSay;
-    private String message;
     private long date;
     private boolean processed;
     private String transactionId;
     private String companionId;
-    private boolean isFallback = false;
-    private String fallBackMessage = "";
-    private String reachType = "none";
 
-    public Message() {
+    public AbstractMessage() {
         //This is a temporary identifier so that messages that are not confirmed in the blockchain do not merge into one
         transactionId = "temp_" + Double.toHexString(Math.random() * 100_000);
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public String getShortedMessage(int limit) {
-        final String dots = "...";
-        int newLinePosition = message.indexOf('\r');
-
-        String shortString = null;
-        if (newLinePosition > 0){
-            shortString = message.substring(0, newLinePosition - 1);
-        } else {
-            shortString = message;
-        }
-
-        if (shortString.length() > (limit + dots.length())) {
-            shortString = shortString.substring(0, limit) + dots;
-        }
-
-        return shortString;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
+    public abstract String getShortedMessage(Context context, int preferredLimit);
 
     public long getDate() {
         return date;
@@ -87,32 +63,16 @@ public class Message implements Serializable, Comparable<Message> {
         this.companionId = companionId;
     }
 
-    public boolean isFallback() {
-        return isFallback;
+    public SupportedMessageTypes getSupportedType() {
+        return supportedType;
     }
 
-    public void setFallback(boolean fallback) {
-        isFallback = fallback;
-    }
-
-    public String getFallBackMessage() {
-        return fallBackMessage;
-    }
-
-    public void setFallBackMessage(String fallBackMessage) {
-        this.fallBackMessage = fallBackMessage;
-    }
-
-    public String getReachType() {
-        return reachType;
-    }
-
-    public void setReachType(String reachType) {
-        this.reachType = reachType;
+    public void setSupportedType(SupportedMessageTypes supportedType) {
+        this.supportedType = supportedType;
     }
 
     @Override
-    public int compareTo(@NonNull Message message) {
+    public int compareTo(@NonNull AbstractMessage message) {
         long dateDiff = date - message.date;
         if((dateDiff) > 0) {
             return 1;
@@ -127,12 +87,35 @@ public class Message implements Serializable, Comparable<Message> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Message message = (Message) o;
+        AbstractMessage message = (AbstractMessage) o;
         return Objects.equals(transactionId, message.transactionId);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(transactionId);
+    }
+
+    protected String shorteningString(String value, int limit){
+        final String dots = "...";
+
+        if (value == null){
+            return "";
+        }
+
+        int newLinePosition = value.indexOf('\r');
+
+        String shortString = null;
+        if (newLinePosition > 0){
+            shortString = value.substring(0, newLinePosition - 1);
+        } else {
+            shortString = value;
+        }
+
+        if (shortString.length() > (limit + dots.length())) {
+            shortString = shortString.substring(0, limit) + dots;
+        }
+
+        return shortString;
     }
 }

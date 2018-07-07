@@ -9,6 +9,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
@@ -33,7 +34,7 @@ public class MessagesScreenModule {
 
     @ActivityScope
     @Provides
-    public MessagesAdapter provideAdapter(){
-        return new MessagesAdapter(null);
+    public MessagesAdapter provideAdapter(MessageFactoryProvider messageFactoryProvider){
+        return new MessagesAdapter(messageFactoryProvider,null);
     }
 }

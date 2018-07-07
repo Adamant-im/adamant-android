@@ -1,5 +1,6 @@
 package im.adamant.android.ui.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,20 +8,24 @@ import android.view.ViewGroup;
 
 
 import im.adamant.android.R;
-import im.adamant.android.ui.entities.Message;
-import im.adamant.android.ui.holders.ReceivedMessageHolder;
-import im.adamant.android.ui.holders.SendedMessageHolder;
+import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.holders.messages.AbstractMessageViewHolder;
+import im.adamant.android.ui.holders.messages.AdamantBasicMessageViewHolder;
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final int SENDED_MESSAGE_HOLDER_TYPE = 1;
-    private static final int RECEIVED_MESSAGE_HOLDER_TYPE = 2;
+public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHolder> {
 
-    private List<Message> messages = new ArrayList<>();
+    private List<AbstractMessage> messages = new ArrayList<>();
+    private MessageFactoryProvider messageFactoryProvider;
 
-    public MessagesAdapter(List<Message> messages) {
+    public MessagesAdapter(MessageFactoryProvider messageFactoryProvider, List<AbstractMessage> messages) {
+        this.messageFactoryProvider = messageFactoryProvider;
+
         if (messages != null){
             this.messages = messages;
         }
@@ -28,45 +33,32 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messages.get(position);
+        AbstractMessage message = messages.get(position);
+        return message.getSupportedType().ordinal();
+    }
 
-        if (message.isiSay()){
-            return SENDED_MESSAGE_HOLDER_TYPE;
-        } else {
-            return RECEIVED_MESSAGE_HOLDER_TYPE;
+    @NonNull
+    @Override
+    public AbstractMessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        try {
+            MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(
+                    SupportedMessageTypes.values()[viewType]
+            );
+
+            return messageFactory.getViewHolder(parent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
+        return null;
+
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-
-        switch (viewType){
-            case SENDED_MESSAGE_HOLDER_TYPE : {
-                View v = inflater.inflate(R.layout.list_item_message_sended, parent, false);
-                return new SendedMessageHolder(parent.getContext(), v);
-            }
-            case RECEIVED_MESSAGE_HOLDER_TYPE : {
-                View v = inflater.inflate(R.layout.list_item_message_received, parent, false);
-                return new ReceivedMessageHolder(parent.getContext(), v);
-            }
-            default: {
-                return null;
-            }
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Message message = messages.get(position);
-
-        switch (holder.getItemViewType()) {
-            case SENDED_MESSAGE_HOLDER_TYPE:
-                ((SendedMessageHolder) holder).bind(message);
-                break;
-            case RECEIVED_MESSAGE_HOLDER_TYPE:
-                ((ReceivedMessageHolder) holder).bind(message);
-        }
+    public void onBindViewHolder(@NonNull AbstractMessageViewHolder holder, int position) {
+        AbstractMessage message = messages.get(position);
+        holder.bind(message);
     }
 
     @Override
@@ -74,7 +66,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return messages.size();
     }
 
-    public void updateDataset(List<Message> messages){
+    public void updateDataset(List<AbstractMessage> messages){
         if (messages != null){
             this.messages = messages;
         } else {

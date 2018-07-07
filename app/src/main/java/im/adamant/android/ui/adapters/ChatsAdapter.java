@@ -1,5 +1,6 @@
 package im.adamant.android.ui.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,16 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     private SelectItemListener listener;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public Context context;
+
         public TextView chatView;
         public TextView lastMessageView;
         public RelativeTimeTextView dateView;
-        public ViewHolder(View v) {
+        public ViewHolder(Context context, View v) {
             super(v);
+
+            this.context = context;
+
             chatView = v.findViewById(R.id.list_item_chat_name);
             lastMessageView = v.findViewById(R.id.list_item_chat_last_message);
             dateView = v.findViewById(R.id.list_item_chat_last_message_date);
@@ -40,7 +46,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         public void bind(Chat chat) {
             chatView.setText(chat.getTitle());
             if (chat.getLastMessage() != null){
-                lastMessageView.setText(chat.getLastMessage().getShortedMessage(50));
+                lastMessageView.setText(chat.getLastMessage().getShortedMessage(context, 50));
                 dateView.setReferenceTime(chat.getLastMessage().getDate());
             } else {
                 lastMessageView.setText("");
@@ -68,7 +74,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_chat, parent, false);
 
-        return new ViewHolder(v);
+        return new ViewHolder(parent.getContext(), v);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package im.adamant.android.ui.mappers;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -12,30 +11,38 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.helpers.PublicKeyStorage;
-import im.adamant.android.ui.entities.Message;
+import im.adamant.android.ui.entities.messages.AbstractMessage;
 
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.builders.MessageBuilder;
+import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.reactivex.functions.Function;
 
-public class TransactionToMessageMapper implements Function<Transaction, Message> {
+public class TransactionToMessageMapper implements Function<Transaction, AbstractMessage> {
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
     private AdamantApiWrapper api;
+    private MessageFactoryProvider factoryProvider;
 
     public TransactionToMessageMapper(
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage,
-            AdamantApiWrapper api
+            AdamantApiWrapper api,
+            MessageFactoryProvider factoryProvider
     ) {
         this.encryptor = encryptor;
         this.publicKeyStorage = publicKeyStorage;
         this.api = api;
+        this.factoryProvider = factoryProvider;
     }
 
     //TODO: Refactor this. The length of the method is too long.
     @Override
-    public Message apply(Transaction transaction) throws Exception {
-        Message message = null;
+    public AbstractMessage apply(Transaction transaction) throws Exception {
+        AbstractMessage message = null;
 
+        //TODO: call api.isAuthorized
         if (api.getKeyPair() == null || api.getAccount() == null){
             throw new Exception("You are not authorized.");
         }
@@ -48,25 +55,19 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
 
         String decryptedMessage = decryptMessage(transaction, iRecipient, ownSecretKey);
 
-        message = new Message();
-        message.setMessage(decryptedMessage);
-        message.setiSay(ownAddress.equals(transaction.getSenderId()));
-        message.setDate(messageMagicTimestamp(
-                transaction.getTimestamp()
-        ));
-        message.setCompanionId(companionId);
-        message.setProcessed(true);
-        message.setTransactionId(transaction.getId());
+        MessageFactory messageFactory = factoryProvider.getFactoryByType(
+                detectMessageType(transaction, decryptedMessage)
+        );
+        MessageBuilder messageBuilder = messageFactory.getMessageBuilder();
 
-        //Fallbacks
-        boolean existsAsset = (transaction.getAsset() != null) && (transaction.getAsset().getChat() != null);
-        if (existsAsset){
-            TransactionMessage transactionMessage = transaction.getAsset().getChat();
+        message = messageBuilder.build(
+                transaction,
+                decryptedMessage,
+                !iRecipient,
+                messageMagicTimestamp(transaction.getTimestamp()),
+                companionId
+            );
 
-            if (transactionMessage.getType() == TransactionMessage.REACH_MESSAGE_TYPE){
-                addFallback(message);
-            }
-        }
 
         return message;
     }
@@ -79,8 +80,8 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
     private String decryptMessage(Transaction transaction, boolean iRecipient, String ownSecretKey) {
         String decryptedMessage = "";
 
-        if (transaction.getAsset() == null){ return decryptedMessage; }
-        if (transaction.getAsset().getChat() == null){ return decryptedMessage; }
+        TransactionMessage transactionMessage = getTransactionMessage(transaction);
+        if (transactionMessage == null){return decryptedMessage;}
 
         String encryptedMessage = transaction.getAsset().getChat().getMessage();
         String encryptedNonce = transaction.getAsset().getChat().getOwnMessage();
@@ -106,27 +107,48 @@ public class TransactionToMessageMapper implements Function<Transaction, Message
         return decryptedMessage;
     }
 
-    //TODO: Develop a architecture of processing different types of messages
+    private SupportedMessageTypes detectMessageType(Transaction transaction, String decryptedMessage) {
+        TransactionMessage transactionMessage = getTransactionMessage(transaction);
 
-    private void addFallback(Message message) {
-        try {
-            message.setFallback(true);
-            JsonElement jelement = new JsonParser().parse(message.getMessage());
-            JsonObject  jobject = jelement.getAsJsonObject();
-
-            JsonPrimitive textFallback = jobject.getAsJsonPrimitive("text_fallback");
-
-            if (textFallback != null){
-                message.setFallBackMessage(textFallback.getAsString());
+        if (transactionMessage != null){
+            switch (transactionMessage.getType()){
+                case TransactionMessage.BASE_MESSAGE_TYPE : {
+                    return SupportedMessageTypes.ADAMANT_BASIC;
+                }
+                case TransactionMessage.REACH_MESSAGE_TYPE : {
+//                return SupportedMessageTypes.FALLBACK;
+                }
             }
+        }
 
-            JsonPrimitive reachType = jobject.getAsJsonPrimitive("type");
+
+        return SupportedMessageTypes.FALLBACK;
+    }
+
+    private String getReachType(String decryptedMessage) {
+        String type = "undefined";
+        try {
+            JsonElement element = new JsonParser().parse(decryptedMessage);
+            JsonObject  object = element.getAsJsonObject();
+
+            JsonPrimitive reachType = object.getAsJsonPrimitive("type");
 
             if (reachType != null){
-                message.setReachType(reachType.getAsString());
+                type = reachType.getAsString();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        return type;
     }
+
+    private TransactionMessage getTransactionMessage(Transaction transaction) {
+
+        if (transaction.getAsset() == null){ return null; }
+        if (transaction.getAsset().getChat() == null){ return null; }
+
+        return transaction.getAsset().getChat();
+    }
+
 }

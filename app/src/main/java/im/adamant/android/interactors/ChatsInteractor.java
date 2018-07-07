@@ -6,13 +6,12 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
-import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.Message;
+import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
@@ -22,7 +21,6 @@ import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
@@ -44,7 +42,7 @@ public class ChatsInteractor {
 
     //TODO: So far, the manipulation of the chat lists is entrusted to this interactor, but perhaps over time it's worth changing
     //TODO: Multithreaded access to properties can cause problems in the future
-    private HashMap<String, List<Message>> messagesByChats = new HashMap<>();
+    private HashMap<String, List<AbstractMessage>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
 
     //TODO: Decrease the count of parameters
@@ -107,16 +105,16 @@ public class ChatsInteractor {
                                  }
                              })
                              .doOnNext(transaction -> {
-                                 Message message = messageMapper.apply(transaction);
+                                 AbstractMessage message = messageMapper.apply(transaction);
                                  message = localizedMessageMapper.apply(message);
-                                 List<Message> messages = messagesByChats.get(message.getCompanionId());
+                                 List<AbstractMessage> messages = messagesByChats.get(message.getCompanionId());
                                  if (messages != null) {
                                      //If we sent this message and it's already in the list
                                      if (!messages.contains(message)){
                                          messages.add(message);
                                      }
                                  } else {
-                                     List<Message> newMessageBlock = new ArrayList<>();
+                                     List<AbstractMessage> newMessageBlock = new ArrayList<>();
                                      newMessageBlock.add(message);
                                      messagesByChats.put(message.getCompanionId(), newMessageBlock);
                                  }
@@ -131,9 +129,9 @@ public class ChatsInteractor {
                              .doOnComplete(() -> {
                                  //Setting last message to chats
                                  for(Chat chat : chats){
-                                     List<Message> messages = messagesByChats.get(chat.getCompanionId());
+                                     List<AbstractMessage> messages = messagesByChats.get(chat.getCompanionId());
                                      if (messages != null && messages.size() > 0){
-                                         Message mes = messages.get(messages.size() - 1);
+                                         AbstractMessage mes = messages.get(messages.size() - 1);
                                          if (mes != null){chat.setLastMessage(mes);}
                                      }
                                  }
@@ -218,8 +216,8 @@ public class ChatsInteractor {
         return chats;
     }
 
-    public List<Message> getMessagesByCompanionId(String companionId) {
-        List<Message> requestedMessages = messagesByChats.get(companionId);
+    public List<AbstractMessage> getMessagesByCompanionId(String companionId) {
+        List<AbstractMessage> requestedMessages = messagesByChats.get(companionId);
 
         if (requestedMessages == null){return new ArrayList<>();}
 
