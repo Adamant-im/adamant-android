@@ -115,17 +115,20 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
                     return SupportedMessageTypes.ADAMANT_BASIC;
                 }
-                case TransactionMessage.REACH_MESSAGE_TYPE : {
-//                return SupportedMessageTypes.FALLBACK;
+                case TransactionMessage.RICH_MESSAGE_TYPE: {
+                    String richType = getRichType(decryptedMessage);
+                    switch (richType){
+                        case "eth_transaction":
+                          return SupportedMessageTypes.ETHEREUM_TRANSFER;
+                    }
                 }
             }
         }
 
-
         return SupportedMessageTypes.FALLBACK;
     }
 
-    private String getReachType(String decryptedMessage) {
+    private String getRichType(String decryptedMessage) {
         String type = "undefined";
         try {
             JsonElement element = new JsonParser().parse(decryptedMessage);

@@ -8,7 +8,7 @@ import java.nio.ByteOrder;
 
 public class TransactionMessage implements WithBytesDigest {
     public static final int BASE_MESSAGE_TYPE = 1;
-    public static final int REACH_MESSAGE_TYPE = 2;
+    public static final int RICH_MESSAGE_TYPE = 2;
     public static final int SIGNAL_MESSAGE_TYPE = 3;
 
     private final static int INTEGER_SIZE = 4;

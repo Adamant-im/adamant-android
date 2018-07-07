@@ -38,6 +38,7 @@ import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
+import im.adamant.android.ui.messages_support.factories.EtheriumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.github.novacrypto.bip39.MnemonicGenerator;
@@ -101,6 +102,11 @@ public abstract class AppModule {
         provider.registerFactory(
                 SupportedMessageTypes.FALLBACK,
                 new FallbackMessageFactory()
+        );
+
+        provider.registerFactory(
+                SupportedMessageTypes.ETHEREUM_TRANSFER,
+                new EtheriumTransferMessageFactory()
         );
 
         return provider;
