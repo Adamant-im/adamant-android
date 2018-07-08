@@ -1,4 +1,4 @@
-# Adamant Android Client
+# ADAMANT Android Client
 
 ![travis](https://travis-ci.org/Adamant-im/adamant-android.svg?branch=master)
 

@@ -8,6 +8,7 @@ import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
@@ -110,6 +111,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     private AbstractMessage addUnsendedMessageToChat(String message) {
         AdamantBasicMessage messageEntity = new AdamantBasicMessage();
+        messageEntity.setSupportedType(SupportedMessageTypes.ADAMANT_BASIC);
         messageEntity.setiSay(true);
         messageEntity.setText(message);
         messageEntity.setDate(System.currentTimeMillis());
