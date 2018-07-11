@@ -1,7 +1,9 @@
 package im.adamant.android.ui.holders.messages;
 
 import android.content.Context;
-import android.text.Html;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.transition.TransitionManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,23 +12,25 @@ import im.adamant.android.R;
 import im.adamant.android.helpers.HtmlHelper;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
-import im.adamant.android.ui.entities.messages.FallbackMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
 import com.github.curioustechizen.ago.RelativeTimeTextView;
-
-import java.text.Format;
-import java.util.Locale;
 
 
 public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     private ImageView processedView;
     private TextView messageView;
     private RelativeTimeTextView dateView;
+    private ConstraintLayout constraintLayout;
+    private ConstraintSet constraintSet = new ConstraintSet();
+
 
     public AdamantBasicMessageViewHolder(Context context, View itemView) {
         super(context, itemView);
 
+        constraintLayout = itemView.findViewById(R.id.message_item);
+        TransitionManager.beginDelayedTransition(constraintLayout);
+        constraintSet.clone(constraintLayout);
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
         dateView = itemView.findViewById(R.id.list_item_message_date);
@@ -59,9 +63,9 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             }
 
             if (message.isiSay()){
-                iSayedLayoutModification();
+                iToldLayoutModification();
             } else {
-                companionSayedModification();
+                companionToldModification();
             }
 
         } else {
@@ -69,12 +73,14 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
         }
     }
 
-    private void iSayedLayoutModification(){
-        processedView.setVisibility(View.VISIBLE);
+    private void iToldLayoutModification(){
+        constraintSet.setHorizontalBias(R.id.cardView, .9f);
+        constraintSet.applyTo(itemView.findViewById(R.id.message_item));
     }
 
-    private void companionSayedModification(){
-        processedView.setVisibility(View.GONE);
+    private void companionToldModification(){
+        constraintSet.setHorizontalBias(R.id.cardView, .1f);
+        constraintSet.applyTo(itemView.findViewById(R.id.message_item));
     }
 
     private void emptyView() {
