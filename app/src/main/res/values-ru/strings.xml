@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">АДАМАНТ</string>
+
+    <string name="activity_login_tv_title">АДАМАНТ</string>
+    <string name="activity_login_tv_subtitle">Самый анонимный мессенджер, зашифрованный в Blockchain</string>
+    <string name="activity_login_tv_create_new_suggestion">Или создайте новый анонимный адрес:</string>
+    <string name="activity_login_tv_new_password_label">Это пароль для нового Кошелька и Мессенджера. <b>Сохраните его</b>! Для входа в Кошелек не нужно логина, только этот пароль. <b>Восстановление пароля невозможно</b>.</string>
+    <string name="activity_login_et_pass_phrase">Введите пароль, чтобы войти</string>
+    <string name="activity_login_btn_enter">Вход</string>
+    <string name="activity_login_btn_new_account">Создать новый</string>
+
+    <string name="activity_chats_action_create_new">Новый чат</string>
+
+    <string name="activity_create_chat_recipient">Адрес получателя</string>
+    <string name="activity_create_chat_send">Начать чат</string>
+
+    <string name="activity_messages_btn_send">Отправить</string>
+    <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
+
+    <string name="bottom_menu_title_wallet">Кошелек</string>
+    <string name="bottom_menu_title_chats">Чаты</string>
+    <string name="bottom_menu_title_settings">Настройки</string>
+
+    <string name="fragment_wallet_adamant_address_title">Кошелек ADAMANT</string>
+    <string name="fragment_wallet_adamant_balance_title">Баланс ADM</string>
+    <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
+    <string name="fragment_wallet_create_qrcode_title">Показать свой QR-код</string>
+    <string name="fragment_wallet_exit_title">Выход</string>
+
+    <string name="fragment_settings_new_node">Новая нода</string>
+    <string name="fragment_settings_add_new_node">Добавить ноду</string>
+    <string name="fragment_settings_version">Версия приложения: %s</string>
+    <string name="fragment_settings_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
+    <string name="fragment_settings_node_status">Нода %s, Пинг: %.0f мс</string>
+
+    <string name="address_was_copied">Адрес скопирован</string>
+    <string name="dialog_logout_title">Выход</string>
+    <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
+    <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
+
+
+    <!--ERRORS-->
+    <string name="wrong_passphrase">Неправильный пароль</string>
+    <string name="wrong_address">Неверный адрес получателя</string>
+    <string name="empty_message">Сообщение не может быть пустым</string>
+    <string name="wrong_node_address">Некорректный адрес ноды</string>
+    <string name="unsupported_message_type">Неподдерживаемое сообщение: %s</string>
+
+    <!--HELLO-->
+    <string name="hello_message_ico_name">Токены ADAMANT</string>
+    <string name="hello_message_ico"><p>Сейчас у вас есть возможность купить токены самого защищенного мессенджера АДАМАНТ по низкой цене.</p><p>Важно! Пожалуйста, убедитесь, что вы сохранили пароль к этому аккаунту — выйдите из аккаунта и войдите в него снова. Лучше всего иметь запись пароля и на бумаге. Однако помните, только <b>вы несете ответственность за сохранность вашего пароля</b>. Его невозможно восстановить. А если он попадет в другие руки, ваши деньги будут украдены. Отнеситесь к этому вопросу так серьезно, как если бы цена токенов на вашем кошельке когда-то станет равна миллиарду долларов.</p><p>Чтобы купить токены ADM, перейдите в этом месседжере на вкладку Кошелек и нажмите кнопку Купить токены, или откройте в браузере веб-страницу Adamant.im/ru-buy-tokens/. В форме покупки токенов укажите ваш адрес АДАМАНТа — на него будут перечислены токены ADM. При переходе из мессенджера он будет вставлен автоматически, в другом случае вернитесь в мессенджер и кликните на блок Кошелек ADAMANT, он будет скопирован в буфер обмена. Укажите криптовалюту, в которой вы хотите произвести оплату, и какую сумму. Вы увидите сколько ADM-токенов вы получите, с учетом скидки за объем: 20–30 ETH: +20%, 30–50 ETH: +30%, 50–90 ETH: +40%, 90+ ETH: +50%. Нажмите кнопку Купить токены АДАМАНТ. Вы получите уникальный адрес, на который необходимо выполнить перевод. Как только на него поступит ожидаемая сумма и транзакция будет подтверждена, вы получите токены ADM. Транзакцию можно выполнить <b>с любого кошелька, включая биржи</b>. Необязятельно переводить точную сумму с учетом комиссии, платеж все равно будет засчитан.</p><p>Не отвечайте на это сообщение, этот адрес служебный. Если же у вас остались вопросы, напишите в аккаунт U15677078342684640219.</p></string>
+
+    <string name="hello_message_baunty_name">ADAMANT Bounty</string>
+    <string name="hello_message_baunty"><p>Добро пожаловать в самый анонимный и безопасный мессенджер АДАМАНТ. Помните, что безопасность и анонимность зависит и от вас самих. Не переходите по ссылкам, которые вы получаете в чатах, иначе ваш IP-адрес может быть определен. Не доверяйте расширениям браузера. Лучше всего передавать ваш ADM-адрес собеседникам лично, а не через другие мессенджеры. Храните вашу секретную фразу (пароль) от аккаунта в тайне. Установите на ваше устройство пароль или закрываете вкладку браузера после завершения диалогов.</p><p>Более полную информацию о безопасности и анонимности читайте на странице <a href="https://adamant.im/ru-staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>Все транзакции в блокчейне требуют минимальной комиссии. Это необходимо для поддержания инфраструктуры сети. Чтобы начать общаться, <b>получите бесплатные токены</b> — перейдите на вкладку Кошелек и нажмите Бесплатные токены. Затем на вкладке Диалоги нажмите Новый чат и введите адрес собеседника или сканируйте его QR-код. Чтобы скопировать ваш адрес, нажмите Идентификатор кошелька на вкладке Кошелек.</p><p>Не отвечайте на это сообщение, этот адрес служебный. Если же у вас остались вопросы, напишите в аккаунт U15677078342684640219.</p></string>
+
+    <!--LOCALIZED URLS-->
+    <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
+
+
+    <!--STATUSES-->
+    <string name="node_status_active">активна</string>
+    <string name="node_status_connected">подключена</string>
+    <string name="node_status_unavailable">недоступна</string>
+    <string name="node_status_connecting">подключение…</string>
+
+
+    <!--GENERAL-->
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="warning">Предупреждение</string>
+</resources>
