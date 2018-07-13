@@ -1,5 +1,11 @@
 package im.adamant.android.dagger;
 
+import android.content.Context;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import javax.inject.Named;
 
 import dagger.Module;
@@ -8,6 +14,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.adapters.LanguageAdapter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -34,5 +41,15 @@ public class SettingsScreenModule {
     @Provides
     public ServerNodeAdapter provideAdapter(Settings settings){
         return new ServerNodeAdapter(settings.getNodes());
+    }
+
+    @ActivityScope
+    @Provides
+    public LanguageAdapter provideLanguageAdapter(Context context) {
+        List<Locale> list = new ArrayList<>();
+        list.add(new Locale("en"));
+        list.add(new Locale("ru"));
+
+        return new LanguageAdapter(context, android.R.layout.simple_spinner_item, list);
     }
 }

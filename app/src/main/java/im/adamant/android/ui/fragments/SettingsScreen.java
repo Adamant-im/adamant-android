@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -26,6 +27,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.adapters.LanguageAdapter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
@@ -36,7 +38,10 @@ import io.reactivex.disposables.Disposable;
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Inject
-    ServerNodeAdapter adapter;
+    ServerNodeAdapter nodeAdapter;
+
+    @Inject
+    LanguageAdapter languageAdapter;
 
     Disposable adapterDisposable;
 
@@ -55,6 +60,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
     @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
+    @BindView(R.id.fragment_settings_sp_lang_selector) Spinner languageSelector;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -75,7 +81,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         nodeListView.setLayoutManager(layoutManager);
-        nodeListView.setAdapter(adapter);
+        nodeListView.setAdapter(nodeAdapter);
+
+        languageSelector.setAdapter(languageAdapter);
 
         newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
             if (!isFocused){
@@ -89,7 +97,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void onResume() {
         super.onResume();
-        adapterDisposable = adapter
+        adapterDisposable = nodeAdapter
                 .getRemoveObservable()
                 .subscribe(serverNode -> {
                     Activity activity = getActivity();

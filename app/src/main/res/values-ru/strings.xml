@@ -27,6 +27,7 @@
     <string name="fragment_wallet_create_qrcode_title">Показать свой QR-код</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
+    <string name="fragment_settings_language">Язык приложения</string>
     <string name="fragment_settings_new_node">Новая нода</string>
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
     <string name="fragment_settings_version">Версия приложения: %s</string>
