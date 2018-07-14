@@ -3,13 +3,15 @@ package im.adamant.android;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import android.content.res.Configuration;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.franmontiel.localechanger.LocaleChanger;
+
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -18,15 +20,17 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
-import im.adamant.android.helpers.LocaleHelper;
-import im.adamant.android.services.ServerNodesPingService;
 
 public class AdamantApplication extends Application implements HasActivityInjector, HasServiceInjector {
+
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
 
     @Inject
     DispatchingAndroidInjector<Service> dispatchingAndroidServiceInjector;
+
+    @Inject
+    List<Locale> supportedLocales;
 
     @Override
     public void onCreate() {
@@ -37,6 +41,8 @@ public class AdamantApplication extends Application implements HasActivityInject
                 .context(this)
                 .build()
                 .inject(this);
+
+        LocaleChanger.initialize(getApplicationContext(), supportedLocales);
 
     }
 
@@ -59,7 +65,9 @@ public class AdamantApplication extends Application implements HasActivityInject
     }
 
     @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(LocaleHelper.onAttach(base, "en"));
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        LocaleChanger.onConfigurationChanged();
     }
+
 }

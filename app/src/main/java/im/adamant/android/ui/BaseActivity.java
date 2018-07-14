@@ -4,19 +4,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.res.Resources;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.franmontiel.localechanger.LocaleChanger;
 
 import butterknife.ButterKnife;
-import im.adamant.android.R;
-import im.adamant.android.helpers.LocaleHelper;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
-import io.paperdb.Paper;
+
+import static android.content.pm.PackageManager.GET_META_DATA;
 
 public abstract class BaseActivity extends MvpAppCompatActivity {
     private boolean pingServiceBound = false;
@@ -26,11 +25,6 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     public abstract int getLayoutId();
 
     public abstract boolean withBackButton();
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(LocaleHelper.onAttach(newBase, "en"));
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +41,7 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
             }
         }
 
-        Paper.init(this);
-        String lang = Paper.book().read("language");
-        if (lang == null)  {
-            Paper.book().write("language", "en");
-        }
-        updateView(Paper.book().read("language"));
-    }
-
-    public void updateView(String lang) {
-        Context context = LocaleHelper.setLocale(this, lang);
-        Resources resources = context.getResources();
-
+        resetTitle();
     }
 
     @Override
@@ -122,4 +105,21 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
             balanceUpdateService = null;
         }
     };
+
+    private void resetTitle() {
+        try {
+            int label = getPackageManager().getActivityInfo(getComponentName(), GET_META_DATA).labelRes;
+            if (label != 0) {
+                setTitle(label);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
+    }
 }

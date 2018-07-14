@@ -38,24 +38,15 @@ public abstract class MainScreenModule {
     @Named("main")
     @ActivityScope
     @Provides
-    public static FragmentsAdapter provideFragmentAdapter(Context context, MainScreen mainScreen){
+    public static FragmentsAdapter provideFragmentAdapter(MainScreen mainScreen){
 
-        List<FragmentClassHolder> holders = Arrays.asList(
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_wallet),
-                        WalletScreen.class
-                ),
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_chats),
-                        ChatsScreen.class
-                ),
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_settings),
-                        SettingsScreen.class
-                )
+        List<Class> holders = Arrays.asList(
+                WalletScreen.class,
+                ChatsScreen.class,
+                SettingsScreen.class
         );
 
-        return new FragmentsAdapter(mainScreen.getSupportFragmentManager(), holders);
+        return new FragmentsAdapter(mainScreen.getSupportFragmentManager(), mainScreen, holders);
     }
 
     @ActivityScope
