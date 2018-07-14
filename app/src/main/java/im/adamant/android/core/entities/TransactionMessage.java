@@ -11,8 +11,6 @@ public class TransactionMessage implements WithBytesDigest {
     public static final int RICH_MESSAGE_TYPE = 2;
     public static final int SIGNAL_MESSAGE_TYPE = 3;
 
-    private final static int INTEGER_SIZE = 4;
-
     private String message;
 
     private int type;

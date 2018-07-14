@@ -1,6 +1,7 @@
 package im.adamant.android.core.responses;
 
 public class PublicKeyResponse {
+    private int nodeTimestamp;
     private boolean success;
     private String publicKey;
     private String error;
@@ -27,5 +28,13 @@ public class PublicKeyResponse {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 }

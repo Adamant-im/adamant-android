@@ -10,6 +10,7 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 
@@ -83,8 +84,9 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         TransactionMessage transactionMessage = getTransactionMessage(transaction);
         if (transactionMessage == null){return decryptedMessage;}
 
-        String encryptedMessage = transaction.getAsset().getChat().getMessage();
-        String encryptedNonce = transaction.getAsset().getChat().getOwnMessage();
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        String encryptedMessage = chatAsset.getChat().getMessage();
+        String encryptedNonce = chatAsset.getChat().getOwnMessage();
         String senderPublicKey = transaction.getSenderPublicKey();
 
         if (iRecipient){
@@ -149,9 +151,10 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     private TransactionMessage getTransactionMessage(Transaction transaction) {
 
         if (transaction.getAsset() == null){ return null; }
-        if (transaction.getAsset().getChat() == null){ return null; }
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        if (chatAsset.getChat() == null){ return null; }
 
-        return transaction.getAsset().getChat();
+        return chatAsset.getChat();
     }
 
 }

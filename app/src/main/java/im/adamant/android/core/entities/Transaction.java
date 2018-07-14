@@ -1,14 +1,27 @@
 package im.adamant.android.core.entities;
 
 import im.adamant.android.core.encryption.Hex;
+import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
 
-public class Transaction implements WithBytesDigest {
-    private TransactionAsset asset;
+public class Transaction<T extends TransactionAsset> implements WithBytesDigest {
+    public static final int SEND = 0;
+    public static final int SIGNATURE = 1;
+    public static final int DELEGATE = 2;
+    public static final int VOTE = 3;
+    public static final int MULTI = 4;
+    public static final int DAPP = 5;
+    public static final int IN_TRANSFER = 6;
+    public static final int OUT_TRANSFER = 7;
+    public static final int CHAT_MESSAGE = 8;
+    public static final int STATE = 9;
+
+    private T asset;
 
     //TODO: maybe not a string
     private List<String> confirmations;
@@ -43,12 +56,12 @@ public class Transaction implements WithBytesDigest {
 
     private String signature;
 
-    public TransactionAsset getAsset ()
+    public T getAsset ()
     {
         return asset;
     }
 
-    public void setAsset (TransactionAsset asset)
+    public void setAsset (T asset)
     {
         this.asset = asset;
     }
@@ -223,8 +236,8 @@ public class Transaction implements WithBytesDigest {
         int assetSize = 0;
         byte[] assetBytes = null;
 
-        if (type == 8 && asset != null){
-            assetBytes = asset.getChat().getBytesDigest();
+        if (asset != null){
+            assetBytes = asset.getBytesDigest();
             assetSize = assetBytes.length;
         }
 

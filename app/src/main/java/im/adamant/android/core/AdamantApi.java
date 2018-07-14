@@ -1,9 +1,13 @@
 package im.adamant.android.core;
 
+import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.core.entities.TransactionState;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
@@ -50,4 +54,7 @@ public interface AdamantApi {
 
     @POST("accounts/new")
     Flowable<Authorization> createNewAccount(@Body NewAccount accountKey);
+
+    @POST("states/store")
+    Flowable<OperationComplete> sendToKeyValueStorage(@Body Transaction<TransactionStateAsset> transaction);
 }

@@ -3,6 +3,7 @@ package im.adamant.android.core.responses;
 import im.adamant.android.core.entities.Transaction;
 
 public class TransactionWasNormalized {
+    private int nodeTimestamp;
     private boolean success;
     private Transaction transaction;
     private String error;
@@ -29,5 +30,13 @@ public class TransactionWasNormalized {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 }

@@ -9,10 +9,13 @@ import java.io.IOException;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.KeyGenerator;
 import im.adamant.android.core.entities.Account;
+import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
@@ -43,6 +46,7 @@ public class AdamantApiWrapper {
     private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
 
+    private volatile int serverTimeDelta;
     private int errorsCount;
 
     public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, KeyGenerator keyGenerator) {
@@ -64,6 +68,7 @@ public class AdamantApiWrapper {
                     this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
+                .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -85,6 +90,7 @@ public class AdamantApiWrapper {
 
                     }))
                     .doOnError(this::checkNodeError)
+                    .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
                     .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
                     .ignoreElements();
         } catch (Exception ex){
@@ -102,6 +108,7 @@ public class AdamantApiWrapper {
                 .getTransactions(account.getAddress(), height, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
+                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -113,6 +120,7 @@ public class AdamantApiWrapper {
                 .getTransactions(account.getAddress(), order, offset)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
+                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -121,6 +129,7 @@ public class AdamantApiWrapper {
                 .getPublicKey(address)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
+                .doOnNext(publicKeyResponse -> calcDeltas(publicKeyResponse.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -129,6 +138,7 @@ public class AdamantApiWrapper {
                 .getNormalizedTransaction(unnormalizedTransactionMessage)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
+                .doOnNext(transactionWasNormalized -> calcDeltas(transactionWasNormalized.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -137,6 +147,7 @@ public class AdamantApiWrapper {
                 .processTransaction(transaction)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
+                .doOnNext(transactionWasProcessed -> calcDeltas(transactionWasProcessed.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -154,6 +165,15 @@ public class AdamantApiWrapper {
                     this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
+                .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<OperationComplete> sendToKeyValueStorage(Transaction<TransactionStateAsset> transaction) {
+        return api.sendToKeyValueStorage(transaction)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
@@ -232,5 +252,17 @@ public class AdamantApiWrapper {
                 buildApi();
             }
         }
+    }
+
+    private synchronized void calcDeltas(int timestamp) {
+        serverTimeDelta = getEpoch() - timestamp;
+    }
+
+    public synchronized int getServerTimeDelta() {
+        return serverTimeDelta;
+    }
+
+    public int getEpoch() {
+        return (int) ((System.currentTimeMillis() - AdamantApi.BASE_TIMESTAMP) / 1000);
     }
 }

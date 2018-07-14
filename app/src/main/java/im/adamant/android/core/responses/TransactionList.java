@@ -5,6 +5,7 @@ import im.adamant.android.core.entities.Transaction;
 import java.util.List;
 
 public class TransactionList {
+    private int nodeTimestamp;
     private boolean success;
     private List<Transaction> transactions;
     private String error;
@@ -31,5 +32,13 @@ public class TransactionList {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 }
