@@ -106,6 +106,7 @@ dependencies {
     implementation "gun0912.ted:tedpermission:2.2.0"
     implementation "com.github.stealthcopter:AndroidNetworkTools:0.4.0"
     implementation "com.android.support:transition:27.1.1"
+    implementation "io.paperdb:paperdb:2.5"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

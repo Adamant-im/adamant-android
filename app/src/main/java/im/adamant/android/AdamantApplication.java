@@ -18,6 +18,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
+import im.adamant.android.helpers.LocaleHelper;
 import im.adamant.android.services.ServerNodesPingService;
 
 public class AdamantApplication extends Application implements HasActivityInjector, HasServiceInjector {
@@ -55,5 +56,10 @@ public class AdamantApplication extends Application implements HasActivityInject
         if (imm != null){
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(LocaleHelper.onAttach(base, "en"));
     }
 }

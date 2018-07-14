@@ -47,9 +47,10 @@ public class SettingsScreenModule {
     @Provides
     public LanguageAdapter provideLanguageAdapter(Context context) {
         List<Locale> list = new ArrayList<>();
+//        TODO: set it dynamic
         list.add(new Locale("en"));
         list.add(new Locale("ru"));
 
-        return new LanguageAdapter(context, android.R.layout.simple_spinner_item, list);
+        return new LanguageAdapter(context, list);
     }
 }

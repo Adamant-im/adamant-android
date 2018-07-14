@@ -4,14 +4,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 
 import butterknife.ButterKnife;
+import im.adamant.android.R;
+import im.adamant.android.helpers.LocaleHelper;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
+import io.paperdb.Paper;
 
 public abstract class BaseActivity extends MvpAppCompatActivity {
     private boolean pingServiceBound = false;
@@ -21,6 +26,11 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     public abstract int getLayoutId();
 
     public abstract boolean withBackButton();
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(LocaleHelper.onAttach(newBase, "en"));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +46,19 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
+
+        Paper.init(this);
+        String lang = Paper.book().read("language");
+        if (lang == null)  {
+            Paper.book().write("language", "en");
+        }
+        updateView(Paper.book().read("language"));
+    }
+
+    public void updateView(String lang) {
+        Context context = LocaleHelper.setLocale(this, lang);
+        Resources resources = context.getResources();
+
     }
 
     @Override

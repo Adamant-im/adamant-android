@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +24,16 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.adapters.LanguageAdapter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.paperdb.Paper;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -126,6 +130,13 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @OnClick(R.id.fragment_settings_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
+    }
+    @OnItemSelected(R.id.fragment_settings_sp_lang_selector)
+    public void onSelectLanguage(int i) {
+        Paper.book().write("language", languageAdapter.getItem(i).getLanguage());
+//        TODO: Refactor
+        ((BaseActivity)getActivity()).updateView(Paper.book().read("language"));
+
     }
 
     @Override
