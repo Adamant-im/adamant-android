@@ -155,6 +155,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         }
     }
 
+    //TODO: Refactor: method to long and dirty
     private android.support.v7.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
         android.support.v7.app.AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
@@ -176,15 +177,19 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 }
             }
 
-            AtomicInteger selectedLangIndex = new AtomicInteger();
+            AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
 
             builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
                 selectedLangIndex.set(i);
             });
 
+            int finalDefaultSelected = defaultSelected;
             builder.setPositiveButton(R.string.yes, (d, i) -> {
-                LocaleChanger.setLocale(supportedLocales.get(selectedLangIndex.get()));
-                activity.recreate();
+                int currentSelected = selectedLangIndex.get();
+                if (finalDefaultSelected != currentSelected){
+                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
+                    activity.recreate();
+                }
             });
             builder.setNegativeButton(R.string.no, null);
         }
