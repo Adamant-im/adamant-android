@@ -30,6 +30,11 @@ import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -50,6 +55,15 @@ import ru.terrakok.cicerone.Router;
 
 @Module(includes = {AndroidSupportInjectionModule.class})
 public abstract class AppModule {
+
+    @Singleton
+    @Provides
+    public static List<Locale> provideSupportedLocale() {
+        Locale ru = new Locale("ru");
+        Locale en = new Locale("en");
+
+        return Arrays.asList(en, ru);
+    }
 
     @Singleton
     @Provides

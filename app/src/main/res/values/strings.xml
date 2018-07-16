@@ -28,6 +28,7 @@
     <string name="fragment_wallet_exit_title">Exit</string>
 
     <string name="fragment_settings_language">Language</string>
+    <string name="fragment_settings_choose_language">Choose language</string>
     <string name="fragment_settings_new_node">New node\'s address</string>
     <string name="fragment_settings_add_new_node">Add</string>
     <string name="fragment_settings_version">Version: %s</string>

@@ -1,5 +1,6 @@
 package im.adamant.android.ui.adapters;
 
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,41 +13,41 @@ import im.adamant.android.ui.fragments.BaseFragment;
 import im.adamant.android.ui.holders.FragmentClassHolder;
 
 public class FragmentsAdapter extends FragmentStatePagerAdapter {
-    private List<FragmentClassHolder> classHolders = new ArrayList<>();
+    private List<Class> classes = new ArrayList<>();
     private List<BaseFragment> fragments = new ArrayList<>();
+    private Context context;
 
     public FragmentsAdapter(FragmentManager fm) {
         super(fm);
     }
 
-    public FragmentsAdapter(FragmentManager fm, List<FragmentClassHolder> classHolders) {
+    public FragmentsAdapter(FragmentManager fm, Context context, List<Class> classes) {
         super(fm);
 
-        if (classHolders != null){
-            this.classHolders = classHolders;
+        this.context = context;
+
+        if (classes != null){
+            this.classes = classes;
+            for (Class clazz : classes){
+                BaseFragment fragment = null;
+                try {
+                    fragment = (BaseFragment) clazz.newInstance();
+                    fragments.add(fragment);
+                } catch (InstantiationException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     @Override
     public Fragment getItem(int position) {
-
-        if((position >= 0) && (position < classHolders.size())){
-            try {
-                FragmentClassHolder holder = classHolders.get(position);
-                Fragment fragment = holder.getFragmentClass().newInstance();
-                fragments.add((BaseFragment) fragment);
-                return fragment;
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
-
-        return null;
+        return fragments.get(position);
     }
 
     @Override
     public int getCount() {
-        return classHolders.size();
+        return classes.size();
     }
 
     @Nullable
@@ -54,10 +55,14 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         String title = "";
         try {
-            title = classHolders.get(position).getTitle();
+            BaseFragment fragment = fragments.get(position);
+            int resourceId = fragment.getActivityTitleId();
+
+            title = context.getString(resourceId);
         }catch (Exception ex) {
             ex.printStackTrace();
         }
         return title;
     }
+
 }

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">АДАМАНТ</string>
 
@@ -28,6 +29,7 @@
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_language">Язык приложения</string>
+    <string name="fragment_settings_choose_language">Выберите язык</string>
     <string name="fragment_settings_new_node">Новая нода</string>
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
     <string name="fragment_settings_version">Версия приложения: %s</string>

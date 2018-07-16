@@ -127,6 +127,10 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        if (mainAdapter != null){
+            setTitle(mainAdapter.getPageTitle(content.getCurrentItem()));
+        }
     }
 
     @Override

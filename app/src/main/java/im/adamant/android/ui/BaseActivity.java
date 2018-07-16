@@ -4,14 +4,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.franmontiel.localechanger.LocaleChanger;
 
 import butterknife.ButterKnife;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
+
+import static android.content.pm.PackageManager.GET_META_DATA;
 
 public abstract class BaseActivity extends MvpAppCompatActivity {
     private boolean pingServiceBound = false;
@@ -36,6 +40,8 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
+
+        resetTitle();
     }
 
     @Override
@@ -99,4 +105,21 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
             balanceUpdateService = null;
         }
     };
+
+    private void resetTitle() {
+        try {
+            int label = getPackageManager().getActivityInfo(getComponentName(), GET_META_DATA).labelRes;
+            if (label != 0) {
+                setTitle(label);
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        newBase = LocaleChanger.configureBaseContext(newBase);
+        super.attachBaseContext(newBase);
+    }
 }
