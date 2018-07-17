@@ -83,6 +83,16 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             );
     }
 
+    public void onShowChatByAddress(String address, String label){
+        Chat chat = new Chat();
+        chat.setCompanionId(address);
+        if (label != null && !label.isEmpty()){
+            chat.setTitle(label);
+        } else {
+            chat.setTitle(address);
+        }
+    }
+
     public void onClickSendMessage(String message){
         //TODO: verify message length and balance
 

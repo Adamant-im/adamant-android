@@ -1,5 +1,7 @@
 package im.adamant.android.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -78,9 +80,22 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         messagesList.setLayoutManager(layoutManager);
         messagesList.setAdapter(adapter);
 
-        if (getIntent() != null && getIntent().hasExtra(ARG_CHAT)){
-            Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
-            presenter.onShowChat(currentChat);
+        Intent intent = getIntent();
+        if (intent != null){
+            if (intent.hasExtra(ARG_CHAT)){
+                Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
+                presenter.onShowChat(currentChat);
+            }
+
+            if (Intent.ACTION_VIEW.equals(intent.getAction())){
+                Uri uri = intent.getData();
+                if (uri != null){
+                    String address = uri.getQueryParameter("address");
+                    String label = uri.getQueryParameter("label");
+
+                    presenter.onShowChatByAddress(address, label);
+                }
+            }
         }
 
         newMessageText.setOnFocusChangeListener( (view, isFocused) -> {

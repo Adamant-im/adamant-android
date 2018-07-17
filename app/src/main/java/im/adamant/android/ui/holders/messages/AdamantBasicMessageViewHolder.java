@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.transition.TransitionManager;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
         constraintSet.clone(constraintLayout);
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
+        messageView.setMovementMethod(LinkMovementMethod.getInstance());
         dateView = itemView.findViewById(R.id.list_item_message_date);
     }
 

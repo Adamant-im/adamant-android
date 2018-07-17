@@ -1,5 +1,7 @@
 package im.adamant.android.helpers;
 
+import android.net.Uri;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,20 +10,44 @@ import java.util.regex.Pattern;
 public class AdamantAddressProcessor {
     private static final Pattern admLinkPattern = Pattern.compile("U(\\d{15,})(\\?\\S*\\b)*");
 
+    public static class AdamantAddressEntity {
+        private String address;
+        private String label = "";
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+    }
+
     public String getHtmlString(String s) throws Exception {
         Matcher matcher = admLinkPattern.matcher(s);
         StringBuffer buffer = new StringBuffer();
         StringBuilder linkBuilder = new StringBuilder();
         while (matcher.find()){
             linkBuilder.append("<a href=\"adamant://messages?address=");
-            linkBuilder.append(matcher.group(0));
+            linkBuilder.append(matcher.group(1));
 
             if (matcher.groupCount() > 1){
-                linkBuilder.append(matcher.group(1).substring(1));
+                String params = matcher.group(2);
+                if (params != null){
+                    linkBuilder.append(params.substring(1));
+                }
             }
 
             linkBuilder.append("\">");
-            linkBuilder.append(matcher.group(0));
+            linkBuilder.append(matcher.group(1));
             linkBuilder.append("</a>");
 
             matcher.appendReplacement(buffer, linkBuilder.toString());
@@ -32,14 +58,30 @@ public class AdamantAddressProcessor {
         return buffer.toString();
     }
 
-    public List<String> extractAdamantAddreses(String s) {
-        List<String> addreses = new ArrayList<>();
+    public List<AdamantAddressEntity> extractAdamantAddresses(String s) {
+        List<AdamantAddressEntity> addresses = new ArrayList<>();
         Matcher matcher = admLinkPattern.matcher(s);
 
         while (matcher.find()){
-            addreses.add(matcher.group(0));
+            String address = matcher.group(1);
+            AdamantAddressEntity adamantAddressEntity = new AdamantAddressEntity();
+            adamantAddressEntity.setAddress("U" + address);
+
+            if (matcher.groupCount() > 1){
+                Uri parsed = Uri.parse(matcher.group(2));
+                String label = parsed.getQueryParameter("label");
+                if (label != null){
+                    adamantAddressEntity.setLabel(label);
+                }
+            }
+
+            if (adamantAddressEntity.getLabel().isEmpty()){
+                adamantAddressEntity.setLabel(address);
+            }
+
+            addresses.add(adamantAddressEntity);
         }
 
-        return addreses;
+        return addresses;
     }
 }
