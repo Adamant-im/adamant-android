@@ -55,7 +55,6 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     }
 
     private boolean validate(String address) {
-        //TODO: Write address verification rules
         if (address == null) {return false;}
         try {
             if (!"U".equalsIgnoreCase(address.substring(0, 1))){return false;}

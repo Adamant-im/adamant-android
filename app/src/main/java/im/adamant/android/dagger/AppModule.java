@@ -223,6 +223,7 @@ public abstract class AppModule {
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
+            AdamantAddressProcessor adamantAddressProcessor,
             LocalizedChatMapper localizedChatMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
@@ -233,6 +234,7 @@ public abstract class AppModule {
                 chatMapper,
                 localizedMessageMapper,
                 localizedChatMapper,
+                adamantAddressProcessor,
                 encryptor,
                 publicKeyStorage
         );

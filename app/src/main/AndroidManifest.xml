@@ -26,13 +26,34 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MessagesScreen" />
+        <activity
+            android:name=".ui.MessagesScreen"
+            android:exported="true">
+
+            <!--
+             VERY IMPORTANT: Activity exported, pay special attention because its call is accessible
+             by the third-party application.
+             Do not allow execution of destructive commands.
+            -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="messages"
+                    android:scheme="adamant" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.CreateChatScreen"
+            android:exported="false"
             android:label="@string/activity_chats_action_create_new" />
         <activity android:name=".ui.MainScreen" />
         <activity
             android:name=".ui.ScanQrCodeScreen"
+            android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
 
         <service
@@ -41,6 +62,12 @@
         <service
             android:name=".services.AdamantBalanceUpdateService"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.PinCodeScreen"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>
