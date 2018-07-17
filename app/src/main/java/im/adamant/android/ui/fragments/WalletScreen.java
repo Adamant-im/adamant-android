@@ -162,7 +162,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             if (activity != null){
                 File qrCodeFile = qrCodeHelper.makeImageFile("address_");
                 try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                    QRCode.from(adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                    QRCode.from("adm:" + adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
                     qrCodeHelper.registerImageInGallery(activity, qrCodeFile);
                 }catch (Exception ex){
                     ex.printStackTrace();

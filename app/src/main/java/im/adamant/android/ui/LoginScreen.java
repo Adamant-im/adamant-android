@@ -227,7 +227,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
         public void onPermissionGranted() {
             File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
             try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from("adm:" + passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
                 qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
             }catch (Exception ex){
                 ex.printStackTrace();
