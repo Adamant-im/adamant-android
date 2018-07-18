@@ -8,19 +8,23 @@ import android.widget.TextView;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.EthereumTransferMessage;
 import im.adamant.android.ui.entities.messages.FallbackMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
-public class EtheriumTransferMessageViewHolder extends AbstractMessageViewHolder {
+public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder {
     private ImageView processedView;
     private TextView messageView;
     private RelativeTimeTextView dateView;
+    private AdamantAddressProcessor adamantAddressProcessor;
 
-    public EtheriumTransferMessageViewHolder(Context context, View v) {
+    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor) {
         super(context, v);
+
+        this.adamantAddressProcessor = adamantAddressProcessor;
 
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
@@ -39,9 +43,7 @@ public class EtheriumTransferMessageViewHolder extends AbstractMessageViewHolder
             EthereumTransferMessage ethereumTransferMessage = (EthereumTransferMessage)message;
 
             messageView.setText(
-                    HtmlHelper.fromHtml(
-                            resolveMessage(ethereumTransferMessage)
-                    )
+                    ethereumTransferMessage.getHtmlComment(adamantAddressProcessor)
             );
 
             dateView.setReferenceTime(message.getDate());

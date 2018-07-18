@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
@@ -24,10 +25,12 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     private RelativeTimeTextView dateView;
     private ConstraintLayout constraintLayout;
     private ConstraintSet constraintSet = new ConstraintSet();
+    private AdamantAddressProcessor adamantAddressProcessor;
 
 
-    public AdamantBasicMessageViewHolder(Context context, View itemView) {
+    public AdamantBasicMessageViewHolder(Context context, View itemView, AdamantAddressProcessor adamantAddressProcessor) {
         super(context, itemView);
+        this.adamantAddressProcessor = adamantAddressProcessor;
 
         constraintLayout = itemView.findViewById(R.id.message_item);
         TransitionManager.beginDelayedTransition(constraintLayout);
@@ -51,9 +54,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             AdamantBasicMessage basicMessage = (AdamantBasicMessage)message;
 
             messageView.setText(
-                    HtmlHelper.fromHtml(
-                            basicMessage.getText()
-                    )
+                basicMessage.getHtmlText(adamantAddressProcessor)
             );
 
             dateView.setReferenceTime(message.getDate());

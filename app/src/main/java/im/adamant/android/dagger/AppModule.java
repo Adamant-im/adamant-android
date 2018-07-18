@@ -30,7 +30,6 @@ import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +42,7 @@ import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
-import im.adamant.android.ui.messages_support.factories.EtheriumTransferMessageFactory;
+import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.github.novacrypto.bip39.MnemonicGenerator;
@@ -105,22 +104,22 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static MessageFactoryProvider provideMessageFactoryProvider() {
+    public static MessageFactoryProvider provideMessageFactoryProvider(AdamantAddressProcessor adamantAddressProcessor) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageTypes.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory()
+                new AdamantBasicMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
                 SupportedMessageTypes.FALLBACK,
-                new FallbackMessageFactory()
+                new FallbackMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
                 SupportedMessageTypes.ETHEREUM_TRANSFER,
-                new EtheriumTransferMessageFactory()
+                new EthereumTransferMessageFactory(adamantAddressProcessor)
         );
 
         return provider;

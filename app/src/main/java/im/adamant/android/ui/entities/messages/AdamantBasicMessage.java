@@ -1,9 +1,14 @@
 package im.adamant.android.ui.entities.messages;
 
 import android.content.Context;
+import android.text.Spanned;
+
+import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.HtmlHelper;
 
 public class AdamantBasicMessage extends AbstractMessage {
     private String text;
+    private Spanned htmlText;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
@@ -12,6 +17,18 @@ public class AdamantBasicMessage extends AbstractMessage {
 
     public String getText() {
         return text;
+    }
+
+    public Spanned getHtmlText(AdamantAddressProcessor adamantAddressProcessor){
+        if (htmlText == null){
+            try {
+                htmlText = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(text));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return htmlText;
     }
 
     public void setText(String text) {

@@ -115,11 +115,6 @@ public class ChatsInteractor {
                                  message = localizedMessageMapper.apply(message);
                                  List<AbstractMessage> messages = messagesByChats.get(message.getCompanionId());
 
-                                 if (message.getSupportedType() == SupportedMessageTypes.ADAMANT_BASIC){
-                                     AdamantBasicMessage basicMessage = (AdamantBasicMessage) message;
-                                     basicMessage.setText(adamantAddressProcessor.getHtmlString(basicMessage.getText()));
-                                 }
-
                                  if (messages != null) {
                                      //If we sent this message and it's already in the list
                                      if (!messages.contains(message)){
