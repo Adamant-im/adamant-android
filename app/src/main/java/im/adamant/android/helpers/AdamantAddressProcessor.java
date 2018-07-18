@@ -42,6 +42,7 @@ public class AdamantAddressProcessor {
             if (matcher.groupCount() > 1){
                 String params = matcher.group(2);
                 if (params != null){
+                    linkBuilder.append("&");
                     linkBuilder.append(params.substring(1));
                 }
             }

@@ -91,6 +91,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         } else {
             chat.setTitle(address);
         }
+
+        onShowChat(chat);
     }
 
     public void onClickSendMessage(String message){
