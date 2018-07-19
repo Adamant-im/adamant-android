@@ -13,7 +13,7 @@ public class FallbackMessage extends AbstractMessage {
     private String fallbackMessage;
     private String fallbackType = "none";
     private String shortedMessage;
-    private Spanned htmlFallBackMessage;
+    private transient Spanned htmlFallBackMessage;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {

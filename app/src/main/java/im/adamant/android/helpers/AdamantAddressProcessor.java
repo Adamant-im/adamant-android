@@ -36,7 +36,7 @@ public class AdamantAddressProcessor {
         StringBuffer buffer = new StringBuffer();
         StringBuilder linkBuilder = new StringBuilder();
         while (matcher.find()){
-            linkBuilder.append("<a href=\"adamant://messages?address=");
+            linkBuilder.append("<a href=\"adamant://messages?address=U");
             linkBuilder.append(matcher.group(1));
 
             if (matcher.groupCount() > 1){
@@ -69,10 +69,13 @@ public class AdamantAddressProcessor {
             adamantAddressEntity.setAddress("U" + address);
 
             if (matcher.groupCount() > 1){
-                Uri parsed = Uri.parse(matcher.group(2));
-                String label = parsed.getQueryParameter("label");
-                if (label != null){
-                    adamantAddressEntity.setLabel(label);
+                String paramsString = matcher.group(2);
+                if (paramsString != null){
+                    Uri parsed = Uri.parse(paramsString);
+                    String label = parsed.getQueryParameter("label");
+                    if (label != null){
+                        adamantAddressEntity.setLabel(label);
+                    }
                 }
             }
 

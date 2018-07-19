@@ -8,7 +8,7 @@ import im.adamant.android.helpers.HtmlHelper;
 
 public class AdamantBasicMessage extends AbstractMessage {
     private String text;
-    private Spanned htmlText;
+    private transient Spanned htmlText;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {

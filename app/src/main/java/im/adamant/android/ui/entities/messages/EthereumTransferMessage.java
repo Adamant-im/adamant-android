@@ -12,7 +12,7 @@ public class EthereumTransferMessage extends AbstractMessage {
     private BigDecimal amount;
     private String comment;
     private String ethereumTransactionId;
-    private Spanned htmlComment;
+    private transient Spanned htmlComment;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
