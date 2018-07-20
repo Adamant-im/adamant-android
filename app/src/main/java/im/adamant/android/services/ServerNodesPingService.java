@@ -1,6 +1,7 @@
 package im.adamant.android.services;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
@@ -9,8 +10,10 @@ import android.support.annotation.Nullable;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
+import com.stealthcopter.networktools.ping.PingTools;
 
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -20,6 +23,7 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.dagger.ServerNodePingServiceModule;
+import im.adamant.android.helpers.AlternativePingHelper;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -30,6 +34,8 @@ import static im.adamant.android.core.entities.ServerNode.UNAVAILABLE_PING;
 
 public class ServerNodesPingService extends Service {
     private static final String TAG = "PingService";
+    public static final int PING_TIMEOUT = 15000;
+
     private final IBinder binder = new LocalBinder();
 
     @Named(ServerNodePingServiceModule.NAME)
@@ -38,6 +44,9 @@ public class ServerNodesPingService extends Service {
 
     @Inject
     Settings settings;
+
+    @Inject
+    Context context;
 
     @Override
     public void onCreate() {
@@ -62,16 +71,15 @@ public class ServerNodesPingService extends Service {
                         Uri uri = Uri.parse(serverNode.getUrl());
                         InetAddress address = InetAddress.getByName(uri.getHost());
 
-                        PingResult pingResult = Ping.onAddress(address).setTimeOutMillis(5000).doPing();
-                        if ((!"localhost".equalsIgnoreCase(address.getHostName())) && (pingResult.isReachable())) {
-                            if (serverNode.getStatus() != ServerNode.Status.CONNECTED){
-                                serverNode.setStatus(ServerNode.Status.ACTIVE);
-                            }
-                            serverNode.setPingInMilliseconds(pingResult.getTimeTaken());
+                        PingResult pingResult = ping(address, uri);
+
+                        if ((!"localhost".equalsIgnoreCase(address.getHostName()))){
+                            parsePingValue(serverNode, pingResult);
                         } else {
                             serverNode.setStatus(ServerNode.Status.UNAVAILABLE);
                             serverNode.setPingInMilliseconds(UNAVAILABLE_PING);
                         }
+
                     }catch (Exception ex){
                         ex.printStackTrace();
 
@@ -85,6 +93,32 @@ public class ServerNodesPingService extends Service {
                 .subscribe();
 
         compositeDisposable.add(disposable);
+    }
+
+    private void parsePingValue(ServerNode serverNode, PingResult pingResult) {
+        if (pingResult.isReachable()) {
+            if (serverNode.getStatus() != ServerNode.Status.CONNECTED){
+                serverNode.setStatus(ServerNode.Status.ACTIVE);
+            }
+            serverNode.setPingInMilliseconds(pingResult.getTimeTaken());
+        } else {
+            serverNode.setStatus(ServerNode.Status.UNAVAILABLE);
+            serverNode.setPingInMilliseconds(UNAVAILABLE_PING);
+        }
+    }
+
+    private PingResult ping(InetAddress address, Uri uri) throws UnknownHostException {
+        PingResult pingResult = Ping.onAddress(address).setTimeOutMillis(PING_TIMEOUT).doPing();
+        if ((pingResult.error != null) && (!pingResult.error.isEmpty())){
+            AlternativePingHelper.Ping ping = AlternativePingHelper.ping(uri, context);
+            PingResult result = new PingResult(address);
+            result.timeTaken = ping.cnt;
+            result.isReachable = ping.reachable;
+
+            pingResult = result;
+        }
+
+        return pingResult;
     }
 
     @Override
