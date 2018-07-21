@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.AdamantApiBuilder;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
@@ -156,8 +157,14 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
-        return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
+    public static AdamantApiBuilder provideApiBuilder(Settings settings) {
+        return new AdamantApiBuilder(settings.getNodes());
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantApiWrapper provideAdamantApiWrapper(AdamantApiBuilder apiBuilder, KeyGenerator keyGenerator) {
+        return new AdamantApiWrapper(apiBuilder, keyGenerator);
     }
 
     @Singleton
