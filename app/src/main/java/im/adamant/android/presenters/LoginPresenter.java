@@ -14,6 +14,7 @@ import java.io.OutputStream;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.mvp_view.LoginView;
@@ -43,6 +44,22 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
         if (authorizeInteractor.isAuthorized()){
             router.navigateTo(Screens.WALLET_SCREEN);
+        } else {
+            Disposable subscribe = authorizeInteractor
+                    .restoreAuthorization()
+                    .subscribe(
+                        authorization -> {
+                            if (authorization.isSuccess()){
+                                router.navigateTo(Screens.WALLET_SCREEN);
+                            }
+                        },
+                        Throwable::printStackTrace
+                    );
+
+
+            //TODO: If "Not Authorized" exception than force logout from application.
+
+            subscriptions.add(subscribe);
         }
     }
 

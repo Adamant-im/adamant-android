@@ -34,7 +34,6 @@ public class AdamantApiWrapper {
     private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
     private Account account;
-    private String passPhrase;
     private AdamantKeyGenerator keyGenerator;
 
     private ServerNode currentServerNode;
@@ -52,13 +51,16 @@ public class AdamantApiWrapper {
     public Flowable<Authorization> authorize(String passPhrase) {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
+        return authorize(tempKeyPair);
+    }
+
+    public Flowable<Authorization> authorize(KeyPair tempKeyPair) {
         return api
                 .authorize(tempKeyPair.getPublicKeyString().toLowerCase())
                 .subscribeOn(Schedulers.io())
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
-                    this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
@@ -148,7 +150,6 @@ public class AdamantApiWrapper {
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
-                    this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
@@ -161,10 +162,6 @@ public class AdamantApiWrapper {
     public void logout() {
         account = null;
         keyPair = null;
-    }
-
-    public String getPassPhrase() {
-        return passPhrase;
     }
 
     public Account getAccount() {

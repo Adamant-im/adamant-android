@@ -57,7 +57,7 @@ public class KeyStoreCipher {
         this.context = context;
     }
 
-    public <T extends com.goterl.lazycode.lazysodium.utils.KeyPair> String encrypt(String alias, T object) throws Exception {
+    public String encrypt(String alias, com.goterl.lazycode.lazysodium.utils.KeyPair object) throws Exception {
         String json = gson.toJson(object);
         byte[] bytes = json.getBytes();
         long maxContentSize = Math.round(floor(KEY_SIZE / 8) - 11);
@@ -75,8 +75,8 @@ public class KeyStoreCipher {
         return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP);
     }
 
-    public <T extends com.goterl.lazycode.lazysodium.utils.KeyPair> T decrypt(String alias, String object) throws NoSuchProviderException, InvalidAlgorithmParameterException {
-        T decryptedKeyPair = null;
+    public com.goterl.lazycode.lazysodium.utils.KeyPair decrypt(String alias, String object) throws NoSuchProviderException, InvalidAlgorithmParameterException {
+        com.goterl.lazycode.lazysodium.utils.KeyPair decryptedKeyPair = null;
 
         byte[] encryptedData = Base64.decode(object, Base64.NO_WRAP);
 
@@ -92,7 +92,7 @@ public class KeyStoreCipher {
             final byte[] decodedData = cipher.doFinal(encryptedData);
             final String unencryptedString = new String(decodedData, "UTF-8");
 
-            decryptedKeyPair = gson.fromJson(unencryptedString, new TypeToken<T>() {}.getType());
+            decryptedKeyPair = gson.fromJson(unencryptedString, com.goterl.lazycode.lazysodium.utils.KeyPair.class);
 
         } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException | NoSuchPaddingException | UnrecoverableEntryException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package im.adamant.android.interactors;
 
+import com.goterl.lazycode.lazysodium.utils.KeyPair;
+
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
@@ -17,6 +19,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 
 public class AuthorizeInteractor {
+    public static final String KEY_ALIAS = "account";
+
     private AdamantApiWrapper api;
     private AdamantKeyGenerator keyGenerator;
     private KeyStoreCipher keyStoreCipher;
@@ -34,19 +38,40 @@ public class AuthorizeInteractor {
         this.settings = settings;
     }
 
-    public Flowable<Authorization> authorize(String passPhrase){
+    public Flowable<Authorization> authorize(String passPhrase) {
         try {
             return api.authorize(passPhrase)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(authorization -> {
-                        String account = keyStoreCipher.encrypt("account", api.getKeyPair());
+                        String account = keyStoreCipher.encrypt(KEY_ALIAS, api.getKeyPair());
                         settings.setAccountKeypair(account);
                     });
         }catch (Exception ex){
             ex.printStackTrace();
             return Flowable.error(ex);
         }
+    }
 
+    public Flowable<Authorization> restoreAuthorization() {
+        try {
+            String account = settings.getAccountKeypair();
+            if (account == null || account.isEmpty()){
+                return Flowable.error(new Exception("Account not stored!"));
+            }
+
+            KeyPair keyPair = keyStoreCipher.decrypt(KEY_ALIAS, account);
+
+            if (keyPair == null){
+                return Flowable.error(new Exception("Account not decrypted!"));
+            }
+
+            return api.authorize(keyPair)
+                    .observeOn(AndroidSchedulers.mainThread());
+
+        }catch (Exception ex){
+            ex.printStackTrace();
+            return Flowable.error(ex);
+        }
     }
 
     public CharSequence generatePassPhrase() {
