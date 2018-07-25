@@ -17,12 +17,12 @@ import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.Words;
 import io.github.novacrypto.bip39.wordlists.English;
 
-public class KeyGenerator {
+public class AdamantKeyGenerator {
     private MnemonicGenerator mnemonicGenerator;
     private SeedCalculator seedCalculator;
     private Sign.Lazy sodium;
 
-    public KeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, Sign.Lazy sodium) {
+    public AdamantKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, Sign.Lazy sodium) {
         this.mnemonicGenerator = mnemonicGenerator;
         this.seedCalculator = seedCalculator;
         this.sodium = sodium;

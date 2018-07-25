@@ -1,9 +1,11 @@
 package im.adamant.android.interactors;
 
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
+import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.responses.Authorization;
 
+import im.adamant.android.helpers.Settings;
 import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException;
@@ -16,20 +18,30 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class AuthorizeInteractor {
     private AdamantApiWrapper api;
-    private KeyGenerator keyGenerator;
+    private AdamantKeyGenerator keyGenerator;
+    private KeyStoreCipher keyStoreCipher;
+    private Settings settings;
 
     public AuthorizeInteractor(
             AdamantApiWrapper api,
-            KeyGenerator keyGenerator
+            AdamantKeyGenerator keyGenerator,
+            KeyStoreCipher keyStoreCipher,
+            Settings settings
     ) {
         this.api = api;
         this.keyGenerator = keyGenerator;
+        this.keyStoreCipher = keyStoreCipher;
+        this.settings = settings;
     }
 
     public Flowable<Authorization> authorize(String passPhrase){
         try {
             return api.authorize(passPhrase)
-                    .observeOn(AndroidSchedulers.mainThread());
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(authorization -> {
+                        String account = keyStoreCipher.encrypt("account", api.getKeyPair());
+                        settings.setAccountKeypair(account);
+                    });
         }catch (Exception ex){
             ex.printStackTrace();
             return Flowable.error(ex);

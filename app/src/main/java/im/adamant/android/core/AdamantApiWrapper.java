@@ -1,13 +1,11 @@
 package im.adamant.android.core;
 
-import android.util.Log;
-
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
 
 import im.adamant.android.BuildConfig;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.requests.NewAccount;
@@ -22,7 +20,6 @@ import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -38,14 +35,14 @@ public class AdamantApiWrapper {
     private KeyPair keyPair;
     private Account account;
     private String passPhrase;
-    private KeyGenerator keyGenerator;
+    private AdamantKeyGenerator keyGenerator;
 
     private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
 
     private int errorsCount;
 
-    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, KeyGenerator keyGenerator) {
+    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, AdamantKeyGenerator keyGenerator) {
         this.nodes = nodes;
         this.keyGenerator = keyGenerator;
 

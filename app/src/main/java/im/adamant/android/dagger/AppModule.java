@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
+import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
@@ -26,6 +27,7 @@ import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 
+import com.google.gson.Gson;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
@@ -54,6 +56,18 @@ import ru.terrakok.cicerone.Router;
 
 @Module(includes = {AndroidSupportInjectionModule.class})
 public abstract class AppModule {
+
+    @Singleton
+    @Provides
+    public static Gson provideGson() {
+        return new Gson();
+    }
+
+    @Singleton
+    @Provides
+    public static KeyStoreCipher provideKeyStoreCipher(Gson gson, Context context) {
+        return new KeyStoreCipher(gson, context);
+    }
 
     @Singleton
     @Provides
@@ -92,8 +106,8 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static KeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
-        return new KeyGenerator(seedCalculator, mnemonicGenerator, sodium);
+    public static AdamantKeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
+        return new AdamantKeyGenerator(seedCalculator, mnemonicGenerator, sodium);
     }
 
     @Singleton
@@ -156,7 +170,7 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
+    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, AdamantKeyGenerator keyGenerator) {
         return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
     }
 
@@ -188,9 +202,11 @@ public abstract class AppModule {
     @Provides
     public static AuthorizeInteractor provideAuthorizationInteractor(
             AdamantApiWrapper api,
-            KeyGenerator keyGenerator
+            AdamantKeyGenerator keyGenerator,
+            KeyStoreCipher keyStoreCipher,
+            Settings settings
     ) {
-        return new AuthorizeInteractor(api, keyGenerator);
+        return new AuthorizeInteractor(api, keyGenerator, keyStoreCipher, settings);
     }
 
     @Singleton

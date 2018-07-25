@@ -11,12 +11,18 @@ import io.reactivex.disposables.Disposable;
 
 public class Settings {
     private static final String NODES_KEY = "nodes_key";
+    private static final String ACCOUNT_KEY_PAIR = "account_key_pair";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
+    private String accountKeypair;
+
     private SharedPreferences preferences;
 
     public Settings(SharedPreferences preferences) {
         this.preferences = preferences;
+
+        accountKeypair = this.preferences.getString(ACCOUNT_KEY_PAIR, "");
+
         loadNodes();
     }
 
@@ -34,6 +40,18 @@ public class Settings {
 
     public ObservableRxList<ServerNode> getNodes() {
         return nodes;
+    }
+
+    public String getAccountKeypair() {
+        return accountKeypair;
+    }
+
+    public void setAccountKeypair(String accountKeypair) {
+        this.accountKeypair = accountKeypair;
+        this.preferences
+                .edit()
+                .putString(ACCOUNT_KEY_PAIR, accountKeypair)
+                .apply();
     }
 
     private void updateNodes() {
