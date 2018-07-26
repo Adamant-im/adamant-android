@@ -6,6 +6,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
@@ -82,7 +83,7 @@ public class ChatsInteractor {
 
         //TODO: Well test the erroneous execution path, replace where you need doOnError
 
-        if (!api.isAuthorized()){return Completable.error(new Exception("Not authorized"));}
+        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
 
           return Flowable
                  .defer(() -> Flowable.just(currentHeight))
@@ -162,7 +163,7 @@ public class ChatsInteractor {
 
     public Single<TransactionWasProcessed> sendMessage(String message, String address){
 
-        if (!api.isAuthorized()){return Single.error(new Exception("Not authorized"));}
+        if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();

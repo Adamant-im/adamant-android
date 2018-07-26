@@ -5,6 +5,7 @@ import android.util.Log;
 import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
@@ -41,7 +42,13 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 .synchronizeWithBlockchain()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
-                    router.showSystemMessage(error.getMessage());
+                    Log.e("ERR", error.getClass().getSimpleName());
+                    if (error instanceof NotAuthorizedException){
+                        router.navigateTo(Screens.LOGIN_SCREEN);
+                    } else {
+                        router.showSystemMessage(error.getMessage());
+                    }
+
                     Log.e("Chats", error.getMessage(), error);
                 })
                 .doOnComplete(

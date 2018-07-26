@@ -14,6 +14,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.entities.Chat;
@@ -31,6 +32,7 @@ import dagger.android.AndroidInjection;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MessagesScreen extends BaseActivity implements MessagesView {
@@ -168,6 +170,15 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            } else if(command instanceof Forward) {
+                switch (((Forward) command).getScreenKey()){
+                    case Screens.LOGIN_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        MessagesScreen.this.finish();
+                    }
+                    break;
+                }
             }
         }
     };

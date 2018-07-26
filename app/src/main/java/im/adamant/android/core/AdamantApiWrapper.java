@@ -8,6 +8,7 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
@@ -95,7 +96,7 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionList> getTransactions(int height, String order) {
 
-        if (!isAuthorized()){return Flowable.error(new Exception("Not authorized"));}
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
                 .getTransactions(account.getAddress(), height, order)
@@ -106,7 +107,7 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionList> getTransactions(String order, int offset) {
 
-        if (!isAuthorized()){return Flowable.error(new Exception("Not authorized"));}
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
                 .getTransactions(account.getAddress(), order, offset)
