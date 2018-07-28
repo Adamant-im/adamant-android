@@ -2,6 +2,7 @@ package im.adamant.android.interactors;
 
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
@@ -16,10 +17,10 @@ import io.github.novacrypto.bip39.Validation.WordNotFoundException;
 import io.github.novacrypto.bip39.wordlists.English;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class AuthorizeInteractor {
-    public static final String KEY_ALIAS = "account";
 
     private AdamantApiWrapper api;
     private AdamantKeyGenerator keyGenerator;
@@ -43,8 +44,10 @@ public class AuthorizeInteractor {
             return api.authorize(passPhrase)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(authorization -> {
-                        String account = keyStoreCipher.encrypt(KEY_ALIAS, api.getKeyPair());
-                        settings.setAccountKeypair(account);
+                        if (settings.isKeyPairMustBeStored()){
+                            String account = keyStoreCipher.encrypt(Constants.ADAMANT_ACCOUNT_ALIAS, api.getKeyPair());
+                            settings.setAccountKeypair(account);
+                        }
                     });
         }catch (Exception ex){
             ex.printStackTrace();
@@ -53,25 +56,24 @@ public class AuthorizeInteractor {
     }
 
     public Flowable<Authorization> restoreAuthorization() {
-        try {
-            String account = settings.getAccountKeypair();
-            if (account == null || account.isEmpty()){
-                return Flowable.error(new Exception("Account not stored!"));
-            }
 
-            KeyPair keyPair = keyStoreCipher.decrypt(KEY_ALIAS, account);
+           return Flowable.fromCallable(() -> {
+                    String account = settings.getAccountKeypair();
+                    if (account == null || account.isEmpty()){
+                        throw new Exception("Account not stored!");
+                    }
 
-            if (keyPair == null){
-                return Flowable.error(new Exception("Account not decrypted!"));
-            }
+                    KeyPair keyPair = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
 
-            return api.authorize(keyPair)
-                    .observeOn(AndroidSchedulers.mainThread());
+                    if (keyPair == null) {
+                        throw new Exception("Account not decrypted!");
+                    }
 
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return Flowable.error(ex);
-        }
+                    return keyPair;
+                })
+               .subscribeOn(Schedulers.computation())
+               .flatMap(keyPair -> api.authorize(keyPair));
+
     }
 
     public CharSequence generatePassPhrase() {

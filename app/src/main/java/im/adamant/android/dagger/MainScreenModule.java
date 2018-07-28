@@ -3,6 +3,7 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,7 +19,6 @@ import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
-import im.adamant.android.ui.holders.FragmentClassHolder;
 import ru.terrakok.cicerone.Router;
 
 @Module
@@ -51,7 +51,7 @@ public abstract class MainScreenModule {
 
     @ActivityScope
     @Provides
-    public static MainPresenter provideLoginPresenter(
+    public static MainPresenter provideMainPresenter(
             Router router
     ){
         return new MainPresenter(router);

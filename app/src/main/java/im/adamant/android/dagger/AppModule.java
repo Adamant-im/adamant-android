@@ -212,17 +212,20 @@ public abstract class AppModule {
     @Singleton
     @Provides
     public static AccountInteractor provideAccountInteractor(
-            AdamantApiWrapper api
+            AdamantApiWrapper api,
+            Settings settings
     ) {
-        return new AccountInteractor(api);
+        return new AccountInteractor(api, settings);
     }
 
     @Singleton
     @Provides
     public static SettingsInteractor provideSettingsInteractor(
-            Settings settings
+            Settings settings,
+            KeyStoreCipher keyStoreCipher,
+            AdamantApiWrapper apiWrapper
     ) {
-        return new SettingsInteractor(settings);
+        return new SettingsInteractor(settings, apiWrapper, keyStoreCipher);
     }
 
     @Singleton

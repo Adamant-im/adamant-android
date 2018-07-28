@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
@@ -63,6 +65,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
     @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
+    @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -123,6 +126,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void onPause() {
         super.onPause();
+
+        presenter.switchSaveAccount(storeKeypairView.isChecked());
+
         if (adapterDisposable != null){
             adapterDisposable.dispose();
         }
@@ -134,11 +140,6 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
     @OnClick(R.id.fragment_settings_btn_change_lang)
     public void onSelectLanguage() {
-//        Activity activity = getActivity();
-//        if (activity != null){
-//            AdamantApplication.getLanguageSwitcher().showChangeLanguageDialog(getActivity());
-//        }
-
         android.support.v7.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
     }
@@ -153,6 +154,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         if (getActivity() != null){
             AdamantApplication.hideKeyboard(getActivity(), newNodeAddressView);
         }
+    }
+
+    @Override
+    public void setStoreKeyPairOption(boolean value) {
+        storeKeypairView.setChecked(value);
     }
 
     //TODO: Refactor: method to long and dirty

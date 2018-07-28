@@ -42,7 +42,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 .synchronizeWithBlockchain()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
-                    Log.e("ERR", error.getClass().getSimpleName());
                     if (error instanceof NotAuthorizedException){
                         router.navigateTo(Screens.LOGIN_SCREEN);
                     } else {

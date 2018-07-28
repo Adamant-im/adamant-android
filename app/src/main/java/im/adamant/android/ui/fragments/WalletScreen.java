@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -122,6 +123,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
                             exitButton.setEnabled(true);
                         })
                         .setNegativeButton(android.R.string.cancel, (dialog, which) -> exitButton.setEnabled(true))
+                        .setOnDismissListener(dialogInterface -> exitButton.setEnabled(true))
                         .show();
             }
         });

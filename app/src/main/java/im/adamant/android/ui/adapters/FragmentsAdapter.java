@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.ui.fragments.BaseFragment;
-import im.adamant.android.ui.holders.FragmentClassHolder;
 
 public class FragmentsAdapter extends FragmentStatePagerAdapter {
     private List<Class> classes = new ArrayList<>();

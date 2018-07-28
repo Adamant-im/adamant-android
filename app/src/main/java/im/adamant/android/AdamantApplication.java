@@ -5,10 +5,12 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.support.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.franmontiel.localechanger.LocaleChanger;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;
@@ -21,7 +23,7 @@ import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
 
-public class AdamantApplication extends Application implements HasActivityInjector, HasServiceInjector {
+public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
@@ -44,7 +46,15 @@ public class AdamantApplication extends Application implements HasActivityInject
 
         LocaleChanger.initialize(getApplicationContext(), supportedLocales);
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            // This process is dedicated to LeakCanary for heap analysis.
+            // You should not init your app in this process.
+            return;
+        }
+
+        LeakCanary.install(this);
     }
+
 
     @Override
     public AndroidInjector<Activity> activityInjector() {

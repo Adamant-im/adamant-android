@@ -19,6 +19,7 @@ import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.mvp_view.LoginView;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -47,6 +48,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         } else {
             Disposable subscribe = authorizeInteractor
                     .restoreAuthorization()
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                         authorization -> {
                             if (authorization.isSuccess()){
@@ -55,9 +57,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                         },
                         Throwable::printStackTrace
                     );
-
-
-            //TODO: If "Not Authorized" exception than force logout from application.
 
             subscriptions.add(subscribe);
         }

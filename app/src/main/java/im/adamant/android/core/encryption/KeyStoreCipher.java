@@ -126,6 +126,7 @@ public class KeyStoreCipher {
         }
     }
 
+    //TODO: Protect store via pincode and fingerprint
     private KeyPair generateKeyPair(String alias) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
         alias = KEY_ALIAS_PREFIX + alias;
 
