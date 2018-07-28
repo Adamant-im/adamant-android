@@ -49,12 +49,28 @@ public class KeyStoreCipher {
     public static final String KEY_ALIAS_PREFIX = "AdamantKeystoreAlias_";
     public static final String TRANSFORMATION = "RSA/ECB/PKCS1Padding";
 
+    private static KeyStore androidKeyStore;
+
     private Gson gson;
     private Context context;
 
     public KeyStoreCipher(Gson gson, Context context) {
         this.gson = gson;
         this.context = context;
+
+        if (androidKeyStore == null){
+            KeyStore instance = null;
+            try {
+                instance = KeyStore.getInstance(PROVIDER);
+                if (instance != null){
+                    instance.load(null);
+                }
+            } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException e) {
+                e.printStackTrace();
+            }
+
+            androidKeyStore = instance;
+        }
     }
 
     public String encrypt(String alias, com.goterl.lazycode.lazysodium.utils.KeyPair object) throws Exception {
@@ -65,6 +81,8 @@ public class KeyStoreCipher {
             throw new Exception("Serialized object to long (maximum " + maxContentSize + " bytes)");
         }
 
+        alias = KEY_ALIAS_PREFIX + alias;
+
         KeyPair securityKeyPair = getKeyPair(alias);
 
         final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
@@ -72,13 +90,13 @@ public class KeyStoreCipher {
 
         byte[] encryptedBytes = cipher.doFinal(bytes);
 
-        return Base64.encodeToString(encryptedBytes, Base64.NO_WRAP);
+        return Base64.encodeToString(encryptedBytes, Base64.NO_PADDING | Base64.NO_WRAP);
     }
 
     public com.goterl.lazycode.lazysodium.utils.KeyPair decrypt(String alias, String object) throws NoSuchProviderException, InvalidAlgorithmParameterException {
         com.goterl.lazycode.lazysodium.utils.KeyPair decryptedKeyPair = null;
 
-        byte[] encryptedData = Base64.decode(object, Base64.NO_WRAP);
+        byte[] encryptedData = Base64.decode(object, Base64.NO_PADDING | Base64.NO_WRAP);
 
         try {
             alias = KEY_ALIAS_PREFIX + alias;
@@ -88,28 +106,24 @@ public class KeyStoreCipher {
             final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(Cipher.DECRYPT_MODE, securityKeyPair.getPrivate());
 
-
             final byte[] decodedData = cipher.doFinal(encryptedData);
             final String unencryptedString = new String(decodedData, "UTF-8");
 
             decryptedKeyPair = gson.fromJson(unencryptedString, com.goterl.lazycode.lazysodium.utils.KeyPair.class);
 
-        } catch (KeyStoreException | CertificateException | NoSuchAlgorithmException | IOException | NoSuchPaddingException | UnrecoverableEntryException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (KeyStoreException | NoSuchAlgorithmException | IOException | NoSuchPaddingException | UnrecoverableEntryException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 
         return decryptedKeyPair;
     }
 
-    private KeyPair getKeyPair(String alias) throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException, InvalidAlgorithmParameterException {
-        KeyStore androidKeyStore = KeyStore.getInstance(PROVIDER);
+    private KeyPair getKeyPair(String alias) throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException, InvalidAlgorithmParameterException {
 
         PrivateKey privateKey = null;
         PublicKey publicKey = null;
 
         if (androidKeyStore != null){
-            androidKeyStore.load(null);
-
             privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
             Certificate certificate = androidKeyStore.getCertificate(alias);
 
@@ -128,8 +142,6 @@ public class KeyStoreCipher {
 
     //TODO: Protect store via pincode and fingerprint
     private KeyPair generateKeyPair(String alias) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
-        alias = KEY_ALIAS_PREFIX + alias;
-
         KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM, PROVIDER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
