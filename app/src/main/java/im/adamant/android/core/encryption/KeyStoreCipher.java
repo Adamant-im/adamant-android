@@ -111,26 +111,32 @@ public class KeyStoreCipher {
 
             decryptedKeyPair = gson.fromJson(unencryptedString, com.goterl.lazycode.lazysodium.utils.KeyPair.class);
 
-        } catch (KeyStoreException | NoSuchAlgorithmException | IOException | NoSuchPaddingException | UnrecoverableEntryException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchAlgorithmException | IOException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
 
         return decryptedKeyPair;
     }
 
-    private KeyPair getKeyPair(String alias) throws NoSuchAlgorithmException, KeyStoreException, UnrecoverableKeyException, NoSuchProviderException, InvalidAlgorithmParameterException {
+    private KeyPair getKeyPair(String alias) throws NoSuchAlgorithmException , NoSuchProviderException, InvalidAlgorithmParameterException {
 
         PrivateKey privateKey = null;
         PublicKey publicKey = null;
 
         if (androidKeyStore != null){
-            privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
-            Certificate certificate = androidKeyStore.getCertificate(alias);
+            try {
+                privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
+                Certificate certificate = androidKeyStore.getCertificate(alias);
 
-            if (certificate != null){
-                publicKey = certificate
-                        .getPublicKey();
+                if (certificate != null){
+                    publicKey = certificate
+                            .getPublicKey();
+                }
+
+            } catch (UnrecoverableKeyException | KeyStoreException ex) {
+                ex.printStackTrace();
             }
+
         }
 
         if (privateKey != null && publicKey != null){
@@ -141,7 +147,7 @@ public class KeyStoreCipher {
     }
 
     //TODO: Protect store via pincode and fingerprint
-    private KeyPair generateKeyPair(String alias) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException, KeyStoreException {
+    private KeyPair generateKeyPair(String alias) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {
         KeyPairGenerator generator = KeyPairGenerator.getInstance(ALGORITHM, PROVIDER);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
