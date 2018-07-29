@@ -72,10 +72,6 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         return R.layout.fragment_chats_screen;
     }
 
-    @Override
-    public int getActivityTitleId() {
-        return R.string.bottom_menu_title_chats;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

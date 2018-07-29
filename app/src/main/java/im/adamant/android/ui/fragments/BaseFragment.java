@@ -16,8 +16,6 @@ import im.adamant.android.R;
 public abstract class BaseFragment extends MvpAppCompatFragment {
     public abstract int getLayoutId();
 
-    public abstract int getActivityTitleId();
-
     @Override
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);

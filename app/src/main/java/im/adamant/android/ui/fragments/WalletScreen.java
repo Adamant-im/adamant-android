@@ -83,11 +83,6 @@ public class WalletScreen extends BaseFragment implements WalletView {
     }
 
     @Override
-    public int getActivityTitleId() {
-        return R.string.bottom_menu_title_wallet;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 

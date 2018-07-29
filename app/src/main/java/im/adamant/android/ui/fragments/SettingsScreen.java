@@ -78,11 +78,6 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public int getActivityTitleId() {
-        return R.string.bottom_menu_title_settings;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  super.onCreateView(inflater, container, savedInstanceState);
 
@@ -121,12 +116,15 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                                 .show();
                     }
                 });
+
+        nodeAdapter.subscribe();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
+        //TODO: Refactor use understandable names or standard callbacks
+        nodeAdapter.unsubscribe();
         presenter.switchSaveAccount(storeKeypairView.isChecked());
 
         if (adapterDisposable != null){

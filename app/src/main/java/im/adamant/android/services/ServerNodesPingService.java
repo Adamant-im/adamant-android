@@ -25,6 +25,7 @@ import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.dagger.ServerNodePingServiceModule;
 import im.adamant.android.helpers.AlternativePingHelper;
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.rx.ObservableRxList;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -52,7 +53,8 @@ public class ServerNodesPingService extends Service {
     public void onCreate() {
         AndroidInjection.inject(this);
         super.onCreate();
-        pingServers();
+
+        pingServers(settings.getNodes());
     }
 
     @Nullable
@@ -61,9 +63,8 @@ public class ServerNodesPingService extends Service {
         return binder;
     }
 
-    private void pingServers() {
-        Disposable disposable = settings
-                .getNodes()
+    private void pingServers(ObservableRxList<ServerNode> nodes) {
+        Disposable disposable = nodes
                 .getCurrentList()
                 .observeOn(Schedulers.io())
                 .doOnNext(serverNode -> {
@@ -88,7 +89,7 @@ public class ServerNodesPingService extends Service {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(serverNode -> settings.getNodes().wasUpdated(serverNode))
+                .doOnNext(nodes::wasUpdated)
                 .repeatWhen((completed) -> completed.delay(BuildConfig.PING_SECONDS_DELAY, TimeUnit.SECONDS))
                 .subscribe();
 

@@ -19,6 +19,7 @@ import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
+import im.adamant.android.ui.holders.FragmentClassHolder;
 import ru.terrakok.cicerone.Router;
 
 @Module
@@ -40,13 +41,13 @@ public abstract class MainScreenModule {
     @Provides
     public static FragmentsAdapter provideFragmentAdapter(MainScreen mainScreen){
 
-        List<Class> holders = Arrays.asList(
-                WalletScreen.class,
-                ChatsScreen.class,
-                SettingsScreen.class
+        List<FragmentClassHolder> holders = Arrays.asList(
+                new FragmentClassHolder(R.string.bottom_menu_title_wallet, WalletScreen.class),
+                new FragmentClassHolder(R.string.bottom_menu_title_chats, ChatsScreen.class),
+                new FragmentClassHolder(R.string.bottom_menu_title_settings, SettingsScreen.class)
         );
 
-        return new FragmentsAdapter(mainScreen.getSupportFragmentManager(), mainScreen, holders);
+        return new FragmentsAdapter(mainScreen, holders);
     }
 
     @ActivityScope

@@ -39,7 +39,7 @@ public class AdamantBalanceUpdateService extends Service {
         AndroidInjection.inject(this);
         super.onCreate();
 
-        startListenBalance();
+        startListenBalance(updateSubject);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class AdamantBalanceUpdateService extends Service {
         updateSubject.onNext(new Object());
     }
 
-    private void startListenBalance(){
+    private void startListenBalance(final PublishSubject<Object> subject){
         Disposable subscribe =
                 api
                     .updateBalance()
@@ -73,7 +73,7 @@ public class AdamantBalanceUpdateService extends Service {
                             TimeUnit.SECONDS
                     ))
                     .repeatWhen(repeatHandler ->
-                            repeatHandler.flatMap(nothing -> updateSubject.toFlowable(BackpressureStrategy.LATEST)))
+                            repeatHandler.flatMap(nothing -> subject.toFlowable(BackpressureStrategy.LATEST)))
                     .subscribe();
 
         compositeDisposable.add(subscribe);

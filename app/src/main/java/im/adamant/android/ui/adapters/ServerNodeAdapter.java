@@ -27,11 +27,7 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public ServerNodeAdapter(ObservableRxList<ServerNode> items) {
         if (items != null){
             this.items = items;
-            subscription = items
-                    .getObservable()
-                    .subscribe(serverNodeRxList -> {
-                        notifyDataSetChanged();
-                    });
+            subscribe();
         }
     }
 
@@ -58,6 +54,23 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public Observable<ServerNode> getRemoveObservable() {
         return removeClickSubject
                 .map(i -> items.get(i));
+    }
+
+    public void subscribe() {
+        if (items != null){
+            subscription = items
+                    .getObservable()
+                    .subscribe(serverNodeRxList -> {
+                        notifyDataSetChanged();
+                    });
+        }
+
+    }
+
+    public void unsubscribe() {
+        if (subscription != null){
+            subscription.dispose();
+        }
     }
 
 }
