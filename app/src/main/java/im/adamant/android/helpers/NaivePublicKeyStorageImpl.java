@@ -3,6 +3,7 @@ package im.adamant.android.helpers;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.responses.PublicKeyResponse;
+import io.reactivex.exceptions.UndeliverableException;
 
 import java.util.HashMap;
 
@@ -17,10 +18,16 @@ public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
     @Override
     public String getPublicKey(String address) {
         if (!publicKeys.containsKey(address)){
-            PublicKeyResponse response = api.getPublicKey(address).blockingFirst();
-            if (response.isSuccess()){
-                publicKeys.put(address, response.getPublicKey());
+            try {
+                //TODO: InterrupedException. Application Crashed.
+                PublicKeyResponse response = api.getPublicKey(address).blockingFirst();
+                if (response.isSuccess()){
+                    publicKeys.put(address, response.getPublicKey());
+                }
+            } catch (UndeliverableException ex) {
+                ex.printStackTrace();
             }
+
         }
         return publicKeys.containsKey(address) ? publicKeys.get(address) : "";
     }

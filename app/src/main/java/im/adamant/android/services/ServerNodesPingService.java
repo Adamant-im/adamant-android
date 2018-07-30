@@ -64,6 +64,7 @@ public class ServerNodesPingService extends Service {
     }
 
     private void pingServers(ObservableRxList<ServerNode> nodes) {
+        Context ctx = getApplicationContext();
         Disposable disposable = nodes
                 .getCurrentList()
                 .observeOn(Schedulers.io())
@@ -72,7 +73,7 @@ public class ServerNodesPingService extends Service {
                         Uri uri = Uri.parse(serverNode.getUrl());
                         InetAddress address = InetAddress.getByName(uri.getHost());
 
-                        PingResult pingResult = ping(address, uri);
+                        PingResult pingResult = ping(address, uri, ctx);
 
                         if ((!"localhost".equalsIgnoreCase(address.getHostName()))){
                             parsePingValue(serverNode, pingResult);
@@ -96,7 +97,7 @@ public class ServerNodesPingService extends Service {
         compositeDisposable.add(disposable);
     }
 
-    private void parsePingValue(ServerNode serverNode, PingResult pingResult) {
+    private static void parsePingValue(ServerNode serverNode, PingResult pingResult) {
         if (pingResult.isReachable()) {
             if (serverNode.getStatus() != ServerNode.Status.CONNECTED){
                 serverNode.setStatus(ServerNode.Status.ACTIVE);
@@ -108,7 +109,7 @@ public class ServerNodesPingService extends Service {
         }
     }
 
-    private PingResult ping(InetAddress address, Uri uri) throws UnknownHostException {
+    private static PingResult ping(InetAddress address, Uri uri, Context context) throws UnknownHostException {
         PingResult pingResult = Ping.onAddress(address).setTimeOutMillis(PING_TIMEOUT).doPing();
         if ((pingResult.error != null) && (!pingResult.error.isEmpty())){
             AlternativePingHelper.Ping ping = AlternativePingHelper.ping(uri, context);
