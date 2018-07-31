@@ -43,23 +43,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public void attachView(LoginView view) {
         super.attachView(view);
 
-        if (authorizeInteractor.isAuthorized()){
-            router.navigateTo(Screens.WALLET_SCREEN);
-        } else {
-            Disposable subscribe = authorizeInteractor
-                    .restoreAuthorization()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        authorization -> {
-                            if (authorization.isSuccess()){
-                                router.navigateTo(Screens.WALLET_SCREEN);
-                            }
-                        },
-                        Throwable::printStackTrace
-                    );
 
-            subscriptions.add(subscribe);
-        }
     }
 
     public void onClickLoginButton(String passPhrase) {

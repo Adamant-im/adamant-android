@@ -17,16 +17,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.LoginScreen"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged|adjustResize">
+        <activity android:name=".ui.SplashScreen"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.LoginScreen"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
             android:name=".ui.MessagesScreen"
             android:exported="true">
@@ -56,7 +58,6 @@
             android:name=".ui.ScanQrCodeScreen"
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
-
         <service
             android:name=".services.ServerNodesPingService"
             android:exported="false" />
@@ -67,7 +68,6 @@
         <activity
             android:name=".ui.PinCodeScreen"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
     </application>
 

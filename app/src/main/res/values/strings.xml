@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">ADAMANT Messenger</string>
 
+    <string name="activity_splash_text">Receiving account information</string>
+
     <string name="activity_login_tv_title">ADAMANT</string>
     <string name="activity_login_tv_subtitle">A top-notch anonymous messenger encrypted with a Blockchain</string>
     <string name="activity_login_tv_create_new_suggestion">Or create a new anonymous address:</string>
@@ -44,6 +46,8 @@
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Wrong password</string>
+    <string name="authorization_error">Authorization error, we try reconnecting…</string>
+    <string name="account_not_found">Account not found, sorry</string>
     <string name="wrong_address">Incorrect recipient address</string>
     <string name="empty_message">Message cannot be empty</string>
     <string name="wrong_node_address">Node\'s address has incorrect format</string>

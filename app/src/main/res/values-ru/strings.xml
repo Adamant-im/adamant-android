@@ -2,6 +2,8 @@
 <resources>
     <string name="app_name">АДАМАНТ</string>
 
+    <string name="activity_splash_text">Получение информации о аккаунте</string>
+
     <string name="activity_login_tv_title">АДАМАНТ</string>
     <string name="activity_login_tv_subtitle">Самый анонимный мессенджер, зашифрованный в Blockchain</string>
     <string name="activity_login_tv_create_new_suggestion">Или создайте новый анонимный адрес:</string>
@@ -45,6 +47,8 @@
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Неправильный пароль</string>
+    <string name="authorization_error">Ошибка авторизации, пытаюсь переподключиться…</string>
+    <string name="account_not_found">Информация по аккаунту не найдена.</string>
     <string name="wrong_address">Неверный адрес получателя</string>
     <string name="empty_message">Сообщение не может быть пустым</string>
     <string name="wrong_node_address">Некорректный адрес ноды</string>

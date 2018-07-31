@@ -2,6 +2,8 @@ package im.adamant.android.interactors;
 
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import java.util.concurrent.Callable;
+
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -9,6 +11,7 @@ import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.responses.Authorization;
 
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.rx.ObservableRxList;
 import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException;
@@ -57,19 +60,23 @@ public class AuthorizeInteractor {
 
     public Flowable<Authorization> restoreAuthorization() {
 
-           return Flowable.fromCallable(() -> {
-                    String account = settings.getAccountKeypair();
-                    if (account == null || account.isEmpty()){
-                        throw new Exception("Account not stored!");
+            //Not transform this code in lambda (Application crashed if unchecked exception)
+           return Flowable.fromCallable(new Callable<KeyPair>() {
+                    @Override
+                    public KeyPair call() throws Exception {
+                        String account = settings.getAccountKeypair();
+                        if (account == null || account.isEmpty()){
+                            throw new Exception("Account not stored!");
+                        }
+
+                        KeyPair keyPair = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
+
+                        if (keyPair == null) {
+                            throw new Exception("Account not decrypted!");
+                        }
+
+                        return keyPair;
                     }
-
-                    KeyPair keyPair = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
-
-                    if (keyPair == null) {
-                        throw new Exception("Account not decrypted!");
-                    }
-
-                    return keyPair;
                 })
                .subscribeOn(Schedulers.computation())
                .flatMap(keyPair -> api.authorize(keyPair));

@@ -125,6 +125,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         super.onPause();
         //TODO: Refactor use understandable names or standard callbacks
         nodeAdapter.unsubscribe();
+
+        //TODO: Use foreground service for save KeyPair otherwise when unloading the application it may not be saved
         presenter.switchSaveAccount(storeKeypairView.isChecked());
 
         if (adapterDisposable != null){

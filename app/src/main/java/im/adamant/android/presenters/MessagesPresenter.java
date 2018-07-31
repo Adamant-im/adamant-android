@@ -49,7 +49,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
                     if (error instanceof NotAuthorizedException){
-                        router.navigateTo(Screens.LOGIN_SCREEN);
+                        router.navigateTo(Screens.SPLASH_SCREEN);
                     } else {
                         router.showSystemMessage(error.getMessage());
                     }
