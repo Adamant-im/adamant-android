@@ -42,8 +42,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     public AbstractMessage apply(Transaction transaction) throws Exception {
         AbstractMessage message = null;
 
-        //TODO: call api.isAuthorized
-        if (api.getKeyPair() == null || api.getAccount() == null){
+        if (!api.isAuthorized()){
             throw new Exception("You are not authorized.");
         }
 

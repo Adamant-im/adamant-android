@@ -213,6 +213,12 @@ public class LoginScreen extends BaseActivity implements LoginView {
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;

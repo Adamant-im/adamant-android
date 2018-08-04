@@ -197,6 +197,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         startActivity(browserIntent);
                     }
                     break;
+
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
