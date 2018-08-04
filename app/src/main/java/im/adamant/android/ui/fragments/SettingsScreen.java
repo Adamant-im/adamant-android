@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -30,7 +29,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
@@ -121,14 +119,13 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                     }
                 });
 
-        nodeAdapter.subscribe();
+        nodeAdapter.startListenChanges();
     }
 
     @Override
     public void onPause() {
         presenter.onSaveKeyPair(storeKeypairView.isChecked());
-        //TODO: Refactor use understandable names or standard callbacks
-        nodeAdapter.unsubscribe();
+        nodeAdapter.stopListenChanges();
 
         if (adapterDisposable != null){
             adapterDisposable.dispose();

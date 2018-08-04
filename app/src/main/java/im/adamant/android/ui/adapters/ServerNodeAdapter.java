@@ -1,20 +1,17 @@
 package im.adamant.android.ui.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.lang.ref.WeakReference;
 
 import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.ui.holders.ServerNodeHolder;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
@@ -27,7 +24,7 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public ServerNodeAdapter(ObservableRxList<ServerNode> items) {
         if (items != null){
             this.items = items;
-            subscribe();
+            startListenChanges();
         }
     }
 
@@ -56,20 +53,25 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
                 .map(i -> items.get(i));
     }
 
-    public void subscribe() {
+    public void startListenChanges() {
         if (items != null){
+            WeakReference<RecyclerView.Adapter> adapterWeakReference = new WeakReference<>(this);
             subscription = items
                     .getObservable()
                     .subscribe(serverNodeRxList -> {
-                        notifyDataSetChanged();
+                        RecyclerView.Adapter adapter = adapterWeakReference.get();
+                        if (adapter != null){
+                            adapter.notifyDataSetChanged();
+                        }
                     });
         }
 
     }
 
-    public void unsubscribe() {
+    public void stopListenChanges() {
         if (subscription != null){
             subscription.dispose();
+            subscription = null;
         }
     }
 

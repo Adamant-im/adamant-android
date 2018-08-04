@@ -23,7 +23,7 @@ import io.reactivex.subjects.PublishSubject;
 public class AdamantBalanceUpdateService extends Service {
     private static final String TAG = "ADMBalanceService";
     private final IBinder binder = new AdamantBalanceUpdateService.LocalBinder();
-    private final PublishSubject<Object> updateSubject = PublishSubject.create();
+    private static final PublishSubject<Object> updateSubject = PublishSubject.create();
 
     enum Irrelevant { INSTANCE }
 
@@ -53,6 +53,7 @@ public class AdamantBalanceUpdateService extends Service {
 
         if (compositeDisposable != null){
             compositeDisposable.dispose();
+            compositeDisposable.clear();
         }
     }
 
