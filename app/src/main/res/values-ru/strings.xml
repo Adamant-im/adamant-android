@@ -44,6 +44,10 @@
     <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
 
+    <!--NOTIFICATIONS-->
+    <string name="encrypt_keypair_notification_channel">Шифрование пары ключей</string>
+    <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
+
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Неправильный пароль</string>

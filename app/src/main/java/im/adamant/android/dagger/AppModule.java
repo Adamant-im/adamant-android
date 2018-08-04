@@ -16,6 +16,7 @@ import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.services.AdamantBalanceUpdateService;
+import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
@@ -297,4 +298,8 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {AdamantBalanceUpdateServiceModule.class})
     public abstract AdamantBalanceUpdateService createBalanceUpdateService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {EncryptKeyPairServiceModule.class})
+    public abstract EncryptKeyPairService createEncryptKeyPairService();
 }

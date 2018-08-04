@@ -58,17 +58,16 @@
             android:name=".ui.ScanQrCodeScreen"
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
+        <activity
+            android:name=".ui.PinCodeScreen"
+            android:theme="@style/AppTheme.NoActionBar" />
         <service
             android:name=".services.ServerNodesPingService"
             android:exported="false" />
         <service
             android:name=".services.AdamantBalanceUpdateService"
             android:exported="false" />
-
-        <activity
-            android:name=".ui.PinCodeScreen"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
+        <service android:name=".services.EncryptKeyPairService" />
     </application>
 
 </manifest>

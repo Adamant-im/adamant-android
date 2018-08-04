@@ -2,6 +2,9 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -33,6 +36,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
@@ -122,16 +126,15 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Override
     public void onPause() {
-        super.onPause();
+        presenter.onSaveKeyPair(storeKeypairView.isChecked());
         //TODO: Refactor use understandable names or standard callbacks
         nodeAdapter.unsubscribe();
-
-        //TODO: Use foreground service for save KeyPair otherwise when unloading the application it may not be saved
-        presenter.switchSaveAccount(storeKeypairView.isChecked());
 
         if (adapterDisposable != null){
             adapterDisposable.dispose();
         }
+
+        super.onPause();
     }
 
     @OnClick(R.id.fragment_settings_btn_add_new_node)
@@ -160,6 +163,23 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void setStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
     }
+
+    @Override
+    public void callSaveKeyPairService(boolean value) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            Intent intent = new Intent(context, EncryptKeyPairService.class);
+            intent.putExtra(EncryptKeyPairService.VALUE_KEY, value);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
+        }
+    }
+
 
     //TODO: Refactor: method to long and dirty
     private android.support.v7.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {

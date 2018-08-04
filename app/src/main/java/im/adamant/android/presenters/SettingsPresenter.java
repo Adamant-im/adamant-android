@@ -35,18 +35,15 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             getViewState().clearNodeTextField();
             getViewState().hideKeyboard();
         }
-
     }
 
     public void onClickDeleteNode(ServerNode serverNode){
         interactor.deleteNode(serverNode);
     }
 
-    public void switchSaveAccount(boolean value) {
-        Disposable subscribe = interactor
-                .saveKeypair(value)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-        subscriptions.add(subscribe);
+    public void onSaveKeyPair(boolean value) {
+        if (interactor.isKeyPairMustBeStored() != value) {
+            getViewState().callSaveKeyPairService(value);
+        }
     }
 }
