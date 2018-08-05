@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -117,6 +118,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
                             exitButton.setEnabled(true);
                         })
                         .setNegativeButton(android.R.string.cancel, (dialog, which) -> exitButton.setEnabled(true))
+                        .setOnDismissListener(dialogInterface -> exitButton.setEnabled(true))
                         .show();
             }
         });
@@ -157,7 +159,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             if (activity != null){
                 File qrCodeFile = qrCodeHelper.makeImageFile("address_");
                 try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                    QRCode.from(adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                    QRCode.from("adm:" + adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
                     qrCodeHelper.registerImageInGallery(activity, qrCodeFile);
                 }catch (Exception ex){
                     ex.printStackTrace();

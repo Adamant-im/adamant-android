@@ -11,12 +11,21 @@ import io.reactivex.disposables.Disposable;
 
 public class Settings {
     private static final String NODES_KEY = "nodes_key";
+    private static final String ACCOUNT_KEY_PAIR = "account_key_pair";
+    private static final String KEY_PAIR_MUST_BE_STORED = "key_pair_must_be_stored";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
+    private String accountKeypair = "";
+    private boolean isKeyPairMustBeStored;
+
     private SharedPreferences preferences;
 
     public Settings(SharedPreferences preferences) {
         this.preferences = preferences;
+
+        accountKeypair = this.preferences.getString(ACCOUNT_KEY_PAIR, "");
+        isKeyPairMustBeStored = this.preferences.getBoolean(KEY_PAIR_MUST_BE_STORED, false);
+
         loadNodes();
     }
 
@@ -34,6 +43,30 @@ public class Settings {
 
     public ObservableRxList<ServerNode> getNodes() {
         return nodes;
+    }
+
+    public String getAccountKeypair() {
+        return accountKeypair;
+    }
+
+    public void setAccountKeypair(String accountKeypair) {
+        this.accountKeypair = accountKeypair;
+        this.preferences
+                .edit()
+                .putString(ACCOUNT_KEY_PAIR, accountKeypair)
+                .apply();
+    }
+
+    public boolean isKeyPairMustBeStored() {
+        return isKeyPairMustBeStored;
+    }
+
+    public void setKeyPairMustBeStored(boolean keyPairMustBeStored) {
+        isKeyPairMustBeStored = keyPairMustBeStored;
+        this.preferences
+                .edit()
+                .putBoolean(KEY_PAIR_MUST_BE_STORED, keyPairMustBeStored)
+                .apply();
     }
 
     private void updateNodes() {

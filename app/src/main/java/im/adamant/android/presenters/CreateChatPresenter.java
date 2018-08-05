@@ -1,7 +1,6 @@
 package im.adamant.android.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import java.util.List;
 
@@ -28,19 +27,20 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
         this.addressProcessor = addressProcessor;
     }
 
-    public void onClickCreateNewChat(String address) {
-        List<String> addresses = addressProcessor.extractAdamantAddreses(address);
+    public void onClickCreateNewChat(String addressUriString) {
+        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressUriString);
 
         if (addresses.size() == 0){
             getViewState().showError(R.string.wrong_address);
             return;
         }
 
-        address = addresses.get(0);
+        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
 
-        if (validate(address)){
+        if (validate(addressEntity.getAddress())){
             Chat chat = new Chat();
-            chat.setCompanionId(address);
+            chat.setCompanionId(addressEntity.getAddress());
+            chat.setTitle(addressEntity.getLabel());
 
             interactor.addNewChat(chat);
             router.navigateTo(Screens.MESSAGES_SCREEN, chat);
@@ -55,7 +55,6 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     }
 
     private boolean validate(String address) {
-        //TODO: Write address verification rules
         if (address == null) {return false;}
         try {
             if (!"U".equalsIgnoreCase(address.substring(0, 1))){return false;}

@@ -1,13 +1,18 @@
 package im.adamant.android.ui.entities.messages;
 
 import android.content.Context;
+import android.text.Spanned;
 
 import java.math.BigDecimal;
+
+import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.HtmlHelper;
 
 public class EthereumTransferMessage extends AbstractMessage {
     private BigDecimal amount;
     private String comment;
     private String ethereumTransactionId;
+    private transient Spanned htmlComment;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
@@ -24,6 +29,18 @@ public class EthereumTransferMessage extends AbstractMessage {
 
     public String getComment() {
         return comment;
+    }
+
+    public Spanned getHtmlComment(AdamantAddressProcessor adamantAddressProcessor) {
+        if (htmlComment == null) {
+            try {
+                htmlComment = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(comment));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return htmlComment;
     }
 
     public void setComment(String comment) {

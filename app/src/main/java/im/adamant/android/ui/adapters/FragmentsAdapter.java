@@ -1,9 +1,15 @@
 package im.adamant.android.ui.adapters;
 
+import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v7.app.AppCompatActivity;
+import android.view.ViewGroup;
+
+import com.goterl.lazycode.lazysodium.interfaces.Base;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,41 +18,35 @@ import im.adamant.android.ui.fragments.BaseFragment;
 import im.adamant.android.ui.holders.FragmentClassHolder;
 
 public class FragmentsAdapter extends FragmentStatePagerAdapter {
-    private List<FragmentClassHolder> classHolders = new ArrayList<>();
-    private List<BaseFragment> fragments = new ArrayList<>();
+    private List<FragmentClassHolder> holders = new ArrayList<>();
+    private Context context;
 
-    public FragmentsAdapter(FragmentManager fm) {
-        super(fm);
-    }
 
-    public FragmentsAdapter(FragmentManager fm, List<FragmentClassHolder> classHolders) {
-        super(fm);
+    public FragmentsAdapter(AppCompatActivity context, List<FragmentClassHolder> holders) {
+        super(context.getSupportFragmentManager());
 
-        if (classHolders != null){
-            this.classHolders = classHolders;
-        }
+        this.holders = holders;
+        this.context = context;
     }
 
     @Override
     public Fragment getItem(int position) {
+        Fragment fragment = null;
 
-        if((position >= 0) && (position < classHolders.size())){
-            try {
-                FragmentClassHolder holder = classHolders.get(position);
-                Fragment fragment = holder.getFragmentClass().newInstance();
-                fragments.add((BaseFragment) fragment);
-                return fragment;
-            } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
+        try {
+            Class clazz = holders.get(position).getFragmentClass();
+            fragment = (Fragment) clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
         }
 
-        return null;
+        return fragment;
     }
+
 
     @Override
     public int getCount() {
-        return classHolders.size();
+        return holders.size();
     }
 
     @Nullable
@@ -54,10 +54,12 @@ public class FragmentsAdapter extends FragmentStatePagerAdapter {
     public CharSequence getPageTitle(int position) {
         String title = "";
         try {
-            title = classHolders.get(position).getTitle();
+            int resourceId = holders.get(position).getTitle();
+            title = context.getString(resourceId);
         }catch (Exception ex) {
             ex.printStackTrace();
         }
         return title;
     }
+
 }

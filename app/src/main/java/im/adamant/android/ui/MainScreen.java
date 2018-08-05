@@ -3,21 +3,16 @@ package im.adamant.android.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.view.menu.MenuBuilder;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,7 +59,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
     @Named("main")
     @Inject
-    FragmentsAdapter mainAdapter;
+    FragmentsAdapter mainAdapterReference;
 
     @BindView(R.id.main_screen_content) ViewPager content;
     @BindView(R.id.main_screen_navigation) BottomNavigationView navigation;
@@ -108,7 +103,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
             @Override
             public void onPageSelected(int position) {
-                setTitle(mainAdapter.getPageTitle(position));
+                setTitle(mainAdapterReference.getPageTitle(position));
             }
 
             @Override
@@ -117,8 +112,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
             }
         });
 
-        content.setAdapter(mainAdapter);
-        setTitle(mainAdapter.getPageTitle(0));
+        content.setAdapter(mainAdapterReference);
+        setTitle(mainAdapterReference.getPageTitle(0));
     }
 
 
@@ -127,6 +122,10 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        if (mainAdapterReference != null){
+            setTitle(mainAdapterReference.getPageTitle(content.getCurrentItem()));
+        }
     }
 
     @Override
@@ -196,6 +195,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         String url = getString(R.string.free_token_url) + forward.getTransitionData();
                         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         startActivity(browserIntent);
+                    }
+                    break;
+
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
                     }
                     break;
                 }

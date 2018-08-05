@@ -6,12 +6,15 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
@@ -22,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -33,6 +37,7 @@ public class ChatsInteractor {
     private TransactionToMessageMapper messageMapper;
     private LocalizedMessageMapper localizedMessageMapper;
     private LocalizedChatMapper localizedChatMapper;
+    private AdamantAddressProcessor adamantAddressProcessor;
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
 
@@ -52,6 +57,7 @@ public class ChatsInteractor {
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
             LocalizedChatMapper localizedChatMapper,
+            AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
     ) {
@@ -62,6 +68,7 @@ public class ChatsInteractor {
         this.publicKeyStorage = publicKeyStorage;
         this.localizedMessageMapper = localizedMessageMapper;
         this.localizedChatMapper = localizedChatMapper;
+        this.adamantAddressProcessor = adamantAddressProcessor;
     }
 
     //TODO: Refactor this. Too long method
@@ -76,7 +83,7 @@ public class ChatsInteractor {
 
         //TODO: Well test the erroneous execution path, replace where you need doOnError
 
-        if (!api.isAuthorized()){return Completable.error(new Exception("Not authorized"));}
+        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
 
           return Flowable
                  .defer(() -> Flowable.just(currentHeight))
@@ -108,6 +115,7 @@ public class ChatsInteractor {
                                  AbstractMessage message = messageMapper.apply(transaction);
                                  message = localizedMessageMapper.apply(message);
                                  List<AbstractMessage> messages = messagesByChats.get(message.getCompanionId());
+
                                  if (messages != null) {
                                      //If we sent this message and it's already in the list
                                      if (!messages.contains(message)){
@@ -155,7 +163,7 @@ public class ChatsInteractor {
 
     public Single<TransactionWasProcessed> sendMessage(String message, String address){
 
-        if (!api.isAuthorized()){return Single.error(new Exception("Not authorized"));}
+        if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();

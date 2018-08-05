@@ -10,6 +10,7 @@ import com.github.curioustechizen.ago.RelativeTimeTextView;
 import java.util.Locale;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
@@ -20,13 +21,17 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     private ImageView processedView;
     private TextView messageView;
     private RelativeTimeTextView dateView;
+    private AdamantAddressProcessor adamantAddressProcessor;
 
-    public FallbackMessageViewHolder(Context context, View v) {
+    public FallbackMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor) {
         super(context, v);
+
+        this.adamantAddressProcessor = adamantAddressProcessor;
 
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
         dateView = itemView.findViewById(R.id.list_item_message_date);
+
     }
 
     @Override
@@ -41,9 +46,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
             FallbackMessage fallbackMessage = (FallbackMessage)message;
 
             messageView.setText(
-                    HtmlHelper.fromHtml(
-                            resolveFallbackMessage(fallbackMessage)
-                    )
+                    fallbackMessage.getHtmlFallBackMessage(adamantAddressProcessor)
             );
 
             dateView.setReferenceTime(message.getDate());

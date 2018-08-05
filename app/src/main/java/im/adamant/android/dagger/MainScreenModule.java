@@ -3,6 +3,7 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,29 +39,20 @@ public abstract class MainScreenModule {
     @Named("main")
     @ActivityScope
     @Provides
-    public static FragmentsAdapter provideFragmentAdapter(Context context, MainScreen mainScreen){
+    public static FragmentsAdapter provideFragmentAdapter(MainScreen mainScreen){
 
         List<FragmentClassHolder> holders = Arrays.asList(
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_wallet),
-                        WalletScreen.class
-                ),
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_chats),
-                        ChatsScreen.class
-                ),
-                new FragmentClassHolder(
-                        context.getString(R.string.bottom_menu_title_settings),
-                        SettingsScreen.class
-                )
+                new FragmentClassHolder(R.string.bottom_menu_title_wallet, WalletScreen.class),
+                new FragmentClassHolder(R.string.bottom_menu_title_chats, ChatsScreen.class),
+                new FragmentClassHolder(R.string.bottom_menu_title_settings, SettingsScreen.class)
         );
 
-        return new FragmentsAdapter(mainScreen.getSupportFragmentManager(), holders);
+        return new FragmentsAdapter(mainScreen, holders);
     }
 
     @ActivityScope
     @Provides
-    public static MainPresenter provideLoginPresenter(
+    public static MainPresenter provideMainPresenter(
             Router router
     ){
         return new MainPresenter(router);

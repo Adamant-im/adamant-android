@@ -1,5 +1,7 @@
 package im.adamant.android.ui;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +14,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.entities.Chat;
@@ -29,6 +32,7 @@ import dagger.android.AndroidInjection;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MessagesScreen extends BaseActivity implements MessagesView {
@@ -78,9 +82,22 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         messagesList.setLayoutManager(layoutManager);
         messagesList.setAdapter(adapter);
 
-        if (getIntent() != null && getIntent().hasExtra(ARG_CHAT)){
-            Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
-            presenter.onShowChat(currentChat);
+        Intent intent = getIntent();
+        if (intent != null){
+            if (intent.hasExtra(ARG_CHAT)){
+                Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
+                presenter.onShowChat(currentChat);
+            }
+
+            if (Intent.ACTION_VIEW.equals(intent.getAction())){
+                Uri uri = intent.getData();
+                if (uri != null){
+                    String address = uri.getQueryParameter("address");
+                    String label = uri.getQueryParameter("label");
+
+                    presenter.onShowChatByAddress(address, label);
+                }
+            }
         }
 
         newMessageText.setOnFocusChangeListener( (view, isFocused) -> {
@@ -153,6 +170,15 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            } else if(command instanceof Forward) {
+                switch (((Forward) command).getScreenKey()){
+                    case Screens.LOGIN_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        MessagesScreen.this.finish();
+                    }
+                    break;
+                }
             }
         }
     };

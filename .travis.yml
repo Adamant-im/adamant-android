@@ -2,8 +2,8 @@ language: android
 sudo: required
 jdk: oraclejdk8
 before_cache:
-- rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-- rm -rf $HOME/.gradle/caches/*/plugin-resolution/
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -rf $HOME/.gradle/caches/*/plugin-resolution/
 cache:
   directories:
   - "$HOME/.gradle/caches/"
@@ -34,25 +34,28 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_install:
-- yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+  - yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+  - gem update --system
+  - gem install fastlane --no-rdoc --no-ri --no-document --quiet
 script:
-- "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
+  - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
 before_deploy:
-- openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv
-  -in adamant-keystore.jks.enc -out adamant-keystore.jks -d
-- cd app/build/outputs/apk/release
-- jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks
-  -storepass $storepass -keypass $keypass adamant-release.apk adamant
-- jarsigner -verify adamant-release.apk
-- "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v 4 adamant-release.apk
-  adamant.apk"
-- cd -
+  - openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv -in files.zip.enc -out files.zip -d
+  - unzip -o files.zip
+  - cd app/build/outputs/apk/release
+  - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks
+    -storepass $storepass -keypass $keypass adamant-release.apk adamant
+  - jarsigner -verify adamant-release.apk
+  - "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v -f 4 adamant-release.apk
+    adamant.apk"
+  - cd -
+  - fastlane android deploy;
 deploy:
-  provider: releases
-  api_key:
-    secure: "HirFiRAJSRrGbYz3aSAYmAUd4A82P0BI9GIsXnomNugxSm/EnxAvXGt6sZnyNWV4YjPO5muyOeF/LHVOtsp4PL7k41mfAkcVi2mgIeNI4PmTTMj4KJ8EynGtuwpk0BI9aL4M+eWoTvRgqvK2Aoz3Rzw5meOuHbYZFuNSdcXtXATmtZfboOx319UdW3zVUrCRxrgR6fYl6IpZTEb6YaxxcFIBC6BPZF/qhRSqvyk/eBP4tM6YgxM5V87PXgK41Z9+cwOOS+KjGz0UTkFrP7JumFkQsiob1SlzlFa+x1f9rt+qSENCx4MF9IuZ4QtUZdVIxorNCTfGfpUQYCWHg5+ZmUAgwi5WHB9LwKuac2q1Ax83olmCMTP0O/0jA4X++GivZz2jFG9tfDzfVpi73ojQCQhQS5/f5Q7Y6LriHz7V2OMdUqtYQ2xMoYDJiSTXMjX8KK5FFiLTG9sg73ky7PZhUw717nVhLEUc/FzUzePZMCNhh4Bc4sQesy0N1f1ca5wiYNfEBLniZPvCgbzKkO9ImZja+7QH3cTzqXxUhRjmXz5V8ipLDtNeWFLqfaK4ZAd7QoTDnZFktAfZqAuLiRrj0eszOzfbyvaFFYTcCqclp7b6XO8hU/Yas9bfIJXkkQN5HCjPiw2SgV8MX4UT28R0VH/MO6AKSi9IHVMlWnzuhY8="
-  file: app/build/outputs/apk/release/adamant.apk
-  on:
-    repo: Adamant-im/adamant-android
-    tags: true
-  skip_cleanup: true
+  - provider: releases
+    api_key:
+      secure: HirFiRAJSRrGbYz3aSAYmAUd4A82P0BI9GIsXnomNugxSm/EnxAvXGt6sZnyNWV4YjPO5muyOeF/LHVOtsp4PL7k41mfAkcVi2mgIeNI4PmTTMj4KJ8EynGtuwpk0BI9aL4M+eWoTvRgqvK2Aoz3Rzw5meOuHbYZFuNSdcXtXATmtZfboOx319UdW3zVUrCRxrgR6fYl6IpZTEb6YaxxcFIBC6BPZF/qhRSqvyk/eBP4tM6YgxM5V87PXgK41Z9+cwOOS+KjGz0UTkFrP7JumFkQsiob1SlzlFa+x1f9rt+qSENCx4MF9IuZ4QtUZdVIxorNCTfGfpUQYCWHg5+ZmUAgwi5WHB9LwKuac2q1Ax83olmCMTP0O/0jA4X++GivZz2jFG9tfDzfVpi73ojQCQhQS5/f5Q7Y6LriHz7V2OMdUqtYQ2xMoYDJiSTXMjX8KK5FFiLTG9sg73ky7PZhUw717nVhLEUc/FzUzePZMCNhh4Bc4sQesy0N1f1ca5wiYNfEBLniZPvCgbzKkO9ImZja+7QH3cTzqXxUhRjmXz5V8ipLDtNeWFLqfaK4ZAd7QoTDnZFktAfZqAuLiRrj0eszOzfbyvaFFYTcCqclp7b6XO8hU/Yas9bfIJXkkQN5HCjPiw2SgV8MX4UT28R0VH/MO6AKSi9IHVMlWnzuhY8=
+    file: app/build/outputs/apk/release/adamant.apk
+    skip_cleanup: true
+    on:
+      repo: Adamant-im/adamant-android
+      tags: true

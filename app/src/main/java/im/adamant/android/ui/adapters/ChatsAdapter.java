@@ -38,8 +38,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
 
         @Override
         public void onClick(View view) {
-            if(listener != null) {
-                listener.itemWasSelected(chats.get(getAdapterPosition()));
+            int position = getLayoutPosition();
+            if((listener != null) && (position >= 0)) {
+                listener.itemWasSelected(chats.get(position));
             }
         }
 

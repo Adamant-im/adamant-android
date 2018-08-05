@@ -72,6 +72,7 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         return R.layout.fragment_chats_screen;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);

@@ -5,7 +5,8 @@ import android.content.SharedPreferences;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
+import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
@@ -15,20 +16,27 @@ import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.services.AdamantBalanceUpdateService;
+import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 
+import com.google.gson.Gson;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Singleton;
 
@@ -38,7 +46,7 @@ import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
-import im.adamant.android.ui.messages_support.factories.EtheriumTransferMessageFactory;
+import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.github.novacrypto.bip39.MnemonicGenerator;
@@ -50,6 +58,27 @@ import ru.terrakok.cicerone.Router;
 
 @Module(includes = {AndroidSupportInjectionModule.class})
 public abstract class AppModule {
+
+    @Singleton
+    @Provides
+    public static Gson provideGson() {
+        return new Gson();
+    }
+
+    @Singleton
+    @Provides
+    public static KeyStoreCipher provideKeyStoreCipher(Gson gson, Context context) {
+        return new KeyStoreCipher(gson, context);
+    }
+
+    @Singleton
+    @Provides
+    public static List<Locale> provideSupportedLocale() {
+        Locale ru = new Locale("ru");
+        Locale en = new Locale("en");
+
+        return Arrays.asList(en, ru);
+    }
 
     @Singleton
     @Provides
@@ -79,8 +108,8 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static KeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
-        return new KeyGenerator(seedCalculator, mnemonicGenerator, sodium);
+    public static AdamantKeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
+        return new AdamantKeyGenerator(seedCalculator, mnemonicGenerator, sodium);
     }
 
     @Singleton
@@ -91,22 +120,22 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static MessageFactoryProvider provideMessageFactoryProvider() {
+    public static MessageFactoryProvider provideMessageFactoryProvider(AdamantAddressProcessor adamantAddressProcessor) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageTypes.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory()
+                new AdamantBasicMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
                 SupportedMessageTypes.FALLBACK,
-                new FallbackMessageFactory()
+                new FallbackMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
                 SupportedMessageTypes.ETHEREUM_TRANSFER,
-                new EtheriumTransferMessageFactory()
+                new EthereumTransferMessageFactory(adamantAddressProcessor)
         );
 
         return provider;
@@ -143,7 +172,7 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, KeyGenerator keyGenerator) {
+    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, AdamantKeyGenerator keyGenerator) {
         return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
     }
 
@@ -175,25 +204,30 @@ public abstract class AppModule {
     @Provides
     public static AuthorizeInteractor provideAuthorizationInteractor(
             AdamantApiWrapper api,
-            KeyGenerator keyGenerator
+            AdamantKeyGenerator keyGenerator,
+            KeyStoreCipher keyStoreCipher,
+            Settings settings
     ) {
-        return new AuthorizeInteractor(api, keyGenerator);
+        return new AuthorizeInteractor(api, keyGenerator, keyStoreCipher, settings);
     }
 
     @Singleton
     @Provides
     public static AccountInteractor provideAccountInteractor(
-            AdamantApiWrapper api
+            AdamantApiWrapper api,
+            Settings settings
     ) {
-        return new AccountInteractor(api);
+        return new AccountInteractor(api, settings);
     }
 
     @Singleton
     @Provides
     public static SettingsInteractor provideSettingsInteractor(
-            Settings settings
+            Settings settings,
+            KeyStoreCipher keyStoreCipher,
+            AdamantApiWrapper apiWrapper
     ) {
-        return new SettingsInteractor(settings);
+        return new SettingsInteractor(settings, apiWrapper, keyStoreCipher);
     }
 
     @Singleton
@@ -209,6 +243,7 @@ public abstract class AppModule {
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
+            AdamantAddressProcessor adamantAddressProcessor,
             LocalizedChatMapper localizedChatMapper,
             Encryptor encryptor,
             PublicKeyStorage publicKeyStorage
@@ -219,6 +254,7 @@ public abstract class AppModule {
                 chatMapper,
                 localizedMessageMapper,
                 localizedChatMapper,
+                adamantAddressProcessor,
                 encryptor,
                 publicKeyStorage
         );
@@ -248,6 +284,10 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {ScanQrCodeScreenModule.class})
     public abstract ScanQrCodeScreen createScanQrCodeScreenInjector();
 
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {SplashScreenModule.class})
+    public abstract SplashScreen createSplashScreenInjector();
+
 
     //--Services
 
@@ -258,4 +298,8 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {AdamantBalanceUpdateServiceModule.class})
     public abstract AdamantBalanceUpdateService createBalanceUpdateService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {EncryptKeyPairServiceModule.class})
+    public abstract EncryptKeyPairService createEncryptKeyPairService();
 }

@@ -8,6 +8,7 @@ import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -23,7 +24,9 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     @Override
     public void attachView(SettingsView view) {
         super.attachView(view);
-
+        getViewState().setStoreKeyPairOption(
+                interactor.isKeyPairMustBeStored()
+        );
     }
 
     public void onClickAddNewNode(String nodeUrl) {
@@ -32,10 +35,15 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             getViewState().clearNodeTextField();
             getViewState().hideKeyboard();
         }
-
     }
 
     public void onClickDeleteNode(ServerNode serverNode){
         interactor.deleteNode(serverNode);
+    }
+
+    public void onSaveKeyPair(boolean value) {
+        if (interactor.isKeyPairMustBeStored() != value) {
+            getViewState().callSaveKeyPairService(value);
+        }
     }
 }

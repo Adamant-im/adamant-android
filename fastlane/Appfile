@@ -1,0 +1,2 @@
+json_key_file("api-gps.json")
+package_name("im.adamant.android")

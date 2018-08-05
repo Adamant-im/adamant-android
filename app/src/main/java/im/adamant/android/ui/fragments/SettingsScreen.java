@@ -2,20 +2,28 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.franmontiel.localechanger.LocaleChanger;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -26,6 +34,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
@@ -36,12 +45,15 @@ import io.reactivex.disposables.Disposable;
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Inject
-    ServerNodeAdapter adapter;
+    ServerNodeAdapter nodeAdapter;
 
     Disposable adapterDisposable;
 
     @Inject
     Provider<SettingsPresenter> presenterProvider;
+
+    @Inject
+    List<Locale> supportedLocales;
 
     //--Moxy
     @InjectPresenter
@@ -55,6 +67,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
     @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
+    @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -75,7 +88,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         nodeListView.setLayoutManager(layoutManager);
-        nodeListView.setAdapter(adapter);
+        nodeListView.setAdapter(nodeAdapter);
 
         newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
             if (!isFocused){
@@ -89,7 +102,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void onResume() {
         super.onResume();
-        adapterDisposable = adapter
+        adapterDisposable = nodeAdapter
                 .getRemoveObservable()
                 .subscribe(serverNode -> {
                     Activity activity = getActivity();
@@ -105,19 +118,30 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                                 .show();
                     }
                 });
+
+        nodeAdapter.startListenChanges();
     }
 
     @Override
     public void onPause() {
-        super.onPause();
+        presenter.onSaveKeyPair(storeKeypairView.isChecked());
+        nodeAdapter.stopListenChanges();
+
         if (adapterDisposable != null){
             adapterDisposable.dispose();
         }
+
+        super.onPause();
     }
 
     @OnClick(R.id.fragment_settings_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
+    }
+    @OnClick(R.id.fragment_settings_btn_change_lang)
+    public void onSelectLanguage() {
+        android.support.v7.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
+        languageDialogBuilder.create().show();
     }
 
     @Override
@@ -130,5 +154,70 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         if (getActivity() != null){
             AdamantApplication.hideKeyboard(getActivity(), newNodeAddressView);
         }
+    }
+
+    @Override
+    public void setStoreKeyPairOption(boolean value) {
+        storeKeypairView.setChecked(value);
+    }
+
+    @Override
+    public void callSaveKeyPairService(boolean value) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            Intent intent = new Intent(context, EncryptKeyPairService.class);
+            intent.putExtra(EncryptKeyPairService.VALUE_KEY, value);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                context.startForegroundService(intent);
+            } else {
+                context.startService(intent);
+            }
+        }
+    }
+
+
+    //TODO: Refactor: method to long and dirty
+    private android.support.v7.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
+        android.support.v7.app.AlertDialog.Builder builder = null;
+        FragmentActivity activity = getActivity();
+
+        if (activity != null){
+            builder = new android.support.v7.app.AlertDialog.Builder(activity);
+
+            builder.setTitle(getString(R.string.fragment_settings_choose_language));
+
+            CharSequence[] titles = new CharSequence[supportedLocales.size()];
+
+            Locale locale = LocaleChanger.getLocale();
+            int defaultSelected = 0;
+            for (int i = 0; i < titles.length; i++){
+                titles[i] = supportedLocales.get(i).getDisplayName();
+
+                if (locale.equals(supportedLocales.get(i))){
+                    defaultSelected = i;
+                }
+            }
+
+            AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
+
+            builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
+                selectedLangIndex.set(i);
+            });
+
+            int finalDefaultSelected = defaultSelected;
+            builder.setPositiveButton(R.string.yes, (d, i) -> {
+                int currentSelected = selectedLangIndex.get();
+                if (finalDefaultSelected != currentSelected){
+                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
+                    activity.recreate();
+                }
+            });
+            builder.setNegativeButton(R.string.no, null);
+        }
+
+
+        return builder;
     }
 }

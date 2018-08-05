@@ -3,7 +3,10 @@ package im.adamant.android.presenters;
 import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
+
+import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.ChatsInteractor;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
@@ -45,7 +48,11 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                 .synchronizeWithBlockchain()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
-                    router.showSystemMessage(error.getMessage());
+                    if (error instanceof NotAuthorizedException){
+                        router.navigateTo(Screens.SPLASH_SCREEN);
+                    } else {
+                        router.showSystemMessage(error.getMessage());
+                    }
                     Log.e("Messages", error.getMessage(), error);
                 })
                 .doOnComplete(() -> {
@@ -81,6 +88,18 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             .showChatMessages(
                 messages
             );
+    }
+
+    public void onShowChatByAddress(String address, String label){
+        Chat chat = new Chat();
+        chat.setCompanionId(address);
+        if (label != null && !label.isEmpty()){
+            chat.setTitle(label);
+        } else {
+            chat.setTitle(address);
+        }
+
+        onShowChat(chat);
     }
 
     public void onClickSendMessage(String message){

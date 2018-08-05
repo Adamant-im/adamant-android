@@ -14,10 +14,12 @@ import java.io.OutputStream;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.mvp_view.LoginView;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -41,9 +43,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     public void attachView(LoginView view) {
         super.attachView(view);
 
-        if (authorizeInteractor.isAuthorized()){
-            router.navigateTo(Screens.WALLET_SCREEN);
-        }
+
     }
 
     public void onClickLoginButton(String passPhrase) {
@@ -73,6 +73,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                     }
                 },
                 (error) -> {
+                    error.printStackTrace();
                     router.showSystemMessage(error.getMessage());
                     getViewState().unLockAuthorization();
                 },

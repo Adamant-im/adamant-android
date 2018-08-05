@@ -3,13 +3,17 @@ package im.adamant.android;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
+import android.content.res.Configuration;
+import android.support.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.franmontiel.localechanger.LocaleChanger;
+import com.squareup.leakcanary.LeakCanary;
+
+import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -18,14 +22,17 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
-import im.adamant.android.services.ServerNodesPingService;
 
-public class AdamantApplication extends Application implements HasActivityInjector, HasServiceInjector {
+public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
+
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
 
     @Inject
     DispatchingAndroidInjector<Service> dispatchingAndroidServiceInjector;
+
+    @Inject
+    List<Locale> supportedLocales;
 
     @Override
     public void onCreate() {
@@ -37,7 +44,17 @@ public class AdamantApplication extends Application implements HasActivityInject
                 .build()
                 .inject(this);
 
+        LocaleChanger.initialize(getApplicationContext(), supportedLocales);
+
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            // This process is dedicated to LeakCanary for heap analysis.
+//            // You should not init your app in this process.
+//            return;
+//        }
+//
+//        LeakCanary.install(this);
     }
+
 
     @Override
     public AndroidInjector<Activity> activityInjector() {
@@ -56,4 +73,11 @@ public class AdamantApplication extends Application implements HasActivityInject
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        LocaleChanger.onConfigurationChanged();
+    }
+
 }

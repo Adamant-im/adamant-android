@@ -213,6 +213,12 @@ public class LoginScreen extends BaseActivity implements LoginView {
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
@@ -227,7 +233,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
         public void onPermissionGranted() {
             File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
             try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from("adm:" + passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
                 qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
             }catch (Exception ex){
                 ex.printStackTrace();

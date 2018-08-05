@@ -1,16 +1,15 @@
 package im.adamant.android.core;
 
-import android.util.Log;
-
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
 
 import im.adamant.android.BuildConfig;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
@@ -25,7 +24,6 @@ import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -40,8 +38,7 @@ public class AdamantApiWrapper {
     private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
     private Account account;
-    private String passPhrase;
-    private KeyGenerator keyGenerator;
+    private AdamantKeyGenerator keyGenerator;
 
     private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
@@ -49,7 +46,7 @@ public class AdamantApiWrapper {
     private volatile int serverTimeDelta;
     private int errorsCount;
 
-    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, KeyGenerator keyGenerator) {
+    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, AdamantKeyGenerator keyGenerator) {
         this.nodes = nodes;
         this.keyGenerator = keyGenerator;
 
@@ -59,13 +56,16 @@ public class AdamantApiWrapper {
     public Flowable<Authorization> authorize(String passPhrase) {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
+        return authorize(tempKeyPair);
+    }
+
+    public Flowable<Authorization> authorize(KeyPair tempKeyPair) {
         return api
                 .authorize(tempKeyPair.getPublicKeyString().toLowerCase())
                 .subscribeOn(Schedulers.io())
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
-                    this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
@@ -102,7 +102,7 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionList> getTransactions(int height, String order) {
 
-        if (!isAuthorized()){return Flowable.error(new Exception("Not authorized"));}
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
                 .getTransactions(account.getAddress(), height, order)
@@ -114,7 +114,7 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionList> getTransactions(String order, int offset) {
 
-        if (!isAuthorized()){return Flowable.error(new Exception("Not authorized"));}
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
                 .getTransactions(account.getAddress(), order, offset)
@@ -162,7 +162,6 @@ public class AdamantApiWrapper {
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
-                    this.passPhrase = passPhrase;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
@@ -184,10 +183,6 @@ public class AdamantApiWrapper {
     public void logout() {
         account = null;
         keyPair = null;
-    }
-
-    public String getPassPhrase() {
-        return passPhrase;
     }
 
     public Account getAccount() {
