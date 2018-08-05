@@ -27,7 +27,7 @@ public class EthereumTransferMessageFactory implements MessageFactory<EthereumTr
     @Override
     public AbstractMessageViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.list_item_adamant_basic_message, parent, false);
+        View v = inflater.inflate(R.layout.list_item_etherium_transfer_message, parent, false);
         return new EthereumTransferMessageViewHolder(parent.getContext(), v, adamantAddressProcessor);
     }
 }
