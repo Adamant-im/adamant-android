@@ -99,7 +99,11 @@ public class SplashScreen extends AppCompatActivity {
 
                         return authorization;
                     })
-                    .subscribe();
+                    .subscribe(authorization -> {
+                        if (!authorization.isSuccess()){
+                            goToScreen(LoginScreen.class, applicationContext, thisReference);
+                        }
+                    });
 
             subscriptions.add(subscribe);
         }
