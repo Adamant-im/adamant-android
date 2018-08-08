@@ -3,6 +3,7 @@ package im.adamant.android.core;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionState;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
@@ -30,14 +31,14 @@ public interface AdamantApi {
     Flowable<Authorization> authorize(@Query("publicKey") String publicKey);
 
     @GET("chats/get")
-    Flowable<TransactionList> getTransactions(
+    Flowable<TransactionList<TransactionChatAsset>> getMessageTransactions(
             @Query("isIn") String address,
             @Query("fromHeight") int height,
             @Query("orderBy") String order
     );
 
     @GET("chats/get")
-    Flowable<TransactionList> getTransactions(
+    Flowable<TransactionList<TransactionChatAsset>> getMessageTransactions(
             @Query("isIn") String address,
             @Query("orderBy") String order,
             @Query("offset") int offset
@@ -57,4 +58,12 @@ public interface AdamantApi {
 
     @POST("states/store")
     Flowable<OperationComplete> sendToKeyValueStorage(@Body Transaction<TransactionStateAsset> transaction);
+
+    @GET("states/get")
+    Flowable<TransactionList<TransactionStateAsset>> getFromKeyValueStorage(
+            @Query("senderId") String senderId,
+            @Query("key") String key,
+            @Query("orderBy") String order,
+            @Query("limit") int limit
+    );
 }

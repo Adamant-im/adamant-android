@@ -9,6 +9,7 @@ import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
@@ -100,24 +101,24 @@ public class AdamantApiWrapper {
 
     }
 
-    public Flowable<TransactionList> getTransactions(int height, String order) {
+    public Flowable<TransactionList<TransactionChatAsset>> getTransactions(int height, String order) {
 
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getTransactions(account.getAddress(), height, order)
+                .getMessageTransactions(account.getAddress(), height, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionList> getTransactions(String order, int offset) {
+    public Flowable<TransactionList<TransactionChatAsset>> getTransactions(String order, int offset) {
 
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getTransactions(account.getAddress(), order, offset)
+                .getMessageTransactions(account.getAddress(), order, offset)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
@@ -170,6 +171,19 @@ public class AdamantApiWrapper {
 
     public Flowable<OperationComplete> sendToKeyValueStorage(Transaction<TransactionStateAsset> transaction) {
         return api.sendToKeyValueStorage(transaction)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionList<TransactionStateAsset>> getFromKeyValueStorage(
+            String senderId,
+            String key,
+            String order,
+            int limit
+    ) {
+        return api.getFromKeyValueStorage(senderId, key, order, limit)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))

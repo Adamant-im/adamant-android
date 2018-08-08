@@ -38,6 +38,8 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     public void attachView(ChatsView view) {
         super.attachView(view);
 
+        final CompositeDisposable finalSubscribtion = subscriptions;
+
         syncSubscription = interactor
                 .synchronizeWithBlockchain()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -52,6 +54,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 })
                 .doOnComplete(
                         () -> {
+                            finalSubscribtion.add(interactor.refreshContacts().subscribe());
                             getViewState().showChats(interactor.getChatList());
                         }
                 )
@@ -59,7 +62,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
-        subscriptions.add(syncSubscription);
+        finalSubscribtion.add(syncSubscription);
     }
 
     @Override

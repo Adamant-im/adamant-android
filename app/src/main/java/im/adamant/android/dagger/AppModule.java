@@ -8,6 +8,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.ContactListStorageImpl;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -116,6 +117,12 @@ public abstract class AppModule {
     @Provides
     public static Encryptor providesMessageEncryptor(LazySodium sodium) {
         return new Encryptor(sodium);
+    }
+
+    @Singleton
+    @Provides
+    public static ContactListStorageImpl provideContactListStorage(AdamantApiWrapper api, Encryptor encryptor) {
+        return new ContactListStorageImpl(api, encryptor);
     }
 
     @Singleton
@@ -246,7 +253,8 @@ public abstract class AppModule {
             AdamantAddressProcessor adamantAddressProcessor,
             LocalizedChatMapper localizedChatMapper,
             Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage
+            PublicKeyStorage publicKeyStorage,
+            ContactListStorageImpl contactListStorage
     ){
         return new ChatsInteractor(
                 api,
@@ -256,7 +264,8 @@ public abstract class AppModule {
                 localizedChatMapper,
                 adamantAddressProcessor,
                 encryptor,
-                publicKeyStorage
+                publicKeyStorage,
+                contactListStorage
         );
     }
 

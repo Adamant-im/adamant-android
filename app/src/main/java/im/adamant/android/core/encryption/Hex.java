@@ -47,4 +47,18 @@ public class Hex {
 
         return unsignedBytes;
     }
+
+    public static String unsignedBytesToString(int[] bytes){
+        if (bytes == null){return "null";}
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for(int i = 0; i < bytes.length; i++){
+            sb.append(Integer.toString(bytes[i]));
+            sb.append(", ");
+        }
+        sb.append(']');
+
+        return sb.toString();
+    }
 }

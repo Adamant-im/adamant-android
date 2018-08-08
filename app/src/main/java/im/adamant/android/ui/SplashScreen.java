@@ -57,7 +57,7 @@ public class SplashScreen extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_splash_screen);
-
+        //TODO: Проверь что при перевороте экрана авторизация возобновляется
         if (authorizeInteractor.isAuthorized()){
             goToScreen(MainScreen.class, applicationContext, thisReference);
         } else {

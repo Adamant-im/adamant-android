@@ -6,13 +6,16 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.ContactListStorageImpl;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.entities.Contact;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -40,6 +43,7 @@ public class ChatsInteractor {
     private AdamantAddressProcessor adamantAddressProcessor;
     private Encryptor encryptor;
     private PublicKeyStorage publicKeyStorage;
+    private ContactListStorageImpl contactListStorage;
 
     private int countItems = 0;
     private int currentHeight = 1;
@@ -59,7 +63,8 @@ public class ChatsInteractor {
             LocalizedChatMapper localizedChatMapper,
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage
+            PublicKeyStorage publicKeyStorage,
+            ContactListStorageImpl contactListStorage
     ) {
         this.api = api;
         this.chatMapper = chatMapper;
@@ -69,6 +74,7 @@ public class ChatsInteractor {
         this.localizedMessageMapper = localizedMessageMapper;
         this.localizedChatMapper = localizedChatMapper;
         this.adamantAddressProcessor = adamantAddressProcessor;
+        this.contactListStorage = contactListStorage;
     }
 
     //TODO: Refactor this. Too long method
@@ -88,7 +94,7 @@ public class ChatsInteractor {
           return Flowable
                  .defer(() -> Flowable.just(currentHeight))
                  .flatMap((height) -> {
-                     Flowable<TransactionList> transactionFlowable = null;
+                     Flowable<TransactionList<TransactionChatAsset>> transactionFlowable = null;
                      if (offsetItems > 0){
                          transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetItems);
                      } else {
@@ -159,6 +165,29 @@ public class ChatsInteractor {
                   })
                   .ignoreElements();
 
+    }
+
+    public Completable refreshContacts() {
+        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
+
+        return contactListStorage
+                .get("contact_list")
+                .map(HashMap::entrySet)
+                .flatMapIterable(keyEntry -> keyEntry)
+                .doOnNext(stringContactEntry -> {
+                    String companionId = stringContactEntry.getKey();
+                    Contact contact = stringContactEntry.getValue();
+
+                    Chat chat = new Chat();
+                    chat.setCompanionId(companionId);
+
+                    if (chats.contains(chat)) {
+                        int index = chats.indexOf(chat);
+                        Chat originalChat = chats.get(index);
+                        originalChat.setTitle(contact.getDisplayName());
+                    }
+                })
+                .ignoreElements();
     }
 
     public Single<TransactionWasProcessed> sendMessage(String message, String address){
