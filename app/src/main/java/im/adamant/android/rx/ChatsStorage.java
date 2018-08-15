@@ -82,9 +82,31 @@ public class ChatsStorage {
         }
     }
 
-//    public Map<String, Contact> getContacts() {
-//
-//    }
+    public Chat findChatByCompanionId(String companionId) {
+        Chat chat = new Chat();
+        chat.setCompanionId(companionId);
+
+        if (chats.contains(chat)){
+            int index = chats.indexOf(chat);
+            return chats.get(index);
+        } else {
+            return null;
+        }
+    }
+
+    public Map<String, Contact> getContacts() {
+        Map<String, Contact> contacts = new HashMap<>();
+
+        for (Chat chat : chats) {
+            if (!chat.getTitle().equalsIgnoreCase(chat.getCompanionId())){
+                Contact contact = new Contact();
+                contact.setDisplayName(chat.getTitle());
+                contacts.put(chat.getCompanionId(), contact);
+            }
+        }
+
+        return contacts;
+    }
 
     public PublishSubject<ChatEvent<Chat>> getObservable() {
         return subject;

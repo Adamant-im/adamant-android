@@ -55,8 +55,10 @@
     <string name="unsupported_message_type">Unsupported message type: %s</string>
 
     <!--NOTIFICATIONS-->
-    <string name="encrypt_keypair_notification_channel">Encrypting keypair</string>
+    <string name="adamant_system_notification_channel">Important operation</string>
     <string name="encrypt_keypair_notification_message">Executing encrypt keypair</string>
+    <string name="save_contacts_notification_message">Saving contact list</string>
+
 
     <!--HELLO-->
     <string name="hello_message_ico_name">ADAMANT tokens</string>

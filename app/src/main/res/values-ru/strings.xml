@@ -46,8 +46,9 @@
     <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
 
     <!--NOTIFICATIONS-->
-    <string name="encrypt_keypair_notification_channel">Шифрование пары ключей</string>
+    <string name="adamant_system_notification_channel">Важная операция</string>
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
+    <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
 
 
     <!--ERRORS-->

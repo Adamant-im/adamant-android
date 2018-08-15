@@ -75,6 +75,10 @@
         <service
             android:name=".services.SynchronizeService"
             android:exported="false" />
+        <service
+            android:name=".services.SaveContactsService"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

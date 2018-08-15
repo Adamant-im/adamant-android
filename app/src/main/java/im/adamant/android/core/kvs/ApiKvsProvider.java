@@ -48,7 +48,8 @@ public class ApiKvsProvider implements KvsProvider {
     }
 
     @Override
-    public Completable put(String key, Transaction<TransactionStateAsset> transaction) {
+    public Completable put(Transaction<TransactionStateAsset> transaction) {
+        //TODO: "Retry" shouldn't be infinite!
         return  api
                 .sendToKeyValueStorage(transaction)
                 .retry()

@@ -1,5 +1,6 @@
 package im.adamant.android.ui;
 
+import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,11 +8,14 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.view.View;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
 import com.franmontiel.localechanger.LocaleChanger;
 
 import butterknife.ButterKnife;
+import im.adamant.android.R;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
 
@@ -22,9 +26,13 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     private ServiceConnection pingServiceConnection;
     private ServiceConnection admBalanceServiceConnection;
 
+    private TextView titleView;
+
     public abstract int getLayoutId();
 
     public abstract boolean withBackButton();
+
+    public void onClickTitle(){}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,11 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+//    @Override
+//    public void setTitle(String title){
+//        titleView.setText(title);
+//    }
+
     private void initConnections() {
         if (pingServiceConnection == null){
             pingServiceConnection = new ServiceConnection() {
@@ -112,7 +125,6 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         }
     }
 
-
     private void resetTitle() {
         try {
             int label = getPackageManager().getActivityInfo(getComponentName(), GET_META_DATA).labelRes;
@@ -121,6 +133,28 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void createCustomTitle() {
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            // Disable the default and enable the custom
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowCustomEnabled(true);
+            View customView = getLayoutInflater().inflate(R.layout.actionbar_title, null);
+
+            titleView = customView.findViewById(R.id.actionbarTitle);
+
+            // Set the on click listener for the title
+            titleView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickTitle();
+                }
+            });
+            // Apply the custom view
+            actionBar.setCustomView(customView);
         }
     }
 

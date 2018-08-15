@@ -23,6 +23,7 @@ import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.rx.ChatsStorage;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.EncryptKeyPairService;
+import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CompanionDetailScreen;
 import im.adamant.android.ui.CreateChatScreen;
@@ -353,4 +354,8 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {EncryptKeyPairServiceModule.class})
     public abstract EncryptKeyPairService createEncryptKeyPairService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {SaveContactsServiceModule.class})
+    public abstract SaveContactsService createSaveContatactsService();
 }

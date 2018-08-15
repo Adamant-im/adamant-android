@@ -5,32 +5,28 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
 
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import dagger.android.AndroidInjection;
 import im.adamant.android.R;
-import im.adamant.android.dagger.EncryptKeyPairServiceModule;
+import im.adamant.android.dagger.SaveContactsServiceModule;
 import im.adamant.android.helpers.NotificationHelper;
-import im.adamant.android.interactors.SettingsInteractor;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import im.adamant.android.interactors.SaveContactsInteractor;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 import static im.adamant.android.Constants.ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID;
 
-public class EncryptKeyPairService extends Service {
-    public static final String VALUE_KEY = "value";
-    private static final int NOTIFICATION_ID = 34242;
+public class SaveContactsService extends Service {
+    private static final int NOTIFICATION_ID = 782372;
 
     @Inject
-    SettingsInteractor settingsInteractor;
+    SaveContactsInteractor saveContactsInteractor;
 
-    @Named(EncryptKeyPairServiceModule.NAME)
+    @Named(SaveContactsServiceModule.NAME)
     @Inject
     CompositeDisposable subscriptions;
 
@@ -55,13 +51,10 @@ public class EncryptKeyPairService extends Service {
         }
 
         String title = getString(R.string.app_name);
-        String text = getString(R.string.encrypt_keypair_notification_message);
+        String text = getString(R.string.save_contacts_notification_message);
 
         startForeground(NOTIFICATION_ID, NotificationHelper.buildServiceNotification(channelId, this, title, text));
-        if (intent.getExtras() != null){
-            boolean value = intent.getExtras().getBoolean(VALUE_KEY, false);
-            saveKeyPair(value);
-        }
+        saveContacts();
 
         return START_NOT_STICKY;
     }
@@ -72,15 +65,16 @@ public class EncryptKeyPairService extends Service {
         super.onDestroy();
     }
 
-    private void saveKeyPair(boolean value) {
-        WeakReference<Service> thisReference = new WeakReference<>(this);
-        Disposable subscribe = settingsInteractor
-                .saveKeypair(value)
+    private void saveContacts() {
+        WeakReference<Service> serviceWeakReference = new WeakReference<>(this);
+        Disposable subscribe = saveContactsInteractor
+                .execute()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    () -> stopForeground(thisReference),
-                    (error) -> stopForeground(thisReference)
+                    () -> stopForeground(serviceWeakReference),
+                    (error) -> stopForeground(serviceWeakReference)
                 );
+
         subscriptions.add(subscribe);
     }
 
@@ -91,4 +85,5 @@ public class EncryptKeyPairService extends Service {
             service.stopSelf();
         }
     }
+
 }

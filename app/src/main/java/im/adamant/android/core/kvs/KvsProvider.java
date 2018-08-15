@@ -9,5 +9,5 @@ import io.reactivex.Flowable;
 public interface KvsProvider {
     Flowable<Transaction<TransactionStateAsset>> get(String key);
     Flowable<Transaction<TransactionStateAsset>> get(String key, String ownerAddress);
-    Completable put(String key, Transaction<TransactionStateAsset> transaction);
+    Completable put(Transaction<TransactionStateAsset> transaction);
 }

@@ -4,6 +4,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 
+import im.adamant.android.Constants;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.kvs.ApiKvsProvider;
@@ -27,7 +28,7 @@ public class GetContactsInteractor {
 
     public Completable execute() {
         return apiKvsProvider
-                .get("contact_list")
+                .get(Constants.KVS_CONTACT_LIST)
                 .doOnNext(transaction -> {
                     int timestamp = transaction.getTimestamp();
                     HashMap<String, Contact> contacts = kvsHelper.transformFromTransaction(
