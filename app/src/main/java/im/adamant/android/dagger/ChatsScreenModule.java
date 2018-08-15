@@ -1,8 +1,11 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
-import im.adamant.android.interactors.ChatsInteractor;
+import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.presenters.ChatsPresenter;
+import im.adamant.android.rx.ChatsStorage;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 
 import javax.inject.Named;
@@ -19,10 +22,12 @@ public class ChatsScreenModule {
     @Provides
     public ChatsPresenter provideChatsPresenter(
             Router router,
-            ChatsInteractor interactor,
+            GetContactsInteractor getContactsInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage,
             @Named(Screens.CHATS_SCREEN) CompositeDisposable subscriptions
     ){
-        return new ChatsPresenter(router,interactor,subscriptions);
+        return new ChatsPresenter(router,getContactsInteractor, refreshChatsInteractor, chatsStorage, subscriptions);
     }
 
     @FragmentScope

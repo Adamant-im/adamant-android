@@ -48,7 +48,7 @@ public interface AdamantApi {
     Flowable<PublicKeyResponse> getPublicKey(@Query("address") String address);
 
     @POST("chats/normalize")
-    Flowable<TransactionWasNormalized> getNormalizedTransaction(@Body UnnormalizedTransactionMessage unnormalizedTransactionMessage);
+    Flowable<TransactionWasNormalized<TransactionChatAsset>> getNormalizedTransaction(@Body UnnormalizedTransactionMessage unnormalizedTransactionMessage);
 
     @POST("chats/process")
     Flowable<TransactionWasProcessed> processTransaction(@Body ProcessTransaction transaction);

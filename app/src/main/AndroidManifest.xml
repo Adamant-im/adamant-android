@@ -61,13 +61,20 @@
         <activity
             android:name=".ui.PinCodeScreen"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ui.CompanionDetailScreen" />
+
         <service
             android:name=".services.ServerNodesPingService"
             android:exported="false" />
         <service
             android:name=".services.AdamantBalanceUpdateService"
             android:exported="false" />
-        <service android:name=".services.EncryptKeyPairService" />
+        <service
+            android:name=".services.EncryptKeyPairService"
+            android:exported="false"/>
+        <service
+            android:name=".services.SynchronizeService"
+            android:exported="false" />
     </application>
 
 </manifest>

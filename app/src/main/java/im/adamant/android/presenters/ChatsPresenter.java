@@ -6,7 +6,9 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
-import im.adamant.android.interactors.ChatsInteractor;
+import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.rx.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
 
@@ -21,17 +23,24 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class ChatsPresenter extends BasePresenter<ChatsView> {
     private Router router;
-    private ChatsInteractor interactor;
+    private GetContactsInteractor getContactsInteractor;
+    private RefreshChatsInteractor refreshChatsInteractor;
+    private ChatsStorage chatsStorage;
 
     private Disposable syncSubscription;
 
-    private final PublishSubject<Void> updateSubject = PublishSubject
-            .create();
-
-    public ChatsPresenter(Router router, ChatsInteractor interactor, CompositeDisposable subscriptions) {
+    public ChatsPresenter(
+            Router router,
+            GetContactsInteractor getContactsInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage,
+            CompositeDisposable subscriptions
+    ) {
         super(subscriptions);
         this.router = router;
-        this.interactor = interactor;
+        this.getContactsInteractor = getContactsInteractor;
+        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.chatsStorage = chatsStorage;
     }
 
     @Override
@@ -40,8 +49,8 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
 
         final CompositeDisposable finalSubscribtion = subscriptions;
 
-        syncSubscription = interactor
-                .synchronizeWithBlockchain()
+        syncSubscription = refreshChatsInteractor
+                .execute()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
                     if (error instanceof NotAuthorizedException){
@@ -54,8 +63,8 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 })
                 .doOnComplete(
                         () -> {
-                            finalSubscribtion.add(interactor.refreshContacts().subscribe());
-                            getViewState().showChats(interactor.getChatList());
+                            finalSubscribtion.add(getContactsInteractor.execute().subscribe());
+                            getViewState().showChats(chatsStorage.getChatList());
                         }
                 )
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))

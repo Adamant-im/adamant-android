@@ -7,18 +7,24 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.helpers.ContactListStorageImpl;
+import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.interactors.ChatsInteractor;
+import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.interactors.SaveContactsInteractor;
+import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
+import im.adamant.android.rx.ChatsStorage;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.ServerNodesPingService;
+import im.adamant.android.ui.CompanionDetailScreen;
 import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
@@ -121,8 +127,20 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static ContactListStorageImpl provideContactListStorage(AdamantApiWrapper api, Encryptor encryptor) {
-        return new ContactListStorageImpl(api, encryptor);
+    public static ChatsStorage provideChatsStorage() {
+        return new ChatsStorage();
+    }
+
+    @Singleton
+    @Provides
+    public static KvsHelper provideKvsHelper(Encryptor encryptor, AdamantApiWrapper api, Gson gson) {
+        return new KvsHelper(api, encryptor, gson);
+    }
+
+    @Singleton
+    @Provides
+    public static ApiKvsProvider provideApiKvsProvider(AdamantApiWrapper adamantApiWrapper) {
+        return new ApiKvsProvider(adamantApiWrapper);
     }
 
     @Singleton
@@ -245,31 +263,51 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static ChatsInteractor provideChatsInteractor(
+    public static SendMessageInteractor provideSendMessageInteractor(
+            AdamantApiWrapper api,
+            Encryptor encryptor,
+            PublicKeyStorage publicKeyStorage
+    ){
+        return new SendMessageInteractor(
+                api, encryptor, publicKeyStorage
+        );
+    }
+
+    @Singleton
+    @Provides
+    public static RefreshChatsInteractor provideRefreshInteractor(
             AdamantApiWrapper api,
             TransactionToMessageMapper messageMapper,
             TransactionToChatMapper chatMapper,
             LocalizedMessageMapper localizedMessageMapper,
-            AdamantAddressProcessor adamantAddressProcessor,
             LocalizedChatMapper localizedChatMapper,
-            Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage,
-            ContactListStorageImpl contactListStorage
+            ChatsStorage chatsStorage
     ){
-        return new ChatsInteractor(
+        return new RefreshChatsInteractor(
                 api,
-                messageMapper,
                 chatMapper,
+                messageMapper,
                 localizedMessageMapper,
                 localizedChatMapper,
-                adamantAddressProcessor,
-                encryptor,
-                publicKeyStorage,
-                contactListStorage
+                chatsStorage
         );
     }
 
+    @Singleton
+    @Provides
+    public static GetContactsInteractor provideGetContactsInteractor(
+            ApiKvsProvider apiKvsProvider,
+            ChatsStorage chatsStorage,
+            KvsHelper kvsHelper
+    ) {
+        return new GetContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
+    }
 
+    @Singleton
+    @Provides
+    public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage) {
+        return new SaveContactsInteractor(apiKvsProvider, chatsStorage);
+    }
 
     //--Activities
 
@@ -296,6 +334,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {SplashScreenModule.class})
     public abstract SplashScreen createSplashScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {CompanionDetailScreenModule.class})
+    public abstract CompanionDetailScreen createCompanionDetailInjector();
 
 
     //--Services

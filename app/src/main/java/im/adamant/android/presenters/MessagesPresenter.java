@@ -7,7 +7,10 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
-import im.adamant.android.interactors.ChatsInteractor;
+import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.interactors.SendMessageInteractor;
+import im.adamant.android.rx.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
@@ -25,7 +28,10 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class MessagesPresenter extends BasePresenter<MessagesView>{
     private Router router;
-    private ChatsInteractor interactor;
+    private SendMessageInteractor sendMessageInteractor;
+    private GetContactsInteractor getContactsInteractor;
+    private RefreshChatsInteractor refreshChatsInteractor;
+    private ChatsStorage chatsStorage;
 
     private Chat currentChat;
     private List<AbstractMessage> messages;
@@ -33,10 +39,20 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     private Disposable syncSubscription;
 
-    public MessagesPresenter(Router router, ChatsInteractor interactor, CompositeDisposable subscriptions) {
+    public MessagesPresenter(
+            Router router,
+            SendMessageInteractor sendMessageInteractor,
+            GetContactsInteractor getContactsInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage,
+            CompositeDisposable subscriptions
+    ) {
         super(subscriptions);
         this.router = router;
-        this.interactor = interactor;
+        this.sendMessageInteractor = sendMessageInteractor;
+        this.getContactsInteractor = getContactsInteractor;
+        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.chatsStorage = chatsStorage;
     }
 
 
@@ -44,8 +60,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void attachView(MessagesView view) {
         super.attachView(view);
 
-        syncSubscription = interactor
-                .synchronizeWithBlockchain()
+        syncSubscription = refreshChatsInteractor
+                .execute()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> {
                     if (error instanceof NotAuthorizedException){
@@ -78,7 +94,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public void onShowChat(Chat chat){
         currentChat = chat;
-        messages = interactor.getMessagesByCompanionId(
+        messages = chatsStorage.getMessagesByCompanionId(
                 chat.getCompanionId()
         );
 
@@ -107,7 +123,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
         if (currentChat != null){
             AbstractMessage messageEntity = addUnsendedMessageToChat(message);
-            Disposable subscription = interactor
+            Disposable subscription = sendMessageInteractor
                     .sendMessage(message, currentChat.getCompanionId())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
@@ -118,7 +134,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
                             getViewState().messageWasSended(messageEntity);
                         }),
-                        (error) -> router.showSystemMessage(error.getMessage())
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                            error.printStackTrace();
+                        }
                     );
 
             subscriptions.add(subscription);
@@ -136,6 +155,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         messageEntity.setDate(System.currentTimeMillis());
         messageEntity.setProcessed(false);
 
+        //TODO: Encapsulate messages into ChatsStorage.
         if (messages != null){
             messages.add(messageEntity);
         }

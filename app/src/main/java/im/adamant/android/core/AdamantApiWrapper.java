@@ -1,5 +1,6 @@
 package im.adamant.android.core;
 
+
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
@@ -134,7 +135,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionWasNormalized> getNormalizedTransaction(UnnormalizedTransactionMessage unnormalizedTransactionMessage) {
+    public Flowable<TransactionWasNormalized<TransactionChatAsset>> getNormalizedTransaction(UnnormalizedTransactionMessage unnormalizedTransactionMessage) {
         return api
                 .getNormalizedTransaction(unnormalizedTransactionMessage)
                 .subscribeOn(Schedulers.io())

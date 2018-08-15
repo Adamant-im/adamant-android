@@ -15,6 +15,7 @@
 
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Add</string>
+    <string name="activity_companion_detail_rename">Rename contact</string>
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_scan_qrcode_title">Scan QR code</string>

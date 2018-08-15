@@ -16,6 +16,7 @@
 
     <string name="activity_create_chat_recipient">Адрес получателя</string>
     <string name="activity_create_chat_send">Начать чат</string>
+    <string name="activity_companion_detail_rename">Переименовать контакт</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>

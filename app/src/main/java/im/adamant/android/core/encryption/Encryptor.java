@@ -154,7 +154,7 @@ public class Encryptor {
                 throw new InvalidValueForKeyValueStorage();
             }
 
-            String payloadDecryptedString = decryptedMessage.substring(from, to - from + 3);
+            String payloadDecryptedString = decryptedMessage.substring(from, to + 1);
 
             JsonElement jsonElement = parser.parse(payloadDecryptedString);
 
