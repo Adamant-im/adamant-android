@@ -41,6 +41,8 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         setContentView(getLayoutId());
         ButterKnife.bind(this);
 
+        createCustomTitle();
+
         if (withBackButton()){
             android.support.v7.app.ActionBar supportActionBar = getSupportActionBar();
             if (supportActionBar != null) {
@@ -48,8 +50,6 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
             }
         }
-
-        resetTitle();
     }
 
     @Override
@@ -87,10 +87,12 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-//    @Override
-//    public void setTitle(String title){
-//        titleView.setText(title);
-//    }
+    @Override
+    public void setTitle(CharSequence title) {
+        if (titleView != null){
+            titleView.setText(title);
+        }
+    }
 
     private void initConnections() {
         if (pingServiceConnection == null){
@@ -137,12 +139,12 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     }
 
     private void createCustomTitle() {
-        ActionBar actionBar = getActionBar();
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Disable the default and enable the custom
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
-            View customView = getLayoutInflater().inflate(R.layout.actionbar_title, null);
+            View customView = getLayoutInflater().inflate(R.layout.custom_action_bar, null);
 
             titleView = customView.findViewById(R.id.actionbarTitle);
 

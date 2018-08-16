@@ -306,8 +306,8 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage) {
-        return new SaveContactsInteractor(apiKvsProvider, chatsStorage);
+    public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage, KvsHelper kvsHelper) {
+        return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
     }
 
     //--Activities

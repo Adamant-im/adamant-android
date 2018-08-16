@@ -45,8 +45,9 @@ public class TransactionState implements WithBytesDigest {
         typeBuffer.putInt(type);
 
         ByteBuffer hashBuffer = ByteBuffer.allocate(keyBytes.length + valueBytes.length + typeBuffer.position());
-        hashBuffer.put(keyBytes);
         hashBuffer.put(valueBytes);
+        hashBuffer.put(keyBytes);
+        //TODO: Don't move this line, otherwise may broke calculation buffer size process.
         typeBuffer.flip();
         hashBuffer.put(typeBuffer);
 

@@ -171,7 +171,7 @@ public class AdamantApiWrapper {
     }
 
     public Flowable<OperationComplete> sendToKeyValueStorage(Transaction<TransactionStateAsset> transaction) {
-        return api.sendToKeyValueStorage(transaction)
+        return api.sendToKeyValueStorage(new ProcessTransaction(transaction))
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))

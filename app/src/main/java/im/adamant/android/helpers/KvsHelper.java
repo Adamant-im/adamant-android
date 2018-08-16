@@ -58,7 +58,7 @@ public class KvsHelper {
 
         transaction.setAsset(asset);
         String sign = encryptor.createTransactionSignature(transaction, keyPair);
-        transaction.setSignSignature(sign);
+        transaction.setSignature(sign);
 
         return transaction;
     }

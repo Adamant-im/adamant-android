@@ -21,6 +21,7 @@ import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -158,6 +159,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         newMessageText.setText("");
     }
 
+    @Override
+    public void onClickTitle() {
+        presenter.onClickShowCompanionDetail();
+    }
+
     private Navigator navigator = new Navigator() {
         @Override
         public void applyCommands(Command[] commands) {
@@ -171,13 +177,22 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
             } else if(command instanceof Forward) {
-                switch (((Forward) command).getScreenKey()){
+                Forward forward = ((Forward) command);
+                switch (forward.getScreenKey()){
                     case Screens.LOGIN_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
                         startActivity(intent);
                         MessagesScreen.this.finish();
                     }
                     break;
+                    case Screens.COMPANION_DETAIL_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), CompanionDetailScreen.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(CompanionDetailScreen.ARG_COMPANION_ID, (Serializable) forward.getTransitionData());
+                        intent.putExtras(bundle);
+
+                        startActivity(intent);
+                    }
                 }
             }
         }

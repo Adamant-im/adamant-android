@@ -18,6 +18,7 @@ import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.Sign;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -92,8 +93,8 @@ public class Encryptor {
             );
 
             JsonObject json = new JsonObject();
-            json.add("message", new JsonPrimitive(encryptedMessage));
-            json.add("nonce", new JsonPrimitive(LazySodium.toHex(nonceBytes)));
+            json.add("message", new JsonPrimitive(encryptedMessage.toLowerCase()));
+            json.add("nonce", new JsonPrimitive(LazySodium.toHex(nonceBytes).toLowerCase()));
 
             state = new TransactionState();
             state.setKey(key);
@@ -203,7 +204,8 @@ public class Encryptor {
     }
 
     public String generateRandomString() {
-        return Double.toString(Math.random())
+        BigDecimal rnd = new BigDecimal(Math.random()).setScale(36, BigDecimal.ROUND_HALF_EVEN);
+        return rnd.toString()
                 .substring(0, 35)
                 .replace("/[^a-z]+/g", "")
                 .substring(0, (int) Math.ceil(Math.random() * 10));

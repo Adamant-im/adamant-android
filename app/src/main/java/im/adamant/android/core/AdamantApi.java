@@ -57,7 +57,7 @@ public interface AdamantApi {
     Flowable<Authorization> createNewAccount(@Body NewAccount accountKey);
 
     @POST("states/store")
-    Flowable<OperationComplete> sendToKeyValueStorage(@Body Transaction<TransactionStateAsset> transaction);
+    Flowable<OperationComplete> sendToKeyValueStorage(@Body ProcessTransaction transaction);
 
     @GET("states/get")
     Flowable<TransactionList<TransactionStateAsset>> getFromKeyValueStorage(

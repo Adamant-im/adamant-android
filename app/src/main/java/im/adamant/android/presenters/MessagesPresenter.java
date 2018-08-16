@@ -147,6 +147,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     }
 
+    public void onClickShowCompanionDetail() {
+        router.navigateTo(Screens.COMPANION_DETAIL_SCREEN, currentChat.getCompanionId());
+    }
+
     private AbstractMessage addUnsendedMessageToChat(String message) {
         AdamantBasicMessage messageEntity = new AdamantBasicMessage();
         messageEntity.setSupportedType(SupportedMessageTypes.ADAMANT_BASIC);
