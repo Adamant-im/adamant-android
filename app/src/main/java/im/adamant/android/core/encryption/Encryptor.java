@@ -80,12 +80,13 @@ public class Encryptor {
         byte[] nonceBytes = sodium.randomBytesBuf(NONCE_LENGTH);
 
         String  randomString = generateRandomString();
-        stringifiedState = randomString + "{payload: \"" + stringifiedState + "\"}" + randomString;
+        stringifiedState = randomString + stringifiedState + randomString;
 
         try {
-            String cryptoHashSha256 = sodium.cryptoHashSha256(mySecretKey.toLowerCase());
+            byte[] cryptoHashSha256 = createCryptoHashSha256FromPrivateKey(mySecretKey);
             byte[] curveSecretKey = new byte[Sign.CURVE25519_SECRETKEYBYTES];
-            sodium.convertSecretKeyEd25519ToCurve25519(curveSecretKey, cryptoHashSha256.getBytes());
+
+            sodium.convertSecretKeyEd25519ToCurve25519(curveSecretKey, cryptoHashSha256);
             String encryptedMessage = sodium.cryptoSecretBoxEasy(
                     stringifiedState,
                     nonceBytes,
@@ -125,16 +126,7 @@ public class Encryptor {
         String nonce = nonceJsonElement.getAsString();
 
         try {
-            mySecretKey = mySecretKey.toLowerCase();
-
-            MessageDigest digest = null;
-            byte[] cryptoHashSha256 = null;
-            try {
-                digest = MessageDigest.getInstance("SHA-256");
-                cryptoHashSha256 = digest.digest(Hex.encodeStringToHexArray(mySecretKey));
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            }
+            byte[] cryptoHashSha256 = createCryptoHashSha256FromPrivateKey(mySecretKey);
 
             byte[] curveSecretKey = new byte[Sign.CURVE25519_SECRETKEYBYTES];
             sodium.convertSecretKeyEd25519ToCurve25519(curveSecretKey, cryptoHashSha256);
@@ -170,7 +162,7 @@ public class Encryptor {
 
             payloadString = payload.toString();
 
-        }catch (SodiumException | JsonSyntaxException ex){
+        }catch (Exception ex){
             ex.printStackTrace();
         }
 
@@ -203,12 +195,21 @@ public class Encryptor {
         return sign;
     }
 
-    public String generateRandomString() {
-        BigDecimal rnd = new BigDecimal(Math.random()).setScale(36, BigDecimal.ROUND_HALF_EVEN);
-        return rnd.toString()
-                .substring(0, 35)
-                .replace("/[^a-z]+/g", "")
-                .substring(0, (int) Math.ceil(Math.random() * 10));
+    public String generateRandomString() { ;
+        return Long.toString((long)(Math.random() * 10_000_000_000_000L), 36)
+                .replace("/[^a-z]+/g", "");
     }
 
+    private byte[] createCryptoHashSha256FromPrivateKey(String mySecretKey) {
+        mySecretKey = mySecretKey.toLowerCase();
+        byte[] cryptoHashSha256 = new byte[0];
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            cryptoHashSha256 = digest.digest(Hex.encodeStringToHexArray(mySecretKey));
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return cryptoHashSha256;
+    }
 }

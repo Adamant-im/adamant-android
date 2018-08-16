@@ -1,6 +1,7 @@
 package im.adamant.android.helpers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
@@ -30,7 +31,9 @@ public class KvsHelper {
     }
 
     public <T> Transaction<TransactionStateAsset> transformToTransaction(String key, boolean encrypted, T object) {
-        String valueString = gson.toJson(object);
+        JsonObject valueObject = new JsonObject();
+        valueObject.add("payload", gson.toJsonTree(object));
+        String valueString = valueObject.toString();
 
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();
