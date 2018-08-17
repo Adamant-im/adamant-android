@@ -10,7 +10,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
@@ -29,7 +29,6 @@ import ru.terrakok.cicerone.Router;
 public class MessagesPresenter extends BasePresenter<MessagesView>{
     private Router router;
     private SendMessageInteractor sendMessageInteractor;
-    private GetContactsInteractor getContactsInteractor;
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
 
@@ -42,7 +41,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public MessagesPresenter(
             Router router,
             SendMessageInteractor sendMessageInteractor,
-            GetContactsInteractor getContactsInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
@@ -50,7 +48,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         super(subscriptions);
         this.router = router;
         this.sendMessageInteractor = sendMessageInteractor;
-        this.getContactsInteractor = getContactsInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
         this.chatsStorage = chatsStorage;
     }
@@ -104,6 +101,12 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             .showChatMessages(
                 messages
             );
+    }
+
+    public void onResume() {
+        if (currentChat != null){
+            getViewState().changeTitle(currentChat.getTitle());
+        }
     }
 
     public void onShowChatByAddress(String address, String label){

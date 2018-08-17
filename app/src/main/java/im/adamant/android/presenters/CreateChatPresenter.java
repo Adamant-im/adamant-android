@@ -8,7 +8,7 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 

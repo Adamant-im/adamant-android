@@ -8,7 +8,7 @@ import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
 
@@ -17,7 +17,6 @@ import java.util.concurrent.TimeUnit;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.subjects.PublishSubject;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
@@ -47,7 +46,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     public void attachView(ChatsView view) {
         super.attachView(view);
 
-        final CompositeDisposable finalSubscribtion = subscriptions;
+        final CompositeDisposable finalSubscription = subscriptions;
 
         syncSubscription = refreshChatsInteractor
                 .execute()
@@ -63,7 +62,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 })
                 .doOnComplete(
                         () -> {
-                            finalSubscribtion.add(getContactsInteractor.execute().subscribe());
+                            finalSubscription.add(getContactsInteractor.execute().subscribe());
                             getViewState().showChats(chatsStorage.getChatList());
                         }
                 )
@@ -71,7 +70,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
-        finalSubscribtion.add(syncSubscription);
+        finalSubscription.add(syncSubscription);
     }
 
     @Override

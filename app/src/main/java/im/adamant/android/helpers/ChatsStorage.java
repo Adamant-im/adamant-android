@@ -1,4 +1,4 @@
-package im.adamant.android.rx;
+package im.adamant.android.helpers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,6 @@ public class ChatsStorage {
     //TODO: Multithreaded access to properties can cause problems in the future
     private HashMap<String, List<AbstractMessage>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
-    protected final PublishSubject<ChatEvent<Chat>> subject = PublishSubject.create();
     private long contactsVersion = 0;
 
     public List<Chat> getChatList() {
@@ -106,23 +105,5 @@ public class ChatsStorage {
         }
 
         return contacts;
-    }
-
-    public PublishSubject<ChatEvent<Chat>> getObservable() {
-        return subject;
-    }
-
-    public enum ChangeType {
-        CHANGE_CONTACT_INFO
-    }
-
-    public static class ChatEvent<T> {
-        public ChangeType changeType;
-        public T item;
-
-        public ChatEvent(ChangeType changeType, T item) {
-            this.changeType = changeType;
-            this.item = item;
-        }
     }
 }

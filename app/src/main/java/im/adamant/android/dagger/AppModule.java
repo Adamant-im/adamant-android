@@ -20,7 +20,7 @@ import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.SaveContactsService;

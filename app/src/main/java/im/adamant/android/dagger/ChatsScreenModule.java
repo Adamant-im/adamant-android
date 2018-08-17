@@ -3,9 +3,8 @@ package im.adamant.android.dagger;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.presenters.ChatsPresenter;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 
 import javax.inject.Named;

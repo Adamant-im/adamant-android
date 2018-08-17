@@ -111,6 +111,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.onResume();
         navigatorHolder.setNavigator(navigator);
     }
 

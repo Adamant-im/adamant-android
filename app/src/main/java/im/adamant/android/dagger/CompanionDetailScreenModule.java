@@ -2,9 +2,8 @@ package im.adamant.android.dagger;
 
 import dagger.Module;
 import dagger.Provides;
-import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.presenters.CompanionDetailPresenter;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import ru.terrakok.cicerone.Router;
 
 @Module

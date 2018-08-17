@@ -5,7 +5,7 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionList;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;

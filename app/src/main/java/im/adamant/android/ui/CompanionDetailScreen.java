@@ -79,6 +79,8 @@ public class CompanionDetailScreen extends BaseActivity implements CompanionDeta
         } else {
             startService(intent);
         }
+
+        finish();
     }
 
     @OnClick(R.id.activity_companion_detail_btn_rename)

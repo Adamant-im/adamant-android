@@ -5,7 +5,7 @@ import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.presenters.MessagesPresenter;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 
 import javax.inject.Named;
@@ -23,7 +23,6 @@ public class MessagesScreenModule {
     public MessagesPresenter provideMessagesPresenter(
             Router router,
             SendMessageInteractor sendMessageInteractor,
-            GetContactsInteractor getContactsInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             ChatsStorage chatsStorage,
             @Named(Screens.MESSAGES_SCREEN) CompositeDisposable subscriptions
@@ -31,7 +30,6 @@ public class MessagesScreenModule {
         return new MessagesPresenter(
                 router,
                 sendMessageInteractor,
-                getContactsInteractor,
                 refreshChatsInteractor,
                 chatsStorage,
                 subscriptions

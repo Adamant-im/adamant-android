@@ -3,8 +3,7 @@ package im.adamant.android.presenters;
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
-import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CompanionDetailView;
 import ru.terrakok.cicerone.Router;

@@ -5,15 +5,11 @@ import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 
 import im.adamant.android.Constants;
-import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
-import im.adamant.android.rx.ChatsStorage;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Contact;
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
-import io.reactivex.flowables.GroupedFlowable;
 
 public class GetContactsInteractor {
     private ChatsStorage chatsStorage;
