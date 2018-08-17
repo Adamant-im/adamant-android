@@ -26,8 +26,11 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
         message.setiSay(isISayed);
         message.setDate(date);
         message.setCompanionId(companionId);
-        message.setProcessed(true);
-        message.setTransactionId(transaction.getId());
+
+        if (transaction != null){
+            message.setProcessed(true);
+            message.setTransactionId(transaction.getId());
+        }
 
         parseFallback(message, decryptedMessage);
 

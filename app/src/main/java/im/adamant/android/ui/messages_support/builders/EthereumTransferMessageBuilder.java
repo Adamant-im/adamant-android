@@ -29,8 +29,11 @@ public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTr
         message.setiSay(isISayed);
         message.setDate(date);
         message.setCompanionId(companionId);
-        message.setProcessed(true);
-        message.setTransactionId(transaction.getId());
+
+        if (transaction != null){
+            message.setProcessed(true);
+            message.setTransactionId(transaction.getId());
+        }
 
         parseReachMessage(message, decryptedMessage);
 

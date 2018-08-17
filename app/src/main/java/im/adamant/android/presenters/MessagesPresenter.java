@@ -7,14 +7,14 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
-import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
@@ -31,6 +31,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private SendMessageInteractor sendMessageInteractor;
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
+    private MessageFactoryProvider messageFactoryProvider;
 
     private Chat currentChat;
     private List<AbstractMessage> messages;
@@ -42,6 +43,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             Router router,
             SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
+            MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
     ) {
@@ -49,6 +51,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         this.router = router;
         this.sendMessageInteractor = sendMessageInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
+        this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
     }
 
@@ -125,7 +128,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         //TODO: verify message length and balance
 
         if (currentChat != null){
-            AbstractMessage messageEntity = addUnsendedMessageToChat(message);
+            AbstractMessage messageEntity = addAdamantBasicMessage(message);
             Disposable subscription = sendMessageInteractor
                     .sendMessage(message, currentChat.getCompanionId())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -154,20 +157,26 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         router.navigateTo(Screens.COMPANION_DETAIL_SCREEN, currentChat.getCompanionId());
     }
 
-    private AbstractMessage addUnsendedMessageToChat(String message) {
-        AdamantBasicMessage messageEntity = new AdamantBasicMessage();
-        messageEntity.setSupportedType(SupportedMessageTypes.ADAMANT_BASIC);
-        messageEntity.setiSay(true);
-        messageEntity.setText(message);
-        messageEntity.setDate(System.currentTimeMillis());
-        messageEntity.setProcessed(false);
+    private AbstractMessage addAdamantBasicMessage(String message) {
+        AbstractMessage abstractMessage = null;
+        try {
+            MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
+            abstractMessage = messageFactory.getMessageBuilder().build(
+                    null,
+                    message, true,
+                    System.currentTimeMillis(),
+                    currentChat.getCompanionId()
+            );
 
-        //TODO: Encapsulate messages into ChatsStorage.
-        if (messages != null){
-            messages.add(messageEntity);
+            chatsStorage.addMessageToChat(abstractMessage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            router.showSystemMessage(e.getMessage());
         }
 
-        return messageEntity;
+
+        return abstractMessage;
     }
 
 }

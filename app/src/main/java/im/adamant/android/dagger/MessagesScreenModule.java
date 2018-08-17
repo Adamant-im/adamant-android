@@ -24,6 +24,7 @@ public class MessagesScreenModule {
             Router router,
             SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
+            MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             @Named(Screens.MESSAGES_SCREEN) CompositeDisposable subscriptions
     ){
@@ -31,6 +32,7 @@ public class MessagesScreenModule {
                 router,
                 sendMessageInteractor,
                 refreshChatsInteractor,
+                messageFactoryProvider,
                 chatsStorage,
                 subscriptions
         );

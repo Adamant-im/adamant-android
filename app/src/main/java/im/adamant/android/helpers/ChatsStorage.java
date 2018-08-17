@@ -37,6 +37,7 @@ public class ChatsStorage {
         }
     }
 
+
     public void addMessageToChat(AbstractMessage message) {
         List<AbstractMessage> messages = messagesByChats.get(message.getCompanionId());
 
