@@ -83,7 +83,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     }
 
     public void onChatWasSelected(Chat chat){
-        router.navigateTo(Screens.MESSAGES_SCREEN, chat);
+        router.navigateTo(Screens.MESSAGES_SCREEN, chat.getCompanionId());
     }
 
     public void onClickCreateNewChatButton() {

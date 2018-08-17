@@ -19,7 +19,6 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
-import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
@@ -95,11 +94,10 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         Intent intent = getIntent();
         if (intent != null){
             if (intent.hasExtra(ARG_CHAT)){
-                Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
-                presenter.onShowChat(currentChat);
+                String companionId = getIntent().getStringExtra(ARG_CHAT);
+                presenter.onShowChatByCompanionId(companionId);
             }
 
-            //TODO: Chat by companionId
             if (Intent.ACTION_VIEW.equals(intent.getAction())){
                 Uri uri = intent.getData();
                 if (uri != null){

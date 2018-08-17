@@ -6,7 +6,6 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
-import im.adamant.android.core.exceptions.MessageTooShortException;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.AccountInteractor;
@@ -23,7 +22,6 @@ import im.adamant.android.ui.mvp_view.MessagesView;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -99,10 +97,12 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         }
     }
 
-    public void onShowChat(Chat chat){
-        currentChat = chat;
+    public void onShowChatByCompanionId(String companionId){
+        currentChat = chatsStorage.findChatByCompanionId(companionId);
+        if (currentChat == null){return;}
+
         messages = chatsStorage.getMessagesByCompanionId(
-                chat.getCompanionId()
+                companionId
         );
 
         getViewState().changeTitle(currentChat.getTitle());
@@ -128,7 +128,9 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             chat.setTitle(address);
         }
 
-        onShowChat(chat);
+        chatsStorage.addNewChat(chat);
+
+        onShowChatByCompanionId(address);
     }
 
     public void onClickSendMessage(String message){
