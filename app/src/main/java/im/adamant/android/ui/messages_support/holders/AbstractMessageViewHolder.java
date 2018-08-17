@@ -1,10 +1,10 @@
-package im.adamant.android.ui.holders.messages;
+package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
 public abstract class AbstractMessageViewHolder extends RecyclerView.ViewHolder {
     protected Context context;

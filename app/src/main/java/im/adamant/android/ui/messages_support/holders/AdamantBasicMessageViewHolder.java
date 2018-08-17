@@ -1,4 +1,4 @@
-package im.adamant.android.ui.holders.messages;
+package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
@@ -11,9 +11,8 @@ import android.widget.TextView;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.helpers.HtmlHelper;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
 import com.github.curioustechizen.ago.RelativeTimeTextView;

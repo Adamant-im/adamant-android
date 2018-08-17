@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import java.math.BigDecimal;
 
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.ui.entities.messages.EthereumTransferMessage;
+import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
 public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTransferMessage> {

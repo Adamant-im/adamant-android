@@ -6,12 +6,15 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.exceptions.MessageTooShortException;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -20,6 +23,7 @@ import im.adamant.android.ui.mvp_view.MessagesView;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -32,6 +36,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
+    private AccountInteractor accountInteractor;
 
     private Chat currentChat;
     private List<AbstractMessage> messages;
@@ -44,6 +49,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             MessageFactoryProvider messageFactoryProvider,
+            AccountInteractor accountInteractor,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
     ) {
@@ -52,6 +58,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         this.sendMessageInteractor = sendMessageInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
+        this.accountInteractor = accountInteractor;
         this.chatsStorage = chatsStorage;
     }
 
@@ -125,7 +132,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     }
 
     public void onClickSendMessage(String message){
-        //TODO: verify message length and balance
+        if (message.trim().isEmpty()) {
+            //TODO: notify user about empty message
+            return;
+        }
 
         if (currentChat != null){
             AbstractMessage messageEntity = addAdamantBasicMessage(message);
@@ -151,6 +161,11 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             getViewState().goToLastMessage();
         }
 
+    }
+
+    public void onChangeMessageText(String text) {
+        long cost = sendMessageInteractor.calculateMessageCost(text);
+        getViewState().showMessageCost(BalanceConvertHelper.convert(cost).toString());
     }
 
     public void onClickShowCompanionDetail() {

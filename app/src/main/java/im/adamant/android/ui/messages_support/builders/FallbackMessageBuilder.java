@@ -1,14 +1,10 @@
 package im.adamant.android.ui.messages_support.builders;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.annotations.SerializedName;
 
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.ui.entities.messages.FallbackMessage;
+import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
 public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {

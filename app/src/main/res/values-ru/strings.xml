@@ -19,6 +19,7 @@
     <string name="activity_companion_detail_rename">Переименовать контакт</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
+    <string name="activity_messages_tv_cost_text">Стоимость сообщения</string>
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>

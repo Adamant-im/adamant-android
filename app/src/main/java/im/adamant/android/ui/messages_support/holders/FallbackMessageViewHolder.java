@@ -1,4 +1,4 @@
-package im.adamant.android.ui.holders.messages;
+package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
 import android.view.View;
@@ -11,20 +11,17 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.helpers.HtmlHelper;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.entities.messages.EthereumTransferMessage;
-import im.adamant.android.ui.entities.messages.FallbackMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
-public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder {
+public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     private ImageView processedView;
     private TextView messageView;
-    private TextView amountView;
     private RelativeTimeTextView dateView;
     private AdamantAddressProcessor adamantAddressProcessor;
 
-    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor) {
+    public FallbackMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor) {
         super(context, v);
 
         this.adamantAddressProcessor = adamantAddressProcessor;
@@ -32,25 +29,23 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
         dateView = itemView.findViewById(R.id.list_item_message_date);
-        amountView = itemView.findViewById(R.id.list_item_message_amount);
+
     }
 
     @Override
     public void bind(AbstractMessage message) {
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageTypes.ETHEREUM_TRANSFER){
+            if (message.getSupportedType() != SupportedMessageTypes.FALLBACK){
                 emptyView();
                 return;
             }
 
-            EthereumTransferMessage ethereumTransferMessage = (EthereumTransferMessage)message;
+            FallbackMessage fallbackMessage = (FallbackMessage)message;
 
             messageView.setText(
-                    ethereumTransferMessage.getHtmlComment(adamantAddressProcessor)
+                    fallbackMessage.getHtmlFallBackMessage(adamantAddressProcessor)
             );
-
-            amountView.setText(String.format(Locale.ENGLISH, "%.8f", ethereumTransferMessage.getAmount()));
 
             dateView.setReferenceTime(message.getDate());
 
@@ -71,16 +66,15 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
         }
     }
 
-    private String resolveMessage(EthereumTransferMessage message) {
-        String messageText = "";
-
-        if (message.isiSay()){
-            messageText += "<--";
-        } else {
-            messageText += "-->";
+    private String resolveFallbackMessage(FallbackMessage message) {
+        String messageText = message.getFallbackMessage();
+        if (message.getFallbackMessage() == null || message.getFallbackMessage().isEmpty()){
+            messageText = String.format(
+                    Locale.ENGLISH,
+                    context.getString(R.string.unsupported_message_type),
+                    message.getFallbackType()
+            );
         }
-
-        messageText += " eth: " + message.getAmount().toString() + "\n<br/>" + message.getComment();
 
         return messageText;
     }

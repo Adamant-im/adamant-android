@@ -5,11 +5,11 @@ import java.math.RoundingMode;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Flowable;
 
 public class AccountInteractor {
-    private static final BigDecimal HUNDRED_MILLION = new BigDecimal(100_000_000L);
     private AdamantApiWrapper api;
     private Settings settings;
 
@@ -30,14 +30,7 @@ public class AccountInteractor {
     public Flowable<BigDecimal> getAdamantBalance() {
         return Flowable.fromCallable(() -> {
             if (api.isAuthorized()){
-                return (new BigDecimal(
-                        api.getAccount().getUnconfirmedBalance()
-                ))
-                .divide(
-                        HUNDRED_MILLION,
-                        3,
-                        RoundingMode.HALF_EVEN
-                );
+                return BalanceConvertHelper.convert(api.getAccount().getUnconfirmedBalance());
             } else {
                 return BigDecimal.ZERO;
             }

@@ -1,4 +1,4 @@
-package im.adamant.android.ui.entities.messages;
+package im.adamant.android.ui.messages_support.entities;
 
 import android.content.Context;
 import android.text.Spanned;

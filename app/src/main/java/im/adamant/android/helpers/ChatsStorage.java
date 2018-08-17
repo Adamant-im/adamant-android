@@ -7,9 +7,7 @@ import java.util.Map;
 
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.Contact;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import io.reactivex.Flowable;
-import io.reactivex.subjects.PublishSubject;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
 public class ChatsStorage {
     //TODO: So far, the manipulation of the chat lists is entrusted to this interactor, but perhaps over time it's worth changing

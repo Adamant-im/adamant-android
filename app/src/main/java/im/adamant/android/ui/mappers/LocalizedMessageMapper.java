@@ -4,8 +4,8 @@ import android.content.Context;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import io.reactivex.functions.Function;
 

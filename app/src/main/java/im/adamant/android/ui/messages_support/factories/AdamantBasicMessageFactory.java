@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
-import im.adamant.android.ui.holders.messages.AbstractMessageViewHolder;
-import im.adamant.android.ui.holders.messages.AdamantBasicMessageViewHolder;
+import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
+import im.adamant.android.ui.messages_support.holders.AdamantBasicMessageViewHolder;
 import im.adamant.android.ui.messages_support.builders.AdamantBasicMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 

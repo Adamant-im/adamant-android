@@ -4,7 +4,7 @@ package im.adamant.android.ui.entities;
 import java.io.Serializable;
 import java.util.Objects;
 
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
 public class Chat implements Serializable {
     private String companionId;

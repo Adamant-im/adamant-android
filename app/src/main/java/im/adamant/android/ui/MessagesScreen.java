@@ -7,10 +7,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
@@ -18,11 +20,12 @@ import im.adamant.android.Screens;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -30,6 +33,9 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
@@ -61,6 +67,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) Button buttonSend;
+    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
+
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     //--Activity
@@ -90,6 +99,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 presenter.onShowChat(currentChat);
             }
 
+            //TODO: Chat by companionId
             if (Intent.ACTION_VIEW.equals(intent.getAction())){
                 Uri uri = intent.getData();
                 if (uri != null){
@@ -113,12 +123,25 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         super.onResume();
         presenter.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        Observable<String> obs = RxTextView
+                .textChanges(newMessageText)
+                .filter(charSequence -> charSequence.length() > 0)
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .map(CharSequence::toString);
+
+        MessagesPresenter localPresenter = presenter;
+        Disposable subscribe = obs.subscribe(localPresenter::onChangeMessageText);
+
+        compositeDisposable.add(subscribe);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+        compositeDisposable.dispose();
+        compositeDisposable.clear();
     }
 
     @Override
@@ -149,6 +172,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
+    }
+
+    @Override
+    public void showMessageCost(String cost) {
+        runOnUiThread( () -> messageCostView.setText(cost));
     }
 
     @OnClick(R.id.activity_messages_btn_send)

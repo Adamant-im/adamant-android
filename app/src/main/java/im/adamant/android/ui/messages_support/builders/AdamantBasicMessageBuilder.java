@@ -1,7 +1,7 @@
 package im.adamant.android.ui.messages_support.builders;
 
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.ui.entities.messages.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 
 public class AdamantBasicMessageBuilder implements MessageBuilder<AdamantBasicMessage> {

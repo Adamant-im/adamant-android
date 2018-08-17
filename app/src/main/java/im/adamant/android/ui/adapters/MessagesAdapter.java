@@ -2,15 +2,11 @@ package im.adamant.android.ui.adapters;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 
-import im.adamant.android.R;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.holders.messages.AbstractMessageViewHolder;
-import im.adamant.android.ui.holders.messages.AdamantBasicMessageViewHolder;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;

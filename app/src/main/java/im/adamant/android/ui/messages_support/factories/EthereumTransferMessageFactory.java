@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.ui.entities.messages.EthereumTransferMessage;
-import im.adamant.android.ui.holders.messages.AbstractMessageViewHolder;
-import im.adamant.android.ui.holders.messages.EthereumTransferMessageViewHolder;
+import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
+import im.adamant.android.ui.messages_support.holders.EthereumTransferMessageViewHolder;
 import im.adamant.android.ui.messages_support.builders.EthereumTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 

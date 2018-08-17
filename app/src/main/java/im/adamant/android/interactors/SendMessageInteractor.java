@@ -5,7 +5,9 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.MessageTooShortException;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.core.exceptions.NotEnoughAdamantBalanceException;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionWasProcessed;
@@ -14,6 +16,7 @@ import com.goterl.lazycode.lazysodium.utils.KeyPair;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 public class SendMessageInteractor {
+    public static final long MINIMUM_COST = 100_000L;
     private AdamantApiWrapper api;
 
     private Encryptor encryptor;
@@ -31,6 +34,15 @@ public class SendMessageInteractor {
 
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();
+
+        long currentMessageCost = calculateMessageCost(message);
+        if (currentMessageCost > account.getBalance()){
+            return Single.error(
+                    new NotEnoughAdamantBalanceException(
+                            "Not enough adamant. Cost:" + currentMessageCost + ". Balance:" + account.getBalance()
+                    )
+            );
+        }
 
         return Single
                 .fromCallable(() -> publicKeyStorage.getPublicKey(address))
@@ -82,5 +94,21 @@ public class SendMessageInteractor {
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.computation())
                 ));
+    }
+
+    //TODO: Make Processors for different messages types
+
+    public long calculateMessageCost(String message) {
+        int countPaymentBlocks = message.length() / 256;
+
+        if (countPaymentBlocks <= 0){
+            countPaymentBlocks = 1;
+        } else {
+            if ((message.length() % 256) != 0){
+                countPaymentBlocks += 1;
+            }
+        }
+
+        return countPaymentBlocks * MINIMUM_COST;
     }
 }
