@@ -198,6 +198,7 @@ public class AdamantApiWrapper {
     public void logout() {
         account = null;
         keyPair = null;
+        errorsCount = 0;
     }
 
     public Account getAccount() {

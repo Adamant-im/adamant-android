@@ -1,14 +1,15 @@
 package im.adamant.android.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import java.math.BigDecimal;
+import java.sql.Ref;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -18,11 +19,18 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
-    private AccountInteractor interactor;
+    private AccountInteractor accountInteractor;
+    private RefreshChatsInteractor refreshChatsInteractor;
 
-    public WalletPresenter(Router router, AccountInteractor interactor, CompositeDisposable subscription) {
+    public WalletPresenter(
+            Router router,
+            AccountInteractor accountInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            CompositeDisposable subscription
+    ) {
         super(subscription);
-        this.interactor = interactor;
+        this.accountInteractor = accountInteractor;
+        this.refreshChatsInteractor = refreshChatsInteractor;
         this.router = router;
     }
 
@@ -30,9 +38,9 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     public void attachView(WalletView view) {
         super.attachView(view);
 
-        getViewState().displayAdamantAddress(interactor.getAdamantAddress());
+        getViewState().displayAdamantAddress(accountInteractor.getAdamantAddress());
 
-        Disposable subscribe = interactor
+        Disposable subscribe = accountInteractor
                 .getAdamantBalance()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((balance) -> {
@@ -53,11 +61,12 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     }
 
     public void onClickGetFreeTokenButton() {
-        router.navigateTo(WalletView.SHOW_FREE_TOKEN_PAGE, interactor.getAdamantAddress());
+        router.navigateTo(WalletView.SHOW_FREE_TOKEN_PAGE, accountInteractor.getAdamantAddress());
     }
 
     public void onClickExitButton() {
-        interactor.logout();
+        accountInteractor.logout();
+        refreshChatsInteractor.cleanUp();
         router.navigateTo(Screens.LOGIN_SCREEN);
     }
 

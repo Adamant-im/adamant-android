@@ -7,6 +7,7 @@ import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.presenters.WalletPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
@@ -17,10 +18,11 @@ public class WalletScreenModule {
     @Provides
     public WalletPresenter provideWalletPresenter(
             Router router,
-            AccountInteractor interactor,
+            AccountInteractor accountInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
             @Named(value = Screens.WALLET_SCREEN) CompositeDisposable subscriptions
     ){
-        return new WalletPresenter(router, interactor, subscriptions);
+        return new WalletPresenter(router, accountInteractor, refreshChatsInteractor, subscriptions);
     }
 
     @FragmentScope

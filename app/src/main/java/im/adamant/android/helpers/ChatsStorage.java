@@ -105,4 +105,10 @@ public class ChatsStorage {
 
         return contacts;
     }
+
+    public void cleanUp() {
+        chats.clear();
+        messagesByChats.clear();
+        contactsVersion = 0;
+    }
 }

@@ -110,4 +110,11 @@ public class RefreshChatsInteractor {
                 })
                 .ignoreElements();
     }
+
+    public void cleanUp() {
+        countItems = 0;
+        currentHeight = 1;
+        offsetItems = 0;
+        chatsStorage.cleanUp();
+    }
 }

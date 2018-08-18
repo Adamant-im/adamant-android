@@ -62,7 +62,11 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 })
                 .doOnComplete(
                         () -> {
-                            finalSubscription.add(getContactsInteractor.execute().subscribe());
+                            finalSubscription.add(
+                                    getContactsInteractor
+                                            .execute()
+                                            .subscribe()
+                            );
                             getViewState().showChats(chatsStorage.getChatList());
                         }
                 )

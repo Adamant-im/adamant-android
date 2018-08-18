@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 
 import im.adamant.android.Constants;
+import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.exceptions.InvalidValueForKeyValueStorage;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
@@ -43,6 +44,7 @@ public class GetContactsInteractor {
                     }
 
                 })
+                .onErrorReturnItem(new Transaction<>())
                 .ignoreElements();
     }
 }

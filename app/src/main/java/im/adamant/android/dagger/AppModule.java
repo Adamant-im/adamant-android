@@ -241,9 +241,10 @@ public abstract class AppModule {
     @Provides
     public static AccountInteractor provideAccountInteractor(
             AdamantApiWrapper api,
-            Settings settings
+            Settings settings,
+            ChatsStorage chatsStorage
     ) {
-        return new AccountInteractor(api, settings);
+        return new AccountInteractor(api, settings, chatsStorage);
     }
 
     @Singleton
