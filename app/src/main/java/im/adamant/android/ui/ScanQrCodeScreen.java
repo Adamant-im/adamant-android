@@ -36,16 +36,21 @@ public class ScanQrCodeScreen extends BaseActivity implements ScanQrCodeView, ZX
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        TedPermission.with(this)
-                .setPermissionListener(permissionlistener)
-                .setPermissions(Manifest.permission.CAMERA)
-                .check();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        if(TedPermission.isDenied(this, Manifest.permission.CAMERA)){
+            TedPermission.with(this)
+                    .setPermissionListener(permissionlistener)
+                    .setPermissions(Manifest.permission.CAMERA)
+                    .check();
+        } else {
+            scannerView.setResultHandler(ScanQrCodeScreen.this); // Register ourselves as a handler for scan results.
+            scannerView.startCamera();
+        }
+
     }
 
     @Override
