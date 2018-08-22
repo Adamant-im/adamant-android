@@ -48,8 +48,10 @@
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Важная операция</string>
+    <string name="adamant_default_notification_channel">Новое сообщение</string>
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
     <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
+    <string name="default_notification_message">У вас новое сообщение</string>
 
 
     <!--ERRORS-->

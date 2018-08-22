@@ -5,18 +5,31 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
+import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
 import im.adamant.android.ui.messages_support.holders.AdamantBasicMessageViewHolder;
 import im.adamant.android.ui.messages_support.builders.AdamantBasicMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
+import im.adamant.android.ui.messages_support.processors.AdamantBasicMessageProcessor;
+import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
+    private Encryptor encryptor;
+    private AdamantApiWrapper api;
 
-    public AdamantBasicMessageFactory(AdamantAddressProcessor adamantAddressProcessor) {
+    public AdamantBasicMessageFactory(
+            AdamantAddressProcessor adamantAddressProcessor,
+            Encryptor encryptor,
+            AdamantApiWrapper api
+    ) {
         this.adamantAddressProcessor = adamantAddressProcessor;
+        this.encryptor = encryptor;
+        this.api = api;
     }
 
     @Override
@@ -29,5 +42,10 @@ public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMe
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_adamant_basic_message, parent, false);
         return new AdamantBasicMessageViewHolder(parent.getContext(), v, adamantAddressProcessor);
+    }
+
+    @Override
+    public MessageProcessor<AdamantBasicMessage> getMessageProcessor() {
+        return new AdamantBasicMessageProcessor(encryptor, api);
     }
 }

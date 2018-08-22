@@ -13,10 +13,11 @@ import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 public class SendMessageInteractor {
-    public static final long MINIMUM_COST = 100_000L;
     private AdamantApiWrapper api;
 
     private Encryptor encryptor;
@@ -28,14 +29,14 @@ public class SendMessageInteractor {
         this.publicKeyStorage = publicKeyStorage;
     }
 
-    public Single<TransactionWasProcessed> sendMessage(String message, String address){
+    public <T extends AbstractMessage> Single<TransactionWasProcessed> sendMessage(MessageProcessor<T> messageProcessor, T message){
 
         if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();
 
-        long currentMessageCost = calculateMessageCost(message);
+        long currentMessageCost = messageProcessor.calculateMessageCostInAdamant(message);
         if (currentMessageCost > account.getBalance()){
             return Single.error(
                     new NotEnoughAdamantBalanceException(
@@ -45,28 +46,10 @@ public class SendMessageInteractor {
         }
 
         return Single
-                .fromCallable(() -> publicKeyStorage.getPublicKey(address))
+                .fromCallable(() -> publicKeyStorage.getPublicKey(message.getCompanionId()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.computation())
-                .flatMap((publicKey) -> Single.just(encryptor.encryptMessage(
-                        message,
-                        publicKey,
-                        keyPair.getSecretKeyString().toLowerCase()
-                )))
-                .flatMap((transactionMessage -> Single.fromCallable(
-                        () -> {
-                            UnnormalizedTransactionMessage unnormalizedMessage = new UnnormalizedTransactionMessage();
-                            unnormalizedMessage.setMessage(transactionMessage.getMessage());
-                            unnormalizedMessage.setOwnMessage(transactionMessage.getOwnMessage());
-                            unnormalizedMessage.setMessageType(1);
-                            unnormalizedMessage.setType(8);
-                            unnormalizedMessage.setPublicKey(keyPair.getPublicKeyString().toLowerCase());
-                            unnormalizedMessage.setRecipientId(address);
-                            unnormalizedMessage.setSenderId(account.getAddress());
-
-                            return unnormalizedMessage;
-                        }
-                )))
+                .flatMap((publicKey) -> messageProcessor.buildTransactionMessage(message, publicKey))
                 .flatMap((unnormalizedTransactionMessage -> Single.fromPublisher(
                         api.getNormalizedTransaction(unnormalizedTransactionMessage)
                         .subscribeOn(Schedulers.io())
@@ -94,21 +77,5 @@ public class SendMessageInteractor {
                         .subscribeOn(Schedulers.io())
                         .observeOn(Schedulers.computation())
                 ));
-    }
-
-    //TODO: Make Processors for different messages types
-
-    public long calculateMessageCost(String message) {
-        int countPaymentBlocks = message.length() / 256;
-
-        if (countPaymentBlocks <= 0){
-            countPaymentBlocks = 1;
-        } else {
-            if ((message.length() % 256) != 0){
-                countPaymentBlocks += 1;
-            }
-        }
-
-        return countPaymentBlocks * MINIMUM_COST;
     }
 }

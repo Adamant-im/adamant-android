@@ -57,8 +57,10 @@
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>
+    <string name="adamant_default_notification_channel">New message</string>
     <string name="encrypt_keypair_notification_message">Executing encrypt keypair</string>
     <string name="save_contacts_notification_message">Saving contact list</string>
+    <string name="default_notification_message">You have a new message</string>
 
 
     <!--HELLO-->

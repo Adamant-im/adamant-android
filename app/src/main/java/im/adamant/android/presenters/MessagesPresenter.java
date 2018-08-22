@@ -15,7 +15,8 @@ import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
-import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
+import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
@@ -133,60 +134,71 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         onShowChatByCompanionId(address);
     }
 
-    public void onClickSendMessage(String message){
+    public void onClickSendAdamantBasicMessage(String message){
         if (message.trim().isEmpty()) {
             //TODO: notify user about empty message
             return;
         }
 
-        if (currentChat != null){
-            AbstractMessage messageEntity = addAdamantBasicMessage(message);
+        if (currentChat == null){return;}
+
+        try {
+            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
+            AdamantBasicMessage messageEntity = getAdamantMessage(message, messageFactory);
+            chatsStorage.addMessageToChat(messageEntity);
+
             Disposable subscription = sendMessageInteractor
-                    .sendMessage(message, currentChat.getCompanionId())
+                    .sendMessage(messageFactory.getMessageProcessor(), messageEntity)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
-                            if (transaction.isSuccess()){
-                                messageEntity.setProcessed(true);
-                                messageEntity.setTransactionId(transaction.getTransactionId());
-                            }
+                                if (transaction.isSuccess()){
+                                    messageEntity.setProcessed(true);
+                                    messageEntity.setTransactionId(transaction.getTransactionId());
+                                }
 
-                            getViewState().messageWasSended(messageEntity);
-                        }),
-                        (error) -> {
-                            router.showSystemMessage(error.getMessage());
-                            error.printStackTrace();
-                        }
+                                getViewState().messageWasSended(messageEntity);
+                            }),
+                            (error) -> {
+                                router.showSystemMessage(error.getMessage());
+                                error.printStackTrace();
+                            }
                     );
 
             subscriptions.add(subscription);
 
             getViewState().goToLastMessage();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     public void onChangeMessageText(String text) {
-        long cost = sendMessageInteractor.calculateMessageCost(text);
-        getViewState().showMessageCost(BalanceConvertHelper.convert(cost).toString());
+        //TODO: You need to navigate by the type of message that is being edited
+        try {
+            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
+            AdamantBasicMessage messageEntity = getAdamantMessage(text, messageFactory);
+
+            long cost = messageFactory.getMessageProcessor().calculateMessageCostInAdamant(messageEntity);
+            getViewState().showMessageCost(BalanceConvertHelper.convert(cost).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void onClickShowCompanionDetail() {
         router.navigateTo(Screens.COMPANION_DETAIL_SCREEN, currentChat.getCompanionId());
     }
 
-    private AbstractMessage addAdamantBasicMessage(String message) {
-        AbstractMessage abstractMessage = null;
+    private AdamantBasicMessage getAdamantMessage(String message, AdamantBasicMessageFactory messageFactory) {
+        AdamantBasicMessage abstractMessage = null;
         try {
-            MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
             abstractMessage = messageFactory.getMessageBuilder().build(
                     null,
                     message, true,
                     System.currentTimeMillis(),
                     currentChat.getCompanionId()
             );
-
-            chatsStorage.addMessageToChat(abstractMessage);
-
         } catch (Exception e) {
             e.printStackTrace();
             router.showSystemMessage(e.getMessage());

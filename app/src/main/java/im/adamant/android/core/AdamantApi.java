@@ -21,6 +21,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public interface AdamantApi {
+    long MINIMUM_COST = 100_000L;
     long BASE_TIMESTAMP = 1504371600000L; //2017-08-02 17:00:00
     int SYNCHRONIZE_DELAY_SECONDS = 6;
     int MAX_TRANSACTIONS_PER_REQUEST = 100;

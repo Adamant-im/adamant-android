@@ -146,12 +146,16 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static MessageFactoryProvider provideMessageFactoryProvider(AdamantAddressProcessor adamantAddressProcessor) {
+    public static MessageFactoryProvider provideMessageFactoryProvider(
+            AdamantAddressProcessor adamantAddressProcessor,
+            Encryptor encryptor,
+            AdamantApiWrapper api
+    ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageTypes.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory(adamantAddressProcessor)
+                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api)
         );
 
         provider.registerFactory(

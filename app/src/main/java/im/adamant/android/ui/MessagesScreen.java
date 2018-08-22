@@ -170,6 +170,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
+        messageCostView.setText("");
     }
 
     @Override
@@ -179,7 +180,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @OnClick(R.id.activity_messages_btn_send)
     protected void onClickSendButton() {
-        presenter.onClickSendMessage(
+        presenter.onClickSendAdamantBasicMessage(
             newMessageText.getText().toString()
         );
 

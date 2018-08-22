@@ -73,12 +73,14 @@
             android:name=".services.EncryptKeyPairService"
             android:exported="false"/>
         <service
-            android:name=".services.SynchronizeService"
-            android:exported="false" />
-        <service
             android:name=".services.SaveContactsService"
             android:exported="false"
             />
+        <service android:name=".services.AdamantFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
