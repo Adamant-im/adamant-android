@@ -46,8 +46,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
         String title = getString(R.string.adamant_default_notification_channel);
         String text = getString(R.string.default_notification_message);
 
-        //TODO: Replace service notification on message notification
-        Notification notification = NotificationHelper.buildServiceNotification(channelId, this, title, text);
+        Notification notification = NotificationHelper.buildMessageNotification(channelId, this, title, text);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
         int id = (int)(remoteMessage.getSentTime() / 1000);

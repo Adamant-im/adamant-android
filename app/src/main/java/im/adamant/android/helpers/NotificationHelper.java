@@ -12,9 +12,20 @@ import android.support.v4.app.NotificationCompat;
 import im.adamant.android.R;
 
 public class NotificationHelper {
+    public static Notification buildMessageNotification(String channelId, Context context, String title, String text) {
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
+        notificationBuilder
+                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setColor(Color.WHITE)
+                .setContentTitle(title)
+                .setContentText(text);
+
+        return notificationBuilder.build();
+    }
+
     public static Notification buildServiceNotification(String channelId, Context context, String title, String text) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
-        notificationBuilder.setOngoing(true)
+        notificationBuilder
                 .setSmallIcon(R.mipmap.ic_launcher_foreground)
                 .setOngoing(true)
                 .setColor(Color.WHITE)
