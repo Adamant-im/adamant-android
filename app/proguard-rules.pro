@@ -25,3 +25,5 @@
     @com.squareup.otto.Subscribe public *;
     @com.squareup.otto.Produce public *;
 }
+
+-keep class im.adamant.android.*
