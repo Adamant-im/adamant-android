@@ -22,6 +22,7 @@ import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SettingsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.services.AdamantBalanceUpdateService;
+import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.services.ServerNodesPingService;
@@ -54,6 +55,7 @@ import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
+import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -166,6 +168,11 @@ public abstract class AppModule {
         provider.registerFactory(
                 SupportedMessageTypes.ETHEREUM_TRANSFER,
                 new EthereumTransferMessageFactory(adamantAddressProcessor)
+        );
+
+        provider.registerFactory(
+                SupportedMessageTypes.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
+                new AdamantPushSubscriptionMessageFactory(encryptor, api)
         );
 
         return provider;
@@ -363,4 +370,8 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {SaveContactsServiceModule.class})
     public abstract SaveContactsService createSaveContatactsService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {AdamantFirebaseMessagingServiceModule.class})
+    public abstract AdamantFirebaseMessagingService createAdamantFirebaseMessagingService();
 }

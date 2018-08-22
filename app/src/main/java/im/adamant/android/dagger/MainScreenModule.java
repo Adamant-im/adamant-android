@@ -13,6 +13,9 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
+import im.adamant.android.helpers.Settings;
+import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
@@ -20,6 +23,8 @@ import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.holders.FragmentClassHolder;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @Module
@@ -52,9 +57,20 @@ public abstract class MainScreenModule {
 
     @ActivityScope
     @Provides
+    @Named("main")
+    public static CompositeDisposable provideComposite() {
+        return new CompositeDisposable();
+    }
+
+    @ActivityScope
+    @Provides
     public static MainPresenter provideMainPresenter(
-            Router router
+            Router router,
+            Settings settings,
+            MessageFactoryProvider messageFactoryProvider,
+            SendMessageInteractor sendMessageInteractor,
+            @Named("main") CompositeDisposable compositeDisposable
     ){
-        return new MainPresenter(router);
+        return new MainPresenter(router, settings, messageFactoryProvider, sendMessageInteractor, compositeDisposable);
     }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -114,6 +115,11 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
         content.setAdapter(mainAdapterReference);
         setTitle(mainAdapterReference.getPageTitle(0));
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+            String deviceToken = instanceIdResult.getToken();
+            presenter.onGetNotificationToken(deviceToken);
+        });
     }
 
 

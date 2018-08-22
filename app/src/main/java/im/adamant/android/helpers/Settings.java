@@ -13,10 +13,14 @@ public class Settings {
     private static final String NODES_KEY = "nodes_key";
     private static final String ACCOUNT_KEY_PAIR = "account_key_pair";
     private static final String KEY_PAIR_MUST_BE_STORED = "key_pair_must_be_stored";
+    private static final String NOTIFICATION_TOKEN = "notification_token";
+    private static final String ADDRESS_OF_NOTIFICATION_SERVICE = "addres_of_notification_service";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
     private String accountKeypair = "";
     private boolean isKeyPairMustBeStored;
+    private String notificationToken = "";
+    private String addressOfNotificationService = "";
 
     private SharedPreferences preferences;
 
@@ -25,6 +29,8 @@ public class Settings {
 
         accountKeypair = this.preferences.getString(ACCOUNT_KEY_PAIR, "");
         isKeyPairMustBeStored = this.preferences.getBoolean(KEY_PAIR_MUST_BE_STORED, false);
+        notificationToken = this.preferences.getString(NOTIFICATION_TOKEN, "");
+        addressOfNotificationService = this.preferences.getString(ADDRESS_OF_NOTIFICATION_SERVICE, "U15243615587463307445");
 
         loadNodes();
     }
@@ -66,6 +72,30 @@ public class Settings {
         this.preferences
                 .edit()
                 .putBoolean(KEY_PAIR_MUST_BE_STORED, keyPairMustBeStored)
+                .apply();
+    }
+
+    public String getNotificationToken() {
+        return notificationToken;
+    }
+
+    public void setNotificationToken(String notificationToken) {
+        this.notificationToken = notificationToken;
+        this.preferences
+                .edit()
+                .putString(NOTIFICATION_TOKEN, notificationToken)
+                .apply();
+    }
+
+    public String getAddressOfNotificationService() {
+        return addressOfNotificationService;
+    }
+
+    public void setAddressOfNotificationService(String addressOfNotificationService) {
+        this.addressOfNotificationService = addressOfNotificationService;
+        this.preferences
+                .edit()
+                .putString(ADDRESS_OF_NOTIFICATION_SERVICE, addressOfNotificationService)
                 .apply();
     }
 

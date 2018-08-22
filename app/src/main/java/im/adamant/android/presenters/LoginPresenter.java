@@ -42,8 +42,6 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     @Override
     public void attachView(LoginView view) {
         super.attachView(view);
-
-
     }
 
     public void onClickLoginButton(String passPhrase) {
