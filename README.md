@@ -17,3 +17,9 @@ Highlights:
 - Integrated token transfers
 
 Read more about ADAMANT at [adamant.im](https://adamant.im)
+
+## Contributors
+
+To successfully compile the project, put the file google-services.json in the folder: / app / src / debug
+
+Generate your file  yourself in the firebase console.

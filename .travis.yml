@@ -37,6 +37,8 @@ before_install:
   - yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
   - gem update --system
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
+before_script:
+  - openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv -in app/src/release/google-services.json.enc -out app/src/release/google-services.json -d
 script:
   - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
 before_deploy:
