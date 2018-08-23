@@ -15,7 +15,7 @@ public class NotificationHelper {
     public static Notification buildMessageNotification(String channelId, Context context, String title, String text) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
         notificationBuilder
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setSmallIcon(getNotificationIcon())
                 .setColor(Color.WHITE)
                 .setContentTitle(title)
                 .setContentText(text);
@@ -26,7 +26,7 @@ public class NotificationHelper {
     public static Notification buildServiceNotification(String channelId, Context context, String title, String text) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
         notificationBuilder
-                .setSmallIcon(R.mipmap.ic_launcher_foreground)
+                .setSmallIcon(getNotificationIcon())
                 .setOngoing(true)
                 .setColor(Color.WHITE)
                 .setContentTitle(title)
@@ -48,5 +48,10 @@ public class NotificationHelper {
         }
 
         return channelId;
+    }
+
+    public static int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.ic_notification_logo_android5 : R.mipmap.ic_launcher_round;
     }
 }
