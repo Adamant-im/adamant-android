@@ -52,7 +52,7 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
             chat.setTitle(addressEntity.getLabel());
 
             chatsStorage.addNewChat(chat);
-            router.navigateTo(Screens.MESSAGES_SCREEN, chat);
+            router.navigateTo(Screens.MESSAGES_SCREEN, addressEntity.getAddress());
 
         } else {
            getViewState().showError(R.string.wrong_address);

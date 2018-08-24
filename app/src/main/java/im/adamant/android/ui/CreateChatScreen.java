@@ -131,7 +131,7 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
                     case Screens.MESSAGES_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(MessagesScreen.ARG_CHAT, (Serializable) forward.getTransitionData());
+                        bundle.putString(MessagesScreen.ARG_CHAT, (String) forward.getTransitionData());
                         intent.putExtras(bundle);
 
                         startActivity(intent);
