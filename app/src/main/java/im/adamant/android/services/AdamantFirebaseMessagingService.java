@@ -1,6 +1,8 @@
 package im.adamant.android.services;
 
 import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -14,6 +16,7 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.helpers.NotificationHelper;
 import im.adamant.android.interactors.SendMessageInteractor;
+import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.messages_support.SupportedMessageTypes;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
@@ -46,8 +49,19 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
         String title = getString(R.string.adamant_default_notification_channel);
         String text = getString(R.string.default_notification_message);
 
+        Intent notificationIntent = new Intent(this.getApplicationContext(), SplashScreen.class);
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(this.getApplicationContext(), 0,
+                notificationIntent, 0);
+
         Notification notification = NotificationHelper.buildMessageNotification(channelId, this, title, text);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        notification.contentIntent = intent;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         int id = (int)(remoteMessage.getSentTime() / 1000);
         notificationManager.notify(id, notification);
