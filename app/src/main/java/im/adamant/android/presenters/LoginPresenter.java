@@ -42,6 +42,10 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     @Override
     public void attachView(LoginView view) {
         super.attachView(view);
+
+        if (authorizeInteractor.isAuthorized()){
+            router.navigateTo(Screens.WALLET_SCREEN);
+        }
     }
 
     public void onClickLoginButton(String passPhrase) {

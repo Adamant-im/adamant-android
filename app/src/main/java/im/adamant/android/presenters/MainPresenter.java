@@ -91,12 +91,12 @@ public class MainPresenter extends MvpPresenter<MainView> {
                 message.setCompanionId(settings.getAddressOfNotificationService());
                 message.setSupportedType(SupportedMessageTypes.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
 
+                Settings localSettings = settings;
+
                 Disposable subscribe = sendMessageInteractor
                         .sendMessage(subscribeFactory.getMessageProcessor(), message)
                         .onErrorReturn(error -> new TransactionWasProcessed())
-                        .subscribe();
-
-                settings.setNotificationToken(deviceToken);
+                        .subscribe(transactionWasProcessed -> localSettings.setNotificationToken(deviceToken));
 
                 compositeDisposable.add(subscribe);
             } catch (Exception e) {
