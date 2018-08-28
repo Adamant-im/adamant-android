@@ -1,25 +1,14 @@
 package im.adamant.android.presenters;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 
-import net.glxn.qrgen.android.QRCode;
-import net.glxn.qrgen.core.image.ImageType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.core.responses.Authorization;
-import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.mvp_view.LoginView;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -63,13 +52,12 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                     if (authorize.isSuccess()){
                         router.navigateTo(Screens.WALLET_SCREEN);
                     } else {
-
                         //TODO: Oh my god, somebody fix this, please.
                         //PWA adamantServerApi.js, line: 129
                         if ("Account not found".equalsIgnoreCase(authorize.getError())) {
                             onClickCreateNewAccount(finalPassPhrase);
                         } else {
-                            Log.e("ERR", authorize.getError());
+                            LoggerHelper.e("ERR", authorize.getError());
                             router.showSystemMessage(authorize.getError());
                         }
                     }
@@ -107,7 +95,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                             if (authorize.isSuccess()){
                                 router.navigateTo(Screens.WALLET_SCREEN);
                             } else {
-                                Log.e("ERR", authorize.getError());
+                                LoggerHelper.e("ERR", authorize.getError());
                                 router.showSystemMessage(authorize.getError());
                             }
                         },

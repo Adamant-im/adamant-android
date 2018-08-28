@@ -1,6 +1,5 @@
 package im.adamant.android.presenters;
 
-import android.util.Log;
 
 import com.arellomobile.mvp.InjectViewState;
 
@@ -8,6 +7,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
@@ -75,7 +75,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     } else {
                         router.showSystemMessage(error.getMessage());
                     }
-                    Log.e("Messages", error.getMessage(), error);
+                    LoggerHelper.e("Messages", error.getMessage(), error);
                 })
                 .doOnComplete(() -> {
                     if (currentMessageCount != messages.size()){

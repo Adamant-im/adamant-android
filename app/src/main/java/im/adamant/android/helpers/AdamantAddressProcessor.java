@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +29,11 @@ public class AdamantAddressProcessor {
 
         public void setLabel(String label) {
             this.label = label;
+        }
+
+        @Override
+        public String toString() {
+            return address + " : " + Objects.toString(label);
         }
     }
 

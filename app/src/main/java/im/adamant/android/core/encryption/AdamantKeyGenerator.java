@@ -1,7 +1,5 @@
 package im.adamant.android.core.encryption;
 
-import android.util.Log;
-
 import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.Sign;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
@@ -12,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
+import im.adamant.android.helpers.LoggerHelper;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.Words;
@@ -44,7 +43,7 @@ public class AdamantKeyGenerator {
             pair = sodium.cryptoSignSeedKeypair(seed);
 
         } catch (NoSuchAlgorithmException | SodiumException e) {
-            Log.e("KeyGenerator", e.getMessage(), e);
+            LoggerHelper.e("KeyGenerator", e.getMessage(), e);
         }
 
         return pair;

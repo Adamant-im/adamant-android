@@ -1,15 +1,7 @@
 package im.adamant.android.presenters;
 
-import android.util.Log;
-
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-import com.google.firebase.messaging.FirebaseMessaging;
-
-import javax.inject.Inject;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.responses.TransactionWasProcessed;
@@ -20,7 +12,6 @@ import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMe
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.MainView;
-import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;

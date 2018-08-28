@@ -22,15 +22,19 @@ android {
         buildConfigField "String", "API_BASE", "\"/api/\""
         buildConfigField "String", "WELCOME_MESSAGE_ADDR", "\"U15423595369615486571\""
         buildConfigField "String", "MESSAGE_CTNCR_ADDR", "\"U7047165086065693428\""
+        buildConfigField "boolean", "RELEASE_LOG", "false"
 
     }
 
     buildTypes {
         debug {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -93,7 +97,6 @@ dependencies {
     implementation "com.arello-mobile:moxy:$moxyVersion"
     implementation "com.arello-mobile:moxy-app-compat:$moxyVersion"
     implementation "ru.terrakok.cicerone:cicerone:3.0.0"
-    implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:3.10.0"
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"

@@ -5,26 +5,17 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import javax.inject.Inject;
-
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.ui.SplashScreen;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
-import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
-import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
-import im.adamant.android.ui.messages_support.factories.MessageFactory;
-import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
 import static im.adamant.android.Constants.ADAMANT_DEFAULT_NOTIFICATION_CHANNEL_ID;
-import static im.adamant.android.Constants.ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID;
 
 public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
 
@@ -38,7 +29,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        Log.e("Message", remoteMessage.getMessageId());
+        LoggerHelper.e("Message", remoteMessage.getMessageId());
 
         String channelId = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
