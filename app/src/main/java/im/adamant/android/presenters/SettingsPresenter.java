@@ -27,6 +27,12 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().setStoreKeyPairOption(
                 interactor.isKeyPairMustBeStored()
         );
+        getViewState().setEnablePushOption(
+                interactor.isEnabledPush()
+        );
+        getViewState().setAddressPushService(
+                interactor.getPushServiceAddress()
+        );
     }
 
     public void onClickAddNewNode(String nodeUrl) {
@@ -35,6 +41,10 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             getViewState().clearNodeTextField();
             getViewState().hideKeyboard();
         }
+    }
+
+    public void onSavePushConfig(boolean enable, String address) {
+        interactor.savePushConfig(enable, address);
     }
 
     public void onClickDeleteNode(ServerNode serverNode){

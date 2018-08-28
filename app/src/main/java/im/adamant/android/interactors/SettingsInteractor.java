@@ -56,4 +56,17 @@ public class SettingsInteractor {
     public boolean isKeyPairMustBeStored() {
         return settings.isKeyPairMustBeStored();
     }
+
+    public void savePushConfig(boolean enable, String address) {
+        settings.setEnablePushNotifications(enable);
+        settings.setAddressOfNotificationService(address);
+    }
+
+    public boolean isEnabledPush() {
+        return settings.isEnablePushNotifications();
+    }
+
+    public String getPushServiceAddress() {
+        return settings.getAddressOfNotificationService();
+    }
 }

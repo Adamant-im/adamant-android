@@ -71,6 +71,10 @@ public class MainPresenter extends MvpPresenter<MainView> {
     public void onGetNotificationToken(String deviceToken) {
         String oldDeviceToken = settings.getNotificationToken();
 
+        if (!settings.isEnablePushNotifications()){
+            return;
+        }
+
         if (!deviceToken.isEmpty() && !deviceToken.equalsIgnoreCase(oldDeviceToken)){
             try {
                 AdamantPushSubscriptionMessageFactory subscribeFactory = (AdamantPushSubscriptionMessageFactory)messageFactoryProvider

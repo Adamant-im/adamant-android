@@ -24,15 +24,18 @@ android {
         buildConfigField "String", "MESSAGE_CTNCR_ADDR", "\"U7047165086065693428\""
         buildConfigField "boolean", "RELEASE_LOG", "false"
 
+
     }
 
     buildTypes {
         debug {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
+
+            minifyEnabled false
         }
         release {
+            buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
+
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

@@ -68,6 +68,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
     @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
+    @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
+    @BindView(R.id.fragment_settings_et_push_service_address) EditText addressPushService;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -125,6 +127,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void onPause() {
         presenter.onSaveKeyPair(storeKeypairView.isChecked());
+        presenter.onSavePushConfig(enablePushNotifications.isChecked(), addressPushService.getText().toString());
         nodeAdapter.stopListenChanges();
 
         if (adapterDisposable != null){
@@ -159,6 +162,16 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void setStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
+    }
+
+    @Override
+    public void setEnablePushOption(boolean value) {
+        enablePushNotifications.setChecked(value);
+    }
+
+    @Override
+    public void setAddressPushService(String address) {
+        addressPushService.setText(address);
     }
 
     @Override

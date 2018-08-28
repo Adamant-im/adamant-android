@@ -40,6 +40,9 @@
     <string name="fragment_settings_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
     <string name="fragment_settings_node_status">Нода %s, Пинг: %.0f мс</string>
     <string name="fragment_settings_store_keypair">Хранить ключи на этом устройстве</string>
+    <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления\n
+        (0.001 ADM за каждую смену токена)</string>
+    <string name="fragment_settings_push_service_address">Адрес сервиса push-уведомлений</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
     <string name="dialog_logout_title">Выход</string>

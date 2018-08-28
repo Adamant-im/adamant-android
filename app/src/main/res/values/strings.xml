@@ -39,6 +39,9 @@
     <string name="fragment_settings_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="fragment_settings_node_status">Node %s, Ping: %.0f ms</string>
     <string name="fragment_settings_store_keypair">Store a key pair on the device</string>
+    <string name="fragment_settings_subscribe_to_push_notifications">Subscribe to push notifications\n
+        (0.001 ADM for each change of the token)</string>
+    <string name="fragment_settings_push_service_address">Notification service address</string>
 
     <string name="address_was_copied">Copied!</string>
     <string name="dialog_logout_title">Exit</string>
