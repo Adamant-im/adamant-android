@@ -34,10 +34,11 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.presenters.SettingsPresenter;
-import im.adamant.android.services.EncryptKeyPairService;
+import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
+import sm.euzee.github.com.servicemanager.ServiceManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,8 +127,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Override
     public void onPause() {
-        presenter.onSaveKeyPair(storeKeypairView.isChecked());
-        presenter.onSavePushConfig(enablePushNotifications.isChecked(), addressPushService.getText().toString());
+        presenter.onClickSaveSettings();
         nodeAdapter.stopListenChanges();
 
         if (adapterDisposable != null){
@@ -175,18 +175,16 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void callSaveKeyPairService(boolean value) {
+    public void callSaveSettingsService() {
         Activity activity = getActivity();
         if (activity != null) {
             Context context = activity.getApplicationContext();
-            Intent intent = new Intent(context, EncryptKeyPairService.class);
-            intent.putExtra(EncryptKeyPairService.VALUE_KEY, value);
+            Intent intent = new Intent(context, SaveSettingsService.class);
+            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
+            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
+            intent.putExtra(SaveSettingsService.NOTIFICATION_SERVICE_ADDRESS, addressPushService.getText().toString());
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                context.startForegroundService(intent);
-            } else {
-                context.startService(intent);
-            }
+            ServiceManager.runService(context, intent);
         }
     }
 

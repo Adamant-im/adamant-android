@@ -115,11 +115,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
         content.setAdapter(mainAdapterReference);
         setTitle(mainAdapterReference.getPageTitle(0));
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-            String deviceToken = instanceIdResult.getToken();
-            presenter.onGetNotificationToken(deviceToken);
-        });
     }
 
 

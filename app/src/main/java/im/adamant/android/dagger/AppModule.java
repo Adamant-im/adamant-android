@@ -19,12 +19,13 @@ import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.interactors.SettingsInteractor;
+import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
-import im.adamant.android.services.EncryptKeyPairService;
 import im.adamant.android.services.SaveContactsService;
+import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.CompanionDetailScreen;
 import im.adamant.android.ui.CreateChatScreen;
@@ -260,12 +261,23 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SettingsInteractor provideSettingsInteractor(
+    public static SaveKeypairInteractor provideKeypairInteractor(
             Settings settings,
             KeyStoreCipher keyStoreCipher,
             AdamantApiWrapper apiWrapper
     ) {
-        return new SettingsInteractor(settings, apiWrapper, keyStoreCipher);
+        return new SaveKeypairInteractor(settings, apiWrapper, keyStoreCipher);
+    }
+
+    @Singleton
+    @Provides
+    public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
+            Settings settings,
+            AdamantApiWrapper api,
+            MessageFactoryProvider messageFactoryProvider,
+            SendMessageInteractor sendMessageInteractor
+    ) {
+        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider, sendMessageInteractor);
     }
 
     @Singleton
@@ -364,14 +376,14 @@ public abstract class AppModule {
     public abstract AdamantBalanceUpdateService createBalanceUpdateService();
 
     @ServiceScope
-    @ContributesAndroidInjector(modules = {EncryptKeyPairServiceModule.class})
-    public abstract EncryptKeyPairService createEncryptKeyPairService();
-
-    @ServiceScope
     @ContributesAndroidInjector(modules = {SaveContactsServiceModule.class})
     public abstract SaveContactsService createSaveContatactsService();
 
     @ServiceScope
     @ContributesAndroidInjector(modules = {AdamantFirebaseMessagingServiceModule.class})
     public abstract AdamantFirebaseMessagingService createAdamantFirebaseMessagingService();
+
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {SaveSettingsServiceModule.class})
+    public abstract SaveSettingsService createSaveSettingsService();
 }

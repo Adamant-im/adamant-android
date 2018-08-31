@@ -7,8 +7,8 @@ import dagger.Provides;
 import io.reactivex.disposables.CompositeDisposable;
 
 @Module
-public class EncryptKeyPairServiceModule {
-    public static final String NAME = "EncryptKeyPairServiceModule";
+public class SaveSettingsServiceModule {
+    public static final String NAME = "SaveSettingsServiceModule";
 
     @ServiceScope
     @Provides

@@ -69,34 +69,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void onGetNotificationToken(String deviceToken) {
-        String oldDeviceToken = settings.getNotificationToken();
 
-        if (!settings.isEnablePushNotifications()){
-            return;
-        }
-
-        if (!deviceToken.isEmpty() && !deviceToken.equalsIgnoreCase(oldDeviceToken)){
-            try {
-                AdamantPushSubscriptionMessageFactory subscribeFactory = (AdamantPushSubscriptionMessageFactory)messageFactoryProvider
-                        .getFactoryByType(SupportedMessageTypes.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
-
-                AdamantPushSubscriptionMessage message = new AdamantPushSubscriptionMessage();
-                message.setProvider("fcm");
-                message.setToken(deviceToken);
-                message.setCompanionId(settings.getAddressOfNotificationService());
-                message.setSupportedType(SupportedMessageTypes.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
-
-                Settings localSettings = settings;
-
-                Disposable subscribe = sendMessageInteractor
-                        .sendMessage(subscribeFactory.getMessageProcessor(), message)
-                        .onErrorReturn(error -> new TransactionWasProcessed())
-                        .subscribe(transactionWasProcessed -> localSettings.setNotificationToken(deviceToken));
-
-                compositeDisposable.add(subscribe);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 }

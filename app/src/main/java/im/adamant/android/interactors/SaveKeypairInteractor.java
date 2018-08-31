@@ -10,12 +10,12 @@ import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
-public class SettingsInteractor {
+public class SaveKeypairInteractor {
     private Settings settings;
     private AdamantApiWrapper api;
     private KeyStoreCipher keyStoreCipher;
 
-    public SettingsInteractor(
+    public SaveKeypairInteractor(
             Settings settings,
             AdamantApiWrapper api,
             KeyStoreCipher keyStoreCipher
@@ -24,7 +24,7 @@ public class SettingsInteractor {
         this.api = api;
         this.keyStoreCipher = keyStoreCipher;
     }
-
+    //TODO: Move "node functions" to different interactor
     public void addServerNode(String nodeUrl){
         settings.addNode(new ServerNode(nodeUrl));
     }
@@ -57,16 +57,5 @@ public class SettingsInteractor {
         return settings.isKeyPairMustBeStored();
     }
 
-    public void savePushConfig(boolean enable, String address) {
-        settings.setEnablePushNotifications(enable);
-        settings.setAddressOfNotificationService(address);
-    }
 
-    public boolean isEnabledPush() {
-        return settings.isEnablePushNotifications();
-    }
-
-    public String getPushServiceAddress() {
-        return settings.getAddressOfNotificationService();
-    }
 }

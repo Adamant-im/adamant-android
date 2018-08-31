@@ -4,56 +4,65 @@ import android.webkit.URLUtil;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
-import im.adamant.android.interactors.SettingsInteractor;
+import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 @InjectViewState
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
-    private SettingsInteractor interactor;
+    private SaveKeypairInteractor saveKeypairInteractor;
+    private SubscribeToPushInteractor subscribeToPushInteractor;
 
-    public SettingsPresenter(SettingsInteractor interactor, CompositeDisposable subscriptions) {
+    public SettingsPresenter(
+            SaveKeypairInteractor saveKeypairInteractor,
+            SubscribeToPushInteractor subscribeToPushInteractor,
+            CompositeDisposable subscriptions
+    ) {
         super(subscriptions);
-        this.interactor = interactor;
+        this.saveKeypairInteractor = saveKeypairInteractor;
+        this.subscribeToPushInteractor = subscribeToPushInteractor;
     }
 
     @Override
     public void attachView(SettingsView view) {
         super.attachView(view);
         getViewState().setStoreKeyPairOption(
-                interactor.isKeyPairMustBeStored()
+                saveKeypairInteractor.isKeyPairMustBeStored()
         );
         getViewState().setEnablePushOption(
-                interactor.isEnabledPush()
+                subscribeToPushInteractor.isEnabledPush()
         );
         getViewState().setAddressPushService(
-                interactor.getPushServiceAddress()
+                subscribeToPushInteractor.getPushServiceAddress()
         );
     }
 
     public void onClickAddNewNode(String nodeUrl) {
         if (URLUtil.isValidUrl(nodeUrl)){
-            interactor.addServerNode(nodeUrl);
+            saveKeypairInteractor.addServerNode(nodeUrl);
             getViewState().clearNodeTextField();
             getViewState().hideKeyboard();
         }
     }
 
-    public void onSavePushConfig(boolean enable, String address) {
-        interactor.savePushConfig(enable, address);
+
+    public void onClickSaveSettings(){
+        getViewState().callSaveSettingsService();
     }
+
+//    public void onSavePushConfig(boolean enable, String address, C) {
+//        subscribeToPushInteractor.savePushConfig(enable, address);
+//    }
 
     public void onClickDeleteNode(ServerNode serverNode){
-        interactor.deleteNode(serverNode);
+        saveKeypairInteractor.deleteNode(serverNode);
     }
 
-    public void onSaveKeyPair(boolean value) {
-        if (interactor.isKeyPairMustBeStored() != value) {
-            getViewState().callSaveKeyPairService(value);
-        }
-    }
+//    public void onSaveKeyPair(boolean value) {
+//        if (saveKeypairInteractor.isKeyPairMustBeStored() != value) {
+//            getViewState().callSaveKeyPairService(value);
+//        }
+//    }
 }

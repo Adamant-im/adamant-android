@@ -16,5 +16,5 @@ public interface SettingsView extends MvpView {
     void setAddressPushService(String address);
 
     @StateStrategyType(SkipStrategy.class)
-    void callSaveKeyPairService(boolean value);
+    void callSaveSettingsService();
 }

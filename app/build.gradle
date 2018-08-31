@@ -23,8 +23,6 @@ android {
         buildConfigField "String", "WELCOME_MESSAGE_ADDR", "\"U15423595369615486571\""
         buildConfigField "String", "MESSAGE_CTNCR_ADDR", "\"U7047165086065693428\""
         buildConfigField "boolean", "RELEASE_LOG", "false"
-
-
     }
 
     buildTypes {
@@ -118,6 +116,7 @@ dependencies {
     implementation "com.android.support:multidex:1.0.3"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"
     implementation "com.google.firebase:firebase-messaging:17.3.0"
+    implementation 'com.github.euzee:serviceManager:1.0.3'
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
