@@ -51,28 +51,30 @@ public class SaveSettingsService extends CompatService {
 
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
-        Log.e("SERVICE!", "WORKED!!!!!!!");
         if (intent.getExtras() != null){
+            LoggerHelper.d("Settings", "Saving settings");
             boolean isSaveKeypair = intent.getExtras().getBoolean(IS_SAVE_KEYPAIR, false);
             saveKeyPair(isSaveKeypair);
 
             boolean isSubscribeToNotifications = intent.getExtras().getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
             String addressOfNotificationService = intent.getExtras().getString(NOTIFICATION_SERVICE_ADDRESS, subscribeToPushInteractor.getPushServiceAddress());
-
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-                String deviceToken = instanceIdResult.getToken();
-                savePushNotifications(isSubscribeToNotifications, addressOfNotificationService, deviceToken);
-            });
+            savePushSettings(isSubscribeToNotifications, addressOfNotificationService);
         }
     }
 
-    private void savePushNotifications(boolean enable, String address, String currentToken) {
-        Disposable subscribe = subscribeToPushInteractor
-                .savePushConfig(enable, address, currentToken)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError((error) -> LoggerHelper.e("saveKeyPair", error.getMessage(), error))
-                .subscribe();
-        subscriptions.add(subscribe);
+    private void savePushSettings(boolean enable, String address) {
+        subscribeToPushInteractor.savePushConfig(enable, address);
+        CompositeDisposable localSubscriptions = subscriptions;
+
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+            String deviceToken = instanceIdResult.getToken();
+            Disposable subscribe = subscribeToPushInteractor
+                    .savePushToken(deviceToken)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnError((error) -> LoggerHelper.e("savePushToken", error.getMessage(), error))
+                    .subscribe();
+            localSubscriptions.add(subscribe);
+        });
     }
 
     private void saveKeyPair(boolean value) {

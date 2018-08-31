@@ -19,25 +19,16 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class MainPresenter extends MvpPresenter<MainView> {
     private Router router;
-    private MessageFactoryProvider messageFactoryProvider;
-    private SendMessageInteractor sendMessageInteractor;
-    private Settings settings;
     private CompositeDisposable compositeDisposable;
 
     private String currentWindowCode = Screens.WALLET_SCREEN;
 
     public MainPresenter(
             Router router,
-            Settings settings,
-            MessageFactoryProvider messageFactoryProvider,
-            SendMessageInteractor sendMessageInteractor,
             CompositeDisposable compositeDisposable
     ) {
         this.router = router;
         this.compositeDisposable = compositeDisposable;
-        this.messageFactoryProvider = messageFactoryProvider;
-        this.sendMessageInteractor = sendMessageInteractor;
-        this.settings = settings;
     }
 
     @Override
@@ -66,9 +57,5 @@ public class MainPresenter extends MvpPresenter<MainView> {
     public void onSelectedSettingsTab() {
         currentWindowCode = Screens.SETTINGS_SCREEN;
         router.navigateTo(currentWindowCode);
-    }
-
-    public void onGetNotificationToken(String deviceToken) {
-
     }
 }

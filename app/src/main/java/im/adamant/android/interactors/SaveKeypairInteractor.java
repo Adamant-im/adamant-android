@@ -24,12 +24,6 @@ public class SaveKeypairInteractor {
         this.api = api;
         this.keyStoreCipher = keyStoreCipher;
     }
-    //TODO: Move "node functions" to different interactor
-    public void addServerNode(String nodeUrl){
-        settings.addNode(new ServerNode(nodeUrl));
-    }
-
-    public void deleteNode(ServerNode node){settings.removeNode(node);}
 
     public Completable saveKeypair(boolean value) {
         return Completable.fromAction(() -> {

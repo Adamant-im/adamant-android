@@ -28,10 +28,12 @@ public class SubscribeToPushInteractor {
         this.sendMessageInteractor = sendMessageInteractor;
     }
 
-    public Completable savePushConfig(boolean enable, String address, String currentToken) {
+    public void savePushConfig(boolean enable, String address) {
         settings.setEnablePushNotifications(enable);
         settings.setAddressOfNotificationService(address);
+    }
 
+    public Completable savePushToken(String currentToken) {
         String oldDeviceToken = settings.getNotificationToken();
 
         if (!settings.isEnablePushNotifications()){

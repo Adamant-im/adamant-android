@@ -66,11 +66,8 @@ public abstract class MainScreenModule {
     @Provides
     public static MainPresenter provideMainPresenter(
             Router router,
-            Settings settings,
-            MessageFactoryProvider messageFactoryProvider,
-            SendMessageInteractor sendMessageInteractor,
             @Named("main") CompositeDisposable compositeDisposable
     ){
-        return new MainPresenter(router, settings, messageFactoryProvider, sendMessageInteractor, compositeDisposable);
+        return new MainPresenter(router, compositeDisposable);
     }
 }

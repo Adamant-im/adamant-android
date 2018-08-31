@@ -21,6 +21,7 @@ import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
@@ -278,6 +279,12 @@ public abstract class AppModule {
             SendMessageInteractor sendMessageInteractor
     ) {
         return new SubscribeToPushInteractor(settings, api, messageFactoryProvider, sendMessageInteractor);
+    }
+
+    @Singleton
+    @Provides
+    public static ServerNodeInteractor provideServerNodeInteractor(Settings settings) {
+        return new ServerNodeInteractor(settings);
     }
 
     @Singleton

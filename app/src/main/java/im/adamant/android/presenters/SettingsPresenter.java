@@ -6,6 +6,7 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
@@ -14,15 +15,18 @@ import io.reactivex.disposables.CompositeDisposable;
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
     private SaveKeypairInteractor saveKeypairInteractor;
     private SubscribeToPushInteractor subscribeToPushInteractor;
+    private ServerNodeInteractor serverNodeInteractor;
 
     public SettingsPresenter(
             SaveKeypairInteractor saveKeypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
+            ServerNodeInteractor serverNodeInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
         this.saveKeypairInteractor = saveKeypairInteractor;
         this.subscribeToPushInteractor = subscribeToPushInteractor;
+        this.serverNodeInteractor = serverNodeInteractor;
     }
 
     @Override
@@ -41,28 +45,17 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
 
     public void onClickAddNewNode(String nodeUrl) {
         if (URLUtil.isValidUrl(nodeUrl)){
-            saveKeypairInteractor.addServerNode(nodeUrl);
+            serverNodeInteractor.addServerNode(nodeUrl);
             getViewState().clearNodeTextField();
             getViewState().hideKeyboard();
         }
     }
 
-
     public void onClickSaveSettings(){
         getViewState().callSaveSettingsService();
     }
 
-//    public void onSavePushConfig(boolean enable, String address, C) {
-//        subscribeToPushInteractor.savePushConfig(enable, address);
-//    }
-
     public void onClickDeleteNode(ServerNode serverNode){
-        saveKeypairInteractor.deleteNode(serverNode);
+        serverNodeInteractor.deleteNode(serverNode);
     }
-
-//    public void onSaveKeyPair(boolean value) {
-//        if (saveKeypairInteractor.isKeyPairMustBeStored() != value) {
-//            getViewState().callSaveKeyPairService(value);
-//        }
-//    }
 }
