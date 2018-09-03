@@ -1,2 +1,2 @@
-json_key_file("api-gps.json")
+json_key_file("travis-ci-service-account.json")
 package_name("im.adamant.android")
