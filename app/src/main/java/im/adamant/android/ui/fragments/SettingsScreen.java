@@ -125,6 +125,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         nodeAdapter.startListenChanges();
     }
 
+    //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
     @Override
     public void onPause() {
         presenter.onClickSaveSettings();
@@ -135,6 +136,15 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         }
 
         super.onPause();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (!isVisibleToUser && (presenter != null)){
+            presenter.onClickSaveSettings();
+        }
     }
 
     @OnClick(R.id.fragment_settings_btn_add_new_node)
