@@ -80,8 +80,4 @@ public class Hex {
 
         return hash;
     }
-
-    public static int randRange(Random rnd, int min, int max) {
-        return rnd.nextInt((max - min) + 1) + min;
-    }
 }

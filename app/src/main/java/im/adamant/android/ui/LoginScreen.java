@@ -26,6 +26,7 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.AvatarCache;
 import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
@@ -102,7 +103,8 @@ public class LoginScreen extends BaseActivity implements LoginView {
         //TODO: DELETE THIS
         ImageView imageView = findViewById(R.id.imageView);
         AvatarCache cache = new AvatarCache();
-        AvatarGenerator generator = new AvatarGenerator(cache);
+        AvatarGraphics avatarGraphics = new AvatarGraphics();
+        AvatarGenerator generator = new AvatarGenerator(cache, avatarGraphics);
         Bitmap bitmap = generator.buildAvatar(
                 "d0fd22145e9edd382b773cc28960fb9d341129f3c07118c537dc113a7827163c",
                 200

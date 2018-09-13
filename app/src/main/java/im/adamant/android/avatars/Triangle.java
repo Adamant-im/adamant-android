@@ -94,7 +94,7 @@ public class Triangle {
 
     public enum Direction {
         LEFT,
-        RIGHT;
+        RIGHT
     }
 
     private int x;
