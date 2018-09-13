@@ -4,10 +4,12 @@ import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -22,6 +24,8 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.AvatarCache;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
@@ -94,6 +98,16 @@ public class LoginScreen extends BaseActivity implements LoginView {
                 AdamantApplication.hideKeyboard(this, passPhrase);
             }
         });
+
+        //TODO: DELETE THIS
+        ImageView imageView = findViewById(R.id.imageView);
+        AvatarCache cache = new AvatarCache();
+        AvatarGenerator generator = new AvatarGenerator(cache);
+        Bitmap bitmap = generator.buildAvatar(
+                "d0fd22145e9edd382b773cc28960fb9d341129f3c07118c537dc113a7827163c",
+                200
+        );
+        imageView.setImageBitmap(bitmap);
     }
 
     @OnClick(R.id.activity_login_btn_login)

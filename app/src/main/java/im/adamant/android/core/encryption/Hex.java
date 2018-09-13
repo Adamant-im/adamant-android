@@ -1,5 +1,10 @@
 package im.adamant.android.core.encryption;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
+
 public class Hex {
     public static String bytesToHex(byte[] hash) {
         StringBuffer hexString = new StringBuffer();
@@ -60,5 +65,23 @@ public class Hex {
         sb.append(']');
 
         return sb.toString();
+    }
+
+    public static String md5Hash(String data) {
+        String hash = "";
+        try {
+            byte[] bytesOfMessage = data.getBytes("UTF-8");
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] md5KeyHash = md.digest(bytesOfMessage);
+            hash = bytesToHex(md5KeyHash);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return hash;
+    }
+
+    public static int randRange(Random rnd, int min, int max) {
+        return rnd.nextInt((max - min) + 1) + min;
     }
 }
