@@ -4,6 +4,12 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
+import io.reactivex.Flowable;
+import io.reactivex.Scheduler;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
 public class AvatarGenerator {
 
     private AvatarCache avatarCache;
@@ -35,18 +41,25 @@ public class AvatarGenerator {
         this.graphics = graphics;
     }
 
-    public Bitmap buildAvatar(String key, int size) {
-        Bitmap bitmap = avatarCache.get(key);
+    public Single<Bitmap> buildAvatar(String key, int size) {
+        return Single.fromCallable(() -> {
+                    Bitmap bitmap = avatarCache.get(key);
 
-        if (bitmap == null){
-            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-            bitmap = Bitmap.createBitmap(size, size, conf);
-            Canvas canvas = new Canvas(bitmap);
-            hexa16(key, colors, size, canvas);
-        }
-        return bitmap;
+                    if (bitmap == null){
+                        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                        bitmap = Bitmap.createBitmap(size, size, conf);
+                        Canvas canvas = new Canvas(bitmap);
+                        hexa16(key, colors, size, canvas);
+
+                        avatarCache.put(key, bitmap);
+                    }
+                    return bitmap;
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
+    //TODO: Refactor this
     private void hexa16(String key, int[][] colors, int size, Canvas canvas) {
         int fringeSize = size / 6;
         float distance = graphics.distanceTo3rdPoint(fringeSize);

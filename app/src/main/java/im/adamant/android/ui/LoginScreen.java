@@ -105,11 +105,12 @@ public class LoginScreen extends BaseActivity implements LoginView {
         AvatarCache cache = new AvatarCache();
         AvatarGraphics avatarGraphics = new AvatarGraphics();
         AvatarGenerator generator = new AvatarGenerator(cache, avatarGraphics);
-        Bitmap bitmap = generator.buildAvatar(
+        generator.buildAvatar(
                 "d0fd22145e9edd382b773cc28960fb9d341129f3c07118c537dc113a7827163c",
                 200
-        );
-        imageView.setImageBitmap(bitmap);
+        ).subscribe((bitmap) -> {
+            imageView.setImageBitmap(bitmap);
+        });
     }
 
     @OnClick(R.id.activity_login_btn_login)
