@@ -14,6 +14,12 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 
 public class AvatarGraphics {
+    private AvatarThemesProvider avatarThemesProvider;
+
+    public AvatarGraphics(AvatarThemesProvider avatarThemesProvider) {
+        this.avatarThemesProvider = avatarThemesProvider;
+    }
+
     public void drawPoligon(float[] xs, float[] ys, int color, Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
@@ -99,7 +105,7 @@ public class AvatarGraphics {
     }
 
     //TODO: Make private inner methods
-    public int[] triangleColors(int id, String key, int[][] colors, int lines) {
+    public int[] triangleColors(int id, String key, int lines) {
         //TODO: check null
         int[] tColors = new int[Triangle.triangles[id].length];
 
@@ -115,7 +121,9 @@ public class AvatarGraphics {
         int minRand = 0;
         int maxRand = Integer.MAX_VALUE / 2;
 
-        int[] rndColors = colors[randRange(rnd, minRand, maxRand) % colors.length];
+        int[] rndColors = avatarThemesProvider.provide(
+                randRange(rnd, minRand, maxRand) % avatarThemesProvider.count()
+        );
 
         for (int i = 0; i < Triangle.triangles[id].length; i++) {
             Triangle t = Triangle.triangles[id][i];

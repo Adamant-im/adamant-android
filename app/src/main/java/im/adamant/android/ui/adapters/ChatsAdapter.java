@@ -79,6 +79,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
                                     }
                             );
                     compositeDisposable.add(avatarSubscription);
+                } else {
+                    avatar.setImageResource(R.mipmap.ic_launcher_foreground);
                 }
             } else {
                 avatar.setImageBitmap(chat.getAvatar());

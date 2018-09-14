@@ -12,29 +12,12 @@ public class AvatarGenerator {
 
     private AvatarCache avatarCache;
     private AvatarGraphics graphics;
-    private static final int[][] colors = new int[][]{
-        {
-            Color.parseColor("#ffffffff"), //background
-            Color.parseColor("#ff8786ff"), // main
-            Color.parseColor("#7788faff"), // 2dary
-            Color.parseColor("#ffcf9bff") // 2dary
-        },
-        {
-            Color.parseColor("#ffffffff"), //background
-            Color.parseColor("#7788faff"), // main
-            Color.parseColor("#51b5f1ff"), // 2dary
-            Color.parseColor("#a8d9f7ff") // 2dary
-        },
-        {
-            Color.parseColor("#ffffffff"), //background
-            Color.parseColor("#7ce3d8ff"), // main
-            Color.parseColor("#ffdbb4ff"), // 2dary
-            Color.parseColor("#c3c4cbff") // 2dary
-        }
-    };
 
 
-    public AvatarGenerator(AvatarCache avatarCache, AvatarGraphics graphics) {
+    public AvatarGenerator(
+            AvatarCache avatarCache,
+            AvatarGraphics graphics
+    ) {
         this.avatarCache = avatarCache;
         this.graphics = graphics;
     }
@@ -47,7 +30,7 @@ public class AvatarGenerator {
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
                         bitmap = Bitmap.createBitmap(size, size, conf);
                         Canvas canvas = new Canvas(bitmap);
-                        hexa16(key, colors, size, canvas);
+                        hexa16(key, size, canvas);
 
                         avatarCache.put(key, bitmap);
                     }
@@ -58,13 +41,13 @@ public class AvatarGenerator {
     }
 
     //TODO: Refactor this
-    private void hexa16(String key, int[][] colors, int size, Canvas canvas) {
+    private void hexa16(String key, int size, Canvas canvas) {
         int fringeSize = size / 6;
         float distance = graphics.distanceTo3rdPoint(fringeSize);
         int lines = size / fringeSize;
         float offset = ((fringeSize - distance) * lines) / 2;
 
-        int[] fillTriangle = graphics.triangleColors(0, key, colors, lines);
+        int[] fillTriangle = graphics.triangleColors(0, key, lines);
         int transparent = Color.TRANSPARENT;
 
         PositionChecker isLeft = (v) -> (v % 2) == 0;

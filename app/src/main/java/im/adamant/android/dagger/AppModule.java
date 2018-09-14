@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import im.adamant.android.avatars.AvatarCache;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.avatars.AvatarGraphics;
+import im.adamant.android.avatars.AvatarThemesProvider;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -88,8 +89,14 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AvatarGraphics provideAvatarGrapics() {
-        return new AvatarGraphics();
+    public static AvatarThemesProvider provideAvatarThemes() {
+        return new AvatarThemesProvider();
+    }
+
+    @Singleton
+    @Provides
+    public static AvatarGraphics provideAvatarGraphics(AvatarThemesProvider avatarThemesProvider) {
+        return new AvatarGraphics(avatarThemesProvider);
     }
 
     @Singleton
