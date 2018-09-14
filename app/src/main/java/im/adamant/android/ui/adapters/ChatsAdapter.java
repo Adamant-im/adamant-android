@@ -34,6 +34,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         public RelativeTimeTextView dateView;
         public ImageView avatar;
 
+        float avatarSize;
+
         public ViewHolder(Context context, View v, AvatarGenerator avatarGenerator) {
             super(v);
 
@@ -45,6 +47,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             avatar = v.findViewById(R.id.list_item_chat_avatar);
 
             v.setOnClickListener(this);
+
+           avatarSize = context.getResources().getDimension(R.dimen.list_item_chat_avatar_size);
         }
 
         @Override
@@ -68,7 +72,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             if (chat.getAvatar() == null){
                 if (chat.getCompanionPublicKey() != null){
                     Disposable avatarSubscription = avatarGenerator
-                            .buildAvatar(chat.getCompanionPublicKey(), 120)
+                            .buildAvatar(chat.getCompanionPublicKey(), avatarSize, context)
                             .subscribe(
                                     bitmap -> {
                                         avatar.setImageBitmap(bitmap);

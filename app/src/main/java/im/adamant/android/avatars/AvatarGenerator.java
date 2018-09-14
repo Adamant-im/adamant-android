@@ -1,8 +1,11 @@
 package im.adamant.android.avatars;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -13,7 +16,6 @@ public class AvatarGenerator {
     private AvatarCache avatarCache;
     private AvatarGraphics graphics;
 
-
     public AvatarGenerator(
             AvatarCache avatarCache,
             AvatarGraphics graphics
@@ -22,17 +24,28 @@ public class AvatarGenerator {
         this.graphics = graphics;
     }
 
-    public Single<Bitmap> buildAvatar(String key, int size) {
+    public Single<Bitmap> buildAvatar(String key, float sizeDp, Context context){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int sizePx = (int)TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                sizeDp,
+                displayMetrics
+        );
+
+        return buildAvatar(key, sizePx);
+    }
+
+    public Single<Bitmap> buildAvatar(String key, int sizePx) {
         return Single.fromCallable(() -> {
-                    Bitmap bitmap = avatarCache.get(key);
+                    Bitmap bitmap = avatarCache.get(key, sizePx);
 
                     if (bitmap == null){
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                        bitmap = Bitmap.createBitmap(size, size, conf);
+                        bitmap = Bitmap.createBitmap(sizePx, sizePx, conf);
                         Canvas canvas = new Canvas(bitmap);
-                        hexa16(key, size, canvas);
+                        hexa16(key, sizePx, canvas);
 
-                        avatarCache.put(key, bitmap);
+                        avatarCache.put(key, sizePx, bitmap);
                     }
                     return bitmap;
                 })
