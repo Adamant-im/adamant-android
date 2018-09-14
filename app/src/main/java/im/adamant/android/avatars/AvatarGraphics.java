@@ -121,7 +121,7 @@ public class AvatarGraphics {
             Triangle t = Triangle.triangles[id][i];
             int x = t.getX();
             int y = t.getY();
-            int index = (x + 3 * y + lines + rnd.nextInt()) % 15;
+            int index = (x + 3 * y + lines + randRange(rnd, minRand, maxRand)) % 15;
             int color = PickColor(key, rndColors, index);
             tColors[i] = color;
         }

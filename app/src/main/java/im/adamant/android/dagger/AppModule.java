@@ -3,6 +3,9 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import im.adamant.android.avatars.AvatarCache;
+import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -75,6 +78,24 @@ public abstract class AppModule {
     @Provides
     public static Gson provideGson() {
         return new Gson();
+    }
+
+    @Singleton
+    @Provides
+    public static AvatarCache provideAvatarCache() {
+        return new AvatarCache();
+    }
+
+    @Singleton
+    @Provides
+    public static AvatarGraphics provideAvatarGrapics() {
+        return new AvatarGraphics();
+    }
+
+    @Singleton
+    @Provides
+    public static AvatarGenerator provideAvatarGenerator(AvatarGraphics graphics, AvatarCache cache) {
+        return new AvatarGenerator(cache, graphics);
     }
 
     @Singleton

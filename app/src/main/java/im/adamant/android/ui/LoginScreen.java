@@ -99,18 +99,6 @@ public class LoginScreen extends BaseActivity implements LoginView {
                 AdamantApplication.hideKeyboard(this, passPhrase);
             }
         });
-
-        //TODO: DELETE THIS
-        ImageView imageView = findViewById(R.id.imageView);
-        AvatarCache cache = new AvatarCache();
-        AvatarGraphics avatarGraphics = new AvatarGraphics();
-        AvatarGenerator generator = new AvatarGenerator(cache, avatarGraphics);
-        generator.buildAvatar(
-                "d0fd22145e9edd382b773cc28960fb9d341129f3c07118c537dc113a7827163c",
-                200
-        ).subscribe((bitmap) -> {
-            imageView.setImageBitmap(bitmap);
-        });
     }
 
     @OnClick(R.id.activity_login_btn_login)

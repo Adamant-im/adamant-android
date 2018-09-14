@@ -19,10 +19,12 @@ public class TransactionToChatMapper implements Function<Transaction, Chat> {
         boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
 
         String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
+        String companionPublicKey = (iRecipient) ? transaction.getSenderPublicKey() : transaction.getRecipientPublicKey();
 
         Chat chat = new Chat();
         chat.setCompanionId(companionId);
         chat.setTitle(companionId);
+        chat.setCompanionPublicKey(companionPublicKey);
 
         return chat;
     }
