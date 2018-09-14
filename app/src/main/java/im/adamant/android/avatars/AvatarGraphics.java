@@ -1,6 +1,7 @@
 package im.adamant.android.avatars;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -18,6 +19,35 @@ public class AvatarGraphics {
 
     public AvatarGraphics(AvatarThemesProvider avatarThemesProvider) {
         this.avatarThemesProvider = avatarThemesProvider;
+    }
+
+    public int drawBorder(int sizePx, int borderSizePx, Canvas canvas) {
+        Paint transparent = new Paint();
+        transparent.setAlpha(Color.TRANSPARENT);
+        transparent.setColor(Color.TRANSPARENT);
+        canvas.drawColor(Color.TRANSPARENT);
+        canvas.drawRect(0,0, sizePx, sizePx, transparent);
+
+
+        float cx = sizePx / 2;
+        float cy = cx;
+        float r = cx - (borderSizePx * 2);
+
+        Paint background = new Paint();
+        background.setColor(Color.WHITE);
+        background.setStyle(Paint.Style.FILL);
+
+        canvas.drawCircle(cx, cy , r, background);
+
+        Paint border = new Paint();
+        border.setColor(avatarThemesProvider.provideBorderColor());
+        border.setStrokeWidth(borderSizePx);
+        border.setStyle(Paint.Style.STROKE);
+        border.setAntiAlias(true);
+
+        canvas.drawCircle(cx , cy, r, border);
+
+        return sizePx - (borderSizePx * 2);
     }
 
     public void drawPoligon(float[] xs, float[] ys, int color, Canvas canvas) {

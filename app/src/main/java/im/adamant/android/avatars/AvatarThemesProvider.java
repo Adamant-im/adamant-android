@@ -44,6 +44,10 @@ public class AvatarThemesProvider {
         }
     }
 
+    public int provideBorderColor() {
+        return Color.parseColor("#9497a3ff");
+    }
+
     public int count() {
         return colors.length;
     }

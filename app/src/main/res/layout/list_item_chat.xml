@@ -8,19 +8,22 @@
     app:cardElevation="3dp">
 
     <android.support.constraint.ConstraintLayout
-        android:background="@android:color/transparent"
-        android:layout_margin="@dimen/list_item_chat_padding"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/list_item_chat_padding"
+        android:background="@android:color/transparent">
 
         <TextView
             android:id="@+id/list_item_chat_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
+            android:maxLines="2"
             android:text="TextView"
             android:textSize="@dimen/list_item_chat_text_size"
+            app:layout_constraintEnd_toStartOf="@+id/list_item_chat_last_message_date"
             app:layout_constraintStart_toEndOf="@+id/list_item_chat_avatar"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -31,9 +34,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
             android:background="@android:color/transparent"
+            android:maxLines="4"
             android:text="TextView"
             android:textSize="@dimen/list_item_chat_text_size"
             android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/list_item_chat_avatar"
             app:layout_constraintTop_toBottomOf="@+id/list_item_chat_name" />
 
@@ -41,10 +46,10 @@
             android:id="@+id/list_item_chat_last_message_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginTop="3dp"
             android:background="@android:color/transparent"
-            android:textSize="@dimen/list_item_chat_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="10sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

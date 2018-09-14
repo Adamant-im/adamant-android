@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
@@ -26,26 +27,49 @@ public class AvatarGenerator {
 
     public Single<Bitmap> buildAvatar(String key, float sizeDp, Context context){
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int sizePx = (int)TypedValue.applyDimension(
+        int imageSizePx = (int)TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 sizeDp,
                 displayMetrics
         );
 
-        return buildAvatar(key, sizePx);
+        int borderSizePx = (int)TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                2,
+                displayMetrics
+        );
+
+        int paddingSizePx = (int)TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                20,
+                displayMetrics
+        );
+
+        return buildAvatar(key, imageSizePx, borderSizePx, paddingSizePx);
     }
 
-    public Single<Bitmap> buildAvatar(String key, int sizePx) {
+    public Single<Bitmap> buildAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx) {
         return Single.fromCallable(() -> {
-                    Bitmap bitmap = avatarCache.get(key, sizePx);
+                    Bitmap bitmap = avatarCache.get(key, imageSizePx);
 
                     if (bitmap == null){
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                        bitmap = Bitmap.createBitmap(sizePx, sizePx, conf);
-                        Canvas canvas = new Canvas(bitmap);
-                        hexa16(key, sizePx, canvas);
+                        Bitmap borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
+                        borderBitmap.setHasAlpha(true);
+                        Canvas borderCanvas = new Canvas(borderBitmap);
 
-                        avatarCache.put(key, sizePx, bitmap);
+                        int innerSizePx = graphics.drawBorder(imageSizePx, borderSizePx, borderCanvas);
+                        innerSizePx = innerSizePx - (paddingSizePx * 2);
+
+                        Bitmap avatarBitmap = Bitmap.createBitmap(innerSizePx, innerSizePx, conf);
+                        avatarBitmap.setHasAlpha(true);
+                        Canvas canvas = new Canvas(avatarBitmap);
+                        hexa16(key, innerSizePx, canvas);
+
+                        borderCanvas.drawBitmap(avatarBitmap, paddingSizePx, paddingSizePx, new Paint());
+
+                        bitmap = borderBitmap;
+                        avatarCache.put(key, imageSizePx, bitmap);
                     }
                     return bitmap;
                 })
