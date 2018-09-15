@@ -15,6 +15,7 @@ public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
         this.api = api;
     }
 
+    //TODO: Return Flowable and you may use zip operator.
     @Override
     public String getPublicKey(String address) {
         if (!publicKeys.containsKey(address)){

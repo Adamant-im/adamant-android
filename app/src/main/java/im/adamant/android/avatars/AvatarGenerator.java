@@ -66,7 +66,12 @@ public class AvatarGenerator {
                         Canvas canvas = new Canvas(avatarBitmap);
                         hexa16(key, innerSizePx, canvas);
 
-                        borderCanvas.drawBitmap(avatarBitmap, paddingSizePx, paddingSizePx, new Paint());
+                        borderCanvas.drawBitmap(
+                                avatarBitmap,
+                                borderSizePx + paddingSizePx,
+                                borderSizePx + paddingSizePx,
+                                new Paint()
+                        );
 
                         bitmap = borderBitmap;
                         avatarCache.put(key, imageSizePx, bitmap);
