@@ -25,30 +25,25 @@ public class AvatarGenerator {
         this.graphics = graphics;
     }
 
-    public Single<Bitmap> buildAvatar(String key, float sizeDp, Context context){
+    public Single<Bitmap> buildRoundedAvatar(String key, float sizePx, Context context){
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        int imageSizePx = (int)TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                sizeDp,
-                displayMetrics
-        );
 
         int borderSizePx = (int)TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                2,
+                1.0f,
                 displayMetrics
         );
 
         int paddingSizePx = (int)TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                20,
+                8.0f,
                 displayMetrics
         );
 
-        return buildAvatar(key, imageSizePx, borderSizePx, paddingSizePx);
+        return buildRoundedAvatar(key, (int) sizePx, borderSizePx, paddingSizePx);
     }
 
-    public Single<Bitmap> buildAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx) {
+    public Single<Bitmap> buildRoundedAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx) {
         return Single.fromCallable(() -> {
                     Bitmap bitmap = avatarCache.get(key, imageSizePx);
 

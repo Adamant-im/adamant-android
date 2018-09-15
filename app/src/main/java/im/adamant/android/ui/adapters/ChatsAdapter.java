@@ -72,7 +72,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             if (chat.getAvatar() == null){
                 if (chat.getCompanionPublicKey() != null){
                     Disposable avatarSubscription = avatarGenerator
-                            .buildAvatar(chat.getCompanionPublicKey(), avatarSize, context)
+                            .buildRoundedAvatar(chat.getCompanionPublicKey(), avatarSize, context)
                             .subscribe(
                                     bitmap -> {
                                         avatar.setImageBitmap(bitmap);
