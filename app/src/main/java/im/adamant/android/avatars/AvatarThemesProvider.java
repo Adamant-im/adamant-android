@@ -5,34 +5,34 @@ import android.graphics.Color;
 public class AvatarThemesProvider {
     private static final int[][] colors = new int[][]{
             {
-                    Color.parseColor("#ffffffff"), //background
-                    Color.parseColor("#179cecff"), // main
-                    Color.parseColor("#179cec80"), // 2dary
-                    Color.parseColor("#179cec40") // 2dary
+                    Color.parseColor("#ffffff"), //background
+                    Color.parseColor("#179cec"), // main
+                    Color.parseColor("#8bcef6"), // 2dary
+                    Color.parseColor("#c5e6fa") // 2dary
             },
             {
-                    Color.parseColor("#ffffffff"), //background
-                    Color.parseColor("#32d296ff"), // main
-                    Color.parseColor("#32d29680"), // 2dary
-                    Color.parseColor("#32d29640") // 2dary
+                    Color.parseColor("#ffffff"), //background
+                    Color.parseColor("#32d296"), // main
+                    Color.parseColor("#99e9cb"), // 2dary
+                    Color.parseColor("#ccf4e5") // 2dary
             },
             {
-                    Color.parseColor("#ffffffff"), //background
-                    Color.parseColor("#faa05aff"), // main
-                    Color.parseColor("#faa05a80"), // 2dary
-                    Color.parseColor("#faa05a40") // 2dary
+                    Color.parseColor("#ffffff"), //background
+                    Color.parseColor("#faa05a"), // main
+                    Color.parseColor("#fdd0ad"), // 2dary
+                    Color.parseColor("#fee7d6") // 2dary
             },
             {
-                    Color.parseColor("#ffffffff"), //background
-                    Color.parseColor("#474a5fff"), // main
-                    Color.parseColor("#474a5f80"), // 2dary
-                    Color.parseColor("#474a5f40") // 2dary
+                    Color.parseColor("#ffffff"), //background
+                    Color.parseColor("#474a5f"), // main
+                    Color.parseColor("#a3a5af"), // 2dary
+                    Color.parseColor("#d1d2d7") // 2dary
             },
             {
-                    Color.parseColor("#ffffffff"), //background
-                    Color.parseColor("#9497a3ff"), // main
-                    Color.parseColor("#9497a380"), // 2dary
-                    Color.parseColor("#9497a340") // 2dary
+                    Color.parseColor("#ffffff"), //background
+                    Color.parseColor("#9497a3"), // main
+                    Color.parseColor("#cacbd1"), // 2dary
+                    Color.parseColor("#e4e5e8") // 2dary
             }
     };
 
@@ -45,7 +45,7 @@ public class AvatarThemesProvider {
     }
 
     public int provideBorderColor() {
-        return Color.parseColor("#9497a3ff");
+        return Color.parseColor("#9497a3");
     }
 
     public int count() {

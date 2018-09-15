@@ -53,7 +53,7 @@ public class AvatarGraphics {
     public void drawPoligon(float[] xs, float[] ys, int color, Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
-        paint.setStrokeWidth(1);
+        paint.setStyle(Paint.Style.FILL);
 
         Path path = new Path();
 
