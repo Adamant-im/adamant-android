@@ -70,9 +70,6 @@
             android:name=".services.AdamantBalanceUpdateService"
             android:exported="false" />
         <service
-            android:name=".services.EncryptKeyPairService"
-            android:exported="false"/>
-        <service
             android:name=".services.SaveContactsService"
             android:exported="false"
             />

@@ -14,7 +14,11 @@
     </style>
 
     <style name="AppTheme.TextAppearance" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:fontFamily">@font/ubuntu</item>
+    </style>
+
+    <style name="AppTheme.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
+        <item name="android:fontFamily">@font/ubuntu</item>
     </style>
 
     <style name="AppTheme.ButtonTextAppearance" parent="AppTheme.TextAppearance">
