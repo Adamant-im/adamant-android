@@ -1,10 +1,8 @@
 package im.adamant.android.services;
 
-import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 

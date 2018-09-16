@@ -1,5 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_bottom_height">56dp</dimen>
     <dimen name="list_item_chat_text_size">16sp</dimen>
     <dimen name="list_item_chat_padding">20dp</dimen>
 

@@ -4,12 +4,11 @@ package im.adamant.android.ui.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +109,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 .subscribe(serverNode -> {
                     Activity activity = getActivity();
                     if (activity != null){
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(activity);
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                         builder
                                 .setTitle(R.string.warning)
                                 .setMessage(R.string.fragment_settings_dialog_delete_node)
@@ -153,7 +152,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
     @OnClick(R.id.fragment_settings_btn_change_lang)
     public void onSelectLanguage() {
-        android.support.v7.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
+        androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
     }
 
@@ -200,12 +199,12 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
 
     //TODO: Refactor: method to long and dirty
-    private android.support.v7.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
-        android.support.v7.app.AlertDialog.Builder builder = null;
+    private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
+        androidx.appcompat.app.AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
         if (activity != null){
-            builder = new android.support.v7.app.AlertDialog.Builder(activity);
+            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
 
             builder.setTitle(getString(R.string.fragment_settings_choose_language));
 

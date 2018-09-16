@@ -1,6 +1,5 @@
 package im.adamant.android.ui;
 
-import android.app.ActionBar;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -48,7 +47,7 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
         createCustomTitle();
 
         if (withBackButton()){
-            android.support.v7.app.ActionBar supportActionBar = getSupportActionBar();
+            androidx.appcompat.app.ActionBar supportActionBar = getSupportActionBar();
             if (supportActionBar != null) {
                 supportActionBar.setHomeButtonEnabled(true);
                 supportActionBar.setDisplayHomeAsUpEnabled(true);
@@ -143,7 +142,7 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     }
 
     private void createCustomTitle() {
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        androidx.appcompat.app.ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             // Disable the default and enable the custom
             actionBar.setDisplayShowTitleEnabled(false);

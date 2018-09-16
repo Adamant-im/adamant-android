@@ -1,7 +1,7 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;

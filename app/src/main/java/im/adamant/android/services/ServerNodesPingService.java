@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
-import com.stealthcopter.networktools.ping.PingTools;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

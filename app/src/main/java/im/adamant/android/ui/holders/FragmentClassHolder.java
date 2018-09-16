@@ -1,6 +1,6 @@
 package im.adamant.android.ui.holders;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import im.adamant.android.ui.fragments.BaseFragment;
 

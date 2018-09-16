@@ -1,18 +1,16 @@
 package im.adamant.android.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.franmontiel.localechanger.LocaleChanger;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,11 +18,9 @@ import javax.inject.Named;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;

@@ -1,9 +1,9 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.transition.TransitionManager;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
+import androidx.transition.TransitionManager;
 import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;

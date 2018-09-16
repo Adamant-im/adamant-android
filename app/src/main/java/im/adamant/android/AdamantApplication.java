@@ -1,16 +1,14 @@
 package im.adamant.android;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.franmontiel.localechanger.LocaleChanger;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;

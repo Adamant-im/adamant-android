@@ -10,12 +10,12 @@
     tools:context=".ui.LoginScreen"
     >
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clickable="true"
@@ -142,7 +142,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/activity_login_cl_new_account_form"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -202,7 +202,7 @@
                     app:layout_constraintVertical_bias="1.0"
                     app:srcCompat="@drawable/ic_clipboard_copy" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageButton
                 android:id="@+id/activity_login_btn_scan_qrcode"
@@ -237,8 +237,8 @@
                 app:srcCompat="@drawable/ic_generate_qrcode" />
 
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

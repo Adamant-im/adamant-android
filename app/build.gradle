@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "im.adamant.android"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode getVersionCode(minSdkVersion, scmVersion.version)
         versionName scmVersion.version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         lintOptions {
             abortOnError false
         }
@@ -72,22 +72,22 @@ static def getVersionCode(minSdk, versionName) {
 }
 
 ext {
-    supportLibraryVersion = "27.1.1"
+    supportLibraryVersion = "28.0.0-rc02"
     moxyVersion = "1.4.6"
     daggerVersion = "2.16"
-    butterKnifeVersion = "8.8.1"
+    butterKnifeVersion = "9.0.0-SNAPSHOT"
     retrofitVersion = "2.4.0"
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
-    implementation "com.android.support:recyclerview-v7:$supportLibraryVersion"
-    implementation "com.android.support:cardview-v7:$supportLibraryVersion"
-    implementation "com.android.support:design:$supportLibraryVersion"
-    implementation "com.android.support:support-vector-drawable:$supportLibraryVersion"
-    implementation "com.android.support:support-v4:$supportLibraryVersion"
-    implementation "com.android.support.constraint:constraint-layout:1.1.2"
+    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
+    implementation 'androidx.cardview:cardview:1.0.0-rc02'
+    implementation 'com.google.android.material:material:1.0.0-rc02'
+    implementation 'androidx.vectordrawable:vectordrawable:1.0.0-rc02'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
     implementation "net.java.dev.jna:jna:4.5.1@aar"
     implementation "com.goterl.lazycode:lazysodium-android:2.2.0@aar"
     implementation "io.github.novacrypto:BIP39:0.1.9"
@@ -102,7 +102,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    implementation "com.android.support:design:$supportLibraryVersion"
+    implementation 'com.google.android.material:material:1.0.0-rc02'
     implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
@@ -110,12 +110,12 @@ dependencies {
     implementation "com.github.kenglxn.QRGen:android:2.5.0"
     implementation "gun0912.ted:tedpermission:2.2.0"
     implementation "com.github.stealthcopter:AndroidNetworkTools:0.4.0"
-    implementation "com.android.support:transition:27.1.1"
+    implementation 'androidx.transition:transition:1.0.0-rc02'
     implementation "com.github.franmontiel:LocaleChanger:0.9.2"
     implementation "com.andrognito.pinlockview:pinlockview:2.1.0"
-    implementation "com.android.support:multidex:1.0.3"
+    implementation "androidx.multidex:multidex:2.0.0"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"
-    implementation "com.google.firebase:firebase-messaging:17.3.0"
+    implementation "com.google.firebase:firebase-messaging:17.3.1"
     implementation 'com.github.euzee:serviceManager:1.0.3'
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
@@ -124,8 +124,8 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
     testImplementation "junit:junit:4.12"
-    androidTestImplementation "com.android.support.test:runner:1.0.2"
-    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+    androidTestImplementation "androidx.test:runner:1.1.0-alpha4"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0-alpha4"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.1"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.1"

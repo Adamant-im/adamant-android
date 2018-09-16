@@ -1,7 +1,7 @@
 package im.adamant.android.ui.messages_support.entities;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Objects;

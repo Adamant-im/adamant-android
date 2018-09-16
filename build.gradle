@@ -9,7 +9,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-beta03'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc03'
         classpath "pl.allegro.tech.build:axion-release-plugin:1.9.1"
         classpath 'com.google.gms:google-services:4.0.0'
     }
@@ -29,6 +29,10 @@ allprojects {
             url "https://dl.bintray.com/novacrypto/SecureString/"
         }
         maven { url "https://jitpack.io" }
+        maven {
+            name 'Sonatype SNAPSHOTs';
+            url "https://oss.sonatype.org/content/repositories/snapshots"
+        }
     }
 
 //    tasks.withType(JavaCompile) {
