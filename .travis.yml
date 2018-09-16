@@ -11,9 +11,9 @@ cache:
   - "$HOME/.android/build-cache"
 env:
   global:
-  - ANDROID_API=27
+  - ANDROID_API=28
   - EMULATOR_API=19
-  - ANDROID_BUILD_TOOLS=27.0.3
+  - ANDROID_BUILD_TOOLS=28.0.2
   - ADB_INSTALL_TIMEOUT=5
   - secure: fQDdh7kT/rat1IXYz0MBUHPKTCh5tQgg6irf/X91SRha4kP014O55kk649FqZIYKfdf2dC+5efpmF93RtevSv1500EKC2kHS8ZMEvx8NjDM6TdizjmdkpSM1Z18KXSgW1C33TXNcG6adxKWGsFtgBScbaqW1gZ+8crS07wWZRjg5OZf4FFGkgMmToRwJcUom+HuHs2d37JlfLZDf2Ak/SfEisxMHlghYlqMNUQXJPzcxDU5rgc4cGCl4O+sF93v/Umx9IVdEAC7sfBUfks3TqVdiBQ6cB2y5kZ/kU5lfy8e38KcauC3o3e2/LYh6Z9Uz9bzP+bV+a3j2odbNVSdz7amdBx4bA+30QpVsSkGFczwGzQLd5T+xR+MuCO56m5RUYjvSYMsbJs28+zaqfJUtrZH89t86wxpwLD7v1sg8dRObac8MGplGigEeLNSGGCyxYmw5yp46360+Z9EkvK9b45y41GJC4eh29WbX8NIm7/Zx1HVlue+y7D2hn8uYYySoLo8qqYEjBjIzo/X0xnGqbshBRAaIKDW2+Bz8gmC2kaRQgjxy7+Uj6ZK91MFFLcDAH8PmIjoDxan1Zzr1V0ZnmkXEBxXjjzg6cav2AzDvF5iLvi59lbrHWde7UqnZWVwhz30d5mrb+6AsVXu68Ql12VSCUn0tE5aR9i5os4vS3c4=
   - secure: PwgiNiIIHThXC4pRc1e9TRw4iF2oYBjR8fXxN4QR+R/gTbBBww/BOpr3UavxkeqBcGeWlEXXEDvKhrN94juMgs4Iv+XAIcnkw0y7hefoAsgzkc1VkXpOEWFG9RkgZhe38JVomtrzUtPdFJUULUgI6yaEcUVMaYeh2kE5vagGfMsasmKQVgLt+lqwEpitqgZfMTbycTIauwtG+hbdYrm7V/dizR5mVYSNNDDyb88pxq8xmCtBBOflxFWpsTETlodAODG6m6TBvUaFCQecomFvy1moFMwt3blSYletIr4ynVa+eVjaGnUY+D8IXCsUMxruRimSzlUg5sT9x3XeAOkEF5GNEnDerZlKIp40vLg6580D/eMEa3zDM/3i9+iQ0S5LD6rX+p4QuZmHAeuaVsAjeXXbLjY8HvM6h2IXUKQJyxB1pCbhmYwwEIQUq+FUq/3XKJ2oAF+53RaoS2cll2xcpaEhZaG5C4uHFR0ZB9nSb+tmblu63py1KxBUtk6lo96jAlq9RGNeKqc+TdEzV+dKZgz8wvfF3qBkomSbFTmhB7+6toeNfwRW5pF510Zos+y0s6XayAjgNvkH+WfPkuaOovqExenVN48OUULLXOVk8ZG66YoIyM6PsG0NuR3/nN7nbi8St2Sb2/dETC5aAv2w3A6ca58qYUpk2U/tKHSE68I=
@@ -34,7 +34,7 @@ android:
   - android-sdk-license-.+
   - google-gdk-license-.+
 before_install:
-  - yes | sdkmanager "platforms;android-27" "platform-tools" "build-tools;27.0.3"
+  - yes | sdkmanager "platforms;android-28" "platform-tools" "build-tools;28.0.2"
   - gem update --system
   - gem install fastlane --no-rdoc --no-ri --no-document --quiet
 before_script:
