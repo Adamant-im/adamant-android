@@ -12,16 +12,24 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpAppCompatActivity;
+import com.arellomobile.mvp.MvpDelegate;
 import com.franmontiel.localechanger.LocaleChanger;
 
+import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import im.adamant.android.R;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
 
 import static android.content.pm.PackageManager.GET_META_DATA;
+/**
+ * This class has been redesigned to work with the Moxy framework.
+ * This is necessary because if you use the MvpAppCompatActivity class, then the syntax highlighting breaks.
+ * Because there is a code from the support library.
+ * */
+public abstract class BaseActivity extends AppCompatActivity {
+    private MvpDelegate<? extends BaseActivity> mMvpDelegate;
 
-public abstract class BaseActivity extends MvpAppCompatActivity {
     protected AdamantBalanceUpdateService balanceUpdateService;
     private ServiceConnection pingServiceConnection;
     private ServiceConnection admBalanceServiceConnection;
@@ -37,6 +45,8 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getMvpDelegate().onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE);
@@ -56,8 +66,17 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        getMvpDelegate().onAttach();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+
+        getMvpDelegate().onAttach();
 
         initConnections();
 
@@ -66,6 +85,14 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
 
         Intent admBalanceIntent = new Intent(this, AdamantBalanceUpdateService.class);
         bindService(admBalanceIntent, admBalanceServiceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        getMvpDelegate().onSaveInstanceState(outState);
+        getMvpDelegate().onDetach();
     }
 
     @Override
@@ -81,6 +108,24 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
             unbindService(admBalanceServiceConnection);
             balanceUpdateService = null;
             admBalanceServiceConnection = null;
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        getMvpDelegate().onDetach();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        getMvpDelegate().onDestroyView();
+
+        if (isFinishing()) {
+            getMvpDelegate().onDestroy();
         }
     }
 
@@ -167,5 +212,15 @@ public abstract class BaseActivity extends MvpAppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         newBase = LocaleChanger.configureBaseContext(newBase);
         super.attachBaseContext(newBase);
+    }
+
+    /**
+     * @return The {@link MvpDelegate} being used by this Activity.
+     */
+    public MvpDelegate getMvpDelegate() {
+        if (mMvpDelegate == null) {
+            mMvpDelegate = new MvpDelegate<>(this);
+        }
+        return mMvpDelegate;
     }
 }

@@ -73,7 +73,7 @@ static def getVersionCode(minSdk, versionName) {
 
 ext {
     supportLibraryVersion = "28.0.0-rc02"
-    moxyVersion = "1.4.6"
+    moxyVersion = "1.5.5"
     daggerVersion = "2.16"
     butterKnifeVersion = "9.0.0-SNAPSHOT"
     retrofitVersion = "2.4.0"

@@ -34,6 +34,7 @@ import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
+
 public class MainScreen extends BaseActivity implements MainView, HasSupportFragmentInjector {
     public static final String ARG_CURRENT_SCREEN = "current_screen";
 
