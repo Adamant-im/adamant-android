@@ -12,6 +12,7 @@ import im.adamant.android.R;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
+import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
@@ -32,6 +33,10 @@ public abstract class MainScreenModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = {SettingsScreenModule.class})
     public abstract SettingsScreen settingsScreen();
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = {BottomNavigationScreenModule.class})
+    public abstract BottomNavigationDrawerFragment drawerFragment();
 
     @Named("main")
     @ActivityScope

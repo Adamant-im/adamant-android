@@ -37,7 +37,7 @@
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         app:fabAlignmentMode="end"
-        app:backgroundTint="@color/colorPrimaryDark"
+        app:backgroundTint="@color/colorPrimary"
         app:navigationIcon="@drawable/ic_drawer_navigation"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />

@@ -5,17 +5,46 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/fragment_bottom_navigation_iv_avatar"
+        android:layout_width="@dimen/fragment_bottom_navigation_avatar_size"
+        android:layout_height="@dimen/fragment_bottom_navigation_avatar_size"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/fragment_bottom_navigation_tv_address"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/fragment_bottom_navigation_iv_avatar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_marginTop="16dp"
+        android:background="#447e7e7e"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_bottom_navigation_iv_avatar"/>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigation_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="bottom"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="16dp"
         android:paddingBottom="40dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view2"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
