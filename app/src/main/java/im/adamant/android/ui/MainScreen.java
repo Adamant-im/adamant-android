@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -23,9 +23,9 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
-import im.adamant.android.ui.fragments.BaseFragment;
 import im.adamant.android.ui.mvp_view.MainView;
 import im.adamant.android.ui.mvp_view.WalletView;
 import ru.terrakok.cicerone.Navigator;
@@ -61,8 +61,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     FragmentsAdapter mainAdapterReference;
 
     @BindView(R.id.main_screen_content) ViewPager content;
-    @BindView(R.id.main_screen_navigation)
-    BottomNavigationView navigation;
+//    @BindView(R.id.main_screen_navigation)
+//    BottomNavigationView navigation;
+
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
+
+    @Inject
+    AvatarGenerator avatarGenerator;
 
     @Override
     public int getLayoutId() {
@@ -79,21 +85,27 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            BaseFragment fragment = null;
-            switch (item.getItemId()) {
-                case R.id.navigation_wallet:
-                    presenter.onSelectedWalletTab();
-                    return true;
-                case R.id.navigation_chats:
-                    presenter.onSelectedChatsTab();
-                    return true;
-                case R.id.navigation_settings:
-                    presenter.onSelectedSettingsTab();
-                    return true;
-            }
-            return false;
-        });
+        avatarGenerator
+                .buildAvatar("hfgj,sG,vdszgdv,zssc", 48.0f, this, false)
+                .subscribe(bitmap -> {
+                    fab.setImageBitmap(bitmap);
+                });
+
+//        navigation.setOnNavigationItemSelectedListener(item -> {
+//            BaseFragment fragment = null;
+//            switch (item.getItemId()) {
+//                case R.id.navigation_wallet:
+//                    presenter.onSelectedWalletTab();
+//                    return true;
+//                case R.id.navigation_chats:
+//                    presenter.onSelectedChatsTab();
+//                    return true;
+//                case R.id.navigation_settings:
+//                    presenter.onSelectedSettingsTab();
+//                    return true;
+//            }
+//            return false;
+//        });
 
         content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

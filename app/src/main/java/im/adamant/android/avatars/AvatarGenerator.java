@@ -25,7 +25,8 @@ public class AvatarGenerator {
         this.graphics = graphics;
     }
 
-    public Single<Bitmap> buildRoundedAvatar(String key, float sizePx, Context context){
+    //TODO: Refactor rounded variable. Use decorators or mappers but first solve problem with cache
+    public Single<Bitmap> buildAvatar(String key, float sizePx, Context context, boolean rounded){
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
 
         int borderSizePx = (int)TypedValue.applyDimension(
@@ -40,35 +41,43 @@ public class AvatarGenerator {
                 displayMetrics
         );
 
-        return buildRoundedAvatar(key, (int) sizePx, borderSizePx, paddingSizePx);
+        return buildAvatar(key, (int) sizePx, borderSizePx, paddingSizePx, rounded);
     }
 
-    public Single<Bitmap> buildRoundedAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx) {
+    public Single<Bitmap> buildAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx, boolean rounded) {
         return Single.fromCallable(() -> {
                     Bitmap bitmap = avatarCache.get(key, imageSizePx);
 
                     if (bitmap == null){
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                        Bitmap borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
-                        borderBitmap.setHasAlpha(true);
-                        Canvas borderCanvas = new Canvas(borderBitmap);
+                        int innerSizePx = imageSizePx;
+                        Canvas borderCanvas = null;
+                        if (rounded){
+                            Bitmap borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
+                            borderBitmap.setHasAlpha(true);
+                            borderCanvas = new Canvas(borderBitmap);
 
-                        int innerSizePx = graphics.drawBorder(imageSizePx, borderSizePx, borderCanvas);
-                        innerSizePx = innerSizePx - (paddingSizePx * 2);
+                            innerSizePx = graphics.drawBorder(imageSizePx, borderSizePx, borderCanvas);
+                            innerSizePx = innerSizePx - (paddingSizePx * 2);
+                        }
+
 
                         Bitmap avatarBitmap = Bitmap.createBitmap(innerSizePx, innerSizePx, conf);
                         avatarBitmap.setHasAlpha(true);
                         Canvas canvas = new Canvas(avatarBitmap);
                         hexa16(key, innerSizePx, canvas);
 
-                        borderCanvas.drawBitmap(
-                                avatarBitmap,
-                                borderSizePx + paddingSizePx,
-                                borderSizePx + paddingSizePx,
-                                new Paint()
-                        );
+                        bitmap = avatarBitmap;
 
-                        bitmap = borderBitmap;
+                        if (rounded){
+                            borderCanvas.drawBitmap(
+                                    avatarBitmap,
+                                    borderSizePx + paddingSizePx,
+                                    borderSizePx + paddingSizePx,
+                                    new Paint()
+                            );
+                        }
+
                         avatarCache.put(key, imageSizePx, bitmap);
                     }
                     return bitmap;
