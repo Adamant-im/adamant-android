@@ -81,12 +81,12 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.0.0-rc02'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-rc02'
-    implementation 'androidx.cardview:cardview:1.0.0-rc02'
-    implementation 'com.google.android.material:material:1.0.0-rc02'
-    implementation 'androidx.vectordrawable:vectordrawable:1.0.0-rc02'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-rc02'
+    implementation "androidx.appcompat:appcompat:1.0.0-rc02"
+    implementation "androidx.recyclerview:recyclerview:1.0.0-rc02"
+    implementation "androidx.cardview:cardview:1.0.0-rc02"
+    implementation "com.google.android.material:material:1.0.0-rc02"
+    implementation "androidx.vectordrawable:vectordrawable:1.0.0-rc02"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0-rc02"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
     implementation "net.java.dev.jna:jna:4.5.1@aar"
     implementation "com.goterl.lazycode:lazysodium-android:2.2.0@aar"
@@ -110,13 +110,14 @@ dependencies {
     implementation "com.github.kenglxn.QRGen:android:2.5.0"
     implementation "gun0912.ted:tedpermission:2.2.0"
     implementation "com.github.stealthcopter:AndroidNetworkTools:0.4.0"
-    implementation 'androidx.transition:transition:1.0.0-rc02'
+    implementation "androidx.transition:transition:1.0.0-rc02"
     implementation "com.github.franmontiel:LocaleChanger:0.9.2"
     implementation "com.andrognito.pinlockview:pinlockview:2.1.0"
     implementation "androidx.multidex:multidex:2.0.0"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"
     implementation "com.google.firebase:firebase-messaging:17.3.1"
-    implementation 'com.github.euzee:serviceManager:1.0.3'
+    implementation "com.github.euzee:serviceManager:1.0.3"
+    implementation "com.allattentionhere:fabulousfilter:0.0.5"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

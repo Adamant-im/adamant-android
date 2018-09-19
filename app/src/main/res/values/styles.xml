@@ -6,7 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="actionBarStyle">@style/ActionBar.Solid.MyAppTheme</item>
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">true</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
         <item name="buttonStyle">@style/AppTheme.Button</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
@@ -31,10 +32,6 @@
         <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
     </style>
 
-    <style name="ActionBar.Solid.MyAppTheme" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
-        <item name="background">@color/colorPrimary</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-    </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
