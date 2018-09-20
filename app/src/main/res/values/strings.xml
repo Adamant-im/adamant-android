@@ -88,5 +88,5 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="warning">Warning</string>
-
+    <string name="adm_currency_abbr">ADM</string>
 </resources>

@@ -88,4 +88,5 @@
     <string name="yes">Да</string>
     <string name="no">Нет</string>
     <string name="warning">Предупреждение</string>
+    <string name="adm_currency_abbr">ADM</string>
 </resources>

@@ -31,5 +31,5 @@
     <dimen name="list_item_chat_avatar_size">48dp</dimen>
 
     <dimen name="fragment_settings_list_nodes_height">300dp</dimen>
-    <dimen name="fragment_bottom_navigation_avatar_size">64dp</dimen>
+    <dimen name="fragment_bottom_navigation_avatar_size">48dp</dimen>
 </resources>

@@ -92,7 +92,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
         copyAdamantAddressButton.setOnClickListener((v) -> {
             Activity activity = getActivity();
             if (activity != null){
-                ClipData clip = ClipData.newPlainText("address", adamantAddressView.getText().toString());
+                ClipData clip = ClipData.newPlainText("addressView", adamantAddressView.getText().toString());
                 ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
 
                 if(clipboard != null){
