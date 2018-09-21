@@ -52,8 +52,9 @@ public class AvatarGenerator {
                         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
                         int innerSizePx = imageSizePx;
                         Canvas borderCanvas = null;
+                        Bitmap borderBitmap = null;
                         if (rounded){
-                            Bitmap borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
+                            borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
                             borderBitmap.setHasAlpha(true);
                             borderCanvas = new Canvas(borderBitmap);
 
@@ -76,6 +77,8 @@ public class AvatarGenerator {
                                     borderSizePx + paddingSizePx,
                                     new Paint()
                             );
+
+                            bitmap = borderBitmap;
                         }
 
                         avatarCache.put(key, imageSizePx, bitmap);

@@ -86,12 +86,21 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()){
-                case R.id.navigation_chats : {
+                case R.id.navigation_chats: {
                     router.navigateTo(Screens.CHATS_SCREEN);
+                }
+                break;
+                case R.id.navigation_wallet: {
+                    router.navigateTo(Screens.WALLET_SCREEN);
+                }
+                break;
+                case R.id.navigation_settings: {
+                    router.navigateTo(Screens.SETTINGS_SCREEN);
                 }
                 break;
             }
 
+            dismiss();
             return true;
         });
 

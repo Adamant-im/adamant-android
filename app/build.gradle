@@ -118,6 +118,7 @@ dependencies {
     implementation "com.google.firebase:firebase-messaging:17.3.1"
     implementation "com.github.euzee:serviceManager:1.0.3"
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
+    implementation 'androidx.core:core:1.0.0-rc02'
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

@@ -10,12 +10,12 @@
     <im.adamant.android.ui.custom_view.NoSwipePager
         android:id="@+id/main_screen_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/main_screen_navigation"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/app_bar_bottom_height"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <!--<com.google.android.material.bottomnavigation.BottomNavigationView-->
         <!--android:id="@+id/main_screen_navigation"-->
@@ -34,11 +34,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
         app:fabAlignmentMode="end"
         app:backgroundTint="@color/colorPrimary"
-        app:navigationIcon="@drawable/ic_drawer_navigation"
+        app:navigationIcon="@drawable/ic_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 

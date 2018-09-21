@@ -95,29 +95,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-//        avatarGenerator
-//                .buildAvatar("hfgj,sG,vdszgdv,zssc", 48.0f, this, false)
-//                .subscribe(bitmap -> {
-//                    fab.setImageBitmap(bitmap);
-//                });
-
         setSupportActionBar(appBar);
-
-//        navigation.setOnNavigationItemSelectedListener(item -> {
-//            BaseFragment fragment = null;
-//            switch (item.getItemId()) {
-//                case R.id.navigation_wallet:
-//                    presenter.onSelectedWalletTab();
-//                    return true;
-//                case R.id.navigation_chats:
-//                    presenter.onSelectedChatsTab();
-//                    return true;
-//                case R.id.navigation_settings:
-//                    presenter.onSelectedSettingsTab();
-//                    return true;
-//            }
-//            return false;
-//        });
 
         content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -146,10 +124,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
-
-        if (mainAdapterReference != null){
-            setTitle(mainAdapterReference.getPageTitle(content.getCurrentItem()));
-        }
     }
 
     @Override
@@ -171,10 +145,11 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 FragmentManager supportFragmentManager = getSupportFragmentManager();
                 BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
                 bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
+
+                return true;
             }
-            break;
         }
-        return true;
+        return false;
     }
 
     private Navigator navigator = new Navigator() {
