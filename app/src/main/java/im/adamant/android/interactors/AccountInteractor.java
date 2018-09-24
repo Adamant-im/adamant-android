@@ -53,27 +53,28 @@ public class AccountInteractor {
         return Flowable.fromCallable(this::getBalance);
     }
 
-    public Single<List<CurrencyCardItem>> getCurrencyItemCards() {
-        return Single.fromCallable(() -> {
-            List<CurrencyCardItem> list = new ArrayList<>();
+    public Flowable<List<CurrencyCardItem>> getCurrencyItemCards() {
+        return Flowable.fromCallable(() -> {
+                    List<CurrencyCardItem> list = new ArrayList<>();
 
-            for (SupportedCurrencyType currencyType : SupportedCurrencyType.values()){
-                if (infoDrivers.containsKey(currencyType)){
-                    CurrencyInfoDriver driver = infoDrivers.get(currencyType);
+                    for (SupportedCurrencyType currencyType : SupportedCurrencyType.values()){
+                        if (infoDrivers.containsKey(currencyType)){
+                            CurrencyInfoDriver driver = infoDrivers.get(currencyType);
 
-                    CurrencyCardItem item = new CurrencyCardItem();
-                    item.setAddress(driver.getAddress());
-                    item.setBalance(driver.getBalance());
-                    item.setTitleString(driver.getTitle());
-                    item.setPrecision(driver.getPrecision());
-                    item.setBackgroundLogoResource(driver.getBackgroundLogoResource());
-                    list.add(item);
-                }
+                            CurrencyCardItem item = new CurrencyCardItem();
+                            item.setAddress(driver.getAddress());
+                            item.setBalance(driver.getBalance());
+                            item.setTitleString(driver.getTitle());
+                            item.setPrecision(driver.getPrecision());
+                            item.setBackgroundLogoResource(driver.getBackgroundLogoResource());
+                            list.add(item);
+                        }
 
-            }
+                    }
 
-            return list;
-        }).subscribeOn(Schedulers.computation());
+                    return list;
+                })
+                .subscribeOn(Schedulers.computation());
     }
 
     public void logout() {

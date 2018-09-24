@@ -41,7 +41,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
         Disposable subscribe = accountInteractor
                 .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess((cards) -> getViewState().showCurrencyCards(cards))
+                .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
                 .doOnError((error) -> router.showSystemMessage(error.getMessage()))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
