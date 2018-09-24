@@ -14,7 +14,7 @@ import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -143,7 +143,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         if (currentChat == null){return;}
 
         try {
-            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
+            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(message, messageFactory);
             chatsStorage.addMessageToChat(messageEntity);
 
@@ -175,7 +175,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void onChangeMessageText(String text) {
         //TODO: You need to navigate by the type of message that is being edited
         try {
-            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageTypes.ADAMANT_BASIC);
+            AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(text, messageFactory);
 
             long cost = messageFactory.getMessageProcessor().calculateMessageCostInAdamant(messageEntity);

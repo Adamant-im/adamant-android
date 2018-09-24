@@ -27,17 +27,22 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.WalletPresenter;
+import im.adamant.android.ui.adapters.CurrencyCardAdapter;
+import im.adamant.android.ui.custom_view.ShadowTransformer;
+import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -54,6 +59,9 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Inject
     Provider<WalletPresenter> presenterProvider;
 
+    @Inject
+    CurrencyCardAdapter adapter;
+
     //--Moxy
     @InjectPresenter
     WalletPresenter presenter;
@@ -63,17 +71,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.fragment_wallet_tv_adamant_id) TextView adamantAddressView;
-    @BindView(R.id.fragment_wallet_tv_adamant_balance) TextView adamantBalanceView;
-    @BindView(R.id.fragment_wallet_cl_free_tokens) View freeTokenButton;
-    @BindView(R.id.fragment_wallet_cl_adamant_id) View copyAdamantAddressButton;
-    @BindView(R.id.fragment_wallet_cl_exit) View exitButton;
-    @BindView(R.id.fragment_wallet_cl_create_qr_code) View createQrCodeButton;
+    @BindView(R.id.fragment_wallet_vp_swipe_slider)
+    ViewPager slider;
 
     public WalletScreen() {
         // Required empty public constructor
     }
-
 
     @Override
     public int getLayoutId() {
@@ -83,72 +86,41 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+        ShadowTransformer transformer = new ShadowTransformer(slider, adapter);
+        slider.setAdapter(adapter);
+        slider.setPageTransformer(false, transformer);
+        slider.setOffscreenPageLimit(3);
 
-        freeTokenButton.setOnClickListener((v) -> {
-            presenter.onClickGetFreeTokenButton();
-        });
+//        //Do not use the presenter in order to avoid duplication of operations when switching fragments.
+//        copyAdamantAddressButton.setOnClickListener((v) -> {
+//            Activity activity = getActivity();
+//            if (activity != null){
+//                ClipData clip = ClipData.newPlainText("addressView", adamantAddressView.getText().toString());
+//                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
+//
+//                if(clipboard != null){
+//                    clipboard.setPrimaryClip(clip);
+//                    Toast.makeText(activity.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
+//
 
-        //Do not use the presenter in order to avoid duplication of operations when switching fragments.
-        copyAdamantAddressButton.setOnClickListener((v) -> {
-            Activity activity = getActivity();
-            if (activity != null){
-                ClipData clip = ClipData.newPlainText("addressView", adamantAddressView.getText().toString());
-                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(CLIPBOARD_SERVICE);
-
-                if(clipboard != null){
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(activity.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        exitButton.setOnClickListener((v) -> {
-            //VERY IMPORTANT: Do not delete the lock code of the button as this will result in a memory leak and crash the application.
-            exitButton.setEnabled(false);
-            Activity activity = getActivity();
-            if (activity != null){
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder
-                        .setTitle(R.string.dialog_logout_title)
-                        .setMessage(R.string.dialog_logout_message)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            presenter.onClickExitButton();
-                            exitButton.setEnabled(true);
-                        })
-                        .setNegativeButton(android.R.string.cancel, (dialog, which) -> exitButton.setEnabled(true))
-                        .setOnDismissListener(dialogInterface -> exitButton.setEnabled(true))
-                        .show();
-            }
-        });
-
-        createQrCodeButton.setOnClickListener((v) -> {
-            Activity activity = getActivity();
-            if (activity != null){
-                TedPermission.with(activity)
-                        .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-                        .setPermissionListener(permissionlistener)
-                        .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .check();
-            }
-        });
+//
+//        createQrCodeButton.setOnClickListener((v) -> {
+//            Activity activity = getActivity();
+//            if (activity != null){
+//                TedPermission.with(activity)
+//                        .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+//                        .setPermissionListener(permissionlistener)
+//                        .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                        .check();
+//            }
+//        });
 
         return view;
     }
 
-    @Override
-    public void displayAdamantAddress(String address) {
-        adamantAddressView.setText(address);
-    }
-
-    @Override
-    public void displayAdamantBalance(BigDecimal balance) {
-        adamantBalanceView.setText(String.format(Locale.ENGLISH, "%.3f", balance));
-    }
-
-    @Override
-    public void displayFreeTokenPageButton() {
-        freeTokenButton.setVisibility(View.VISIBLE);
-    }
 
     PermissionListener permissionlistener = new PermissionListener() {
         @Override
@@ -157,7 +129,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             if (activity != null){
                 File qrCodeFile = qrCodeHelper.makeImageFile("address_");
                 try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                    QRCode.from("adm:" + adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
+//                    QRCode.from("adm:" + adamantAddressView.getText().toString()).to(ImageType.PNG).writeTo(stream);
                     qrCodeHelper.registerImageInGallery(activity, qrCodeFile);
                 }catch (Exception ex){
                     ex.printStackTrace();
@@ -171,4 +143,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
         }
     };
 
+    @Override
+    public void showCurrencyCards(List<CurrencyCardItem> currencyCardItems) {
+        adapter.addCardItems(currencyCardItems);
+    }
 }

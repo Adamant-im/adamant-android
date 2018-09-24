@@ -25,8 +25,8 @@
     <string name="bottom_menu_title_chats">Chats</string>
     <string name="bottom_menu_title_settings">Settings</string>
 
-    <string name="fragment_wallet_adamant_address_title">ADAMANT address</string>
-    <string name="fragment_wallet_adamant_balance_title">ADAMANT balance</string>
+    <string name="fragment_wallet_address_title">Number</string>
+    <string name="fragment_wallet_balance_title">Balance</string>
     <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Create QR code of your address</string>
     <string name="fragment_wallet_exit_title">Exit</string>
@@ -74,7 +74,7 @@
     <string name="hello_message_baunty"><p>Welcome to ADAMANT, the most secure and anonymous messenger. Remember, your security and anonymity is up to you also. Do not follow links you receive, otherwise your IP can be compromised. Do not trust browser extensions. Better to share your ADM address personally, but not using other messengers. Keep your secret passphrase secure. Set a password on your device or logout before leaving.</p><p>Learn more about security and anonymity at <a href="https://adamant.im/staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>All the transactions within the blockchain do need to have their minimal fees. This is necessary to support the network infrastructure. To start messengning now, <b>get free tokens</b> — go to Wallet tab and click Free ADM tokens. Then click Start new chat on Chats tab and put your interlocutor\'s address. To copy your address, click on ADAMANT address on Wallet tab.</p><p>Do not reply to this message, it is a system account. If you still have any questions, contact account U15677078342684640219.</p></string>
 
     <!--LOCALIZED URLS-->
-    <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
+    <string name="free_token_url">https://adamant.im/free-adm-tokens/?wallet=</string>
 
 
     <!--STATUSES-->
@@ -89,4 +89,5 @@
     <string name="no">No</string>
     <string name="warning">Warning</string>
     <string name="adm_currency_abbr">ADM</string>
+    <string name="copy">Copy</string>
 </resources>

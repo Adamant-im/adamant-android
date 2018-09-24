@@ -13,7 +13,7 @@ import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 
 public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     private ImageView processedView;
@@ -36,7 +36,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     public void bind(AbstractMessage message) {
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageTypes.FALLBACK){
+            if (message.getSupportedType() != SupportedMessageType.FALLBACK){
                 emptyView();
                 return;
             }

@@ -38,31 +38,18 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     public void attachView(WalletView view) {
         super.attachView(view);
 
-        getViewState().displayAdamantAddress(accountInteractor.getAdamantAddress());
-
         Disposable subscribe = accountInteractor
-                .getAdamantBalance()
+                .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext((balance) -> {
-                    getViewState().displayAdamantBalance(balance);
-
-                    //TODO: With such a check, there will be an error when the user who has spent money will be asked to receive more.
-                    if (BigDecimal.ZERO.compareTo(balance) == 0){
-                        getViewState().displayFreeTokenPageButton();
-                    }
-                })
+                .doOnSuccess((cards) -> getViewState().showCurrencyCards(cards))
                 .doOnError((error) -> router.showSystemMessage(error.getMessage()))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
         subscriptions.add(subscribe);
 
-
     }
 
-    public void onClickGetFreeTokenButton() {
-        router.navigateTo(WalletView.SHOW_FREE_TOKEN_PAGE, accountInteractor.getAdamantAddress());
-    }
 
     public void onClickExitButton() {
         accountInteractor.logout();

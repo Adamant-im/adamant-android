@@ -4,16 +4,8 @@ import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;
 
 import im.adamant.android.Screens;
-import im.adamant.android.core.responses.TransactionWasProcessed;
-import im.adamant.android.helpers.Settings;
-import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
-import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
-import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
-import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.MainView;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState

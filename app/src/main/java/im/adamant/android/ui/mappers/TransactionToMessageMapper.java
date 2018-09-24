@@ -14,7 +14,7 @@ import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -108,25 +108,25 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         return decryptedMessage;
     }
 
-    private SupportedMessageTypes detectMessageType(Transaction transaction, String decryptedMessage) {
+    private SupportedMessageType detectMessageType(Transaction transaction, String decryptedMessage) {
         TransactionMessage transactionMessage = getTransactionMessage(transaction);
 
         if (transactionMessage != null){
             switch (transactionMessage.getType()){
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
-                    return SupportedMessageTypes.ADAMANT_BASIC;
+                    return SupportedMessageType.ADAMANT_BASIC;
                 }
                 case TransactionMessage.RICH_MESSAGE_TYPE: {
                     String richType = getRichType(decryptedMessage);
                     switch (richType){
                         case "eth_transaction":
-                          return SupportedMessageTypes.ETHEREUM_TRANSFER;
+                          return SupportedMessageType.ETHEREUM_TRANSFER;
                     }
                 }
             }
         }
 
-        return SupportedMessageTypes.FALLBACK;
+        return SupportedMessageType.FALLBACK;
     }
 
     private String getRichType(String decryptedMessage) {

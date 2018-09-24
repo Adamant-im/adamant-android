@@ -13,7 +13,7 @@ import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
@@ -45,7 +45,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
 
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageTypes.ADAMANT_BASIC){
+            if (message.getSupportedType() != SupportedMessageType.ADAMANT_BASIC){
                 emptyView();
                 return;
             }

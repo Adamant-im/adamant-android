@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
@@ -38,7 +38,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHol
     public AbstractMessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         try {
             MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(
-                    SupportedMessageTypes.values()[viewType]
+                    SupportedMessageType.values()[viewType]
             );
 
             return messageFactory.getViewHolder(parent);

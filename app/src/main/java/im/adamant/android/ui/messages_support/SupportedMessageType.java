@@ -1,6 +1,6 @@
 package im.adamant.android.ui.messages_support;
 
-public enum SupportedMessageTypes {
+public enum SupportedMessageType {
     ADAMANT_BASIC,
     ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
     ETHEREUM_TRANSFER,

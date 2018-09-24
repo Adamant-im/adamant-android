@@ -3,6 +3,7 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import dagger.multibindings.IntoSet;
 import im.adamant.android.avatars.AvatarCache;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.avatars.AvatarGraphics;
@@ -12,6 +13,10 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.currencies.AdamantCurrencyInfoDriver;
+import im.adamant.android.currencies.CurrencyInfoDriver;
+import im.adamant.android.currencies.EthereumCurrencyInfoDriver;
+import im.adamant.android.currencies.SupportedCurrencyType;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
@@ -52,14 +57,16 @@ import com.goterl.lazycode.lazysodium.SodiumAndroid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
@@ -186,22 +193,22 @@ public abstract class AppModule {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
-                SupportedMessageTypes.ADAMANT_BASIC,
+                SupportedMessageType.ADAMANT_BASIC,
                 new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api)
         );
 
         provider.registerFactory(
-                SupportedMessageTypes.FALLBACK,
+                SupportedMessageType.FALLBACK,
                 new FallbackMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
-                SupportedMessageTypes.ETHEREUM_TRANSFER,
+                SupportedMessageType.ETHEREUM_TRANSFER,
                 new EthereumTransferMessageFactory(adamantAddressProcessor)
         );
 
         provider.registerFactory(
-                SupportedMessageTypes.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
+                SupportedMessageType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
                 new AdamantPushSubscriptionMessageFactory(encryptor, api)
         );
 
@@ -283,9 +290,10 @@ public abstract class AppModule {
     public static AccountInteractor provideAccountInteractor(
             AdamantApiWrapper api,
             Settings settings,
-            ChatsStorage chatsStorage
+            ChatsStorage chatsStorage,
+            Set<CurrencyInfoDriver> infoDrivers
     ) {
-        return new AccountInteractor(api, settings, chatsStorage);
+        return new AccountInteractor(api, settings, chatsStorage, infoDrivers);
     }
 
     @Singleton
@@ -367,6 +375,20 @@ public abstract class AppModule {
     @Provides
     public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage, KvsHelper kvsHelper) {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
+    }
+
+    @IntoSet
+    @Singleton
+    @Provides
+    public static CurrencyInfoDriver provideAdamantInfoDriver(AdamantApiWrapper api) {
+        return new AdamantCurrencyInfoDriver(api);
+    }
+
+    @IntoSet
+    @Singleton
+    @Provides
+    public static CurrencyInfoDriver provideEthereumInfoDriver() {
+        return new EthereumCurrencyInfoDriver();
     }
 
     //--Activities

@@ -202,13 +202,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     }
                     break;
 
-                    case WalletView.SHOW_FREE_TOKEN_PAGE : {
-                        String url = getString(R.string.free_token_url) + forward.getTransitionData();
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(browserIntent);
-                    }
-                    break;
-
                     case Screens.SPLASH_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                         startActivity(intent);

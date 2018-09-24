@@ -6,10 +6,10 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 import java.util.Objects;
 
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageType;
 
 public abstract class AbstractMessage implements Serializable, Comparable<AbstractMessage> {
-    private SupportedMessageTypes supportedType = SupportedMessageTypes.UNDEFINED;
+    private SupportedMessageType supportedType = SupportedMessageType.UNDEFINED;
     private boolean iSay;
     private long date;
     private boolean processed;
@@ -63,11 +63,11 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
         this.companionId = companionId;
     }
 
-    public SupportedMessageTypes getSupportedType() {
+    public SupportedMessageType getSupportedType() {
         return supportedType;
     }
 
-    public void setSupportedType(SupportedMessageTypes supportedType) {
+    public void setSupportedType(SupportedMessageType supportedType) {
         this.supportedType = supportedType;
     }
 

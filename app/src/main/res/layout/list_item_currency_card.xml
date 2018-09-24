@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_currency_card_cv_card"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:contentPadding="20dp"
+    app:cardCornerRadius="10dp"
+    app:cardUseCompatPadding="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/list_item_currency_card_tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/list_item_currency_card_tv_balance_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/fragment_wallet_balance_title"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/list_item_currency_card_tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_currency_card_tv_title" />
+
+        <TextView
+            android:id="@+id/list_item_currency_card_tv_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="TextView"
+            android:textColor="@android:color/black"
+            app:layout_constraintStart_toStartOf="@+id/list_item_currency_card_tv_balance_title"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_currency_card_tv_balance_title" />
+
+        <TextView
+            android:id="@+id/list_item_currency_card_tv_address_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/fragment_wallet_address_title"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/list_item_currency_card_tv_balance"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_currency_card_tv_balance" />
+
+        <TextView
+            android:id="@+id/list_item_currency_card_tv_address"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:maxLines="3"
+            android:text="TextView"
+            android:textColor="@android:color/black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/list_item_currency_btn_copy"
+            app:layout_constraintStart_toStartOf="@+id/list_item_currency_card_tv_address_title"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_currency_card_tv_address_title" />
+
+        <Button
+            android:id="@+id/list_item_currency_btn_copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/copy"
+            app:layout_constraintBottom_toBottomOf="@+id/list_item_currency_card_tv_address"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/list_item_currency_card_tv_address" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

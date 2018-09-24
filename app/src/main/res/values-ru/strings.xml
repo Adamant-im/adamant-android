@@ -26,8 +26,8 @@
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
 
-    <string name="fragment_wallet_adamant_address_title">Кошелек ADAMANT</string>
-    <string name="fragment_wallet_adamant_balance_title">Баланс ADM</string>
+    <string name="fragment_wallet_address_title">Номер</string>
+    <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать свой QR-код</string>
     <string name="fragment_wallet_exit_title">Выход</string>
@@ -89,4 +89,5 @@
     <string name="no">Нет</string>
     <string name="warning">Предупреждение</string>
     <string name="adm_currency_abbr">ADM</string>
+    <string name="copy">Копировать</string>
 </resources>
