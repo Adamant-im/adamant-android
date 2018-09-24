@@ -3,6 +3,7 @@ package im.adamant.android.ui.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -89,10 +90,12 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         TextView titleView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_title);
         TextView balanceView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_balance);
         TextView addressView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_address);
+        ImageView backgroundLogoView = (ImageView) view.findViewById(R.id.list_item_currency_card_background_logo);
 
         titleView.setText(item.getTitleString());
         balanceView.setText(String.format(Locale.ENGLISH, "%." + item.getPrecision() + "f", item.getBalance()));
         addressView.setText(item.getAddress());
+        backgroundLogoView.setImageResource(item.getBackgroundLogoResource());
     }
 
 }

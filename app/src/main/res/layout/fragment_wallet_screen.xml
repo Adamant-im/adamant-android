@@ -11,7 +11,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragment_wallet_vp_swipe_slider"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="bottom"
         android:clipToPadding="false"
         android:overScrollMode="never"
@@ -20,6 +20,8 @@
         android:paddingEnd="@dimen/fragment_wallet_card_padding"
         android:paddingRight="@dimen/fragment_wallet_card_padding"
         android:paddingBottom="30dp"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.50"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

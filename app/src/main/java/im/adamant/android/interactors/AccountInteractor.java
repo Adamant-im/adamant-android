@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.currencies.CurrencyInfoDriver;
+import im.adamant.android.currencies.SupportedCurrencyType;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.Settings;
@@ -22,13 +24,13 @@ public class AccountInteractor {
     private AdamantApiWrapper api;
     private Settings settings;
     private ChatsStorage chatsStorage;
-    private Set<CurrencyInfoDriver> infoDrivers;
+    private Map<SupportedCurrencyType, CurrencyInfoDriver> infoDrivers;
 
     public AccountInteractor(
             AdamantApiWrapper api,
             Settings settings,
             ChatsStorage chatsStorage,
-            Set<CurrencyInfoDriver> infoDrivers
+            Map<SupportedCurrencyType, CurrencyInfoDriver> infoDrivers
     ) {
         this.api = api;
         this.settings = settings;
@@ -54,14 +56,20 @@ public class AccountInteractor {
     public Single<List<CurrencyCardItem>> getCurrencyItemCards() {
         return Single.fromCallable(() -> {
             List<CurrencyCardItem> list = new ArrayList<>();
-            for(CurrencyInfoDriver infoDriver : infoDrivers){
-                CurrencyCardItem item = new CurrencyCardItem();
-                item.setAddress(infoDriver.getAddress());
-                item.setBalance(infoDriver.getBalance());
-                item.setTitleString(infoDriver.getTitle());
-                item.setPrecision(infoDriver.getPrecision());
 
-                list.add(item);
+            for (SupportedCurrencyType currencyType : SupportedCurrencyType.values()){
+                if (infoDrivers.containsKey(currencyType)){
+                    CurrencyInfoDriver driver = infoDrivers.get(currencyType);
+
+                    CurrencyCardItem item = new CurrencyCardItem();
+                    item.setAddress(driver.getAddress());
+                    item.setBalance(driver.getBalance());
+                    item.setTitleString(driver.getTitle());
+                    item.setPrecision(driver.getPrecision());
+                    item.setBackgroundLogoResource(driver.getBackgroundLogoResource());
+                    list.add(item);
+                }
+
             }
 
             return list;

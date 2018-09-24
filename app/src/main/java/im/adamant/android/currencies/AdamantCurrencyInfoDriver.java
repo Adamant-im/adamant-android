@@ -2,6 +2,7 @@ package im.adamant.android.currencies;
 
 import java.math.BigDecimal;
 
+import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.BalanceConvertHelper;
 
@@ -32,7 +33,7 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
     }
 
     @Override
-    public String getCurrencyType() {
+    public SupportedCurrencyType getCurrencyType() {
         return SupportedCurrencyType.ADM;
     }
 
@@ -44,5 +45,10 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
     @Override
     public int getPrecision() {
         return 3;
+    }
+
+    @Override
+    public int getBackgroundLogoResource() {
+        return R.drawable.ic_adm_line;
     }
 }

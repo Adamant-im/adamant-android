@@ -3,6 +3,7 @@ package im.adamant.android.dagger;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import dagger.multibindings.IntoMap;
 import dagger.multibindings.IntoSet;
 import im.adamant.android.avatars.AvatarCache;
 import im.adamant.android.avatars.AvatarGenerator;
@@ -17,6 +18,7 @@ import im.adamant.android.currencies.AdamantCurrencyInfoDriver;
 import im.adamant.android.currencies.CurrencyInfoDriver;
 import im.adamant.android.currencies.EthereumCurrencyInfoDriver;
 import im.adamant.android.currencies.SupportedCurrencyType;
+import im.adamant.android.currencies.SupportedCurrencyTypeKey;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
@@ -57,6 +59,7 @@ import com.goterl.lazycode.lazysodium.SodiumAndroid;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import javax.inject.Named;
@@ -291,7 +294,7 @@ public abstract class AppModule {
             AdamantApiWrapper api,
             Settings settings,
             ChatsStorage chatsStorage,
-            Set<CurrencyInfoDriver> infoDrivers
+            Map<SupportedCurrencyType, CurrencyInfoDriver> infoDrivers
     ) {
         return new AccountInteractor(api, settings, chatsStorage, infoDrivers);
     }
@@ -377,14 +380,16 @@ public abstract class AppModule {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
     }
 
-    @IntoSet
+    @IntoMap
+    @SupportedCurrencyTypeKey(SupportedCurrencyType.ADM)
     @Singleton
     @Provides
     public static CurrencyInfoDriver provideAdamantInfoDriver(AdamantApiWrapper api) {
         return new AdamantCurrencyInfoDriver(api);
     }
 
-    @IntoSet
+    @IntoMap
+    @SupportedCurrencyTypeKey(SupportedCurrencyType.ETH)
     @Singleton
     @Provides
     public static CurrencyInfoDriver provideEthereumInfoDriver() {
