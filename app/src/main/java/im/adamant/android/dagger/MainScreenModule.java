@@ -9,6 +9,8 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.R;
+import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
@@ -63,8 +65,10 @@ public abstract class MainScreenModule {
     @Provides
     public static MainPresenter provideMainPresenter(
             Router router,
+            AccountInteractor accountInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
             @Named("main") CompositeDisposable compositeDisposable
     ){
-        return new MainPresenter(router, compositeDisposable);
+        return new MainPresenter(router, accountInteractor, refreshChatsInteractor, compositeDisposable);
     }
 }

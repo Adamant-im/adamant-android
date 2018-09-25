@@ -29,6 +29,7 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
     public void addCardItems(List<CurrencyCardItem> items){
         if (items != null){
             this.items = items;
+            //TODO: Refactor this. Loop calls every 6 seconds
             for (int i = 0; i < views.size(); i++) {
                 bind(items.get(i), views.get(i));
             }

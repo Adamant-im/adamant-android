@@ -1,5 +1,6 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
@@ -24,6 +26,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.presenters.MainPresenter;
 import ru.terrakok.cicerone.Router;
 
 public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
@@ -33,6 +36,9 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
     @Inject
     AdamantApiWrapper api;
+
+    @Inject
+    MainPresenter mainPresenter;
 
     @Inject
     AvatarGenerator avatarGenerator;
@@ -87,15 +93,33 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             switch (menuItem.getItemId()){
                 case R.id.navigation_chats: {
-                    router.navigateTo(Screens.CHATS_SCREEN);
+                    mainPresenter.onSelectedChatsScreen();
                 }
                 break;
                 case R.id.navigation_wallet: {
-                    router.navigateTo(Screens.WALLET_SCREEN);
+                    mainPresenter.onSelectedWalletScreen();
                 }
                 break;
                 case R.id.navigation_settings: {
-                    router.navigateTo(Screens.SETTINGS_SCREEN);
+                    mainPresenter.onSelectedSettingsScreen();
+                }
+                break;
+                case R.id.navigation_exit: {
+                    //VERY IMPORTANT: Do not delete the lock code of the button as this will result in a memory leak and crash the application.
+                    menuItem.setEnabled(false);
+                    Activity activity = getActivity();
+                    if (activity != null){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                        builder
+                                .setTitle(R.string.dialog_logout_title)
+                                .setMessage(R.string.dialog_logout_message)
+                                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                                    mainPresenter.onClickExitButton();
+                                    menuItem.setEnabled(true);
+                                })
+                                .setNegativeButton(android.R.string.cancel, (dialog, which) -> menuItem.setEnabled(true))
+                                .show();
+                    }
                 }
                 break;
             }

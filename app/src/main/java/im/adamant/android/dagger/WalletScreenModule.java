@@ -20,10 +20,9 @@ public class WalletScreenModule {
     public WalletPresenter provideWalletPresenter(
             Router router,
             AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
             @Named(value = Screens.WALLET_SCREEN) CompositeDisposable subscriptions
     ){
-        return new WalletPresenter(router, accountInteractor, refreshChatsInteractor, subscriptions);
+        return new WalletPresenter(router, accountInteractor, subscriptions);
     }
 
     @FragmentScope

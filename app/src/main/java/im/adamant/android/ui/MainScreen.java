@@ -186,7 +186,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         MainScreen.this.finish();
                     }
                     break;
-
+                    //TODO: View pager must be replaced on FrameLayout
                     case Screens.WALLET_SCREEN: {
                         content.setCurrentItem(0);
                     }

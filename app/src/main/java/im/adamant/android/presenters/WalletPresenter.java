@@ -20,17 +20,14 @@ import ru.terrakok.cicerone.Router;
 public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
     private AccountInteractor accountInteractor;
-    private RefreshChatsInteractor refreshChatsInteractor;
 
     public WalletPresenter(
             Router router,
             AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
             CompositeDisposable subscription
     ) {
         super(subscription);
         this.accountInteractor = accountInteractor;
-        this.refreshChatsInteractor = refreshChatsInteractor;
         this.router = router;
     }
 
@@ -50,11 +47,5 @@ public class WalletPresenter extends BasePresenter<WalletView> {
 
     }
 
-
-    public void onClickExitButton() {
-        accountInteractor.logout();
-        refreshChatsInteractor.cleanUp();
-        router.navigateTo(Screens.LOGIN_SCREEN);
-    }
 
 }

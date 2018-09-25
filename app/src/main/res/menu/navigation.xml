@@ -16,4 +16,8 @@
         android:icon="@drawable/ic_settings"
         android:title="@string/bottom_menu_title_settings" />
 
+    <item
+        android:id="@+id/navigation_exit"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="@string/fragment_wallet_exit_title"/>
 </menu>
