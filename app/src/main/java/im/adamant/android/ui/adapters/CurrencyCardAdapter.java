@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.PagerAdapter;
 import im.adamant.android.R;
@@ -90,6 +91,18 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         views.set(position, null);
     }
 
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        String title = "";
+        CurrencyCardItem currencyCardItem = items.get(position);
+        if (currencyCardItem != null){
+            title = currencyCardItem.getAbbreviation();
+        }
+        return title;
+    }
+
+    //TODO: Maybe use ViewHolder
     private void bind(CurrencyCardItem item, View view) {
         TextView titleView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_title);
         TextView balanceView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_balance);

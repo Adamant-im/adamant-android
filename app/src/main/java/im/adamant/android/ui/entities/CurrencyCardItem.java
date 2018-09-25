@@ -9,6 +9,7 @@ public class CurrencyCardItem {
     private int titleResource;
     private int backgroundLogoResource;
     private int precision;
+    private String abbreviation;
 
     public BigDecimal getBalance() {
         return balance;
@@ -56,5 +57,13 @@ public class CurrencyCardItem {
 
     public void setPrecision(int precision) {
         this.precision = precision;
+    }
+
+    public String getAbbreviation() {
+        return abbreviation;
+    }
+
+    public void setAbbreviation(String abbreviation) {
+        this.abbreviation = abbreviation;
     }
 }

@@ -67,6 +67,7 @@ public class AccountInteractor {
                             item.setTitleString(driver.getTitle());
                             item.setPrecision(driver.getPrecision());
                             item.setBackgroundLogoResource(driver.getBackgroundLogoResource());
+                            item.setAbbreviation(currencyType.name());
                             list.add(item);
                         }
 
