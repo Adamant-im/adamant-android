@@ -8,34 +8,42 @@
     android:background="@drawable/tile_bg"
     tools:context=".ui.fragments.WalletScreen">
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/fragment_wallet_tab_sliding_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragment_wallet_vp_swipe_slider"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="286dp"
         android:layout_gravity="bottom"
+        android:layout_marginTop="8dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingStart="@dimen/fragment_wallet_card_padding"
         android:paddingLeft="@dimen/fragment_wallet_card_padding"
         android:paddingEnd="@dimen/fragment_wallet_card_padding"
         android:paddingRight="@dimen/fragment_wallet_card_padding"
-        android:paddingBottom="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.60"
+        app:layout_constraintHeight_percent="0.46"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_tab_sliding_tabs">
 
-        <androidx.viewpager.widget.PagerTabStrip
-            android:id="@+id/fragment_wallet_pts_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:backgroundTint="@color/colorPrimaryDark"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:textColor="@color/colorPrimaryDark" />
+        <!--<androidx.viewpager.widget.PagerTabStrip-->
+        <!--android:id="@+id/fragment_wallet_pts_tabs"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="top"-->
+        <!--android:backgroundTint="@color/colorPrimaryDark"-->
+        <!--android:paddingTop="15dp"-->
+        <!--android:paddingBottom="15dp"-->
+        <!--android:textColor="@color/colorPrimaryDark" />-->
 
     </androidx.viewpager.widget.ViewPager>
 

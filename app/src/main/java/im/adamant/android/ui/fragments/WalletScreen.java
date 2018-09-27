@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.tabs.TabLayout;
 import com.gun0912.tedpermission.PermissionListener;
 
 import java.io.File;
@@ -65,11 +66,9 @@ public class WalletScreen extends BaseFragment implements WalletView {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.fragment_wallet_vp_swipe_slider)
-    ViewPager slider;
-
-    @BindView(R.id.fragment_wallet_rv_last_transactions)
-    RecyclerView lastTransactions;
+    @BindView(R.id.fragment_wallet_tab_sliding_tabs) TabLayout tabs;
+    @BindView(R.id.fragment_wallet_vp_swipe_slider) ViewPager slider;
+    @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -91,11 +90,6 @@ public class WalletScreen extends BaseFragment implements WalletView {
         slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
                 CurrencyCardItem item = currencyCardAdapter.getItem(position);
                 if (item != null){
                     presenter.onSelectCurrencyCard(item);
@@ -103,10 +97,17 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
 
             @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
             public void onPageScrollStateChanged(int state) {
 
             }
         });
+
+        tabs.setupWithViewPager(slider);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
