@@ -13,6 +13,7 @@ public class CurrencyTransferEntity {
     private int precision;
     private Direction direction;
     private String currencyAbbreviation;
+    private String contactName;
 
     public String getAddress() {
         return address;
@@ -52,5 +53,13 @@ public class CurrencyTransferEntity {
 
     public void setPrecision(int precision) {
         this.precision = precision;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
     }
 }

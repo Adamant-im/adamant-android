@@ -385,10 +385,14 @@ public abstract class AppModule {
     @SupportedCurrencyTypeKey(SupportedCurrencyType.ADM)
     @Singleton
     @Provides
-    public static CurrencyInfoDriver provideAdamantInfoDriver(AdamantApiWrapper api) {
-        return new AdamantCurrencyInfoDriver(api);
+    public static CurrencyInfoDriver provideAdamantInfoDriver(AdamantApiWrapper api, ChatsStorage chatStorage) {
+        AdamantCurrencyInfoDriver driver = new AdamantCurrencyInfoDriver(api);
+        driver.setChatStorage(chatStorage);
+
+        return driver;
     }
 
+    //TODO: Don't forget inject ChatStorage
     @IntoMap
     @SupportedCurrencyTypeKey(SupportedCurrencyType.ETH)
     @Singleton

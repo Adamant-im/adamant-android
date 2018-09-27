@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.ChatsStorage;
 import io.reactivex.Single;
 
 public class BinanceCoinInfoDriver implements CurrencyInfoDriver {
@@ -36,6 +37,11 @@ public class BinanceCoinInfoDriver implements CurrencyInfoDriver {
     @Override
     public int getBackgroundLogoResource() {
         return R.drawable.ic_bnb_line;
+    }
+
+    @Override
+    public void setChatStorage(ChatsStorage chatStorage) {
+
     }
 
     @Override

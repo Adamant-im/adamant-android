@@ -10,12 +10,15 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
+import im.adamant.android.ui.entities.Chat;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
     private AdamantApiWrapper api;
+    private ChatsStorage chatsStorage;
 
     public AdamantCurrencyInfoDriver(AdamantApiWrapper api) {
         this.api = api;
@@ -61,6 +64,11 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
     }
 
     @Override
+    public void setChatStorage(ChatsStorage chatStorage) {
+        this.chatsStorage = chatStorage;
+    }
+
+    @Override
     public Single<List<CurrencyTransferEntity>> getLastTransfers() {
         String myAddress = api.getAccount().getAddress();
         return api
@@ -95,11 +103,30 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
                             entity.setAddress(transaction.getRecipientId());
                         }
 
+                        entity.setContactName(getTransferTitle(iRecipient, transaction));
+
                         transfers.add(entity);
                     }
                     return transfers;
                 })
                 .first(new ArrayList<>());
 
+    }
+
+    private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {
+        String title = "";
+        if (chatsStorage == null){ return "";}
+        String address = "";
+        if (iRecipient){
+            address = transaction.getSenderId();
+        } else {
+            address = transaction.getRecipientId();
+        }
+
+        Chat chat = chatsStorage.findChatByCompanionId(address);
+        if (chat != null){
+            title = chat.getTitle();
+        }
+        return title;
     }
 }

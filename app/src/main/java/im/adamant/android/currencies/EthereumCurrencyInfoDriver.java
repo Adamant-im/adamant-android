@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.ChatsStorage;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -37,6 +38,11 @@ public class EthereumCurrencyInfoDriver implements CurrencyInfoDriver {
     @Override
     public int getBackgroundLogoResource() {
         return R.drawable.ic_ethereum_line;
+    }
+
+    @Override
+    public void setChatStorage(ChatsStorage chatStorage) {
+
     }
 
     @Override

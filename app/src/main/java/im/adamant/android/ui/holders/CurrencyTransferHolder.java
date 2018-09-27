@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
     private TextView abbreviationView;
     private TextView addressView;
     private TextView amountView;
+    private TextView titleView;
 
     public CurrencyTransferHolder(@NonNull View itemView, Context context) {
         super(itemView);
@@ -27,11 +30,24 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
         abbreviationView = itemView.findViewById(R.id.list_item_currency_transfer_tv_abbr);
         addressView = itemView.findViewById(R.id.list_item_currency_transfer_tv_address);
         amountView = itemView.findViewById(R.id.list_item_currency_transfer_tv_amount);
+        titleView = itemView.findViewById(R.id.list_item_currency_transfer_tv_title);
     }
 
     public void bind(CurrencyTransferEntity transferEntity) {
         abbreviationView.setText(transferEntity.getCurrencyAbbreviation());
-        addressView.setText(transferEntity.getAddress());
+
+        if (transferEntity.getAddress().equalsIgnoreCase(transferEntity.getContactName())){
+            addressView.setVisibility(View.GONE);
+        } else {
+            addressView.setVisibility(View.VISIBLE);
+            addressView.setText(transferEntity.getAddress());
+        }
+
+        if (transferEntity.getContactName().isEmpty()){
+            titleView.setText(transferEntity.getAddress());
+        } else {
+            titleView.setText(transferEntity.getContactName());
+        }
 
         String amountString = "";
         int amountColor = 0;
