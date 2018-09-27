@@ -11,6 +11,7 @@ import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.currencies.CurrencyInfoDriver;
+import im.adamant.android.currencies.CurrencyTransferEntity;
 import im.adamant.android.currencies.SupportedCurrencyType;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
@@ -60,6 +61,7 @@ public class AccountInteractor {
                     for (SupportedCurrencyType currencyType : SupportedCurrencyType.values()){
                         if (infoDrivers.containsKey(currencyType)){
                             CurrencyInfoDriver driver = infoDrivers.get(currencyType);
+                            if (driver == null){continue;}
 
                             CurrencyCardItem item = new CurrencyCardItem();
                             item.setAddress(driver.getAddress());
@@ -76,6 +78,22 @@ public class AccountInteractor {
                     return list;
                 })
                 .subscribeOn(Schedulers.computation());
+    }
+
+    public Single<List<CurrencyTransferEntity>> getLastTransfersByCurrencyAbbr(String abbreviation) {
+        try {
+            SupportedCurrencyType supportedCurrencyType = SupportedCurrencyType.valueOf(abbreviation);
+            if (infoDrivers.containsKey(supportedCurrencyType)){
+                CurrencyInfoDriver driver = infoDrivers.get(supportedCurrencyType);
+                if (driver == null){return Single.error(new NullPointerException());}
+
+                return driver.getLastTransfers();
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Single.error(new Exception("Not found currency info driver"));
     }
 
     public void logout() {

@@ -54,6 +54,11 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     }
 
+    public CurrencyCardItem getItem(int position) {
+
+        return items.get(position);
+    }
+
     @Override
     public int getCount() {
         return items.size();

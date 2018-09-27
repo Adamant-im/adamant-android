@@ -7,9 +7,9 @@ import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.presenters.WalletPresenter;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
+import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
@@ -44,5 +44,11 @@ public class WalletScreenModule {
     @Provides
     public CurrencyCardAdapter provideCardAdapter() {
         return new CurrencyCardAdapter();
+    }
+
+    @FragmentScope
+    @Provides
+    public CurrencyTransfersAdapter provideCurrencyTransferAdapter() {
+        return new CurrencyTransfersAdapter();
     }
 }

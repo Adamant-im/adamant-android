@@ -15,6 +15,7 @@ import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.currencies.AdamantCurrencyInfoDriver;
+import im.adamant.android.currencies.BinanceCoinInfoDriver;
 import im.adamant.android.currencies.CurrencyInfoDriver;
 import im.adamant.android.currencies.EthereumCurrencyInfoDriver;
 import im.adamant.android.currencies.SupportedCurrencyType;
@@ -394,6 +395,14 @@ public abstract class AppModule {
     @Provides
     public static CurrencyInfoDriver provideEthereumInfoDriver() {
         return new EthereumCurrencyInfoDriver();
+    }
+
+    @IntoMap
+    @SupportedCurrencyTypeKey(SupportedCurrencyType.BNB)
+    @Singleton
+    @Provides
+    public static CurrencyInfoDriver provideBinanceInfoDriver() {
+        return new BinanceCoinInfoDriver();
     }
 
     //--Activities

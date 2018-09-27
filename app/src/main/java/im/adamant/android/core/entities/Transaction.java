@@ -24,7 +24,9 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
     private T asset;
 
     //TODO: maybe not a string
-    private List<String> confirmations;
+//    private List<String> confirmations;
+
+    private long confirmations;
 
     private List<String> signatures;
 
@@ -66,13 +68,18 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         this.asset = asset;
     }
 
-    public List<String> getConfirmations ()
-    {
-        return confirmations;
-    }
+//    public List<String> getConfirmations ()
+//    {
+//        return confirmations;
+//    }
 
-    public void setConfirmations (List<String> confirmations)
-    {
+//    public void setConfirmations (List<String> confirmations)
+//    {
+//        this.confirmations = confirmations;
+//    }
+
+
+    public void setConfirmations(long confirmations) {
         this.confirmations = confirmations;
     }
 

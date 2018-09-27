@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 
-public class EthereumCurrencyInfoDriver implements CurrencyInfoDriver {
+public class BinanceCoinInfoDriver implements CurrencyInfoDriver {
     @Override
     public BigDecimal getBalance() {
         return BigDecimal.ZERO;
@@ -21,12 +20,12 @@ public class EthereumCurrencyInfoDriver implements CurrencyInfoDriver {
 
     @Override
     public SupportedCurrencyType getCurrencyType() {
-        return SupportedCurrencyType.ETH;
+        return SupportedCurrencyType.BNB;
     }
 
     @Override
     public String getTitle() {
-        return "ETHEREUM WALLET";
+        return "BINANCE COIN WALLET";
     }
 
     @Override
@@ -36,7 +35,7 @@ public class EthereumCurrencyInfoDriver implements CurrencyInfoDriver {
 
     @Override
     public int getBackgroundLogoResource() {
-        return R.drawable.ic_ethereum_line;
+        return R.drawable.ic_bnb_line;
     }
 
     @Override

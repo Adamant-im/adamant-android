@@ -2,14 +2,11 @@ package im.adamant.android.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import java.math.BigDecimal;
-import java.sql.Ref;
 import java.util.concurrent.TimeUnit;
 
-import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -20,6 +17,7 @@ import ru.terrakok.cicerone.Router;
 public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
     private AccountInteractor accountInteractor;
+    private Disposable lastTransfersSubscription;
 
     public WalletPresenter(
             Router router,
@@ -47,5 +45,18 @@ public class WalletPresenter extends BasePresenter<WalletView> {
 
     }
 
+    public void onSelectCurrencyCard(CurrencyCardItem cardItem){
 
+        if (lastTransfersSubscription != null) {
+            lastTransfersSubscription.dispose();
+        }
+
+        lastTransfersSubscription = accountInteractor
+                .getLastTransfersByCurrencyAbbr(cardItem.getAbbreviation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess((transfers) -> getViewState().showLastTransfers(transfers))
+                .doOnError((error) -> router.showSystemMessage(error.getMessage()))
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                .subscribe();
+    }
 }

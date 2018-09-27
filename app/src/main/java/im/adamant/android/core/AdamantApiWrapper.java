@@ -10,6 +10,7 @@ import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
@@ -34,6 +35,7 @@ import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Query;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
@@ -185,6 +187,15 @@ public class AdamantApiWrapper {
             int limit
     ) {
         return api.getFromKeyValueStorage(senderId, key, order, limit)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionList<NotUsedAsset>> getAdamantTransactions(int type, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+        return api.getAdamantTransactions(account.getAddress(), type, 1, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
