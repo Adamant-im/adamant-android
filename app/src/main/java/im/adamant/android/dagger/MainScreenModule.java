@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
@@ -54,21 +56,6 @@ public abstract class MainScreenModule {
         return new FragmentsAdapter(mainScreen, holders);
     }
 
-    @ActivityScope
-    @Provides
-    @Named("main")
-    public static CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 
-    @ActivityScope
-    @Provides
-    public static MainPresenter provideMainPresenter(
-            Router router,
-            AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
-            @Named("main") CompositeDisposable compositeDisposable
-    ){
-        return new MainPresenter(router, accountInteractor, refreshChatsInteractor, compositeDisposable);
-    }
+
 }

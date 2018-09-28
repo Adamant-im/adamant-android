@@ -34,7 +34,20 @@ public class MainPresenter extends MvpPresenter<MainView> {
     @Override
     public void attachView(MainView view) {
         super.attachView(view);
-        router.navigateTo(currentWindowCode);
+        switch (currentWindowCode){
+            case Screens.WALLET_SCREEN: {
+                getViewState().showWalletScreen();
+            }
+            break;
+            case Screens.CHATS_SCREEN: {
+                getViewState().showChatsScreen();
+            }
+            break;
+            case Screens.SETTINGS_SCREEN: {
+                getViewState().showSettingsScreen();
+            }
+            break;
+        }
     }
 
     @Override
@@ -46,17 +59,17 @@ public class MainPresenter extends MvpPresenter<MainView> {
 
     public void onSelectedWalletScreen() {
         currentWindowCode = Screens.WALLET_SCREEN;
-        router.navigateTo(currentWindowCode);
+        getViewState().showWalletScreen();
     }
 
     public void onSelectedChatsScreen() {
         currentWindowCode = Screens.CHATS_SCREEN;
-        router.navigateTo(currentWindowCode);
+        getViewState().showChatsScreen();
     }
 
     public void onSelectedSettingsScreen() {
         currentWindowCode = Screens.SETTINGS_SCREEN;
-        router.navigateTo(currentWindowCode);
+        getViewState().showSettingsScreen();
     }
 
     public void onClickExitButton() {

@@ -35,6 +35,7 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -79,6 +80,7 @@ import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.wordlists.English;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Cicerone;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
@@ -461,4 +463,25 @@ public abstract class AppModule {
     @ServiceScope
     @ContributesAndroidInjector(modules = {SaveSettingsServiceModule.class})
     public abstract SaveSettingsService createSaveSettingsService();
+
+
+    //--presenters
+
+    @Singleton
+    @Provides
+    @Named("main")
+    public static CompositeDisposable provideComposite() {
+        return new CompositeDisposable();
+    }
+
+    @Singleton
+    @Provides
+    public static MainPresenter provideMainPresenter(
+            Router router,
+            AccountInteractor accountInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            @Named("main") CompositeDisposable compositeDisposable
+    ){
+        return new MainPresenter(router, accountInteractor, refreshChatsInteractor, compositeDisposable);
+    }
 }

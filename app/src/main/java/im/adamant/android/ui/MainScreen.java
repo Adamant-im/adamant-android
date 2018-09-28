@@ -6,11 +6,13 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -33,6 +35,9 @@ import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
+import im.adamant.android.ui.fragments.ChatsScreen;
+import im.adamant.android.ui.fragments.SettingsScreen;
+import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.mvp_view.MainView;
 import im.adamant.android.ui.mvp_view.WalletView;
 import ru.terrakok.cicerone.Navigator;
@@ -63,11 +68,11 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-    @Named("main")
-    @Inject
-    FragmentsAdapter mainAdapterReference;
+//    @Named("main")
+//    @Inject
+//    FragmentsAdapter mainAdapterReference;
 
-    @BindView(R.id.main_screen_content) ViewPager content;
+    @BindView(R.id.main_screen_content) FrameLayout content;
 //    @BindView(R.id.main_screen_navigation)
 //    BottomNavigationView navigation;
 
@@ -96,29 +101,31 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(appBar);
-
-        content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                setTitle(mainAdapterReference.getPageTitle(position));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        content.setAdapter(mainAdapterReference);
-        setTitle(mainAdapterReference.getPageTitle(0));
     }
 
+    @Override
+    public void showWalletScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_screen_content, new WalletScreen());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
+    @Override
+    public void showChatsScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_screen_content, new ChatsScreen());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    @Override
+    public void showSettingsScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.main_screen_content, new SettingsScreen());
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
 
     @Override
     protected void onResume() {
@@ -186,22 +193,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         MainScreen.this.finish();
                     }
                     break;
-                    //TODO: View pager must be replaced on FrameLayout
-                    case Screens.WALLET_SCREEN: {
-                        content.setCurrentItem(0);
-                    }
-                    break;
-
-                    case Screens.CHATS_SCREEN: {
-                        content.setCurrentItem(1);
-                    }
-                    break;
-
-                    case Screens.SETTINGS_SCREEN: {
-                        content.setCurrentItem(2);
-                    }
-                    break;
-
                     case Screens.SPLASH_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                         startActivity(intent);
