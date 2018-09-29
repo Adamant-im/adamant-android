@@ -48,6 +48,7 @@
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
+    <string name="activity_scan_qrcode_camera_permission_view">Отсутсвует разрешение на доступ к камере</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Важная операция</string>
