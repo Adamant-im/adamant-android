@@ -37,14 +37,14 @@
     </style>
 
 
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
+    <style name="AppTheme.WithActionBar">
+        <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
 
-    <style name="AppTheme.Launcher" parent="AppTheme.NoActionBar">
+    <style name="AppTheme.Launcher" parent="AppTheme.WithActionBar">
         <item name="android:windowBackground">@color/colorPrimary</item>
     </style>
 

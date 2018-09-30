@@ -91,7 +91,7 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
                                         transaction.getAmount()
                                 )
                         );
-                        entity.setCurrencyAbbreviation(SupportedCurrencyType.ADM.name());
+//                        entity.setCurrencyAbbreviation(SupportedCurrencyType.ADM.name());
 
                         boolean iRecipient = myAddress.equalsIgnoreCase(transaction.getRecipientId());
 

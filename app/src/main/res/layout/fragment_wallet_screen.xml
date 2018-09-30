@@ -27,10 +27,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_tab_sliding_tabs" />
 
+    <View
+        android:id="@+id/separator2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorThird"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_vp_swipe_slider" />
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragment_wallet_vp_swipe_slider"
         android:layout_width="match_parent"
-        android:layout_height="286dp"
+        android:layout_height="284dp"
         android:layout_gravity="bottom"
         android:clipToPadding="false"
         android:overScrollMode="never"
@@ -64,6 +73,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_vp_swipe_slider" />
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

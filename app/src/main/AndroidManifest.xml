@@ -29,10 +29,11 @@
         </activity>
         <activity
             android:name=".ui.LoginScreen"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:theme="@style/AppTheme.WithActionBar"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
             android:name=".ui.MessagesScreen"
+            android:theme="@style/AppTheme.WithActionBar"
             android:exported="true">
 
             <!--
@@ -62,7 +63,7 @@
             android:label="@string/activity_scan_qrcode_title" />
         <activity
             android:name=".ui.PinCodeScreen"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.WithActionBar" />
         <activity android:name=".ui.CompanionDetailScreen" />
 
         <service

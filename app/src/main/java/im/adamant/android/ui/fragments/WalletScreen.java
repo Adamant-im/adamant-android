@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -112,6 +113,9 @@ public class WalletScreen extends BaseFragment implements WalletView {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(),
+                ((LinearLayoutManager) layoutManager).getOrientation());
+        lastTransactions.addItemDecoration(dividerItemDecoration);
 
 //        //Do not use the presenter in order to avoid duplication of operations when switching fragments.
 //        copyAdamantAddressButton.setOnClickListener((v) -> {
