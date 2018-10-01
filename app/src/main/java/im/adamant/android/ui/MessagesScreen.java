@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -67,6 +69,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) Button buttonSend;
     @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
+    @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -148,6 +151,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             adapter.updateDataset(
                     messages
             );
+
+            if (messages.size() == 0){
+                emptyView.setVisibility(View.VISIBLE);
+                messagesList.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                messagesList.setVisibility(View.VISIBLE);
+            }
 
             goToLastMessage();
         }

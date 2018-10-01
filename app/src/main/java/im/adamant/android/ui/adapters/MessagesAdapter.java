@@ -2,6 +2,8 @@ package im.adamant.android.ui.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.View;
 import android.view.ViewGroup;
 
 
