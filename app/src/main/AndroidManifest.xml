@@ -29,7 +29,6 @@
         </activity>
         <activity
             android:name=".ui.LoginScreen"
-            android:theme="@style/AppTheme.WithActionBar"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />
         <activity
             android:name=".ui.MessagesScreen"
@@ -54,17 +53,20 @@
         </activity>
         <activity
             android:name=".ui.CreateChatScreen"
+            android:theme="@style/AppTheme.WithActionBar"
             android:exported="false"
             android:label="@string/activity_chats_action_create_new" />
-        <activity android:name=".ui.MainScreen" />
+        <activity
+            android:name=".ui.MainScreen" />
         <activity
             android:name=".ui.ScanQrCodeScreen"
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
         <activity
-            android:name=".ui.PinCodeScreen"
+            android:name=".ui.PinCodeScreen" />
+        <activity
+            android:name=".ui.CompanionDetailScreen"
             android:theme="@style/AppTheme.WithActionBar" />
-        <activity android:name=".ui.CompanionDetailScreen" />
 
         <service
             android:name=".services.ServerNodesPingService"

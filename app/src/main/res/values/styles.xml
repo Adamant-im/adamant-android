@@ -37,9 +37,14 @@
     </style>
 
 
-    <style name="AppTheme.WithActionBar">
+    <style name="AppTheme.WithActionBar" parent="Theme.MaterialComponents.Light">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">true</item>
+        <item name="windowNoTitle">false</item>
+        <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
+        <item name="materialButtonStyle">@style/AppTheme.Button</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
