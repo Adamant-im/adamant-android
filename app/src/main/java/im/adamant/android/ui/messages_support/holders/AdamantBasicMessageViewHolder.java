@@ -10,34 +10,67 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.adamant.android.R;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageType;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
-import com.github.curioustechizen.ago.RelativeTimeTextView;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 
 public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
+    private final static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+
+    private int parentPadding;
+    private int avatarMargin;
+    private float avatarSize;
+
     private ImageView processedView;
     private TextView messageView;
-    private RelativeTimeTextView dateView;
+    private TextView timeView;
+    private View avatarBlockView;
+    private View messageBlockView;
+    private ImageView avatarView;
+
     private ConstraintLayout constraintLayout;
     private ConstraintSet constraintSet = new ConstraintSet();
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     private AdamantAddressProcessor adamantAddressProcessor;
+    private AvatarGenerator avatarGenerator;
 
-
-    public AdamantBasicMessageViewHolder(Context context, View itemView, AdamantAddressProcessor adamantAddressProcessor) {
+    public AdamantBasicMessageViewHolder(
+            Context context,
+            View itemView,
+            AdamantAddressProcessor adamantAddressProcessor,
+            AvatarGenerator avatarGenerator
+    ) {
         super(context, itemView);
         this.adamantAddressProcessor = adamantAddressProcessor;
+        this.avatarGenerator = avatarGenerator;
 
         constraintLayout = itemView.findViewById(R.id.message_item);
         TransitionManager.beginDelayedTransition(constraintLayout);
         constraintSet.clone(constraintLayout);
+
+        parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
+        avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
+        avatarSize = context.getResources().getDimension(R.dimen.list_item_avatar_size);
+
+        avatarBlockView = itemView.findViewById(R.id.list_item_message_avatar_block);
+        messageBlockView = itemView.findViewById(R.id.list_item_message_card);
+
+        avatarView = itemView.findViewById(R.id.list_item_message_avatar);
         processedView = itemView.findViewById(R.id.list_item_message_processed);
         messageView = itemView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
-        dateView = itemView.findViewById(R.id.list_item_message_date);
+        timeView = itemView.findViewById(R.id.list_item_message_time);
     }
 
     @Override
@@ -56,7 +89,29 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
                 basicMessage.getHtmlText(adamantAddressProcessor)
             );
 
-            dateView.setReferenceTime(message.getDate());
+            if (basicMessage.getAvatar() == null){
+                if (basicMessage.getOwnerPublicKey() != null){
+                    Disposable avatarSubscription = avatarGenerator
+                            .buildAvatar(basicMessage.getOwnerPublicKey(), avatarSize, context, true)
+                            .subscribe(
+                                    bitmap -> {
+                                        avatarView.setImageBitmap(bitmap);
+                                        basicMessage.setAvatar(bitmap);
+                                    },
+                                    error -> {
+                                        LoggerHelper.e("chatHolder", error.getMessage(), error);
+                                    }
+                            );
+                    compositeDisposable.add(avatarSubscription);
+                } else {
+                    avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
+                }
+            } else {
+                avatarView.setImageBitmap(basicMessage.getAvatar());
+            }
+
+            //TODO: Entity must return date
+            timeView.setText(timeFormatter.format(new Date(message.getDate())));
 
             if (message.isProcessed()){
                 processedView.setImageResource(R.drawable.ic_processed);
@@ -76,18 +131,43 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     }
 
     private void iToldLayoutModification(){
-        constraintSet.setHorizontalBias(R.id.cardView, .9f);
-        constraintSet.applyTo(itemView.findViewById(R.id.message_item));
+        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.START);
+        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
+        constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
+        constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
+
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
+
+        constraintSet.applyTo(constraintLayout);
     }
 
     private void companionToldModification(){
-        constraintSet.setHorizontalBias(R.id.cardView, .1f);
-        constraintSet.applyTo(itemView.findViewById(R.id.message_item));
+        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.END);
+
+        constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
+        constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
+
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
+        constraintSet.applyTo(constraintLayout);
     }
 
     private void emptyView() {
         messageView.setText("");
         processedView.setImageResource(R.drawable.ic_not_processed);
-        dateView.setReferenceTime(System.currentTimeMillis());
+        timeView.setText("00:00");
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (compositeDisposable != null){
+            compositeDisposable.dispose();
+            compositeDisposable.clear();
+        }
+        super.finalize();
     }
 }

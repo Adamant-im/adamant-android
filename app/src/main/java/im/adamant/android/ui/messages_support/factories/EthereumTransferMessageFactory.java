@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
@@ -16,9 +17,11 @@ import io.reactivex.exceptions.OnErrorNotImplementedException;
 
 public class EthereumTransferMessageFactory implements MessageFactory<EthereumTransferMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
+    private AvatarGenerator avatarGenerator;
 
-    public EthereumTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor) {
+    public EthereumTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
         this.adamantAddressProcessor = adamantAddressProcessor;
+        this.avatarGenerator = avatarGenerator;
     }
 
     @Override

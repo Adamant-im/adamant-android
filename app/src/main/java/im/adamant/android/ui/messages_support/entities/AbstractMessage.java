@@ -1,6 +1,8 @@
 package im.adamant.android.ui.messages_support.entities;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
@@ -15,6 +17,8 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
     private boolean processed;
     private String transactionId;
     private String companionId;
+    private String ownerPublicKey;
+    private Bitmap avatar;
 
     public AbstractMessage() {
         //This is a temporary identifier so that messages that are not confirmed in the blockchain do not merge into one
@@ -69,6 +73,22 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
 
     public void setSupportedType(SupportedMessageType supportedType) {
         this.supportedType = supportedType;
+    }
+
+    public Bitmap getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Bitmap avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getOwnerPublicKey() {
+        return ownerPublicKey;
+    }
+
+    public void setOwnerPublicKey(String ownerPublicKey) {
+        this.ownerPublicKey = ownerPublicKey;
     }
 
     @Override

@@ -48,7 +48,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
 
             v.setOnClickListener(this);
 
-           avatarSize = context.getResources().getDimension(R.dimen.list_item_chat_avatar_size);
+           avatarSize = context.getResources().getDimension(R.dimen.list_item_avatar_size);
         }
 
         @Override

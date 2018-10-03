@@ -194,23 +194,24 @@ public abstract class AppModule {
     public static MessageFactoryProvider provideMessageFactoryProvider(
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
-            AdamantApiWrapper api
+            AdamantApiWrapper api,
+            AvatarGenerator avatarGenerator
     ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageType.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api)
+                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatarGenerator)
         );
 
         provider.registerFactory(
                 SupportedMessageType.FALLBACK,
-                new FallbackMessageFactory(adamantAddressProcessor)
+                new FallbackMessageFactory(adamantAddressProcessor, avatarGenerator)
         );
 
         provider.registerFactory(
                 SupportedMessageType.ETHEREUM_TRANSFER,
-                new EthereumTransferMessageFactory(adamantAddressProcessor)
+                new EthereumTransferMessageFactory(adamantAddressProcessor, avatarGenerator)
         );
 
         provider.registerFactory(

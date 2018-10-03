@@ -9,72 +9,80 @@
     android:focusableInTouchMode="true"
     android:id="@+id/message_item">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardView"
+    <LinearLayout
+        android:id="@+id/list_item_message_avatar_block"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="@dimen/list_item_message_padding"
-        app:cardElevation="2dp"
+        android:layout_marginStart="16dp"
+        android:orientation="vertical"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/list_item_message_card">
+
+        <ImageView
+            android:id="@+id/list_item_message_avatar"
+            android:layout_width="@dimen/list_item_avatar_size"
+            android:layout_height="@dimen/list_item_avatar_size"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <TextView
+            android:id="@+id/list_item_message_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:text="11:00"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/list_item_message_card"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/list_item_message_avatar_block"
         app:layout_constraintTop_toTopOf="parent">
-
+        <!--TODO: You need to create a general layout for the messages and an additional one: that will define the content.-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:maxWidth="@dimen/list_item_message_bubble_max_width">
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/list_item_message_text"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
                 android:gravity="center_vertical"
                 android:inputType="none"
-                android:maxWidth="@dimen/list_item_message_bubble_content_max_width"
-                android:minWidth="@dimen/list_item_message_bubble_content_min_width"
+                android:linksClickable="true"
                 android:singleLine="false"
                 android:text="TextView"
-                android:linksClickable="true"
                 android:textIsSelectable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.github.curioustechizen.ago.RelativeTimeTextView
-                android:id="@+id/list_item_message_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:gravity="end"
-                android:maxWidth="@dimen/list_item_message_bubble_content_max_width"
-                android:minWidth="@dimen/list_item_message_bubble_content_min_width"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/list_item_message_text" />
-
             <ImageView
                 android:id="@+id/list_item_message_processed"
                 android:layout_width="@dimen/list_item_message_processed"
                 android:layout_height="@dimen/list_item_message_processed"
-                android:layout_marginBottom="5dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_message_text"
                 app:srcCompat="@drawable/ic_not_processed" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
 
+    </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

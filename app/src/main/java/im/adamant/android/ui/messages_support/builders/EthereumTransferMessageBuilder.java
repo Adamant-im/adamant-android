@@ -31,6 +31,7 @@ public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTr
         message.setCompanionId(companionId);
 
         if (transaction != null){
+            message.setOwnerPublicKey(transaction.getSenderPublicKey());
             message.setProcessed(true);
             message.setTransactionId(transaction.getId());
         }

@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
@@ -15,9 +16,11 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class FallbackMessageFactory implements MessageFactory<FallbackMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
+    private AvatarGenerator avatarGenerator;
 
-    public FallbackMessageFactory(AdamantAddressProcessor adamantAddressProcessor) {
+    public FallbackMessageFactory(AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
         this.adamantAddressProcessor = adamantAddressProcessor;
+        this.avatarGenerator = avatarGenerator;
     }
 
     @Override

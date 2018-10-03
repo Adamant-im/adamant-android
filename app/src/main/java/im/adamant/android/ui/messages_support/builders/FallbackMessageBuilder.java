@@ -24,6 +24,7 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
         message.setCompanionId(companionId);
 
         if (transaction != null){
+            message.setOwnerPublicKey(transaction.getSenderPublicKey());
             message.setProcessed(true);
             message.setTransactionId(transaction.getId());
         }

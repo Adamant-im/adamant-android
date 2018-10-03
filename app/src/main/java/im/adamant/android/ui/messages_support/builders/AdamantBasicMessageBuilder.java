@@ -13,7 +13,10 @@ public class AdamantBasicMessageBuilder implements MessageBuilder<AdamantBasicMe
         message.setiSay(isISayed);
         message.setDate(date);
         message.setCompanionId(companionId);
+
         if (transaction != null){
+            message.setOwnerPublicKey(transaction.getSenderPublicKey());
+
             message.setProcessed(true);
             message.setTransactionId(transaction.getId());
         }
