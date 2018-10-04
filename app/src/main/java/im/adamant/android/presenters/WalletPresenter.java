@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.currencies.SupportedCurrencyType;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
@@ -18,6 +19,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
     private AccountInteractor accountInteractor;
     private Disposable lastTransfersSubscription;
+    private CurrencyCardItem currencyCardItem;
 
     public WalletPresenter(
             Router router,
@@ -51,6 +53,8 @@ public class WalletPresenter extends BasePresenter<WalletView> {
             lastTransfersSubscription.dispose();
         }
 
+        this.currencyCardItem = cardItem;
+
         lastTransfersSubscription = accountInteractor
                 .getLastTransfersByCurrencyAbbr(cardItem.getAbbreviation())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -60,4 +64,21 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
     }
+
+    public void onClickCopyCurrentCardAddress() {
+        if (this.currencyCardItem != null){
+            getViewState().putAddressToClipboard(this.currencyCardItem.getAddress());
+        }
+    }
+
+    public void onClickCreateQrCodeCurrentCardAddress() {
+        if (this.currencyCardItem != null){
+            String address = this.currencyCardItem.getAddress();
+            if (currencyCardItem.getAbbreviation().equalsIgnoreCase(SupportedCurrencyType.ADM.name())){
+                address = "adm:" + address;
+            }
+            getViewState().createQrCode(address);
+        }
+    }
+
 }

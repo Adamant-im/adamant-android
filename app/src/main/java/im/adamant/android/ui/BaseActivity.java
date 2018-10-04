@@ -47,8 +47,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         getMvpDelegate().onCreate(savedInstanceState);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
-                WindowManager.LayoutParams.FLAG_SECURE);
+        //TODO: deny automatic screenshot but allow screenshot triggered by user
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,
+//                WindowManager.LayoutParams.FLAG_SECURE);
 
         setContentView(getLayoutId());
         ButterKnife.bind(this);
