@@ -25,7 +25,7 @@ public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
                 if (response.isSuccess()){
                     publicKeys.put(address, response.getPublicKey());
                 }
-            } catch (UndeliverableException ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
             }
 
