@@ -40,6 +40,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
                 .doOnError((error) -> router.showSystemMessage(error.getMessage()))
+                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
