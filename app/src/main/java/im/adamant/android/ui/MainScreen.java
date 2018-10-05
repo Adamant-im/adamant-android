@@ -107,7 +107,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     public void showWalletScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_screen_content, new WalletScreen());
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -115,7 +114,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     public void showChatsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_screen_content, new ChatsScreen());
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 
@@ -123,7 +121,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     public void showSettingsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.main_screen_content, new SettingsScreen());
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 

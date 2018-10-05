@@ -65,6 +65,16 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .subscribe();
     }
 
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (lastTransfersSubscription != null){
+            lastTransfersSubscription.dispose();
+            lastTransfersSubscription = null;
+        }
+    }
+
     public void onClickCopyCurrentCardAddress() {
         if (this.currencyCardItem != null){
             getViewState().putAddressToClipboard(this.currencyCardItem.getAddress());
