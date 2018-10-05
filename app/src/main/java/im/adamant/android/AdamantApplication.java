@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.franmontiel.localechanger.LocaleChanger;
+import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;

@@ -74,10 +74,6 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        chatList.setVisibility(View.GONE);
-        shimmer.setVisibility(View.VISIBLE);
-        shimmer.startShimmerAnimation();
-
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
@@ -90,6 +86,23 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
+        shimmer.stopShimmerAnimation();
+        chatList.setVisibility(View.VISIBLE);
+        shimmer.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        chatList.setVisibility(View.GONE);
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmerAnimation();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         shimmer.stopShimmerAnimation();
         chatList.setVisibility(View.VISIBLE);
         shimmer.setVisibility(View.GONE);
