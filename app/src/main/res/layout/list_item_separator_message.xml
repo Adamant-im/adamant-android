@@ -28,7 +28,7 @@
         app:layout_constraintStart_toEndOf="@+id/list_item_separator_rtv_date"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.github.curioustechizen.ago.RelativeTimeTextView
+    <im.adamant.android.ui.custom_view.TodayRelativeTimeView
         android:id="@+id/list_item_separator_rtv_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

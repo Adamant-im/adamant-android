@@ -91,4 +91,5 @@
     <string name="warning">Warning</string>
     <string name="adm_currency_abbr">ADM</string>
     <string name="copy">Copy</string>
+    <string name="today">Today</string>
 </resources>
