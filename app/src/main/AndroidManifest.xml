@@ -57,7 +57,9 @@
             android:exported="false"
             android:label="@string/activity_chats_action_create_new" />
         <activity
-            android:name=".ui.MainScreen" />
+            android:name=".ui.MainScreen"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.ScanQrCodeScreen"
             android:exported="false"

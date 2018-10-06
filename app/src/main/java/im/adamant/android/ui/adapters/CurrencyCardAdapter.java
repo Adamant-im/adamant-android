@@ -6,6 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.reactivestreams.Publisher;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -15,12 +17,21 @@ import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.PagerAdapter;
 import im.adamant.android.R;
 import im.adamant.android.ui.entities.CurrencyCardItem;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
+
+    public enum Events {
+        COPY,
+        CREATE_QR
+    }
 
     private List<CardView> views;
     private List<CurrencyCardItem> items;
     private float mBaseElevation;
+    private PublishSubject<Events> publisher = PublishSubject.create();
 
     public CurrencyCardAdapter() {
         items = new ArrayList<>();
@@ -57,6 +68,10 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
     public CurrencyCardItem getItem(int position) {
 
         return items.get(position);
+    }
+
+    public Observable<Events> getObservable(){
+        return publisher;
     }
 
     @Override
@@ -109,15 +124,21 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     //TODO: Maybe use ViewHolder
     private void bind(CurrencyCardItem item, View view) {
-        TextView titleView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_title);
-        TextView balanceView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_balance);
-        TextView addressView = (TextView) view.findViewById(R.id.list_item_currency_card_tv_address);
-        ImageView backgroundLogoView = (ImageView) view.findViewById(R.id.list_item_currency_card_background_logo);
+        TextView copyBtnView = view.findViewById(R.id.list_item_currency_card_tv_copy);
+        TextView createQrView = view.findViewById(R.id.list_item_currency_card_tv_create_qr);
+
+        TextView titleView = view.findViewById(R.id.list_item_currency_card_tv_title);
+        TextView balanceView = view.findViewById(R.id.list_item_currency_card_tv_balance);
+        TextView addressView = view.findViewById(R.id.list_item_currency_card_tv_address);
+        ImageView backgroundLogoView = view.findViewById(R.id.list_item_currency_card_background_logo);
 
         titleView.setText(item.getTitleString());
         balanceView.setText(String.format(Locale.ENGLISH, "%." + item.getPrecision() + "f", item.getBalance()));
         addressView.setText(item.getAddress());
         backgroundLogoView.setImageResource(item.getBackgroundLogoResource());
+
+        copyBtnView.setOnClickListener(v -> publisher.onNext(Events.COPY));
+        createQrView.setOnClickListener(v -> publisher.onNext(Events.CREATE_QR));
     }
 
 }

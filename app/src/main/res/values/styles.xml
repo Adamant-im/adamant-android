@@ -72,6 +72,7 @@
     </style>
 
     <style name="AlertDialogTitle">
+        <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
     </style>

@@ -7,8 +7,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.ChecksumException;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.FormatException;
 import com.google.zxing.LuminanceSource;
 import com.google.zxing.MultiFormatReader;
@@ -22,7 +24,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.Locale;
+import java.util.Map;
 
 import im.adamant.android.Constants;
 import im.adamant.android.ui.LoginScreen;
@@ -41,10 +46,17 @@ public class QrCodeHelper {
         LuminanceSource source = new RGBLuminanceSource(bMap.getWidth(), bMap.getHeight(), intArray);
         BinaryBitmap bitmap = new BinaryBitmap(new HybridBinarizer(source));
 
+        Map<DecodeHintType, Object> tmpHintsMap = new EnumMap<DecodeHintType, Object>(
+                DecodeHintType.class);
+        tmpHintsMap.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+        tmpHintsMap.put(DecodeHintType.POSSIBLE_FORMATS,
+                EnumSet.allOf(BarcodeFormat.class));
+        tmpHintsMap.put(DecodeHintType.PURE_BARCODE, Boolean.FALSE);
+
         Reader reader = new MultiFormatReader();
         Result result = null;
         try {
-            result = reader.decode(bitmap);
+            result = reader.decode(bitmap, tmpHintsMap);
             contents = result.getText();
         } catch (NotFoundException | ChecksumException | FormatException e) {
             e.printStackTrace();

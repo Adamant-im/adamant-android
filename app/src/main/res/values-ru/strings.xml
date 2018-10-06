@@ -29,7 +29,7 @@
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
-    <string name="fragment_wallet_create_qrcode_title">Показать свой QR-код</string>
+    <string name="fragment_wallet_create_qrcode_title">Создать QR-код</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_language">Язык приложения</string>
@@ -45,6 +45,7 @@
     <string name="fragment_settings_push_service_address">Адрес сервиса push-уведомлений</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
+    <string name="address_qrcode_was_copied">Создан QR-Код адреса</string>
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
