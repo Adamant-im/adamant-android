@@ -1,6 +1,8 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,90 +12,54 @@ import com.github.curioustechizen.ago.RelativeTimeTextView;
 import java.util.Locale;
 
 import im.adamant.android.R;
+import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
-public class EthereumTransferMessageViewHolder extends AbstractMessageListContentViewHolder {
-    private ImageView processedView;
+public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder {
     private TextView messageView;
     private TextView amountView;
-    private RelativeTimeTextView dateView;
-    private AdamantAddressProcessor adamantAddressProcessor;
+    private ImageView processedView;
+    private View contentView;
 
-    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor) {
-        super(context, v);
+    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
+        super(context, v, adamantAddressProcessor, avatarGenerator);
 
-        this.adamantAddressProcessor = adamantAddressProcessor;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        contentView = inflater.inflate(R.layout.list_subitem_etherium_transfer_message, contentBlock, false);
+        contentBlock.addView(contentView);
 
-        processedView = itemView.findViewById(R.id.list_item_message_processed);
-        messageView = itemView.findViewById(R.id.list_item_message_text);
-        dateView = itemView.findViewById(R.id.list_item_message_date);
-        amountView = itemView.findViewById(R.id.list_item_message_amount);
+        processedView = contentView.findViewById(R.id.list_item_message_processed);
+
+        messageView = contentView.findViewById(R.id.list_item_message_text);
+        messageView.setMovementMethod(LinkMovementMethod.getInstance());
+        amountView = contentView.findViewById(R.id.list_item_message_amount);
     }
 
     @Override
     public void bind(MessageListContent message) {
-        if (message != null){
+        boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.ETHEREUM_TRANSFER);
 
-            if (message.getSupportedType() != SupportedMessageListContentType.ETHEREUM_TRANSFER){
-                emptyView();
-                return;
-            }
-
-            EthereumTransferMessage ethereumTransferMessage = (EthereumTransferMessage)message;
-
-            messageView.setText(
-                    ethereumTransferMessage.getHtmlComment(adamantAddressProcessor)
-            );
-
-            amountView.setText(String.format(Locale.ENGLISH, "%.8f", ethereumTransferMessage.getAmount()));
-
-            dateView.setReferenceTime(ethereumTransferMessage.getTimestamp());
-
-            if (ethereumTransferMessage.isProcessed()){
-                processedView.setImageResource(R.drawable.ic_processed);
-            } else {
-                processedView.setImageResource(R.drawable.ic_not_processed);
-            }
-
-            if (ethereumTransferMessage.isiSay()){
-                iSayedLayoutModification();
-            } else {
-                companionSayedModification();
-            }
-
-        } else {
+        if (isCorruptedMessage) {
             emptyView();
-        }
-    }
-
-    private String resolveMessage(EthereumTransferMessage message) {
-        String messageText = "";
-
-        if (message.isiSay()){
-            messageText += "<--";
-        } else {
-            messageText += "-->";
+            return;
         }
 
-        messageText += " eth: " + message.getAmount().toString() + "\n<br/>" + message.getComment();
+        super.bind(message);
 
-        return messageText;
-    }
+        EthereumTransferMessage ethereumTransferMessage = (EthereumTransferMessage) message;
 
-    private void iSayedLayoutModification(){
-        processedView.setVisibility(View.VISIBLE);
-    }
+        messageView.setText(
+                ethereumTransferMessage.getHtmlComment(adamantAddressProcessor)
+        );
 
-    private void companionSayedModification(){
-        processedView.setVisibility(View.GONE);
-    }
+        String amountText = String.format(Locale.ENGLISH, "%.8f", ethereumTransferMessage.getAmount()) + " " +
+                context.getResources().getString(R.string.eth_currency_abbr);
 
-    private void emptyView() {
-        messageView.setText("");
-        processedView.setImageResource(R.drawable.ic_not_processed);
-        dateView.setReferenceTime(System.currentTimeMillis());
+        amountView.setText(amountText);
+
+        displayProcessedStatus(processedView, ethereumTransferMessage);
     }
 }

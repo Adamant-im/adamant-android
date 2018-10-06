@@ -91,6 +91,7 @@
     <string name="no">Нет</string>
     <string name="warning">Предупреждение</string>
     <string name="adm_currency_abbr">ADM</string>
+    <string name="eth_currency_abbr">ETH</string>
     <string name="copy">Копировать</string>
     <string name="today">Сегодня</string>
 </resources>

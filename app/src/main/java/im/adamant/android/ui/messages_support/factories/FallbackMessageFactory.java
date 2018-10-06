@@ -31,8 +31,8 @@ public class FallbackMessageFactory implements MessageFactory<FallbackMessage> {
     @Override
     public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.list_item_adamant_basic_message, parent, false);
-        return new FallbackMessageViewHolder(parent.getContext(), v, adamantAddressProcessor);
+        View v = inflater.inflate(R.layout.list_item_general_message, parent, false);
+        return new FallbackMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatarGenerator);
     }
 
     //No need implementation
