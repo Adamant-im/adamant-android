@@ -104,8 +104,7 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
             avatarView.setImageBitmap(abstractMessage.getAvatar());
         }
 
-        //TODO: Entity must return date
-        timeView.setText(timeFormatter.format(new Date(abstractMessage.getTimestamp())));
+        timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
         if (abstractMessage.isiSay()){
             iToldLayoutModification();

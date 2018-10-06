@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import androidx.annotation.NonNull;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
@@ -18,7 +19,9 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
     private String transactionId;
     private String companionId;
     private String ownerPublicKey;
+
     private Bitmap avatar;
+    private Date date;
 
     public AbstractMessage() {
         //This is a temporary identifier so that messages that are not confirmed in the blockchain do not merge into one
@@ -91,6 +94,17 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
 
     public void setOwnerPublicKey(String ownerPublicKey) {
         this.ownerPublicKey = ownerPublicKey;
+    }
+
+    public Date getDate() {
+        if (date == null){
+            date = new Date(timestamp);
+        }
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
