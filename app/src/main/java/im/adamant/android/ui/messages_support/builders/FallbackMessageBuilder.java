@@ -16,12 +16,20 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
     }
 
     @Override
-    public FallbackMessage build(Transaction transaction, String decryptedMessage, boolean isISayed, long date, String companionId) {
+    public FallbackMessage build(
+            Transaction transaction,
+            String decryptedMessage,
+            boolean isISayed,
+            long date,
+            String companionId,
+            String ownerPublicKey
+    ) {
         FallbackMessage message = new FallbackMessage();
         message.setSupportedType(SupportedMessageListContentType.FALLBACK);
         message.setiSay(isISayed);
         message.setTimestamp(date);
         message.setCompanionId(companionId);
+        message.setOwnerPublicKey(ownerPublicKey);
 
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());

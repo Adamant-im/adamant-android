@@ -1,6 +1,7 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
@@ -26,7 +27,7 @@ public class MessagesScreenModule {
             SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             MessageFactoryProvider messageFactoryProvider,
-            AccountInteractor accountInteractor,
+            AdamantApiWrapper api,
             ChatsStorage chatsStorage,
             @Named(Screens.MESSAGES_SCREEN) CompositeDisposable subscriptions
     ){
@@ -35,8 +36,8 @@ public class MessagesScreenModule {
                 sendMessageInteractor,
                 refreshChatsInteractor,
                 messageFactoryProvider,
-                accountInteractor,
                 chatsStorage,
+                api,
                 subscriptions
         );
     }

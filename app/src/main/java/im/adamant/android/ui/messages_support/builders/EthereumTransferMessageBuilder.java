@@ -22,13 +22,15 @@ public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTr
             String decryptedMessage,
             boolean isISayed,
             long date,
-            String companionId
+            String companionId,
+            String ownerPublicKey
     ) {
         EthereumTransferMessage message = new EthereumTransferMessage();
         message.setSupportedType(SupportedMessageListContentType.ETHEREUM_TRANSFER);
         message.setiSay(isISayed);
         message.setTimestamp(date);
         message.setCompanionId(companionId);
+        message.setOwnerPublicKey(ownerPublicKey);
 
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());

@@ -65,7 +65,8 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                 decryptedMessage,
                 !iRecipient,
                 transaction.getUnixTimestamp(),
-                companionId
+                companionId,
+                "" //Detect by transaction
             );
 
 

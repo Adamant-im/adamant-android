@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
@@ -36,7 +37,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
-    private AccountInteractor accountInteractor;
+    private AdamantApiWrapper api;
 
     private Chat currentChat;
     private List<MessageListContent> messages;
@@ -49,8 +50,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             MessageFactoryProvider messageFactoryProvider,
-            AccountInteractor accountInteractor,
             ChatsStorage chatsStorage,
+            AdamantApiWrapper api,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
@@ -58,8 +59,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         this.sendMessageInteractor = sendMessageInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
-        this.accountInteractor = accountInteractor;
         this.chatsStorage = chatsStorage;
+        this.api = api;
     }
 
 
@@ -194,17 +195,18 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private AdamantBasicMessage getAdamantMessage(String message, AdamantBasicMessageFactory messageFactory) {
         AdamantBasicMessage abstractMessage = null;
         try {
+            String publicKey = api.getAccount().getPublicKey();
             abstractMessage = messageFactory.getMessageBuilder().build(
                     null,
                     message, true,
                     System.currentTimeMillis(),
-                    currentChat.getCompanionId()
+                    currentChat.getCompanionId(),
+                    publicKey
             );
         } catch (Exception e) {
             e.printStackTrace();
             router.showSystemMessage(e.getMessage());
         }
-
 
         return abstractMessage;
     }
