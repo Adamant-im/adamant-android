@@ -8,7 +8,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.arellomobile.mvp.MvpDelegate;
@@ -34,6 +33,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ServiceConnection admBalanceServiceConnection;
 
     private TextView titleView;
+    private TextView subTitleView;
+    private View customTitleView;
 
     public abstract int getLayoutId();
 
@@ -139,7 +140,30 @@ public abstract class BaseActivity extends AppCompatActivity {
     public void setTitle(CharSequence title) {
         if (titleView != null){
             titleView.setText(title);
+            rebuildTitleView();
         }
+    }
+
+    public void setSubTitle(CharSequence subTitle) {
+        if (subTitleView != null){
+            subTitleView.setText(subTitle);
+            rebuildTitleView();
+        }
+    }
+
+    private void rebuildTitleView() {
+        if (subTitleView == null || titleView == null){return;}
+
+        String title = titleView.getText().toString();
+        String subTitle = subTitleView.getText().toString();
+        boolean hideSubview = (subTitle.isEmpty()) || (title.equalsIgnoreCase(subTitle));
+
+        if (hideSubview){
+            subTitleView.setVisibility(View.GONE);
+        } else {
+            subTitleView.setVisibility(View.VISIBLE);
+        }
+
     }
 
     private void initConnections() {
@@ -192,19 +216,20 @@ public abstract class BaseActivity extends AppCompatActivity {
             // Disable the default and enable the custom
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowCustomEnabled(true);
-            View customView = getLayoutInflater().inflate(R.layout.custom_action_bar, null);
+            customTitleView = getLayoutInflater().inflate(R.layout.custom_action_bar, null);
 
-            titleView = customView.findViewById(R.id.actionbarTitle);
+            titleView = customTitleView.findViewById(R.id.actionbarTitle);
+            subTitleView = customTitleView.findViewById(R.id.actionbarSubTitle);
 
             // Set the on click listener for the title
-            titleView.setOnClickListener(new View.OnClickListener() {
+            customTitleView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     onClickTitle();
                 }
             });
             // Apply the custom view
-            actionBar.setCustomView(customView);
+            actionBar.setCustomView(customTitleView);
         }
     }
 

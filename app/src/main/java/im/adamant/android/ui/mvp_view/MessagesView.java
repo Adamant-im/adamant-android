@@ -10,7 +10,7 @@ import java.util.List;
 public interface MessagesView extends MvpView {
     void showChatMessages(List<MessageListContent> messages);
     void goToLastMessage();
-    void changeTitle(String title);
+    void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);
     void showMessageCost(String cost);
 }

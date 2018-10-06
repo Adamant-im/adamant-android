@@ -108,7 +108,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                 companionId
         );
 
-        getViewState().changeTitle(currentChat.getTitle());
+        getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
         getViewState()
             .showChatMessages(
@@ -118,7 +118,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public void onResume() {
         if (currentChat != null){
-            getViewState().changeTitle(currentChat.getTitle());
+            getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
         }
     }
 

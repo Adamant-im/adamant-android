@@ -173,8 +173,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void changeTitle(String title) {
+    public void changeTitles(String title, String subTitle) {
         setTitle(title);
+        setSubTitle(subTitle);
     }
 
     @Override
