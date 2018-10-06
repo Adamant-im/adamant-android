@@ -22,6 +22,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.io.Serializable;
@@ -146,7 +147,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void showChatMessages(List<AbstractMessage> messages) {
+    public void showChatMessages(List<MessageListContent> messages) {
         if (messages != null){
             adapter.updateDataset(
                     messages

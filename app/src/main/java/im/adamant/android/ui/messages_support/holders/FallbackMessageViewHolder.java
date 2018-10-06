@@ -11,11 +11,11 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
-public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
+public class FallbackMessageViewHolder extends AbstractMessageListContentViewHolder {
     private ImageView processedView;
     private TextView messageView;
     private RelativeTimeTextView dateView;
@@ -33,10 +33,10 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     }
 
     @Override
-    public void bind(AbstractMessage message) {
+    public void bind(MessageListContent message) {
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageType.FALLBACK){
+            if (message.getSupportedType() != SupportedMessageListContentType.FALLBACK){
                 emptyView();
                 return;
             }
@@ -47,15 +47,15 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
                     fallbackMessage.getHtmlFallBackMessage(adamantAddressProcessor)
             );
 
-            dateView.setReferenceTime(message.getDate());
+            dateView.setReferenceTime(fallbackMessage.getTimestamp());
 
-            if (message.isProcessed()){
+            if (fallbackMessage.isProcessed()){
                 processedView.setImageResource(R.drawable.ic_processed);
             } else {
                 processedView.setImageResource(R.drawable.ic_not_processed);
             }
 
-            if (message.isiSay()){
+            if (fallbackMessage.isiSay()){
                 iSayedLayoutModification();
             } else {
                 companionSayedModification();

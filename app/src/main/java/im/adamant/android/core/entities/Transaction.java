@@ -1,5 +1,6 @@
 package im.adamant.android.core.entities;
 
+import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.encryption.Hex;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
@@ -237,6 +238,11 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
     public String toString()
     {
         return  this.getClass().getCanonicalName() + " [asset = " + asset + ", confirmations = " + confirmations + ", signatures = " + signatures + ", requesterPublicKey = " + requesterPublicKey + ", senderId = " + senderId + ", type = " + type + ", id = " + id + ", timestamp = " + timestamp + ", amount = " + amount + ", fee = " + fee + ", height = " + height + ", recipientId = " + recipientId + ", signSignature = " + signSignature + ", blockId = " + blockId + ", recipientPublicKey = " + recipientPublicKey + ", senderPublicKey = " + senderPublicKey + ", signature = " + signature + "]";
+    }
+
+    public long getUnixTimestamp() {
+        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
+        return (timestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 
     public byte[] getBytesDigest(){

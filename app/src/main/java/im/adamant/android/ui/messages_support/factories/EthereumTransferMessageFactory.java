@@ -8,12 +8,11 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
-import im.adamant.android.ui.messages_support.holders.AbstractMessageViewHolder;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
 import im.adamant.android.ui.messages_support.holders.EthereumTransferMessageViewHolder;
 import im.adamant.android.ui.messages_support.builders.EthereumTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
-import io.reactivex.exceptions.OnErrorNotImplementedException;
 
 public class EthereumTransferMessageFactory implements MessageFactory<EthereumTransferMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
@@ -30,7 +29,7 @@ public class EthereumTransferMessageFactory implements MessageFactory<EthereumTr
     }
 
     @Override
-    public AbstractMessageViewHolder getViewHolder(ViewGroup parent) {
+    public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_etherium_transfer_message, parent, false);
         return new EthereumTransferMessageViewHolder(parent.getContext(), v, adamantAddressProcessor);

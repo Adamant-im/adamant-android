@@ -6,7 +6,7 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import io.reactivex.functions.Function;
 
 public class LocalizedMessageMapper implements Function<AbstractMessage, AbstractMessage> {
@@ -20,7 +20,7 @@ public class LocalizedMessageMapper implements Function<AbstractMessage, Abstrac
     @Override
     public AbstractMessage apply(AbstractMessage message) {
 
-        if (message.getSupportedType() == SupportedMessageType.ADAMANT_BASIC){
+        if (message.getSupportedType() == SupportedMessageListContentType.ADAMANT_BASIC){
             AdamantBasicMessage basicMessage = (AdamantBasicMessage) message;
             String messageText = basicMessage.getText();
 

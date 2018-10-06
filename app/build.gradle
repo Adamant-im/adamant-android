@@ -81,12 +81,12 @@ ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:1.0.0-rc02"
-    implementation "androidx.recyclerview:recyclerview:1.0.0-rc02"
-    implementation "androidx.cardview:cardview:1.0.0-rc02"
-    implementation "com.google.android.material:material:1.0.0-rc02"
-    implementation "androidx.vectordrawable:vectordrawable:1.0.0-rc02"
-    implementation "androidx.legacy:legacy-support-v4:1.0.0-rc02"
+    implementation "androidx.appcompat:appcompat:1.0.0"
+    implementation "androidx.recyclerview:recyclerview:1.0.0"
+    implementation "androidx.cardview:cardview:1.0.0"
+    implementation "com.google.android.material:material:1.0.0"
+    implementation "androidx.vectordrawable:vectordrawable:1.0.0"
+    implementation "androidx.legacy:legacy-support-v4:1.0.0"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha2"
     implementation "net.java.dev.jna:jna:4.5.1@aar"
     implementation "com.goterl.lazycode:lazysodium-android:2.2.0@aar"
@@ -114,7 +114,7 @@ dependencies {
     implementation "com.andrognito.pinlockview:pinlockview:2.1.0"
     implementation "androidx.multidex:multidex:2.0.0"
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1" //???
-    implementation "com.google.firebase:firebase-messaging:17.3.2"
+    implementation "com.google.firebase:firebase-messaging:17.3.3"
     implementation "com.github.euzee:serviceManager:1.0.3"
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
     implementation "androidx.core:core:1.0.0"
@@ -125,8 +125,8 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
     testImplementation "junit:junit:4.12"
-    androidTestImplementation "androidx.test:runner:1.1.0-alpha4"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0-alpha4"
+    androidTestImplementation "androidx.test:runner:1.1.0-beta01"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.0-beta01"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.1"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.1"

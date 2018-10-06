@@ -11,11 +11,11 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
-public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder {
+public class EthereumTransferMessageViewHolder extends AbstractMessageListContentViewHolder {
     private ImageView processedView;
     private TextView messageView;
     private TextView amountView;
@@ -34,10 +34,10 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
     }
 
     @Override
-    public void bind(AbstractMessage message) {
+    public void bind(MessageListContent message) {
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageType.ETHEREUM_TRANSFER){
+            if (message.getSupportedType() != SupportedMessageListContentType.ETHEREUM_TRANSFER){
                 emptyView();
                 return;
             }
@@ -50,15 +50,15 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
 
             amountView.setText(String.format(Locale.ENGLISH, "%.8f", ethereumTransferMessage.getAmount()));
 
-            dateView.setReferenceTime(message.getDate());
+            dateView.setReferenceTime(ethereumTransferMessage.getTimestamp());
 
-            if (message.isProcessed()){
+            if (ethereumTransferMessage.isProcessed()){
                 processedView.setImageResource(R.drawable.ic_processed);
             } else {
                 processedView.setImageResource(R.drawable.ic_not_processed);
             }
 
-            if (message.isiSay()){
+            if (ethereumTransferMessage.isiSay()){
                 iSayedLayoutModification();
             } else {
                 companionSayedModification();

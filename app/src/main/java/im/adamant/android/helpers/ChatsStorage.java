@@ -1,27 +1,33 @@
 package im.adamant.android.helpers;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.Contact;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
+import im.adamant.android.ui.messages_support.entities.Separator;
 
 public class ChatsStorage {
     //TODO: So far, the manipulation of the chat lists is entrusted to this interactor, but perhaps over time it's worth changing
     //TODO: Multithreaded access to properties can cause problems in the future
-    private HashMap<String, List<AbstractMessage>> messagesByChats = new HashMap<>();
+    private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
+    private Map<String, List<Long>> separators = new HashMap<>();
+    private Calendar separatorCalendar = Calendar.getInstance();
     private long contactsVersion = 0;
 
     public List<Chat> getChatList() {
         return chats;
     }
 
-    public List<AbstractMessage> getMessagesByCompanionId(String companionId) {
-        List<AbstractMessage> requestedMessages = messagesByChats.get(companionId);
+    public List<MessageListContent> getMessagesByCompanionId(String companionId) {
+        List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
 
         if (requestedMessages == null){return new ArrayList<>();}
 
@@ -35,7 +41,7 @@ public class ChatsStorage {
             messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
         } else {
             //TODO: This code is needed to get the public key of the sender. This is wrong.
-            //TODO: If the sender did not respond, his avtar will not be displayed
+            //TODO: If the sender did not respond, his avatar will not be displayed
             Chat storedChat = chats.get(index);
             String companionPublicKey = storedChat.getCompanionPublicKey();
 
@@ -45,29 +51,35 @@ public class ChatsStorage {
         }
     }
 
+    public void addMessageToChat(MessageListContent message) {
+        List<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
 
-    public void addMessageToChat(AbstractMessage message) {
-        List<AbstractMessage> messages = messagesByChats.get(message.getCompanionId());
+        if (messages == null) {
+            messages = new ArrayList<>();
+            messagesByChats.put(message.getCompanionId(), messages);
+        }
 
-        if (messages != null) {
-            //If we sent this message and it's already in the list
-            if (!messages.contains(message)){
-                messages.add(message);
-            }
-        } else {
-            List<AbstractMessage> newMessageBlock = new ArrayList<>();
-            newMessageBlock.add(message);
-            messagesByChats.put(message.getCompanionId(), newMessageBlock);
+        //If we sent this message and it's already in the list
+        if (!messages.contains(message)){
+            addSeparatorIfNeeded(messages, message);
+            messages.add(message);
         }
     }
 
     public void updateLastMessages() {
         //Setting last message to chats
         for(Chat chat : chats){
-            List<AbstractMessage> messages = messagesByChats.get(chat.getCompanionId());
+            List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
             if (messages != null && messages.size() > 0){
-                AbstractMessage mes = messages.get(messages.size() - 1);
-                if (mes != null){chat.setLastMessage(mes);}
+                for (int i = (messages.size() - 1); i >= 0; i--){
+                    MessageListContent mes = messages.get(i);
+                    boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
+                    if (isMessageWithContent){
+                        AbstractMessage message = (AbstractMessage)mes;
+                        chat.setLastMessage(message);
+                        break;
+                    }
+                }
             }
         }
     }
@@ -120,5 +132,39 @@ public class ChatsStorage {
         chats.clear();
         messagesByChats.clear();
         contactsVersion = 0;
+    }
+
+
+    private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
+        //Получи дату сообщения и проверь что сепаратор для этого сообщения уже добавлен в специальный список
+        //если его нет то создай
+        separatorCalendar.setTimeInMillis(message.getTimestamp());
+        separatorCalendar.set(Calendar.HOUR_OF_DAY, 0);
+        separatorCalendar.set(Calendar.MINUTE, 0);
+        separatorCalendar.set(Calendar.SECOND, 0);
+        separatorCalendar.set(Calendar.MILLISECOND, 0);
+
+        long startDayTimestamp = separatorCalendar.getTimeInMillis();
+        List<Long> separatorsForChat = separators.get(message.getCompanionId());
+        if (separatorsForChat == null){
+            Separator separator = new Separator();
+            separator.setCompanionId(message.getCompanionId());
+            separator.setTimestamp(startDayTimestamp);
+            messages.add(separator);
+
+            separatorsForChat = new ArrayList<>();
+            separatorsForChat.add(startDayTimestamp);
+            separators.put(message.getCompanionId(), separatorsForChat);
+        } else {
+            if (!separatorsForChat.contains(startDayTimestamp)){
+                Separator separator = new Separator();
+                separator.setCompanionId(message.getCompanionId());
+                separator.setTimestamp(startDayTimestamp);
+                messages.add(separator);
+
+                separatorsForChat.add(startDayTimestamp);
+            }
+        }
+
     }
 }

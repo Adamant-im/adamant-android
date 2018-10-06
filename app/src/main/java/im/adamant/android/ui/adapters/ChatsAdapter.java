@@ -63,7 +63,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             chatView.setText(chat.getTitle());
             if (chat.getLastMessage() != null){
                 lastMessageView.setText(chat.getLastMessage().getShortedMessage(context, 50));
-                dateView.setReferenceTime(chat.getLastMessage().getDate());
+                dateView.setReferenceTime(chat.getLastMessage().getTimestamp());
             } else {
                 lastMessageView.setText("");
                 dateView.setReferenceTime(System.currentTimeMillis());

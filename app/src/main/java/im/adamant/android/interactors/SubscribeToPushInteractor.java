@@ -3,7 +3,7 @@ package im.adamant.android.interactors;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -45,13 +45,13 @@ public class SubscribeToPushInteractor {
 
         try {
             AdamantPushSubscriptionMessageFactory subscribeFactory = (AdamantPushSubscriptionMessageFactory)messageFactoryProvider
-                    .getFactoryByType(SupportedMessageType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+                    .getFactoryByType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
 
             AdamantPushSubscriptionMessage message = new AdamantPushSubscriptionMessage();
             message.setProvider("fcm");
             message.setToken(currentToken);
             message.setCompanionId(settings.getAddressOfNotificationService());
-            message.setSupportedType(SupportedMessageType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+            message.setSupportedType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
 
             Settings localSettings = settings;
 

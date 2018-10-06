@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
 public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTransferMessage> {
 
@@ -25,9 +25,9 @@ public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTr
             String companionId
     ) {
         EthereumTransferMessage message = new EthereumTransferMessage();
-        message.setSupportedType(SupportedMessageType.ETHEREUM_TRANSFER);
+        message.setSupportedType(SupportedMessageListContentType.ETHEREUM_TRANSFER);
         message.setiSay(isISayed);
-        message.setDate(date);
+        message.setTimestamp(date);
         message.setCompanionId(companionId);
 
         if (transaction != null){

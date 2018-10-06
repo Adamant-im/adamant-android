@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import dagger.multibindings.IntoMap;
-import dagger.multibindings.IntoSet;
 import im.adamant.android.avatars.AvatarCache;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.avatars.AvatarGraphics;
@@ -62,7 +61,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -71,7 +69,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.AndroidSupportInjectionModule;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
@@ -200,22 +198,22 @@ public abstract class AppModule {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
-                SupportedMessageType.ADAMANT_BASIC,
+                SupportedMessageListContentType.ADAMANT_BASIC,
                 new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatarGenerator)
         );
 
         provider.registerFactory(
-                SupportedMessageType.FALLBACK,
+                SupportedMessageListContentType.FALLBACK,
                 new FallbackMessageFactory(adamantAddressProcessor, avatarGenerator)
         );
 
         provider.registerFactory(
-                SupportedMessageType.ETHEREUM_TRANSFER,
+                SupportedMessageListContentType.ETHEREUM_TRANSFER,
                 new EthereumTransferMessageFactory(adamantAddressProcessor, avatarGenerator)
         );
 
         provider.registerFactory(
-                SupportedMessageType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
+                SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
                 new AdamantPushSubscriptionMessageFactory(encryptor, api)
         );
 

@@ -2,16 +2,16 @@ package im.adamant.android.ui.messages_support.builders;
 
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
 public class AdamantBasicMessageBuilder implements MessageBuilder<AdamantBasicMessage> {
     @Override
     public AdamantBasicMessage build(Transaction transaction, String decryptedMessage, boolean isISayed, long date, String companionId) {
         AdamantBasicMessage message = new AdamantBasicMessage();
-        message.setSupportedType(SupportedMessageType.ADAMANT_BASIC);
+        message.setSupportedType(SupportedMessageListContentType.ADAMANT_BASIC);
         message.setText(decryptedMessage);
         message.setiSay(isISayed);
-        message.setDate(date);
+        message.setTimestamp(date);
         message.setCompanionId(companionId);
 
         if (transaction != null){

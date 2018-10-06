@@ -14,7 +14,7 @@ import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -64,17 +64,12 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                 transaction,
                 decryptedMessage,
                 !iRecipient,
-                messageMagicTimestamp(transaction.getTimestamp()),
+                transaction.getUnixTimestamp(),
                 companionId
             );
 
 
         return message;
-    }
-
-    private long messageMagicTimestamp(long receivedTimestamp) {
-        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
-        return (receivedTimestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 
     private String decryptMessage(Transaction transaction, boolean iRecipient, String ownSecretKey) {
@@ -108,25 +103,25 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         return decryptedMessage;
     }
 
-    private SupportedMessageType detectMessageType(Transaction transaction, String decryptedMessage) {
+    private SupportedMessageListContentType detectMessageType(Transaction transaction, String decryptedMessage) {
         TransactionMessage transactionMessage = getTransactionMessage(transaction);
 
         if (transactionMessage != null){
             switch (transactionMessage.getType()){
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
-                    return SupportedMessageType.ADAMANT_BASIC;
+                    return SupportedMessageListContentType.ADAMANT_BASIC;
                 }
                 case TransactionMessage.RICH_MESSAGE_TYPE: {
                     String richType = getRichType(decryptedMessage);
                     switch (richType){
                         case "eth_transaction":
-                          return SupportedMessageType.ETHEREUM_TRANSFER;
+                          return SupportedMessageListContentType.ETHEREUM_TRANSFER;
                     }
                 }
             }
         }
 
-        return SupportedMessageType.FALLBACK;
+        return SupportedMessageListContentType.FALLBACK;
     }
 
     private String getRichType(String decryptedMessage) {

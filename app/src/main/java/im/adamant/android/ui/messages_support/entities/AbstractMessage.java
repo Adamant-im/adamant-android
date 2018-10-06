@@ -8,12 +8,12 @@ import androidx.annotation.NonNull;
 import java.io.Serializable;
 import java.util.Objects;
 
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
-public abstract class AbstractMessage implements Serializable, Comparable<AbstractMessage> {
-    private SupportedMessageType supportedType = SupportedMessageType.UNDEFINED;
+public abstract class AbstractMessage implements MessageListContent, Serializable, Comparable<AbstractMessage> {
+    private SupportedMessageListContentType supportedType = SupportedMessageListContentType.UNDEFINED;
     private boolean iSay;
-    private long date;
+    private long timestamp;
     private boolean processed;
     private String transactionId;
     private String companionId;
@@ -27,12 +27,12 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
 
     public abstract String getShortedMessage(Context context, int preferredLimit);
 
-    public long getDate() {
-        return date;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public void setDate(long date) {
-        this.date = date;
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 
     public boolean isProcessed() {
@@ -67,11 +67,13 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
         this.companionId = companionId;
     }
 
-    public SupportedMessageType getSupportedType() {
+    @Override
+    public SupportedMessageListContentType getSupportedType() {
         return supportedType;
     }
 
-    public void setSupportedType(SupportedMessageType supportedType) {
+    @Override
+    public void setSupportedType(SupportedMessageListContentType supportedType) {
         this.supportedType = supportedType;
     }
 
@@ -93,7 +95,7 @@ public abstract class AbstractMessage implements Serializable, Comparable<Abstra
 
     @Override
     public int compareTo(@NonNull AbstractMessage message) {
-        long dateDiff = date - message.date;
+        long dateDiff = timestamp - message.timestamp;
         if((dateDiff) > 0) {
             return 1;
         } else if (dateDiff == 0){

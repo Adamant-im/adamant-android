@@ -13,9 +13,9 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.AvatarGenerator;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
-import im.adamant.android.ui.messages_support.SupportedMessageType;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
+public class AdamantBasicMessageViewHolder extends AbstractMessageListContentViewHolder {
     private final static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
     private int parentPadding;
@@ -74,11 +74,11 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     }
 
     @Override
-    public void bind(AbstractMessage message) {
+    public void bind(MessageListContent message) {
 
         if (message != null){
 
-            if (message.getSupportedType() != SupportedMessageType.ADAMANT_BASIC){
+            if (message.getSupportedType() != SupportedMessageListContentType.ADAMANT_BASIC){
                 emptyView();
                 return;
             }
@@ -111,15 +111,15 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             }
 
             //TODO: Entity must return date
-            timeView.setText(timeFormatter.format(new Date(message.getDate())));
+            timeView.setText(timeFormatter.format(new Date(basicMessage.getTimestamp())));
 
-            if (message.isProcessed()){
+            if (basicMessage.isProcessed()){
                 processedView.setImageResource(R.drawable.ic_processed);
             } else {
                 processedView.setImageResource(R.drawable.ic_not_processed);
             }
 
-            if (message.isiSay()){
+            if (basicMessage.isiSay()){
                 iToldLayoutModification();
             } else {
                 companionToldModification();
