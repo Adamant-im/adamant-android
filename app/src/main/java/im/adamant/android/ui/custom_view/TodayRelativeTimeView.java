@@ -11,6 +11,7 @@ import im.adamant.android.R;
 
 public class TodayRelativeTimeView extends RelativeTimeTextView {
     private Calendar calendar = Calendar.getInstance();
+    private boolean isToday;
 
     public TodayRelativeTimeView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -35,9 +36,15 @@ public class TodayRelativeTimeView extends RelativeTimeTextView {
         long startReferenceDayTimestamp = calendar.getTimeInMillis();
 
         if (startReferenceDayTimestamp == startTodayTimestamp){
+            isToday = true;
             return getResources().getString(R.string.today);
         } else {
+            isToday = false;
             return super.getRelativeTimeDisplayString(referenceTime, now);
         }
+    }
+
+    public boolean isToday() {
+        return isToday;
     }
 }
