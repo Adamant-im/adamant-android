@@ -72,7 +72,12 @@ public class AdamantAddressProcessor {
         while (matcher.find()){
             String address = matcher.group(1);
             AdamantAddressEntity adamantAddressEntity = new AdamantAddressEntity();
-            adamantAddressEntity.setAddress("U" + address);
+
+            if (!address.startsWith("U")){
+                address = "U" + address;
+            }
+
+            adamantAddressEntity.setAddress(address);
 
             if (matcher.groupCount() > 1){
                 String paramsString = matcher.group(2);
