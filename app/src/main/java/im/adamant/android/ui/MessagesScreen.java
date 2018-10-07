@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -68,7 +69,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     //--ButterKnife
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
-    @BindView(R.id.activity_messages_btn_send) Button buttonSend;
+    @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
     @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 

@@ -19,6 +19,7 @@
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_messages_tv_cost_text">Cost of message</string>
+    <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
     <string name="activity_scan_qrcode_title">Scan QR code</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
