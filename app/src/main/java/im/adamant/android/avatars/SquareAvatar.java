@@ -17,7 +17,7 @@ public class SquareAvatar implements Avatar {
     }
 
     @Override
-    public Single<Pair<String, Bitmap>> build(String key, int sizePx) {
+    public Single<Bitmap> build(String key, int sizePx) {
         return Single.fromCallable(() -> {
                     Bitmap.Config conf = Bitmap.Config.ARGB_8888;
                     Bitmap avatarBitmap = Bitmap.createBitmap(sizePx, sizePx, conf);
@@ -27,8 +27,7 @@ public class SquareAvatar implements Avatar {
 
                     hexa16(key, sizePx, canvas);
 
-                    String imageId = Long.toString(graphics.getPublicKeySeed(key)) + sizePx;
-                    return new Pair<>(imageId, avatarBitmap);
+                    return avatarBitmap;
                 })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -37,10 +36,6 @@ public class SquareAvatar implements Avatar {
     @Override
     public AvatarGraphics getGraphics() {
         return graphics;
-    }
-
-    private String getImageId(String key) {
-        return Long.toString(graphics.getPublicKeySeed(key));
     }
 
     //TODO: Refactor this

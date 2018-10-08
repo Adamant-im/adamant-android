@@ -80,25 +80,17 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
 
-        if (abstractMessage.getAvatar() == null){
-            if (abstractMessage.getOwnerPublicKey() != null){
-                Disposable avatarSubscription = avatar
-                        .build(abstractMessage.getOwnerPublicKey(), avatarSize)
-                        .subscribe(
-                                pair -> {
-                                    avatarView.setImageBitmap(pair.second);
-                                    abstractMessage.setAvatar(pair.second);
-                                },
-                                error -> {
-                                    LoggerHelper.e("messageHolder", error.getMessage(), error);
-                                }
-                        );
-                compositeDisposable.add(avatarSubscription);
-            } else {
-                avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
-            }
+        avatarView.setImageBitmap(null);
+        if (abstractMessage.getOwnerPublicKey() != null){
+            Disposable avatarSubscription = avatar
+                    .build(abstractMessage.getOwnerPublicKey(), avatarSize)
+                    .subscribe(
+                            avatar -> avatarView.setImageBitmap(avatar),
+                            error -> LoggerHelper.e("messageHolder", error.getMessage(), error)
+                    );
+            compositeDisposable.add(avatarSubscription);
         } else {
-            avatarView.setImageBitmap(abstractMessage.getAvatar());
+            avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
         }
 
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));

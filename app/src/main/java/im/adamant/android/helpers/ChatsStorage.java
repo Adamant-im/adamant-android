@@ -41,7 +41,7 @@ public class ChatsStorage {
             messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
         } else {
             //TODO: This code is needed to get the public key of the sender. This is wrong.
-            //TODO: If the sender did not respond, his avatar will not be displayed
+            //TODO: If the sender did not respond, his avatarView will not be displayed
             Chat storedChat = chats.get(index);
             String companionPublicKey = storedChat.getCompanionPublicKey();
 

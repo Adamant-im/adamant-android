@@ -14,6 +14,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public interface Avatar {
-    Single<Pair<String, Bitmap>> build(String key, int sizePx);
+    Single<Bitmap> build(String key, int sizePx);
     AvatarGraphics getGraphics();
 }

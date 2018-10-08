@@ -5,6 +5,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,10 +31,11 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public Context context;
 
-        public TextView chatView;
-        public TextView lastMessageView;
-        public RelativeTimeTextView dateView;
-        public ImageView avatar;
+        private TextView chatView;
+        private TextView lastMessageView;
+        private RelativeTimeTextView dateView;
+        private ImageView avatarView;
+        private Avatar avatar;
 
         int avatarSize;
 
@@ -40,15 +43,17 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             super(v);
 
             this.context = context;
+            this.avatar = avatar;
 
-            chatView = v.findViewById(R.id.list_item_chat_name);
-            lastMessageView = v.findViewById(R.id.list_item_chat_last_message);
-            dateView = v.findViewById(R.id.list_item_chat_last_message_date);
-            this.avatar = v.findViewById(R.id.list_item_chat_avatar);
+            this.chatView = v.findViewById(R.id.list_item_chat_name);
+            this.lastMessageView = v.findViewById(R.id.list_item_chat_last_message);
+            this.dateView = v.findViewById(R.id.list_item_chat_last_message_date);
+            this.avatarView = v.findViewById(R.id.list_item_chat_avatar);
 
             v.setOnClickListener(this);
 
            avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
+
         }
 
         @Override
@@ -62,35 +67,25 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         public void bind(Chat chat) {
             chatView.setText(chat.getTitle());
             if (chat.getLastMessage() != null){
-                lastMessageView.setText(chat.getLastMessage().getShortedMessage(context, 50));
+                lastMessageView.setText(chat.getLastMessage().getShortedMessage(context, 25));
                 dateView.setReferenceTime(chat.getLastMessage().getTimestamp());
             } else {
                 lastMessageView.setText("");
                 dateView.setReferenceTime(System.currentTimeMillis());
             }
 
-            if (chat.getAvatar() == null){
-                if (chat.getCompanionPublicKey() != null){
-                    Disposable avatarSubscription = ChatsAdapter.this.avatar
-                            .build(chat.getCompanionPublicKey(), avatarSize)
-                            .subscribe(
-                                    pair -> {
-                                        avatar.setImageBitmap(pair.second);
-                                        chat.setAvatar(pair.second);
-                                    },
-                                    error -> {
-                                        LoggerHelper.e("chatHolder", error.getMessage(), error);
-                                    }
-                            );
-                    compositeDisposable.add(avatarSubscription);
-                } else {
-                    avatar.setImageResource(R.mipmap.ic_launcher_foreground);
-                }
+            avatarView.setImageBitmap(null);
+            if (chat.getCompanionPublicKey() != null){
+                Disposable avatarSubscription = avatar
+                        .build(chat.getCompanionPublicKey(), avatarSize)
+                        .subscribe(
+                                avatar -> avatarView.setImageBitmap(avatar),
+                                error -> LoggerHelper.e("chatHolder", error.getMessage(), error)
+                        );
+                compositeDisposable.add(avatarSubscription);
             } else {
-                avatar.setImageBitmap(chat.getAvatar());
+                avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
             }
-
-
         }
     }
 

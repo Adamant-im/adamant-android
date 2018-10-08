@@ -13,7 +13,6 @@ public class Chat implements Serializable {
     private AbstractMessage lastMessage;
     private String title;
     private String companionPublicKey;
-    private Bitmap avatar;
 
     public String getCompanionId() {
         return companionId;
@@ -45,15 +44,6 @@ public class Chat implements Serializable {
 
     public void setCompanionPublicKey(String companionPublicKey) {
         this.companionPublicKey = companionPublicKey;
-    }
-
-    //TODO: generate avatars
-    public Bitmap getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Bitmap avatar) {
-        this.avatar = avatar;
     }
 
     @Override

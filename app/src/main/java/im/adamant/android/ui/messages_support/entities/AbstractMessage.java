@@ -20,7 +20,6 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
     private String companionId;
     private String ownerPublicKey;
 
-    private Bitmap avatar;
     private Date date;
 
     public AbstractMessage() {
@@ -78,14 +77,6 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
     @Override
     public void setSupportedType(SupportedMessageListContentType supportedType) {
         this.supportedType = supportedType;
-    }
-
-    public Bitmap getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Bitmap avatar) {
-        this.avatar = avatar;
     }
 
     public String getOwnerPublicKey() {

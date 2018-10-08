@@ -9,6 +9,7 @@ import dagger.multibindings.IntoMap;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
+import im.adamant.android.avatars.CachedAvatar;
 import im.adamant.android.avatars.RoundWithBorderAvatar;
 import im.adamant.android.avatars.SquareAvatar;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -124,11 +125,14 @@ public abstract class AppModule {
                 displayMetrics
         );
 
-        return new RoundWithBorderAvatar(
-                new SquareAvatar(graphics),
-                paddingSizePx,
-                borderSizePx
-            );
+        return new CachedAvatar(
+                new RoundWithBorderAvatar(
+                        new SquareAvatar(graphics),
+                        paddingSizePx,
+                        borderSizePx
+                ),
+                1024 * 1024 * 10 // 10Mb
+        );
     }
 
     @Singleton

@@ -19,7 +19,7 @@ public class RoundWithBorderAvatar implements Avatar {
     }
 
     @Override
-    public Single<Pair<String, Bitmap>> build(String key, int sizePx) {
+    public Single<Bitmap> build(String key, int sizePx) {
 
         return Single.fromCallable(() -> {
                     Bitmap.Config cfg = Bitmap.Config.ARGB_8888;
@@ -38,9 +38,7 @@ public class RoundWithBorderAvatar implements Avatar {
 
                     return delegate
                             .build(key, innerSizePx)
-                            .map(avatarPair -> {
-                                String imageId = "rounded-" + avatarPair.first;
-                                Bitmap avatar = avatarPair.second;
+                            .map(avatar -> {
                                 Canvas roundedCanvas = new Canvas(background);
                                 roundedCanvas.drawBitmap(
                                         avatar,
@@ -49,7 +47,7 @@ public class RoundWithBorderAvatar implements Avatar {
                                         new Paint()
                                 );
 
-                                return new Pair<>(imageId, background);
+                                return background;
                             });
                  });
 

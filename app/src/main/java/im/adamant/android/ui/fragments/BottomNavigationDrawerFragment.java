@@ -73,8 +73,8 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
             avatar.build(
                         api.getKeyPair().getPublicKeyString().toLowerCase(),
                         (int) getResources().getDimension(R.dimen.fragment_bottom_navigation_avatar_size)
-                ).subscribe(pair -> {
-                    avatarView.setImageBitmap(pair.second);
+                ).subscribe(bitmap -> {
+                    avatarView.setImageBitmap(bitmap);
             });
 
             addressView.setText(api.getAccount().getAddress());
