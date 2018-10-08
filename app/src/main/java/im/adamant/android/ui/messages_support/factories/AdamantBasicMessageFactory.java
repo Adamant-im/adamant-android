@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.helpers.AdamantAddressProcessor;
@@ -21,16 +21,16 @@ public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMe
     private AdamantAddressProcessor adamantAddressProcessor;
     private Encryptor encryptor;
     private AdamantApiWrapper api;
-    private AvatarGenerator avatarGenerator;
+    private Avatar avatar;
 
     public AdamantBasicMessageFactory(
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ) {
         this.adamantAddressProcessor = adamantAddressProcessor;
-        this.avatarGenerator = avatarGenerator;
+        this.avatar = avatar;
         this.encryptor = encryptor;
         this.api = api;
     }
@@ -44,7 +44,7 @@ public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMe
     public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_general_message, parent, false);
-        return new AdamantBasicMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatarGenerator);
+        return new AdamantBasicMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatar);
     }
 
     @Override

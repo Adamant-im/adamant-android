@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,8 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.R;
-import im.adamant.android.Screens;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.presenters.MainPresenter;
@@ -41,7 +39,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
     MainPresenter mainPresenter;
 
     @Inject
-    AvatarGenerator avatarGenerator;
+    Avatar avatar;
 
     @Inject
     AccountInteractor accountInteractor;
@@ -72,13 +70,11 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         ButterKnife.bind(this, view);
 
         if (api.isAuthorized()){
-            avatarGenerator.buildAvatar(
+            avatar.build(
                         api.getKeyPair().getPublicKeyString().toLowerCase(),
-                        getResources().getDimension(R.dimen.fragment_bottom_navigation_avatar_size),
-                        getActivity(),
-                        true
-                ).subscribe(bitmap -> {
-                    avatarView.setImageBitmap(bitmap);
+                        (int) getResources().getDimension(R.dimen.fragment_bottom_navigation_avatar_size)
+                ).subscribe(pair -> {
+                    avatarView.setImageBitmap(pair.second);
             });
 
             addressView.setText(api.getAccount().getAddress());

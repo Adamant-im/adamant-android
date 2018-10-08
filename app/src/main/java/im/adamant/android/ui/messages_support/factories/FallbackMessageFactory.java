@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
@@ -16,11 +16,11 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class FallbackMessageFactory implements MessageFactory<FallbackMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
-    private AvatarGenerator avatarGenerator;
+    private Avatar avatar;
 
-    public FallbackMessageFactory(AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
+    public FallbackMessageFactory(AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
         this.adamantAddressProcessor = adamantAddressProcessor;
-        this.avatarGenerator = avatarGenerator;
+        this.avatar = avatar;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class FallbackMessageFactory implements MessageFactory<FallbackMessage> {
     public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_general_message, parent, false);
-        return new FallbackMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatarGenerator);
+        return new FallbackMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatar);
     }
 
     //No need implementation

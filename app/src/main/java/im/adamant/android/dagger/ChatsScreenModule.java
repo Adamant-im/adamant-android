@@ -1,7 +1,7 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.presenters.ChatsPresenter;
@@ -42,8 +42,8 @@ public class ChatsScreenModule {
     public ChatsAdapter provideAdapter(
             ChatsScreen chatsScreen,
             @Named(Screens.CHATS_SCREEN) CompositeDisposable compositeDisposable,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ){
-        return new ChatsAdapter(null, chatsScreen, compositeDisposable, avatarGenerator);
+        return new ChatsAdapter(null, chatsScreen, compositeDisposable, avatar);
     }
 }

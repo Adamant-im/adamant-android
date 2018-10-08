@@ -1,92 +1,46 @@
 package im.adamant.android.avatars;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
+import android.util.Pair;
 
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-public class AvatarGenerator {
-
-    private AvatarCache avatarCache;
+public class SquareAvatar implements Avatar {
     private AvatarGraphics graphics;
 
-    public AvatarGenerator(
-            AvatarCache avatarCache,
-            AvatarGraphics graphics
-    ) {
-        this.avatarCache = avatarCache;
+    public SquareAvatar(AvatarGraphics graphics) {
         this.graphics = graphics;
     }
 
-    //TODO: Refactor rounded variable. Use decorators or mappers but first solve problem with cache
-    public Single<Bitmap> buildAvatar(String key, float sizePx, Context context, boolean rounded){
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-
-        int borderSizePx = (int)TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                1.0f,
-                displayMetrics
-        );
-
-        int paddingSizePx = (int)TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                8.0f,
-                displayMetrics
-        );
-
-        return buildAvatar(key, (int) sizePx, borderSizePx, paddingSizePx, rounded);
-    }
-
-    public Single<Bitmap> buildAvatar(String key, int imageSizePx, int borderSizePx, int paddingSizePx, boolean rounded) {
+    @Override
+    public Single<Pair<String, Bitmap>> build(String key, int sizePx) {
         return Single.fromCallable(() -> {
-                    Bitmap bitmap = avatarCache.get(key, imageSizePx);
+                    Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+                    Bitmap avatarBitmap = Bitmap.createBitmap(sizePx, sizePx, conf);
+                    avatarBitmap.setHasAlpha(true);
 
-                    if (bitmap == null){
-                        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                        int innerSizePx = imageSizePx;
-                        Canvas borderCanvas = null;
-                        Bitmap borderBitmap = null;
-                        if (rounded){
-                            borderBitmap = Bitmap.createBitmap(imageSizePx, imageSizePx, conf);
-                            borderBitmap.setHasAlpha(true);
-                            borderCanvas = new Canvas(borderBitmap);
+                    Canvas canvas = new Canvas(avatarBitmap);
 
-                            innerSizePx = graphics.drawBorder(imageSizePx, borderSizePx, borderCanvas);
-                            innerSizePx = innerSizePx - (paddingSizePx * 2);
-                        }
+                    hexa16(key, sizePx, canvas);
 
-
-                        Bitmap avatarBitmap = Bitmap.createBitmap(innerSizePx, innerSizePx, conf);
-                        avatarBitmap.setHasAlpha(true);
-                        Canvas canvas = new Canvas(avatarBitmap);
-                        hexa16(key, innerSizePx, canvas);
-
-                        bitmap = avatarBitmap;
-
-                        if (rounded){
-                            borderCanvas.drawBitmap(
-                                    avatarBitmap,
-                                    borderSizePx + paddingSizePx,
-                                    borderSizePx + paddingSizePx,
-                                    new Paint()
-                            );
-
-                            bitmap = borderBitmap;
-                        }
-
-                        avatarCache.put(key, imageSizePx, bitmap);
-                    }
-                    return bitmap;
+                    String imageId = Long.toString(graphics.getPublicKeySeed(key)) + sizePx;
+                    return new Pair<>(imageId, avatarBitmap);
                 })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public AvatarGraphics getGraphics() {
+        return graphics;
+    }
+
+    private String getImageId(String key) {
+        return Long.toString(graphics.getPublicKeySeed(key));
     }
 
     //TODO: Refactor this
@@ -135,9 +89,9 @@ public class AvatarGenerator {
 
                 int fill = graphics.canFill(xL, yL, fillTriangle, isLeft, isRight);
                 if (fill != 0) {
-                    graphics.drawPoligon(xs, ys, fill, canvas);
+                    graphics.drawPolygon(xs, ys, fill, canvas);
                 } else {
-                    graphics.drawPoligon(xs, ys, transparent, canvas);
+                    graphics.drawPolygon(xs, ys, transparent, canvas);
                 }
 
                 float[] xsMirror = graphics.mirrorCoordinates(xs, lines, distance, offset * 2);
@@ -147,9 +101,9 @@ public class AvatarGenerator {
                 int fill2 = graphics.canFill(xLMirror, yLMirror, fillTriangle, isLeft, isRight);
 
                 if (fill2 != 0) {
-                    graphics.drawPoligon(xsMirror, ys, fill2, canvas);
+                    graphics.drawPolygon(xsMirror, ys, fill2, canvas);
                 } else {
-                    graphics.drawPoligon(xsMirror, ys, transparent, canvas);
+                    graphics.drawPolygon(xsMirror, ys, transparent, canvas);
                 }
 
                 float x11, x12, y11, y12, y13;
@@ -184,9 +138,9 @@ public class AvatarGenerator {
                 // triangles that go to the right
                 int fill3 = graphics.canFill(xL, yL, fillTriangle, isRight, isLeft);
                 if (fill3 != 0) {
-                    graphics.drawPoligon(xs1, ys1, fill3, canvas);
+                    graphics.drawPolygon(xs1, ys1, fill3, canvas);
                 } else {
-                    graphics.drawPoligon(xs1, ys1, transparent, canvas);
+                    graphics.drawPolygon(xs1, ys1, transparent, canvas);
                 }
 
                 xs1 = graphics.mirrorCoordinates(xs1, lines, distance, offset * 2);
@@ -194,14 +148,12 @@ public class AvatarGenerator {
                 int fill4 = graphics.canFill(xLMirror, yLMirror, fillTriangle, isRight, isLeft);
 
                 if (fill4 != 0) {
-                    graphics.drawPoligon(xs1, ys1, fill4, canvas);
+                    graphics.drawPolygon(xs1, ys1, fill4, canvas);
                 } else {
-                    graphics.drawPoligon(xs1, ys1, transparent, canvas);
+                    graphics.drawPolygon(xs1, ys1, transparent, canvas);
                 }
 
             }
         }
     }
-
-
 }

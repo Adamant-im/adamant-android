@@ -1,29 +1,18 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.transition.TransitionManager;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
@@ -35,9 +24,9 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             Context context,
             View itemView,
             AdamantAddressProcessor adamantAddressProcessor,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ) {
-        super(context, itemView, adamantAddressProcessor, avatarGenerator);
+        super(context, itemView, adamantAddressProcessor, avatar);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         contentView = inflater.inflate(R.layout.list_subitem_adamant_basic_message, contentBlock, false);

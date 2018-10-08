@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.entities.Chat;
 import io.reactivex.disposables.CompositeDisposable;
@@ -24,7 +24,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     private List<Chat> chats = new ArrayList<>();
     private SelectItemListener listener;
     private CompositeDisposable compositeDisposable;
-    private AvatarGenerator avatarGenerator;
+    private Avatar avatar;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public Context context;
@@ -34,9 +34,9 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         public RelativeTimeTextView dateView;
         public ImageView avatar;
 
-        float avatarSize;
+        int avatarSize;
 
-        public ViewHolder(Context context, View v, AvatarGenerator avatarGenerator) {
+        public ViewHolder(Context context, View v, Avatar avatar) {
             super(v);
 
             this.context = context;
@@ -44,11 +44,11 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             chatView = v.findViewById(R.id.list_item_chat_name);
             lastMessageView = v.findViewById(R.id.list_item_chat_last_message);
             dateView = v.findViewById(R.id.list_item_chat_last_message_date);
-            avatar = v.findViewById(R.id.list_item_chat_avatar);
+            this.avatar = v.findViewById(R.id.list_item_chat_avatar);
 
             v.setOnClickListener(this);
 
-           avatarSize = context.getResources().getDimension(R.dimen.list_item_avatar_size);
+           avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
         }
 
         @Override
@@ -71,12 +71,12 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
 
             if (chat.getAvatar() == null){
                 if (chat.getCompanionPublicKey() != null){
-                    Disposable avatarSubscription = avatarGenerator
-                            .buildAvatar(chat.getCompanionPublicKey(), avatarSize, context, true)
+                    Disposable avatarSubscription = ChatsAdapter.this.avatar
+                            .build(chat.getCompanionPublicKey(), avatarSize)
                             .subscribe(
-                                    bitmap -> {
-                                        avatar.setImageBitmap(bitmap);
-                                        chat.setAvatar(bitmap);
+                                    pair -> {
+                                        avatar.setImageBitmap(pair.second);
+                                        chat.setAvatar(pair.second);
                                     },
                                     error -> {
                                         LoggerHelper.e("chatHolder", error.getMessage(), error);
@@ -102,10 +102,10 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
             List<Chat> chats,
             SelectItemListener listener,
             CompositeDisposable compositeDisposable,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ) {
         this.compositeDisposable = compositeDisposable;
-        this.avatarGenerator = avatarGenerator;
+        this.avatar = avatar;
 
         if (chats != null){
             this.chats = chats;
@@ -121,7 +121,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_chat, parent, false);
 
-        return new ViewHolder(parent.getContext(), v, avatarGenerator);
+        return new ViewHolder(parent.getContext(), v, avatar);
     }
 
     @Override

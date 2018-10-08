@@ -1,26 +1,23 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.transition.TransitionManager;
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -30,7 +27,7 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
 
     protected int parentPadding;
     protected int avatarMargin;
-    protected float avatarSize;
+    protected int avatarSize;
 
     protected ImageView processedView;
     protected TextView timeView;
@@ -44,17 +41,17 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     protected AdamantAddressProcessor adamantAddressProcessor;
-    protected AvatarGenerator avatarGenerator;
+    protected Avatar avatar;
 
     public AbstractMessageViewHolder(
             Context context,
             View itemView,
             AdamantAddressProcessor adamantAddressProcessor,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ) {
         super(context, itemView);
         this.adamantAddressProcessor = adamantAddressProcessor;
-        this.avatarGenerator = avatarGenerator;
+        this.avatar = avatar;
 
         constraintLayout = itemView.findViewById(R.id.message_item);
         TransitionManager.beginDelayedTransition(constraintLayout);
@@ -62,7 +59,7 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
 
         parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
         avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
-        avatarSize = context.getResources().getDimension(R.dimen.list_item_avatar_size);
+        avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
 
         avatarBlockView = itemView.findViewById(R.id.list_item_message_avatar_block);
         messageBlockView = itemView.findViewById(R.id.list_item_message_card);
@@ -85,12 +82,12 @@ public class AbstractMessageViewHolder extends AbstractMessageListContentViewHol
 
         if (abstractMessage.getAvatar() == null){
             if (abstractMessage.getOwnerPublicKey() != null){
-                Disposable avatarSubscription = avatarGenerator
-                        .buildAvatar(abstractMessage.getOwnerPublicKey(), avatarSize, context, true)
+                Disposable avatarSubscription = avatar
+                        .build(abstractMessage.getOwnerPublicKey(), avatarSize)
                         .subscribe(
-                                bitmap -> {
-                                    avatarView.setImageBitmap(bitmap);
-                                    abstractMessage.setAvatar(bitmap);
+                                pair -> {
+                                    avatarView.setImageBitmap(pair.second);
+                                    abstractMessage.setAvatar(pair.second);
                                 },
                                 error -> {
                                     LoggerHelper.e("messageHolder", error.getMessage(), error);

@@ -21,7 +21,11 @@ public class AvatarGraphics {
         this.avatarThemesProvider = avatarThemesProvider;
     }
 
-    public int drawBorder(int sizePx, int borderSizePx, Canvas canvas) {
+    public int drawCircleWithBorder(int sizePx, int borderSizePx, Canvas canvas) {
+        return drawCircleWithBorder(sizePx, borderSizePx, canvas, Color.WHITE);
+    }
+
+    public int drawCircleWithBorder(int sizePx, int borderSizePx, Canvas canvas, int color) {
         Paint transparent = new Paint();
         transparent.setAlpha(Color.TRANSPARENT);
         transparent.setColor(Color.TRANSPARENT);
@@ -30,14 +34,13 @@ public class AvatarGraphics {
 
 
         float cx = sizePx / 2;
-        float cy = cx;
         float r = cx - (borderSizePx * 2);
 
         Paint background = new Paint();
-        background.setColor(Color.WHITE);
+        background.setColor(color);
         background.setStyle(Paint.Style.FILL);
 
-        canvas.drawCircle(cx, cy , r, background);
+        canvas.drawCircle(cx, cx , r, background);
 
         Paint border = new Paint();
         border.setColor(avatarThemesProvider.provideBorderColor());
@@ -45,12 +48,12 @@ public class AvatarGraphics {
         border.setStyle(Paint.Style.STROKE);
         border.setAntiAlias(true);
 
-        canvas.drawCircle(cx , cy, r, border);
+        canvas.drawCircle(cx , cx, r, border);
 
         return sizePx - (borderSizePx * 2);
     }
 
-    public void drawPoligon(float[] xs, float[] ys, int color, Canvas canvas) {
+    public void drawPolygon(float[] xs, float[] ys, int color, Canvas canvas) {
         Paint paint = new Paint();
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
@@ -139,13 +142,7 @@ public class AvatarGraphics {
         //TODO: check null
         int[] tColors = new int[Triangle.triangles[id].length];
 
-        long seed = 0;
-
-        String keyHash = Hex.md5Hash(key);
-
-        for(char s : keyHash.toCharArray()){
-            seed += s;
-        }
+        long seed = getPublicKeySeed(key);
 
         Random rnd = new Random(seed);
         int minRand = 0;
@@ -263,5 +260,17 @@ public class AvatarGraphics {
 
     public static int randRange(Random rnd, int min, int max) {
         return rnd.nextInt((max - min) + 1) + min;
+    }
+
+    public long getPublicKeySeed(String key) {
+        long seed = 0;
+
+        String keyHash = Hex.md5Hash(key);
+
+        for(char s : keyHash.toCharArray()){
+            seed += s;
+        }
+
+        return seed;
     }
 }

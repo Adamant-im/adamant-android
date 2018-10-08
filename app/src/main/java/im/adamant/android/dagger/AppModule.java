@@ -2,12 +2,15 @@ package im.adamant.android.dagger;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 
 import dagger.multibindings.IntoMap;
-import im.adamant.android.avatars.AvatarCache;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
+import im.adamant.android.avatars.RoundWithBorderAvatar;
+import im.adamant.android.avatars.SquareAvatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -94,12 +97,6 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AvatarCache provideAvatarCache() {
-        return new AvatarCache();
-    }
-
-    @Singleton
-    @Provides
     public static AvatarThemesProvider provideAvatarThemes() {
         return new AvatarThemesProvider();
     }
@@ -112,8 +109,26 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AvatarGenerator provideAvatarGenerator(AvatarGraphics graphics, AvatarCache cache) {
-        return new AvatarGenerator(cache, graphics);
+    public static Avatar provideAvatar(Context context, AvatarGraphics graphics){
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+
+        int borderSizePx = (int)TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                1.0f,
+                displayMetrics
+        );
+
+        int paddingSizePx = (int)TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                8.0f,
+                displayMetrics
+        );
+
+        return new RoundWithBorderAvatar(
+                new SquareAvatar(graphics),
+                paddingSizePx,
+                borderSizePx
+            );
     }
 
     @Singleton
@@ -193,23 +208,23 @@ public abstract class AppModule {
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
-            AvatarGenerator avatarGenerator
+            Avatar avatar
     ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatarGenerator)
+                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatar)
         );
 
         provider.registerFactory(
                 SupportedMessageListContentType.FALLBACK,
-                new FallbackMessageFactory(adamantAddressProcessor, avatarGenerator)
+                new FallbackMessageFactory(adamantAddressProcessor, avatar)
         );
 
         provider.registerFactory(
                 SupportedMessageListContentType.ETHEREUM_TRANSFER,
-                new EthereumTransferMessageFactory(adamantAddressProcessor, avatarGenerator)
+                new EthereumTransferMessageFactory(adamantAddressProcessor, avatar)
         );
 
         provider.registerFactory(

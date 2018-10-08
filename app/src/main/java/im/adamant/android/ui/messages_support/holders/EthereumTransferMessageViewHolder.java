@@ -7,12 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.github.curioustechizen.ago.RelativeTimeTextView;
-
 import java.util.Locale;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
@@ -24,8 +22,8 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
     private ImageView processedView;
     private View contentView;
 
-    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
-        super(context, v, adamantAddressProcessor, avatarGenerator);
+    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+        super(context, v, adamantAddressProcessor, avatar);
 
         LayoutInflater inflater = LayoutInflater.from(context);
         contentView = inflater.inflate(R.layout.list_subitem_etherium_transfer_message, contentBlock, false);

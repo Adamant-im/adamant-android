@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import im.adamant.android.R;
-import im.adamant.android.avatars.AvatarGenerator;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
@@ -16,11 +16,11 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class EthereumTransferMessageFactory implements MessageFactory<EthereumTransferMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
-    private AvatarGenerator avatarGenerator;
+    private Avatar avatar;
 
-    public EthereumTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, AvatarGenerator avatarGenerator) {
+    public EthereumTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
         this.adamantAddressProcessor = adamantAddressProcessor;
-        this.avatarGenerator = avatarGenerator;
+        this.avatar = avatar;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class EthereumTransferMessageFactory implements MessageFactory<EthereumTr
     public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_general_message, parent, false);
-        return new EthereumTransferMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatarGenerator);
+        return new EthereumTransferMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatar);
     }
 
     @Override
