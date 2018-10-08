@@ -252,8 +252,8 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api) {
-        return new TransactionToChatMapper(api);
+    public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
+        return new TransactionToChatMapper(api, publicKeyStorage);
     }
 
     @Singleton
