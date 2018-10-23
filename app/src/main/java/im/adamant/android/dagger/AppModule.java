@@ -49,6 +49,7 @@ import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
+import im.adamant.android.ui.PinCodeScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -324,10 +325,11 @@ public abstract class AppModule {
     @Provides
     public static SaveKeypairInteractor provideKeypairInteractor(
             Settings settings,
-            KeyStoreCipher keyStoreCipher,
-            AdamantApiWrapper apiWrapper
+            Encryptor encryptor,
+            AdamantApiWrapper apiWrapper,
+            Gson gson
     ) {
-        return new SaveKeypairInteractor(settings, apiWrapper, keyStoreCipher);
+        return new SaveKeypairInteractor(gson, settings, apiWrapper, encryptor);
     }
 
     @Singleton
@@ -458,6 +460,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {CompanionDetailScreenModule.class})
     public abstract CompanionDetailScreen createCompanionDetailInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {PincodeScreenModule.class})
+    public abstract PinCodeScreen createPincodeScreenInjector();
 
 
     //--Services

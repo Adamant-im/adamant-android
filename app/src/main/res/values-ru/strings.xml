@@ -12,6 +12,10 @@
     <string name="activity_login_btn_enter">Вход</string>
     <string name="activity_login_btn_new_account">Создать новый</string>
 
+    <string name="activity_pincode_enter_pincode">Введите пин-код</string>
+    <string name="activity_pincode_create_pincode">Создайте пин-код</string>
+    <string name="activity_pincode_empty_pincode">Пин-код не может быть пустым</string>
+
     <string name="activity_chats_action_create_new">Новый чат</string>
 
     <string name="activity_create_chat_recipient">Адрес получателя</string>

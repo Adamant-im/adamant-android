@@ -21,6 +21,10 @@
     <string name="activity_messages_tv_cost_text">Cost of message</string>
     <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
     <string name="activity_scan_qrcode_title">Scan QR code</string>
+    <string name="activity_pincode_enter_pincode">Enter pin-code</string>
+    <string name="activity_pincode_create_pincode">Create pin-code</string>
+    <string name="activity_pincode_empty_pincode">PIN cannot be empty</string>
+
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>

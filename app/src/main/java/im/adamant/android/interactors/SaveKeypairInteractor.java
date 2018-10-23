@@ -1,7 +1,11 @@
 package im.adamant.android.interactors;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.rx.ObservableRxList;
@@ -11,40 +15,51 @@ import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class SaveKeypairInteractor {
+    private Gson gson;
     private Settings settings;
     private AdamantApiWrapper api;
-    private KeyStoreCipher keyStoreCipher;
+    private Encryptor encryptor;
 
     public SaveKeypairInteractor(
+            Gson gson,
             Settings settings,
             AdamantApiWrapper api,
-            KeyStoreCipher keyStoreCipher
+            Encryptor encryptor
     ) {
         this.settings = settings;
         this.api = api;
-        this.keyStoreCipher = keyStoreCipher;
+        this.encryptor = encryptor;
+        this.gson = gson;
     }
 
-    public Completable saveKeypair(boolean value) {
-        return Completable.fromAction(() -> {
-            settings.setKeyPairMustBeStored(value);
+    public Completable saveKeypair(String pincode) {
+            return Completable.fromAction(() -> {
+            String salt = settings.getSalt();
 
-            if (value){
+            if (salt.isEmpty()){
+                salt = encryptor.generateRandomString() + encryptor.generateRandomString();
+                settings.setSalt(salt);
+            }
+
+            if (!pincode.isEmpty() && !salt.isEmpty()){
                 try {
                     if (api.isAuthorized()){
-                        String account = keyStoreCipher.encrypt(
-                                Constants.ADAMANT_ACCOUNT_ALIAS,
-                                api.getKeyPair()
-                        );
-                        settings.setAccountKeypair(account);
+                        String keyData = gson.toJson(api.getKeyPair());
+                        JsonObject jsonObject = encryptor.protectByPinCode(keyData, pincode, salt);
+                        settings.setAccountKeypair(jsonObject.toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             } else {
-                settings.setAccountKeypair("");
+                dropKeyPair();
             }
         }).subscribeOn(Schedulers.computation());
+    }
+
+    public void dropKeyPair() {
+        settings.setAccountKeypair("");
+        settings.setKeyPairMustBeStored(false);
     }
 
     public boolean isKeyPairMustBeStored() {

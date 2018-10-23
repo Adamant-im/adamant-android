@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
+import com.goterl.lazycode.lazysodium.interfaces.PwHash;
 import com.goterl.lazycode.lazysodium.interfaces.Sign;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
@@ -184,6 +185,58 @@ public class Encryptor {
         }
 
         return sign;
+    }
+
+    public JsonObject protectByPinCode(String data, String pincode, String salt) {
+        JsonObject json = new JsonObject();
+        try {
+            byte[] nonceBytes = sodium.randomBytesBuf(NONCE_LENGTH);
+            String hash = sodium.cryptoPwHashStr(pincode + salt, PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
+
+            String encryptedMessage = sodium.cryptoSecretBoxEasy(
+                    data,
+                    nonceBytes,
+                    hash
+            );
+
+            json.add("message", new JsonPrimitive(encryptedMessage.toLowerCase()));
+            json.add("nonce", new JsonPrimitive(LazySodium.toHex(nonceBytes).toLowerCase()));
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return json;
+    }
+
+    public String unprotectByPincode(JsonObject data, String pincode, String salt) {
+        String unprotectData = "";
+
+        try {
+            String hash = sodium.cryptoPwHashStr(pincode + salt, PwHash.OPSLIMIT_MAX, PwHash.MEMLIMIT_MODERATE);
+
+            JsonElement messageJsonElement = data.get("message");
+            JsonElement nonceJsonElement = data.get("nonce");
+
+            if (messageJsonElement == null || nonceJsonElement == null){
+                throw new InvalidValueForKeyValueStorage();
+            }
+
+            String message = messageJsonElement.getAsString();
+            String nonce = nonceJsonElement.getAsString();
+
+            byte[] nonceBytes = LazySodium.toBin(nonce);
+
+            unprotectData = sodium.cryptoSecretBoxOpenEasy(
+                    message,
+                    nonceBytes,
+                    hash
+            );
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return unprotectData;
     }
 
     public String generateRandomString() { ;

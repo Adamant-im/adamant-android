@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,22 +23,31 @@ import com.franmontiel.localechanger.LocaleChanger;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
+import im.adamant.android.presenters.PincodePresenter;
 import im.adamant.android.presenters.SettingsPresenter;
 import im.adamant.android.services.SaveSettingsService;
+import im.adamant.android.ui.PinCodeScreen;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
 import sm.euzee.github.com.servicemanager.ServiceManager;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static im.adamant.android.ui.PinCodeScreen.ARG_MODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -127,7 +137,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
     @Override
     public void onPause() {
-        presenter.onClickSaveSettings();
+        saveAllSettings();
         nodeAdapter.stopListenChanges();
 
         if (adapterDisposable != null){
@@ -142,7 +152,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (!isVisibleToUser && (presenter != null)){
-            presenter.onClickSaveSettings();
+            saveAllSettings();
         }
     }
 
@@ -154,6 +164,25 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void onSelectLanguage() {
         androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
+    }
+
+    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+    public void onSelectedSaveKeypair(CompoundButton button, boolean checked) {
+        Context applicationContext = Objects.requireNonNull(getActivity()).getApplicationContext();
+        if (applicationContext == null) {return;}
+
+        if (checked) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(ARG_MODE, PincodePresenter.Mode.ENCRYPT_KEYPAIR);
+
+            Intent intent = new Intent(applicationContext, PinCodeScreen.class);
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(bundle);
+
+            this.startActivityForResult(intent, Constants.PINCODE_WAS_ENTERED);
+        } else {
+            presenter.onClickDropSavedKeyPair();
+        }
     }
 
     @Override
@@ -183,20 +212,13 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         addressPushService.setText(address);
     }
 
-    @Override
-    public void callSaveSettingsService() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            Context context = activity.getApplicationContext();
-            Intent intent = new Intent(context, SaveSettingsService.class);
-            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
-            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
-            intent.putExtra(SaveSettingsService.NOTIFICATION_SERVICE_ADDRESS, addressPushService.getText().toString());
 
-            ServiceManager.runService(context, intent);
+
+    private void saveAllSettings() {
+        if (presenter != null) {
+            presenter.onClickSaveSettings(enablePushNotifications.isChecked(), addressPushService.getText().toString());
         }
     }
-
 
     //TODO: Refactor: method to long and dirty
     private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {

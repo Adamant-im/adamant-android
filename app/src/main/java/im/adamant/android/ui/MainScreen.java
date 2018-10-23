@@ -74,9 +74,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @BindView(R.id.bottom_appbar)
     BottomAppBar appBar;
 
-    @Inject
-    Avatar avatar;
-
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;

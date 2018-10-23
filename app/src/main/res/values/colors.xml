@@ -10,6 +10,7 @@
 
     <color name="colorSuccess">#32d296</color>
     <color name="colorWarning">#faa05a</color>
+    <color name="error">#8D182B</color>
 
     <color name="status_active">#1E6E50</color>
     <color name="status_connected">#1562E0</color>

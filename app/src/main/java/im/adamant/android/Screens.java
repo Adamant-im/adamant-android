@@ -10,4 +10,5 @@ public interface Screens {
     String SCAN_QRCODE_SCREEN = "scan_qrcode_screen";
     String COMPANION_DETAIL_SCREEN = "companion_detail_screen";
     String SPLASH_SCREEN = "splash_screen";
+    String PINCODE_SCREEN = "pincode_screen";
 }

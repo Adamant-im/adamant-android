@@ -1,12 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.PinCodeScreen">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:background="@color/colorPrimary"
+tools:context=".ui.PinCodeScreen">
 
+<ImageView
+    android:id="@+id/activity_pincode_iv_profile_image"
+    android:layout_width="84dp"
+    android:layout_height="84dp"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="104dp"
+    android:src="@mipmap/ic_launcher"/>
 
+<TextView
+    android:id="@+id/activity_pincode_tv_suggestion"
+    android:layout_width="256dp"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/activity_pincode_iv_profile_image"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="36dp"
+    android:fontFamily="sans-serif-thin"
+    android:gravity="center"
+    android:maxLines="1"
+    android:text="@string/activity_pincode_enter_pincode"
+    android:textColor="@color/colorPrimaryDark"
+    android:textSize="34sp" />
 
+<com.andrognito.pinlockview.IndicatorDots
+    android:id="@+id/activity_pincode_id_indicator_dots"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/activity_pincode_tv_suggestion"
+    android:layout_centerHorizontal="true"
+    app:dotFilledBackground="@drawable/pincode_dot"
+    android:layout_marginTop="36dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<TextView
+    android:id="@+id/activity_pincode_tv_error"
+    android:layout_width="256dp"
+    android:layout_height="wrap_content"
+    android:layout_below="@+id/activity_pincode_id_indicator_dots"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="16dp"
+    android:fontFamily="sans-serif-thin"
+    android:gravity="center"
+    android:maxLines="3"
+    android:textColor="@color/error"
+    android:textSize="12sp" />
+
+<com.andrognito.pinlockview.PinLockView
+    android:id="@+id/activity_pincode_plv_keyboard"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/activity_pincode_tv_error"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="36dp"
+    app:keypadButtonSize="72dp"
+    app:keypadShowDeleteButton="true"
+    app:keypadTextColor="@color/colorPrimaryDark"
+    app:keypadTextSize="18dp" />
+
+</RelativeLayout>
