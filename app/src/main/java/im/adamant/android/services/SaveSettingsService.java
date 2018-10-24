@@ -2,21 +2,15 @@ package im.adamant.android.services;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import dagger.android.AndroidInjection;
 import im.adamant.android.dagger.SaveSettingsServiceModule;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import sm.euzee.github.com.servicemanager.CompatService;
 /**
  * @deprecated
@@ -27,7 +21,7 @@ public class SaveSettingsService extends CompatService {
     public static final String NOTIFICATION_SERVICE_ADDRESS = "notification_service_address";
 
     @Inject
-    SaveKeypairInteractor settingsInteractor;
+    KeypairInteractor settingsInteractor;
 
     @Inject
     SubscribeToPushInteractor subscribeToPushInteractor;

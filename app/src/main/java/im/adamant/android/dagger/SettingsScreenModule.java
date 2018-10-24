@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.presenters.SettingsPresenter;
@@ -19,13 +19,13 @@ public class SettingsScreenModule {
     @FragmentScope
     @Provides
     public static SettingsPresenter provideSettingsPresenter(
-            SaveKeypairInteractor saveKeypairInteractor,
+            KeypairInteractor keypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
             ServerNodeInteractor serverNodeInteractor,
             @Named(value = Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
     ) {
         return new SettingsPresenter(
-                saveKeypairInteractor,
+                keypairInteractor,
                 subscribeToPushInteractor,
                 serverNodeInteractor,
                 subscriptions

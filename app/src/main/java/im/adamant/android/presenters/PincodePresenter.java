@@ -1,7 +1,6 @@
 package im.adamant.android.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import java.io.IOException;
 
@@ -10,20 +9,17 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.ui.mvp_view.PincodeView;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PincodeView> {
     private Router router;
-    private AuthorizeInteractor authorizeInteractor;
-    private SaveKeypairInteractor saveKeypairInteractor;
+    private KeypairInteractor keypairInteractor;
     private Mode currentMode = Mode.ENCRYPT_KEYPAIR;
 
     public enum Mode {
@@ -33,14 +29,12 @@ public class PincodePresenter extends BasePresenter<PincodeView> {
 
     public PincodePresenter(
             Router router,
-            AuthorizeInteractor authorizeInteractor,
-            SaveKeypairInteractor saveKeypairInteractor,
+            KeypairInteractor keypairInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
         this.router = router;
-        this.authorizeInteractor = authorizeInteractor;
-        this.saveKeypairInteractor = saveKeypairInteractor;
+        this.keypairInteractor = keypairInteractor;
     }
 
     public void setCurrentMode(Mode mode) {
@@ -63,7 +57,7 @@ public class PincodePresenter extends BasePresenter<PincodeView> {
     private void encryptKeyPair(String pincode) {
         LoggerHelper.d("PIN-CREATED", pincode);
 
-        Disposable subscribe = saveKeypairInteractor
+        Disposable subscribe = keypairInteractor
                 .saveKeypair(pincode)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(() -> {
@@ -74,8 +68,8 @@ public class PincodePresenter extends BasePresenter<PincodeView> {
 
     private void restoreKeyPair(String pincode) {
         LoggerHelper.d("PIN-ENTERED", pincode);
-        Disposable subscribe = authorizeInteractor
-                .restoreAuthorization()
+        Disposable subscribe = keypairInteractor
+                .restoreAuthorization(pincode)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(authorization -> {
 

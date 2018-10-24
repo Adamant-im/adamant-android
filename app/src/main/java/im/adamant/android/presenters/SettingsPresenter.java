@@ -7,7 +7,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
@@ -17,27 +17,30 @@ import io.reactivex.disposables.Disposable;
 
 @InjectViewState
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
-    private SaveKeypairInteractor saveKeypairInteractor;
+    private KeypairInteractor keypairInteractor;
     private SubscribeToPushInteractor subscribeToPushInteractor;
     private ServerNodeInteractor serverNodeInteractor;
 
+    private boolean isAttached = false;
+
     public SettingsPresenter(
-            SaveKeypairInteractor saveKeypairInteractor,
+            KeypairInteractor keypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
             ServerNodeInteractor serverNodeInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
-        this.saveKeypairInteractor = saveKeypairInteractor;
+        this.keypairInteractor = keypairInteractor;
         this.subscribeToPushInteractor = subscribeToPushInteractor;
         this.serverNodeInteractor = serverNodeInteractor;
     }
 
     @Override
     public void attachView(SettingsView view) {
+        isAttached = false;
         super.attachView(view);
         getViewState().setStoreKeyPairOption(
-                saveKeypairInteractor.isKeyPairMustBeStored()
+                keypairInteractor.isKeyPairMustBeStored()
         );
         getViewState().setEnablePushOption(
                 subscribeToPushInteractor.isEnabledPush()
@@ -45,6 +48,8 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().setAddressPushService(
                 subscribeToPushInteractor.getPushServiceAddress()
         );
+
+        isAttached = true;
     }
 
     public void onClickAddNewNode(String nodeUrl) {
@@ -73,7 +78,13 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         serverNodeInteractor.deleteNode(serverNode);
     }
 
-    public void onClickDropSavedKeyPair() {
-        saveKeypairInteractor.dropKeyPair();
+    public void onSwitchSaveKeyPair(boolean value) {
+        if (!isAttached) { return; }
+
+        if (value) {
+            getViewState().showSetPincodeScreen();
+        } else {
+            keypairInteractor.dropKeyPair();
+        }
     }
 }

@@ -5,8 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
-import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.presenters.PincodePresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
@@ -17,11 +16,10 @@ public class PincodeScreenModule {
     @Provides
     public PincodePresenter providePincodePresenter(
             Router router,
-            AuthorizeInteractor authorizeInteractor,
-            SaveKeypairInteractor saveKeypairInteractor,
+            KeypairInteractor keypairInteractor,
             @Named(Screens.PINCODE_SCREEN) CompositeDisposable subscriptions
     ){
-        return new PincodePresenter(router, authorizeInteractor, saveKeypairInteractor, subscriptions);
+        return new PincodePresenter(router, keypairInteractor, subscriptions);
     }
 
     @ActivityScope

@@ -58,31 +58,6 @@ public class AuthorizeInteractor {
         }
     }
 
-    public Flowable<Authorization> restoreAuthorization() {
-
-            //Not transform this code in lambda (Application crashed if unchecked exception)
-           return Flowable.fromCallable(new Callable<KeyPair>() {
-                    @Override
-                    public KeyPair call() throws Exception {
-                        String account = settings.getAccountKeypair();
-                        if (account == null || account.isEmpty()){
-                            throw new Exception("Account not stored!");
-                        }
-
-                        KeyPair keyPair = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
-
-                        if (keyPair == null) {
-                            throw new Exception("Account not decrypted!");
-                        }
-
-                        return keyPair;
-                    }
-                })
-               .subscribeOn(Schedulers.computation())
-               .flatMap(keyPair -> api.authorize(keyPair));
-
-    }
-
     public CharSequence generatePassPhrase() {
         return keyGenerator.generateNewPassphrase();
     }

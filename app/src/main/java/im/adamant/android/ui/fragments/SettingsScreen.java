@@ -168,21 +168,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
     public void onSelectedSaveKeypair(CompoundButton button, boolean checked) {
-        Context applicationContext = Objects.requireNonNull(getActivity()).getApplicationContext();
-        if (applicationContext == null) {return;}
-
-        if (checked) {
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(ARG_MODE, PincodePresenter.Mode.ENCRYPT_KEYPAIR);
-
-            Intent intent = new Intent(applicationContext, PinCodeScreen.class);
-            intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtras(bundle);
-
-            this.startActivityForResult(intent, Constants.PINCODE_WAS_ENTERED);
-        } else {
-            presenter.onClickDropSavedKeyPair();
-        }
+        presenter.onSwitchSaveKeyPair(checked);
     }
 
     @Override
@@ -212,6 +198,20 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         addressPushService.setText(address);
     }
 
+    @Override
+    public void showSetPincodeScreen() {
+        Context applicationContext = Objects.requireNonNull(getActivity()).getApplicationContext();
+        if (applicationContext == null) {return;}
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(ARG_MODE, PincodePresenter.Mode.ENCRYPT_KEYPAIR);
+
+        Intent intent = new Intent(applicationContext, PinCodeScreen.class);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtras(bundle);
+
+        this.startActivityForResult(intent, Constants.PINCODE_WAS_ENTERED);
+    }
 
 
     private void saveAllSettings() {

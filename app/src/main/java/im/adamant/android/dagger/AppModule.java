@@ -31,10 +31,10 @@ import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.KeypairInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
@@ -323,13 +323,13 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SaveKeypairInteractor provideKeypairInteractor(
+    public static KeypairInteractor provideKeypairInteractor(
             Settings settings,
             Encryptor encryptor,
             AdamantApiWrapper apiWrapper,
             Gson gson
     ) {
-        return new SaveKeypairInteractor(gson, settings, apiWrapper, encryptor);
+        return new KeypairInteractor(gson, settings, apiWrapper, encryptor);
     }
 
     @Singleton

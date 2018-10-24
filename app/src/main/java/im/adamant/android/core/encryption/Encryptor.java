@@ -212,7 +212,7 @@ public class Encryptor {
         String unprotectData = "";
 
         try {
-            String hash = sodium.cryptoPwHashStr(pincode + salt, PwHash.OPSLIMIT_MAX, PwHash.MEMLIMIT_MODERATE);
+            String hash = sodium.cryptoPwHashStr(pincode + salt, PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
 
             JsonElement messageJsonElement = data.get("message");
             JsonElement nonceJsonElement = data.get("nonce");
