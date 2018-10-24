@@ -83,7 +83,7 @@ public class PincodePresenter extends BasePresenter<PincodeView> {
                     if (error instanceof IOException){
                         getViewState().showMessage(R.string.authorization_error);
                     } else {
-                        router.navigateTo(Screens.LOGIN_SCREEN);
+                        getViewState().showMessage(R.string.incorrect_pincode);
                     }
 
                 })

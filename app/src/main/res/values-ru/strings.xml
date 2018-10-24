@@ -72,6 +72,7 @@
     <string name="empty_message">Сообщение не может быть пустым</string>
     <string name="wrong_node_address">Некорректный адрес ноды</string>
     <string name="unsupported_message_type">Неподдерживаемое сообщение: %s</string>
+    <string name="incorrect_pincode">Некорректный пин-код</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>

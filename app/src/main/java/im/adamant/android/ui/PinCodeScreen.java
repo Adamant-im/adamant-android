@@ -22,6 +22,7 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.presenters.PincodePresenter;
 import im.adamant.android.ui.mvp_view.PincodeView;
 import ru.terrakok.cicerone.Navigator;
@@ -51,6 +52,7 @@ public class PinCodeScreen extends BaseActivity implements PincodeView {
     @BindView(R.id.activity_pincode_plv_keyboard) PinLockView pinLockView;
     @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
     @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
+    @BindView(R.id.activity_pincode_tv_error) TextView errorView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -67,7 +69,7 @@ public class PinCodeScreen extends BaseActivity implements PincodeView {
 
         @Override
         public void onPinChange(int pinLength, String intermediatePin) {
-
+            LoggerHelper.d("Pin", intermediatePin);
         }
     };
 
@@ -89,6 +91,7 @@ public class PinCodeScreen extends BaseActivity implements PincodeView {
         pinLockView.attachIndicatorDots(indicatorDots);
         pinLockView.setPinLockListener(mPinLockListener);
         pinLockView.setPinLength(10);
+        pinLockView.setShowDeleteButton(true);
 
         indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
 
@@ -125,7 +128,7 @@ public class PinCodeScreen extends BaseActivity implements PincodeView {
 
     @Override
     public void showMessage(int stringResourceId) {
-        Toast.makeText(this, stringResourceId, Toast.LENGTH_LONG).show();
+        errorView.setText(getString(stringResourceId));
     }
 
     private Navigator navigator = new Navigator() {

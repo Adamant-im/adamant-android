@@ -63,6 +63,7 @@
     <string name="empty_message">Message cannot be empty</string>
     <string name="wrong_node_address">Node\'s address has incorrect format</string>
     <string name="unsupported_message_type">Unsupported message type: %s</string>
+    <string name="incorrect_pincode">Incorrect pin-code</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

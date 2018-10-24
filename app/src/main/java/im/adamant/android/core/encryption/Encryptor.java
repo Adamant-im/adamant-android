@@ -190,6 +190,7 @@ public class Encryptor {
     public JsonObject protectByPinCode(String data, String pincode, String salt) {
         JsonObject json = new JsonObject();
         try {
+            // TODO: Каждый пинкод будет корректно дешифровывать сообщение т.к. от хэша будут браться только первые символы, а они одинаковы
             byte[] nonceBytes = sodium.randomBytesBuf(NONCE_LENGTH);
             String hash = sodium.cryptoPwHashStr(pincode + salt, PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
 
