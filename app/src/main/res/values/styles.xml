@@ -9,7 +9,7 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.Button</item>
+        <item name="materialButtonStyle">@style/AppTheme.PrimaryButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
@@ -27,13 +27,15 @@
         <item name="android:fontWeight">300</item>
         <item name="fontWeight">300</item>
 
+
     </style>
 
-    <style name="AppTheme.Button" parent="@style/Widget.MaterialComponents.Button">
+    <style name="AppTheme.PrimaryButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
-        <item name="backgroundTint">@color/colorPrimary</item>
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="backgroundTint">@color/colorAccent</item>
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
 
@@ -44,7 +46,7 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.Button</item>
+        <item name="materialButtonStyle">@style/AppTheme.PrimaryButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>

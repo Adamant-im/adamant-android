@@ -8,7 +8,7 @@
     <string name="activity_login_tv_create_new_suggestion">Or create a new anonymous address:</string>
     <string name="activity_login_tv_new_password_label"><b>Save</b> the passphrase for new Wallet and Messenger account. There is no login to enter Wallet, only the passphrase needed. If lost, no way to recover it.</string>
     <string name="activity_login_et_pass_phrase">Input your passphrase to login</string>
-    <string name="activity_login_btn_enter">Login</string>
+    <string name="activity_login_btn_enter">Login now</string>
     <string name="activity_login_btn_new_account">Create new</string>
 
     <string name="activity_chats_action_create_new">Start a new chat</string>
