@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@color/colorPrimary"/>
+    <item android:drawable="@color/primary"/>
 
     <item android:top="40dp"
         android:bottom="-300dp"
@@ -13,7 +13,7 @@
             <shape
                 android:shape="rectangle">
                 <solid android:color="@color/colorThird"/>
-                <stroke android:width="1dp" android:color="@color/colorSecondary"/>
+                <stroke android:width="1dp" android:color="@color/strokeDark"/>
             </shape>
         </rotate>
     </item>

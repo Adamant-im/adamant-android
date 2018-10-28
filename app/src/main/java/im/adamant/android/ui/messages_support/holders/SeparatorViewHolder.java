@@ -3,16 +3,11 @@ package im.adamant.android.ui.messages_support.holders;
 import android.content.Context;
 import android.view.View;
 
-import com.github.curioustechizen.ago.RelativeTimeTextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
 import im.adamant.android.ui.custom_view.TodayRelativeTimeView;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.entities.Separator;
 
@@ -42,9 +37,9 @@ public class SeparatorViewHolder extends AbstractMessageListContentViewHolder {
         relativeTimeTextView.setReferenceTime(separator.getTimestamp());
 
         if (relativeTimeTextView.isToday()){
-            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
-            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent));
+            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
+            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
+            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
         } else {
             relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.colorThird));
             leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorThird));

@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_wallet_create_qrcode_title"
                 android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -126,7 +126,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/copy"
                 android:textAllCaps="true"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/secondary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 

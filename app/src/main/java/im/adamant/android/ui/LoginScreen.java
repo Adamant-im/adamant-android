@@ -67,10 +67,10 @@ public class LoginScreen extends BaseActivity implements LoginView {
     }
 
     //--ButterKnife
-    @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
-    @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
-    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
-    @BindView(R.id.activity_login_btn_login) Button loginButton;
+//    @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
+//    @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
+//    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
+//    @BindView(R.id.activity_login_btn_login) Button loginButton;
 
     //--Activity
     @Override
@@ -88,54 +88,54 @@ public class LoginScreen extends BaseActivity implements LoginView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
-            if (!isFocused){
-                AdamantApplication.hideKeyboard(this, passPhrase);
-            }
-        });
+//        passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
+//            if (!isFocused){
+//                AdamantApplication.hideKeyboard(this, passPhrase);
+//            }
+//        });
     }
 
-    @OnClick(R.id.activity_login_btn_login)
-    public void loginButtonClick() {
-        presenter.onClickLoginButton(passPhrase.getText().toString());
-        AdamantApplication.hideKeyboard(this, passPhrase);
-    }
+//    @OnClick(R.id.activity_login_btn_login)
+//    public void loginButtonClick() {
+//        presenter.onClickLoginButton(passPhrase.getText().toString());
+//        AdamantApplication.hideKeyboard(this, passPhrase);
+//    }
+//
+//    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
+//    public void generateNewPassphraseClick() {
+//        presenter.onClickGeneratePassphrase();
+//    }
+//
+//    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
+//    public void copyNewPassPhraseToClipboardClick() {
+//        ClipData clip = ClipData.newPlainText("passphrase", newPassPhrase.getText().toString());
+//        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+//
+//        if(clipboard != null){
+//            clipboard.setPrimaryClip(clip);
+//        }
+//    }
 
-    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
-    public void generateNewPassphraseClick() {
-        presenter.onClickGeneratePassphrase();
-    }
-
-    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
-    public void copyNewPassPhraseToClipboardClick() {
-        ClipData clip = ClipData.newPlainText("passphrase", newPassPhrase.getText().toString());
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
-        if(clipboard != null){
-            clipboard.setPrimaryClip(clip);
-        }
-    }
-
-    @OnClick(R.id.activity_login_btn_scan_qrcode)
-    public void scanQrCodeClick() {
-        presenter.onClickScanQrCodeButton();
-    }
-
-    @OnClick(R.id.activity_login_btn_load_qrcode_from_gallery)
-    public void loadQrCodeClick() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
-    }
-
-    @OnClick(R.id.activity_login_btn_create_qrcode)
-    public void generateQrCodeClick(){
-        TedPermission.with(this)
-                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-                .setPermissionListener(permissionlistener)
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
-    }
+//    @OnClick(R.id.activity_login_btn_scan_qrcode)
+//    public void scanQrCodeClick() {
+//        presenter.onClickScanQrCodeButton();
+//    }
+//
+//    @OnClick(R.id.activity_login_btn_load_qrcode_from_gallery)
+//    public void loadQrCodeClick() {
+//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+//        photoPickerIntent.setType("image/*");
+//        startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
+//    }
+//
+//    @OnClick(R.id.activity_login_btn_create_qrcode)
+//    public void generateQrCodeClick(){
+//        TedPermission.with(this)
+//                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+//                .setPermissionListener(permissionlistener)
+//                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                .check();
+//    }
 
     @Override
     protected void onResume() {
@@ -151,8 +151,8 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
     @Override
     public void passPhraseWasGenerated(CharSequence passphrase) {
-        newPassPhrase.setText(passphrase);
-        newPassPhraseForm.setVisibility(View.VISIBLE);
+//        newPassPhrase.setText(passphrase);
+//        newPassPhraseForm.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -162,12 +162,12 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
     @Override
     public void lockAuthorization() {
-        loginButton.setEnabled(false);
+//        loginButton.setEnabled(false);
     }
 
     @Override
     public void unLockAuthorization() {
-        loginButton.setEnabled(true);
+//        loginButton.setEnabled(true);
     }
 
     @Override
@@ -177,7 +177,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
         String qrCode = qrCodeHelper.parseActivityResult(this, requestCode, resultCode, data);
 
         if (!qrCode.isEmpty()){
-            passPhrase.setText(qrCode);
+//            passPhrase.setText(qrCode);
             presenter.onClickLoginButton(qrCode);
         }
     }
@@ -232,7 +232,7 @@ public class LoginScreen extends BaseActivity implements LoginView {
         public void onPermissionGranted() {
             File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
             try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
+//                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
                 qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
             }catch (Exception ex){
                 ex.printStackTrace();

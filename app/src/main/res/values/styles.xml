@@ -3,13 +3,13 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
+        <item name="colorAccent">@color/secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.PrimaryButton</item>
+        <item name="materialButtonStyle">@style/AppTheme.ActiveButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
@@ -23,59 +23,72 @@
     </style>
 
     <style name="AppTheme.ButtonTextAppearance" parent="AppTheme.TextAppearance">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:fontWeight">300</item>
         <item name="fontWeight">300</item>
+    </style>
 
+    <style name="AppTheme.ActiveButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
+        <item name="backgroundTint">@color/secondary</item>
+        <item name="android:background">@color/secondary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textColor">@color/primary</item>
+        <item name="cornerRadius">@dimen/main_button_height</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:lineSpacingExtra">16sp</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:translationZ">2dp</item>
 
     </style>
 
-    <style name="AppTheme.PrimaryButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
-        <item name="backgroundTint">@color/colorAccent</item>
-        <item name="android:background">@color/colorAccent</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+    <style name="AppTheme.InactiveButton" parent="AppTheme.ActiveButton">
+        <item name="android:elevation">0dp</item>
+        <item name="backgroundTint">@color/primary</item>
+        <item name="android:background">@color/primary</item>
+        <item name="android:textColor">@color/secondary</item>
+        <item name="strokeColor">@color/strokeDark</item>
+        <item name="android:strokeColor">@color/strokeDark</item>
     </style>
 
 
     <style name="AppTheme.WithActionBar" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
+        <item name="colorAccent">@color/secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.PrimaryButton</item>
+        <item name="materialButtonStyle">@style/AppTheme.ActiveButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
 
     <style name="AppTheme.Launcher" parent="AppTheme.WithActionBar">
-        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@color/primary</item>
     </style>
 
     <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">-->
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
-        <item name="android:textColorSecondary">@color/colorPrimaryDark</item>
+        <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
+        <item name="android:textColorSecondary">@color/primaryDarkVariant</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="android:colorBackground">@color/colorPrimaryDark</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@color/primaryDarkVariant</item>
+        <item name="android:textColor">@color/primaryDarkVariant</item>
     </style>
 
     <!--<style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">-->
     <style name="AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="android:textColorPrimary">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
+        <item name="colorPrimaryDark">@color/secondary</item>
         <item name="android:windowTitleStyle">@style/AlertDialogTitle</item>
     </style>
 
     <style name="AlertDialogTitle">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textColor">@color/primaryDarkVariant</item>
         <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
     </style>
 

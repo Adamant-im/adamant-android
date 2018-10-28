@@ -52,15 +52,15 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
     private int detectStatusColor(ServerNode serverNode) {
         switch (serverNode.getStatus()){
             case ACTIVE:
-                return R.color.status_active;
+                return R.color.statusActive;
             case CONNECTED:
-                return R.color.status_connected;
+                return R.color.statusConnected;
             case CONNECTING:
-                return R.color.status_connecting;
+                return R.color.statusConnecting;
             case UNAVAILABLE:
-                return R.color.status_unavailable;
+                return R.color.statusUnavailable;
             default:
-                return R.color.status_unavailable;
+                return R.color.statusUnavailable;
         }
     }
 
