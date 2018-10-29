@@ -41,7 +41,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_login"
-                style="@style/AppTheme.ActiveButton"
+                style="@style/AppTheme.ActivePrimaryButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
@@ -88,7 +88,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_generate_new_passphrase"
-                style="@style/AppTheme.InactiveButton"
+                style="@style/AppTheme.ActiveSecondaryButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"

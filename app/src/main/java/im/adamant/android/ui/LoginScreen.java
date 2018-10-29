@@ -18,12 +18,15 @@ import com.gun0912.tedpermission.TedPermission;
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.image.ImageType;
 
+import androidx.fragment.app.FragmentManager;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
+import im.adamant.android.ui.fragments.BottomLoginFragment;
+import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.mvp_view.LoginView;
 
 import java.io.File;
@@ -95,11 +98,15 @@ public class LoginScreen extends BaseActivity implements LoginView {
 //        });
     }
 
-//    @OnClick(R.id.activity_login_btn_login)
-//    public void loginButtonClick() {
+    @OnClick(R.id.activity_login_btn_login)
+    public void loginButtonClick() {
 //        presenter.onClickLoginButton(passPhrase.getText().toString());
 //        AdamantApplication.hideKeyboard(this, passPhrase);
-//    }
+
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        BottomLoginFragment loginFragment = new BottomLoginFragment();
+        loginFragment.show(supportFragmentManager, loginFragment.getTag());
+    }
 //
 //    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
 //    public void generateNewPassphraseClick() {

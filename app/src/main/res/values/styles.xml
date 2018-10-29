@@ -9,9 +9,10 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.ActiveButton</item>
+        <item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
+        <item name="bottomSheetDialogTheme">@style/BaseBottomSheetDialog</item>+
     </style>
 
     <style name="AppTheme.TextAppearance" parent="@android:style/TextAppearance.Small">
@@ -28,27 +29,35 @@
         <item name="fontWeight">300</item>
     </style>
 
-    <style name="AppTheme.ActiveButton" parent="@style/Widget.MaterialComponents.Button">
+    <style name="AppTheme.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
-        <item name="backgroundTint">@color/secondary</item>
-        <item name="android:background">@color/secondary</item>
+        <!--<item name="backgroundTint">@color/secondary</item>-->
+        <item name="android:backgroundTint">@drawable/primary_button_selector_background</item>
+        <item name="android:textColor">@drawable/primary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textColor">@color/primary</item>
         <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="android:elevation">4dp</item>
         <item name="android:lineSpacingExtra">16sp</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:translationZ">2dp</item>
-
     </style>
 
-    <style name="AppTheme.InactiveButton" parent="AppTheme.ActiveButton">
+    <style name="AppTheme.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:elevation">0dp</item>
-        <item name="backgroundTint">@color/primary</item>
-        <item name="android:background">@color/primary</item>
+        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
+        <item name="android:backgroundTint">@color/primary</item>
         <item name="android:textColor">@color/secondary</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="strokeColor">@color/strokeDark</item>
-        <item name="android:strokeColor">@color/strokeDark</item>
+    </style>
+
+    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
+    </style>
+
+    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
     </style>
 
 
@@ -59,7 +68,7 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.ActiveButton</item>
+        <item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
     </style>
