@@ -7,8 +7,10 @@
     <string name="activity_login_tv_subtitle">A top-notch anonymous messenger encrypted with a Blockchain</string>
     <string name="activity_login_tv_create_new_suggestion">Or create a new anonymous address:</string>
     <string name="activity_login_tv_new_password_label"><b>Save</b> the passphrase for new Wallet and Messenger account. There is no login to enter Wallet, only the passphrase needed. If lost, no way to recover it.</string>
-    <string name="activity_login_et_pass_phrase">Input your passphrase to login</string>
+    <string name="activity_login_et_pass_phrase">Enter your passphrase</string>
     <string name="activity_login_btn_enter">Login now</string>
+    <string name="activity_login_btn_enter_in_net">Login in net</string>
+    <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
     <string name="activity_login_btn_new_account">Create new</string>
 
     <string name="activity_chats_action_create_new">Start a new chat</string>
@@ -25,6 +27,8 @@
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
     <string name="bottom_menu_title_settings">Settings</string>
+
+    <string name="fragment_login_title">Login</string>
 
     <string name="fragment_wallet_address_title">Number</string>
     <string name="fragment_wallet_balance_title">Balance</string>

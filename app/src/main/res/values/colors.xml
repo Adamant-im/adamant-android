@@ -16,7 +16,7 @@
     <color name="onError">#FFFFFF</color>
 
     <color name="strokeDark">#9497a3</color>
-    <color name="colorThird">#D5DDE5</color>
+    <color name="disabled">#ECEFF1</color>
 
     <color name="colorSuccess">#32d296</color>
     <color name="colorWarning">#faa05a</color>

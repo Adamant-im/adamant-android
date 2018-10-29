@@ -8,8 +8,10 @@
     <string name="activity_login_tv_subtitle">Самый анонимный мессенджер, зашифрованный в Blockchain</string>
     <string name="activity_login_tv_create_new_suggestion">Или создайте новый анонимный адрес:</string>
     <string name="activity_login_tv_new_password_label">Это пароль для нового Кошелька и Мессенджера. <b>Сохраните его</b>! Для входа в Кошелек не нужно логина, только этот пароль. <b>Восстановление пароля невозможно</b>.</string>
-    <string name="activity_login_et_pass_phrase">Введите пароль, чтобы войти</string>
+    <string name="activity_login_et_pass_phrase">Введите пароль</string>
     <string name="activity_login_btn_enter">Вход</string>
+    <string name="activity_login_btn_enter_in_net">Войти в сеть</string>
+    <string name="activity_login_tv_login_by_qr">Войти через сохраненный QR-код:</string>
     <string name="activity_login_btn_new_account">Создать новый</string>
 
     <string name="activity_chats_action_create_new">Новый чат</string>
@@ -26,6 +28,8 @@
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
+
+    <string name="fragment_login_title">Вход</string>
 
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
