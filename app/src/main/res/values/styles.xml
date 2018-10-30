@@ -9,7 +9,7 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>
+        <!--<item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>-->
         <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AlertDialogCustom</item>
         <item name="bottomSheetDialogTheme">@style/BaseBottomSheetDialog</item>+
@@ -33,24 +33,22 @@
         <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
         <!--<item name="backgroundTint">@color/secondary</item>-->
         <item name="android:backgroundTint">@drawable/primary_button_selector_background</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textColor">@drawable/primary_button_selector_text</item>
+        <item name="android:textAllCaps">true</item>
         <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="android:elevation">4dp</item>
         <item name="android:lineSpacingExtra">16sp</item>
         <item name="android:stateListAnimator">@null</item>
-        <item name="android:translationZ">2dp</item>
-        <item name="android:colorButtonNormal">@color/disabled</item>
     </style>
 
-    <style name="AppTheme.ActiveSecondaryButton" parent="AppTheme.ActivePrimaryButton">
+    <style name="AppTheme.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:elevation">0dp</item>
-        <item name="android:translationZ">0dp</item>
-        <item name="backgroundTint">@color/primary</item>
-        <item name="android:background">@color/primary</item>
-        <item name="android:textColor">@color/secondary</item>
+        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
+        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
+        <item name="android:textColor">@drawable/secondary_button_selector_text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="strokeColor">@color/strokeDark</item>
-        <item name="android:strokeColor">@color/strokeDark</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
