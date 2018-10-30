@@ -41,7 +41,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_login"
-                style="@style/AppTheme.ActivePrimaryButton"
+                style="@style/AdamantLight.ActivePrimaryButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
@@ -62,7 +62,7 @@
                 android:fontFamily="@font/montserrat"
                 android:text="@string/activity_login_tv_title"
                 android:textAlignment="center"
-                android:textAppearance="@style/AppTheme.TextAppearance"
+                android:textAppearance="@style/AdamantLight.TextAppearance"
                 android:textSize="@dimen/activity_login_title_text_size"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -88,7 +88,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_generate_new_passphrase"
-                style="@style/AppTheme.ActiveSecondaryButton"
+                style="@style/AdamantLight.ActiveSecondaryButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"

@@ -1,36 +1,36 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="AdamantLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
         <item name="colorAccent">@color/secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
+        <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
         <!--<item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>-->
-        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
-        <item name="alertDialogStyle">@style/AlertDialogCustom</item>
-        <item name="bottomSheetDialogTheme">@style/BaseBottomSheetDialog</item>+
+        <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
+        <item name="alertDialogStyle">@style/AdamantLight.AlertDialogCustom</item>
+        <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>+
     </style>
 
-    <style name="AppTheme.TextAppearance" parent="@android:style/TextAppearance.Small">
+    <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/ubuntu</item>
     </style>
 
-    <style name="AppTheme.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
+    <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
         <item name="android:fontFamily">@font/ubuntu</item>
     </style>
 
-    <style name="AppTheme.ButtonTextAppearance" parent="AppTheme.TextAppearance">
+    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
         <item name="android:textSize">14sp</item>
         <item name="android:fontWeight">300</item>
         <item name="fontWeight">300</item>
     </style>
 
-    <style name="AppTheme.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
+    <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <!--<item name="backgroundTint">@color/secondary</item>-->
         <item name="android:backgroundTint">@drawable/primary_button_selector_background</item>
         <item name="android:textColor">@drawable/primary_button_selector_text</item>
@@ -41,9 +41,9 @@
         <item name="android:stateListAnimator">@null</item>
     </style>
 
-    <style name="AppTheme.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="AdamantLight.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:elevation">0dp</item>
-        <item name="android:textAppearance">@style/AppTheme.ButtonTextAppearance</item>
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
@@ -51,57 +51,62 @@
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
-    <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
+    <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+
+    </style>
+
+    <style name="AdamantLight.BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
     </style>
 
-    <style name="BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
+    <style name="AdamantLight.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
-        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="bottomSheetStyle">@style/AdamantLight.BottomSheet</item>
+        <item name="colorAccent">@color/secondary</item>
     </style>
 
 
-    <style name="AppTheme.WithActionBar" parent="Theme.MaterialComponents.Light">
+    <style name="AdamantLight.WithActionBar" parent="Theme.MaterialComponents.Light">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
         <item name="colorAccent">@color/secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-        <item name="android:textViewStyle">@style/AppTheme.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>
-        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
-        <item name="alertDialogStyle">@style/AlertDialogCustom</item>
+        <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
+        <item name="materialButtonStyle">@style/AdamantLight.ActivePrimaryButton</item>
+        <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
+        <item name="alertDialogStyle">@style/AdamantLight.AlertDialogCustom</item>
     </style>
 
-    <style name="AppTheme.Launcher" parent="AppTheme.WithActionBar">
+    <style name="AdamantLight.Launcher" parent="AdamantLight.WithActionBar">
         <item name="android:windowBackground">@color/primary</item>
     </style>
 
     <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">-->
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
+    <style name="AdamantLight.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
         <item name="android:textColorSecondary">@color/primaryDarkVariant</item>
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
+    <style name="AdamantLight.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="android:colorBackground">@color/primaryDarkVariant</item>
         <item name="android:textColor">@color/primaryDarkVariant</item>
     </style>
 
     <!--<style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">-->
-    <style name="AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <style name="AdamantLight.AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
         <item name="colorPrimaryDark">@color/secondary</item>
-        <item name="android:windowTitleStyle">@style/AlertDialogTitle</item>
+        <item name="android:windowTitleStyle">@style/AdamantLight.AlertDialogTitle</item>
     </style>
 
-    <style name="AlertDialogTitle">
+    <style name="AdamantLight.AlertDialogTitle">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/primaryDarkVariant</item>
-        <item name="android:textAppearance">@style/AppTheme.TextAppearance</item>
+        <item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>
     </style>
 
-    <style name="NavigationDrawerStyle">
+    <style name="AdamantLight.NavigationDrawerStyle">
         <item name="android:textSize">16sp</item><!-- text size in menu-->
         <item name="android:listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->
         <item name="listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->

@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
+        android:textColor="@color/onSurface"
         android:text="@string/fragment_login_title"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,21 +29,24 @@
         android:labelFor="@+id/fragment_login_et_pass_phrase"
         app:errorEnabled="true"
         app:hintEnabled="true"
+        app:passwordToggleEnabled="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_login_et_pass_phrase"
+            android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:hint="@string/activity_login_et_pass_phrase" />
+            android:hint="@string/activity_login_et_pass_phrase"
+            android:textColor="@color/onSurface"
+            android:maxLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_login_btn_enter"
-        style="@style/AppTheme.ActivePrimaryButton"
+        style="@style/AdamantLight.ActivePrimaryButton"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
         android:enabled="false"
@@ -66,22 +70,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_btn_enter" />
 
-    <ImageView
-        android:id="@+id/imageView5"
-        android:layout_width="24dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="12dp"
-        android:src="@drawable/ic_from_file"
+    <ImageButton
+        android:id="@+id/imageButton"
+        style="@style/AdamantLight.ImageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="24dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        tools:layout_editor_absoluteX="153dp" />
+        app:srcCompat="@drawable/ic_from_file" />
 
-    <ImageView
-        android:layout_width="27dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="46dp"
-        android:layout_marginTop="14dp"
-        android:src="@drawable/ic_qr_code"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+    <ImageButton
+        android:id="@+id/imageButton2"
+        style="@style/AdamantLight.ImageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintTop_toBottomOf="@+id/textView6"
+        app:srcCompat="@drawable/ic_qr_code" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
