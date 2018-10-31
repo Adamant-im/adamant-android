@@ -62,7 +62,7 @@
     <style name="AdamantLight.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/AdamantLight.BottomSheet</item>
-        <item name="colorAccent">@color/secondary</item>
+        <item name="colorAccent">@color/inactiveInputOutline</item>
     </style>
 
 

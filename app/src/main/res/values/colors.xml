@@ -15,6 +15,7 @@
     <color name="onSurface">#212121</color>
     <color name="onError">#FFFFFF</color>
 
+    <color name="inactiveInputOutline">#9E9E9E</color>
     <color name="strokeDark">#9497a3</color>
     <color name="disabled">#ECEFF1</color>
 
