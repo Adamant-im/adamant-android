@@ -68,7 +68,11 @@
             android:name=".ui.PinCodeScreen" />
         <activity
             android:name=".ui.CompanionDetailScreen"
+            android:exported="false"
             android:theme="@style/AdamantLight.WithActionBar" />
+        <activity
+            android:name=".ui.RegistrationScreen"
+            android:exported="false" />
 
         <service
             android:name=".services.ServerNodesPingService"

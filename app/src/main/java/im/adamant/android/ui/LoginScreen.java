@@ -107,11 +107,13 @@ public class LoginScreen extends BaseActivity implements LoginView {
         BottomLoginFragment loginFragment = new BottomLoginFragment();
         loginFragment.show(supportFragmentManager, loginFragment.getTag());
     }
-//
-//    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
-//    public void generateNewPassphraseClick() {
+
+    @OnClick(R.id.activity_login_btn_generate_new_passphrase)
+    public void generateNewPassphraseClick() {
 //        presenter.onClickGeneratePassphrase();
-//    }
+        Intent intent = new Intent(getApplicationContext(), RegistrationScreen.class);
+        startActivity(intent);
+    }
 //
 //    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
 //    public void copyNewPassPhraseToClipboardClick() {

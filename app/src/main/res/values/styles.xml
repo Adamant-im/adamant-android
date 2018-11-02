@@ -51,6 +51,16 @@
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
+    <style name="AdamantLight.FlatIconButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:elevation">0dp</item>
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
+        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
+        <item name="android:textColor">@drawable/secondary_button_selector_text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="cornerRadius">@dimen/main_button_height</item>
+        <item name="strokeColor">@color/strokeDark</item>
+    </style>
+
     <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
 
     </style>

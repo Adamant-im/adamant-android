@@ -13,6 +13,12 @@
     <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
     <string name="activity_login_btn_new_account">Create new</string>
 
+    <string name="activity_registration_tv_title">Creating new address</string>
+    <string name="activity_registration_btn_refresh_passphrase">Generate passphrase and avatar</string>
+    <string name="activity_registration_tv_generate_passphrase">Generate passphrase</string>
+    <string name="activity_registration_btn_save_qr">Save passphrase as qr-code</string>
+    <string name="activity_registration_btn_create_address">Create address</string>
+
     <string name="activity_chats_action_create_new">Start a new chat</string>
 
     <string name="activity_create_chat_recipient">Recipient address</string>
@@ -81,7 +87,6 @@
 
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/free-adm-tokens/?wallet=</string>
-
 
     <!--STATUSES-->
     <string name="node_status_active">is active</string>

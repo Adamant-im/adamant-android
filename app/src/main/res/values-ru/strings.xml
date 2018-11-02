@@ -14,6 +14,12 @@
     <string name="activity_login_tv_login_by_qr">Войти через сохраненный QR-код:</string>
     <string name="activity_login_btn_new_account">Создать новый</string>
 
+    <string name="activity_registration_tv_title">Создание нового адреса</string>
+    <string name="activity_registration_btn_refresh_passphrase">Сгенерировать пароль и аватар</string>
+    <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пароль</string>
+    <string name="activity_registration_btn_save_qr">Сохранить пароль, как Qr-код</string>
+    <string name="activity_registration_btn_create_address">Создать адрес</string>
+
     <string name="activity_chats_action_create_new">Новый чат</string>
 
     <string name="activity_create_chat_recipient">Адрес получателя</string>

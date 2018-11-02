@@ -49,6 +49,7 @@ import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
+import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -458,6 +459,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {CompanionDetailScreenModule.class})
     public abstract CompanionDetailScreen createCompanionDetailInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {RegistrationScreenModule.class})
+    public abstract RegistrationScreen createRegistrationScreenInjector();
 
 
     //--Services
