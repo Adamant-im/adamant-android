@@ -1,23 +1,19 @@
 package im.adamant.android.ui;
 
-import android.os.Build;
 import android.os.Bundle;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
-import com.yarolegovich.discretescrollview.transform.Pivot;
-import com.yarolegovich.discretescrollview.transform.ScaleTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
-import im.adamant.android.ui.adapters.ViewPagerPassphraseAdapter;
+import im.adamant.android.ui.transformations.PassphraseAvatarOutlineProvider;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;
 
 public class RegistrationScreen extends BaseActivity {
@@ -25,8 +21,11 @@ public class RegistrationScreen extends BaseActivity {
     @Inject
     PassphraseAdapter passphraseAdapter;
 
-//    @BindView(R.id.activity_registration_vp_carousel)
-//    ViewPager viewPager;
+    @Inject
+    PassphraseAvatarOutlineProvider outlineProvider;
+
+    @Inject
+    PassphraseAvatarTransformation avatarTransformation;
 
     @BindView(R.id.activity_registration_vp_carousel)
     DiscreteScrollView viewPager;
@@ -54,22 +53,11 @@ public class RegistrationScreen extends BaseActivity {
         passphraseAdapter.setPassphrases(passphrases);
 
         viewPager.setAdapter(passphraseAdapter);
-        viewPager.setOffscreenItems(3); //Reserve extra space equal to (childSize * count) on each side of the view
+        viewPager.setOffscreenItems(3);
         viewPager.setOverScrollEnabled(false);
 
-        PassphraseAvatarTransformation passphraseAvatarTransformation = new PassphraseAvatarTransformation();
-        viewPager.setItemTransformer(passphraseAvatarTransformation);
-
-//        viewPager.setItemTransformer(new ScaleTransformer.Builder()
-//                .setMaxScale(1.05f)
-//                .setMinScale(0.8f)
-//                .setPivotX(Pivot.X.CENTER) // CENTER is a default one
-//                .setPivotY(Pivot.Y.BOTTOM) // CENTER is a default one
-//                .build());
+        viewPager.setItemTransformer(avatarTransformation);
 
 
-//        viewPager.setPagingEnabled(true);
-//        viewPager.setAdapter(passphraseAdapter);
-//        viewPager.setOffscreenPageLimit(3);
     }
 }

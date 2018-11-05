@@ -28,12 +28,14 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
     private List<String> passphrases = new ArrayList<>();
     private List<String> publicKeys = new ArrayList<>();
     private Avatar avatar;
+    private PassphraseAvatarOutlineProvider outlineProvider;
     private AdamantKeyGenerator keyGenerator;
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
-    public PassphraseAdapter(Avatar avatar, AdamantKeyGenerator keyGenerator) {
+    public PassphraseAdapter(Avatar avatar, PassphraseAvatarOutlineProvider outlineProvider, AdamantKeyGenerator keyGenerator) {
         this.avatar = avatar;
         this.keyGenerator = keyGenerator;
+        this.outlineProvider = outlineProvider;
     }
 
     public void setPassphrases(List<String> passphrases) {
@@ -48,8 +50,6 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
         notifyDataSetChanged();
     }
 
-
-
     @Override
     protected void finalize() throws Throwable {
         subscriptions.dispose();
@@ -62,7 +62,7 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
     public PassphraseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_item_passphrase, parent, false);
-        return new PassphraseViewHolder(parent.getContext(), v);
+        return new PassphraseViewHolder(parent.getContext(), outlineProvider, v);
     }
 
     @Override
@@ -80,13 +80,14 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
         private ImageView avatarView;
         private Context context;
 
-        public PassphraseViewHolder(Context context, @NonNull View itemView) {
+        public PassphraseViewHolder(Context context, PassphraseAvatarOutlineProvider outlineProvider, @NonNull View itemView) {
             super(itemView);
 
             this.context = context;
+
             avatarView = itemView.findViewById(R.id.list_item_passphrase_avatar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatarView.setOutlineProvider(new PassphraseAvatarOutlineProvider());
+                avatarView.setOutlineProvider(outlineProvider);
             }
         }
 
@@ -102,10 +103,6 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
                             Throwable::printStackTrace
                     );
             subscriptions.add(subscribe);
-        }
-
-        public ImageView getAvatarView() {
-            return avatarView;
         }
     }
 }
