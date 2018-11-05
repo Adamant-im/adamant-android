@@ -36,6 +36,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="list_item_avatar_size">48dp</dimen>
+    <dimen name="list_item_passphrase_avatar_size">96dp</dimen>
 
     <dimen name="fragment_settings_list_nodes_height">300dp</dimen>
     <dimen name="fragment_bottom_navigation_avatar_size">48dp</dimen>

@@ -19,29 +19,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="8dp"
+    <!--<androidx.viewpager.widget.ViewPager-->
+        <!--android:id="@+id/activity_registration_vp_carousel"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="106dp"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:clipToPadding="false"-->
+        <!--android:overScrollMode="never"-->
+        <!--android:paddingStart="60dp"-->
+        <!--android:paddingLeft="60dp"-->
+        <!--android:paddingEnd="60dp"-->
+        <!--android:paddingRight="60dp"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/activity_registration_tv_title"-->
+        <!--tools:layout_editor_absoluteX="0dp" />-->
+
+    <com.yarolegovich.discretescrollview.DiscreteScrollView
+        android:id="@+id/activity_registration_vp_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        app:dsv_orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_registration_tv_title"
-        app:srcCompat="@drawable/ic_avatar_circle" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:elevation="10dp"
-        android:background="@drawable/ic_empty_avatar"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3"
-        app:srcCompat="@drawable/ic_empty_avatar" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_registration_tv_title" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_registration_btn_refresh"
@@ -51,12 +50,12 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-        app:iconPadding="9dp"
         android:text="@string/activity_registration_btn_refresh_passphrase"
         app:icon="@drawable/ic_refresh"
+        app:iconPadding="9dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_registration_vp_carousel" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/name_text_input"

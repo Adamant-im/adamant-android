@@ -22,7 +22,7 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-public class AbstractMessageViewHolder extends AbstractMessageListContentViewHolder {
+public abstract class AbstractMessageViewHolder extends AbstractMessageListContentViewHolder {
     protected final static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
     protected int parentPadding;

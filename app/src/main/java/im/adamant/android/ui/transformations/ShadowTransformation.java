@@ -1,4 +1,4 @@
-package im.adamant.android.ui.custom_view;
+package im.adamant.android.ui.transformations;
 
 import android.view.View;
 
@@ -6,14 +6,14 @@ import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 import im.adamant.android.ui.adapters.CardAdapter;
 
-public class ShadowTransformer implements ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
+public class ShadowTransformation implements ViewPager.OnPageChangeListener, ViewPager.PageTransformer {
 
     private ViewPager mViewPager;
     private CardAdapter mAdapter;
     private float mLastOffset;
     private boolean mScalingEnabled;
 
-    public ShadowTransformer(ViewPager viewPager, CardAdapter adapter) {
+    public ShadowTransformation(ViewPager viewPager, CardAdapter adapter) {
         mViewPager = viewPager;
         viewPager.addOnPageChangeListener(this);
         mAdapter = adapter;

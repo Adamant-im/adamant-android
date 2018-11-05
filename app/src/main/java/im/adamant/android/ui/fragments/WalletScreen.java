@@ -9,9 +9,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -41,7 +38,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
-import butterknife.OnClick;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.currencies.CurrencyTransferEntity;
@@ -49,7 +45,7 @@ import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.WalletPresenter;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
-import im.adamant.android.ui.custom_view.ShadowTransformer;
+import im.adamant.android.ui.transformations.ShadowTransformation;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.disposables.CompositeDisposable;
@@ -102,7 +98,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ShadowTransformer transformer = new ShadowTransformer(slider, currencyCardAdapter);
+        ShadowTransformation transformer = new ShadowTransformation(slider, currencyCardAdapter);
         slider.setAdapter(currencyCardAdapter);
         slider.setPageTransformer(false, transformer);
         slider.setOffscreenPageLimit(3);

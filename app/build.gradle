@@ -118,6 +118,7 @@ dependencies {
     implementation "com.github.euzee:serviceManager:1.0.3"
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
     implementation "androidx.core:core:1.0.0"
+    implementation "com.yarolegovich:discrete-scrollview:1.4.9"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"
@@ -131,7 +132,7 @@ dependencies {
     debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.1"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.1"
     // Optional, if you use support library fragments:
-    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:1.6.1"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:1.6.1" //???
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 }
 
