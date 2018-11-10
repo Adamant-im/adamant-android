@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
@@ -130,7 +131,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         Observable<String> obs = RxTextView
                 .textChanges(newMessageText)
                 .filter(charSequence -> charSequence.length() > 0)
-                .debounce(500, TimeUnit.MILLISECONDS)
+                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .map(CharSequence::toString);
 
         MessagesPresenter localPresenter = presenter;

@@ -1,7 +1,10 @@
 package im.adamant.android.interactors;
 
+import android.util.Pair;
+
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import im.adamant.android.Constants;
@@ -88,21 +91,25 @@ public class AuthorizeInteractor {
     }
 
     public boolean isValidPassphrase(String passphrase) {
-        try {
-            MnemonicValidator
-                    .ofWordList(English.INSTANCE)
-                    .validate(passphrase);
-        } catch (InvalidChecksumException | InvalidWordCountException | WordNotFoundException | UnexpectedWhiteSpaceException e) {
-            e.printStackTrace();
-            return false;
-        }
+        return keyGenerator.isValidPassphrase(passphrase);
+    }
 
-        return true;
+    public void validatePassphrase(String passphrase) throws WordNotFoundException, UnexpectedWhiteSpaceException, InvalidWordCountException, InvalidChecksumException {
+            keyGenerator.validatePassphrase(passphrase);
     }
 
     public Flowable<Authorization> createNewAccount(String passPhrase) {
         return api.createNewAccount(passPhrase)
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public String getPublicKeyFromPassphrase(String passphrase) {
+        if (keyGenerator.isValidPassphrase(passphrase)){
+            KeyPair keyPair = keyGenerator.getKeyPairFromPassPhrase(passphrase);
+            return keyPair.getPublicKeyString().toLowerCase();
+        } else {
+            return "";
+        }
     }
 
     public boolean isAuthorized() {

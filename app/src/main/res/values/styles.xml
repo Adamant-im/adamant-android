@@ -76,16 +76,9 @@
     </style>
 
 
-    <style name="AdamantLight.WithActionBar" parent="Theme.MaterialComponents.Light">
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
-        <item name="colorAccent">@color/secondary</item>
+    <style name="AdamantLight.WithActionBar" parent="AdamantLight">
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">false</item>
-        <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
-        <item name="materialButtonStyle">@style/AdamantLight.ActivePrimaryButton</item>
-        <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
-        <item name="alertDialogStyle">@style/AdamantLight.AlertDialogCustom</item>
     </style>
 
     <style name="AdamantLight.Launcher" parent="AdamantLight.WithActionBar">

@@ -72,7 +72,9 @@
             android:theme="@style/AdamantLight.WithActionBar" />
         <activity
             android:name=".ui.RegistrationScreen"
-            android:exported="false" />
+            android:exported="false"
+            android:label="@string/activity_registration_tv_title"
+            android:theme="@style/AdamantLight.WithActionBar"/>
 
         <service
             android:name=".services.ServerNodesPingService"

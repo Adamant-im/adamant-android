@@ -33,6 +33,11 @@ public class LoggerHelper {
         Log.d(String.valueOf(tag), String.valueOf(text));
     }
 
+    public static void d(String tag, int value) {
+        if (!isAvailableLogging()){return;}
+        Log.d(String.valueOf(tag), Integer.toString(value));
+    }
+
     public static void w(String tag, String text, Throwable t) {
         if (!isAvailableLogging()){return;}
         if (t == null){

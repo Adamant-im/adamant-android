@@ -2,6 +2,7 @@ package im.adamant.android.ui.adapters;
 
 import android.content.Context;
 import android.os.Build;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,34 +21,34 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.ui.transformations.PassphraseAvatarOutlineProvider;
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.PublishSubject;
 
 public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.PassphraseViewHolder> {
-    private List<String> passphrases = new ArrayList<>();
-    private List<String> publicKeys = new ArrayList<>();
+    private List<Pair<String, String>> passphrases = new ArrayList<>();
     private Avatar avatar;
     private PassphraseAvatarOutlineProvider outlineProvider;
-    private AdamantKeyGenerator keyGenerator;
     private CompositeDisposable subscriptions = new CompositeDisposable();
+    private final PublishSubject<Integer> clickItemPublisher = PublishSubject.create();
 
-    public PassphraseAdapter(Avatar avatar, PassphraseAvatarOutlineProvider outlineProvider, AdamantKeyGenerator keyGenerator) {
+    public PassphraseAdapter(Avatar avatar, PassphraseAvatarOutlineProvider outlineProvider) {
         this.avatar = avatar;
-        this.keyGenerator = keyGenerator;
         this.outlineProvider = outlineProvider;
     }
 
-    public void setPassphrases(List<String> passphrases) {
+    public void setPassphrases(List<Pair<String, String>> passphrases) {
         if (passphrases != null) {
             this.passphrases = passphrases;
-            publicKeys.clear();
-            for (String passphrase : passphrases) {
-                KeyPair keyPair = keyGenerator.getKeyPairFromPassPhrase(passphrase);
-                publicKeys.add(keyPair.getPublicKeyString().toLowerCase());
-            }
         }
         notifyDataSetChanged();
+    }
+
+    public Observable<Integer> getObservable() {
+        return clickItemPublisher;
     }
 
     @Override
@@ -89,20 +90,35 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 avatarView.setOutlineProvider(outlineProvider);
             }
+
+            avatarView.setOnClickListener((v) -> {
+                if (v.getTag() instanceof Integer){
+                    Integer index = (Integer) v.getTag();
+                    clickItemPublisher.onNext(index);
+                }
+            });
         }
 
         public void bind(int position) {
             int size = (int) context.getResources().getDimension(R.dimen.list_item_passphrase_avatar_size);
-            Disposable subscribe = avatar
-                    .build(
-                            publicKeys.get(position),
-                            size
-                    )
-                    .subscribe(
-                            image -> avatarView.setImageBitmap(image),
-                            Throwable::printStackTrace
-                    );
-            subscriptions.add(subscribe);
+            Pair<String, String> pair = passphrases.get(position);
+
+            avatarView.setTag(position);
+
+            if (pair.second == null || pair.second.isEmpty()){
+                avatarView.setImageResource(R.mipmap.ic_launcher_round);
+            } else {
+                Disposable subscribe = avatar
+                        .build(
+                                pair.second,
+                                size
+                        )
+                        .subscribe(
+                                image -> avatarView.setImageBitmap(image),
+                                Throwable::printStackTrace
+                        );
+                subscriptions.add(subscribe);
+            }
         }
     }
 }

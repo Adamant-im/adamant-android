@@ -69,6 +69,10 @@
     <string name="empty_message">Message cannot be empty</string>
     <string name="wrong_node_address">Node\'s address has incorrect format</string>
     <string name="unsupported_message_type">Unsupported message type: %s</string>
+    <string name="invalid_word_in_passphrase">Word not found in word list: "%s", suggestions "%s", "%s"</string>
+    <string name="invalid_symbol_in_passphrase">Invalid symbol in passphrase. Available only [a-z] and space</string>
+    <string name="invalid_count_words_in_passphrase">Wrong count of words in passphrase. Need 12, current count: %d. Necessary: %d</string>
+    <string name="invalid_checksum_in_passphrase">Invalid checksum</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

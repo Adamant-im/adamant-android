@@ -12,7 +12,12 @@ import java.util.Arrays;
 
 import im.adamant.android.helpers.LoggerHelper;
 import io.github.novacrypto.bip39.MnemonicGenerator;
+import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.SeedCalculator;
+import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
+import io.github.novacrypto.bip39.Validation.InvalidWordCountException;
+import io.github.novacrypto.bip39.Validation.UnexpectedWhiteSpaceException;
+import io.github.novacrypto.bip39.Validation.WordNotFoundException;
 import io.github.novacrypto.bip39.Words;
 import io.github.novacrypto.bip39.wordlists.English;
 
@@ -55,8 +60,7 @@ public class AdamantKeyGenerator {
             StringBuilder secure = new StringBuilder();
             byte[] entropy = new byte[Words.TWELVE.byteLength()];
             new SecureRandom().nextBytes(entropy);
-            new MnemonicGenerator(English.INSTANCE)
-                    .createMnemonic(entropy, secure::append);
+            mnemonicGenerator.createMnemonic(entropy, secure::append);
             Arrays.fill(entropy, (byte) 0);
 
             return secure;
@@ -64,6 +68,25 @@ public class AdamantKeyGenerator {
             ex.printStackTrace();
             return "";
         }
+    }
+
+    public boolean isValidPassphrase(String passphrase) {
+        try {
+            MnemonicValidator
+                    .ofWordList(English.INSTANCE)
+                    .validate(passphrase);
+        } catch (InvalidChecksumException | InvalidWordCountException | WordNotFoundException | UnexpectedWhiteSpaceException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    public void validatePassphrase(String passphrase) throws WordNotFoundException, UnexpectedWhiteSpaceException, InvalidWordCountException, InvalidChecksumException {
+        MnemonicValidator
+                .ofWordList(English.INSTANCE)
+                .validate(passphrase);
     }
 
 }
