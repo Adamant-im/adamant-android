@@ -1,8 +1,10 @@
 package im.adamant.android.ui;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -23,6 +25,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
@@ -31,11 +34,25 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class RegistrationScreen extends BaseActivity implements RegistrationView {
 
     @Inject
+    NavigatorHolder navigatorHolder;
+
+    @Inject
     Provider<RegistrationPresenter> presenterProvider;
+
+    @Inject
+    PassphraseAdapter passphraseAdapter;
+
+    @Inject
+    PassphraseAvatarTransformation avatarTransformation;
 
     //--Moxy
     @InjectPresenter
@@ -46,11 +63,6 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         return presenterProvider.get();
     }
 
-    @Inject
-    PassphraseAdapter passphraseAdapter;
-
-    @Inject
-    PassphraseAvatarTransformation avatarTransformation;
 
     @BindView(R.id.activity_registration_vp_carousel)
     DiscreteScrollView passphrasesListView;
@@ -61,7 +73,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_il_layout)
     TextInputLayout inputLayoutView;
 
-    @BindView(R.id.activity_registration_btn_create_address)
+    @BindView(R.id.activity_registration_btn_register)
     MaterialButton createAddressButton;
 
     @BindView(R.id.activity_registration_btn_save_qr)
@@ -100,6 +112,11 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @OnClick(R.id.activity_registration_btn_refresh)
     public void onClickGenerateButton() {
         presenter.onClickGeneratePassphrases();
+    }
+
+    @OnClick(R.id.activity_registration_btn_register)
+    public void onClickRegisterButton() {
+        presenter.onClickRegisterAccount();
     }
 
     @Override
@@ -152,8 +169,27 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     }
 
     @Override
+    public void lockUI() {
+        inputPassphraseView.setEnabled(false);
+        createAddressButton.setEnabled(false);
+        passphrasesListView.setEnabled(false);
+        saveQrCodeButton.setEnabled(false);
+    }
+
+    @Override
+    public void unlockUI() {
+        inputPassphraseView.setEnabled(true);
+        createAddressButton.setEnabled(true);
+        passphrasesListView.setEnabled(true);
+        saveQrCodeButton.setEnabled(true);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
+
+        navigatorHolder.setNavigator(navigator);
+
         Observable<String> obs = RxTextView
                 .textChanges(inputPassphraseView)
                 .filter(charSequence -> charSequence.length() > 0)
@@ -178,6 +214,9 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     protected void onPause() {
         super.onPause();
+
+        navigatorHolder.removeNavigator();
+
         compositeDisposable.dispose();
         compositeDisposable.clear();
     }
@@ -189,12 +228,37 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         createAddressButton.setEnabled(false);
     }
 
-    //    private void setColorToCompoundDrawables(TextView view, int colorResource) {
-//        Drawable[] compoundDrawables = view.getCompoundDrawablesRelative();
-//        for (Drawable drawable : compoundDrawables) {
-//            if (drawable != null) {
-//                DrawableCompat.setTint(drawable, ContextCompat.getColor(this, colorResource));
-//            }
-//        }
-//    }
+
+    private Navigator navigator = new Navigator() {
+        @Override
+        public void applyCommands(Command[] commands) {
+            for (Command command : commands){
+                apply(command);
+            }
+        }
+
+        private void apply(Command command){
+            if (command instanceof Forward) {
+                Forward forward = (Forward)command;
+                switch (forward.getScreenKey()) {
+                    case Screens.WALLET_SCREEN:
+                    case Screens.SETTINGS_SCREEN:
+                    case Screens.CHATS_SCREEN: {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forward.getScreenKey());
+
+                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                        intent.putExtras(bundle);
+
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
+                }
+            } else if(command instanceof SystemMessage) {
+                SystemMessage message = (SystemMessage) command;
+                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }

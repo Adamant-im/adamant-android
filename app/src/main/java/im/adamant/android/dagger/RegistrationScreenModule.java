@@ -13,6 +13,7 @@ import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.transformations.PassphraseAvatarOutlineProvider;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;
 import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 @Module
 public class RegistrationScreenModule {
@@ -41,10 +42,11 @@ public class RegistrationScreenModule {
     @ActivityScope
     @Provides
     public static RegistrationPresenter providePresenter(
+            Router router,
             AuthorizeInteractor authorizeInteractor,
             @Named(Screens.REGISTRATION_SCREEN) CompositeDisposable subscriptions
     ) {
-        return new RegistrationPresenter(authorizeInteractor, subscriptions);
+        return new RegistrationPresenter(router, authorizeInteractor, subscriptions);
     }
 
     @ActivityScope

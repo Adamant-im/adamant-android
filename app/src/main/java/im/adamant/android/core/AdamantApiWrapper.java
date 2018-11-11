@@ -159,7 +159,7 @@ public class AdamantApiWrapper {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         NewAccount newAccount = new NewAccount();
-        newAccount.setPublicKey(keyPair.getPublicKeyString().toLowerCase());
+        newAccount.setPublicKey(tempKeyPair.getPublicKeyString().toLowerCase());
 
         return api.createNewAccount(newAccount)
                 .subscribeOn(Schedulers.io())

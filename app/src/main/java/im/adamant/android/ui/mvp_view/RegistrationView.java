@@ -15,4 +15,6 @@ public interface RegistrationView extends MvpView {
     void onEnteredValidPassphrase();
     void updatePassphraseList(List<Pair<String, String>> passphrases);
     void showPassphrase(String passphrase);
+    void lockUI();
+    void unlockUI();
 }
