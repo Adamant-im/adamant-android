@@ -33,7 +33,7 @@ public class AvatarGraphics {
         canvas.drawRect(0,0, sizePx, sizePx, transparent);
 
 
-        float cx = sizePx / 2;
+        float cx = sizePx / 2.0f;
         float r = cx - (borderSizePx * 2);
 
         Paint background = new Paint();
