@@ -26,7 +26,7 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:hint="@string/activity_login_et_pass_phrase"
-        android:labelFor="@+id/activity_registration_et_pass_phrase"
+        android:labelFor="@+id/fragment_login_et_passphrase"
         app:errorEnabled="true"
         app:hintEnabled="true"
         app:passwordToggleEnabled="true"
@@ -35,7 +35,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView4">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/activity_registration_et_pass_phrase"
+            android:id="@+id/fragment_login_et_passphrase"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_btn_enter" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/fragment_login_btn_by_stored_qr"
         style="@style/AdamantLight.ImageButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -82,7 +82,7 @@
         android:cropToPadding="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageButton2"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_login_btn_by_camera_qr"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
@@ -90,7 +90,7 @@
         app:srcCompat="@drawable/ic_from_file" />
 
     <ImageButton
-        android:id="@+id/imageButton2"
+        android:id="@+id/fragment_login_btn_by_camera_qr"
         style="@style/AdamantLight.ImageButton"
         android:layout_width="48dp"
         android:layout_height="48dp"
@@ -100,7 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageButton"
+        app:layout_constraintStart_toEndOf="@+id/fragment_login_btn_by_stored_qr"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         app:srcCompat="@drawable/ic_qr_code" />
 

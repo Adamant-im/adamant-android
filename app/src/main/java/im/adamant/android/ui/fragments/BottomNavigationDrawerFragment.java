@@ -27,11 +27,8 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.presenters.MainPresenter;
 import ru.terrakok.cicerone.Router;
 
+//TODO: Parrent class must be the BaseBottomFragment
 public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
-
-    @Inject
-    Router router;
-
     @Inject
     AdamantApiWrapper api;
 

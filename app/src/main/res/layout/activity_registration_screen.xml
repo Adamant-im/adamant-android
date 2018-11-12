@@ -45,7 +45,7 @@
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:hint="@string/activity_registration_tv_generate_passphrase"
-            android:labelFor="@+id/activity_registration_et_pass_phrase"
+            android:labelFor="@+id/fragment_login_et_passphrase"
             app:errorEnabled="true"
             app:hintEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +53,7 @@
             app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn_refresh">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/activity_registration_et_pass_phrase"
+                android:id="@+id/fragment_login_et_passphrase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="3"

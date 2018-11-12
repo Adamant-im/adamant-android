@@ -44,68 +44,37 @@ public class LoginPresenter extends BasePresenter<LoginView> {
             return;
         }
 
-        getViewState().lockAuthorization();
+        getViewState().lockUI();
 
-        String finalPassPhrase = passPhrase;
-        Disposable subscription = authorizeInteractor.authorize(passPhrase).subscribe(
-                (authorize)->{
-                    if (authorize.isSuccess()){
-                        router.navigateTo(Screens.WALLET_SCREEN);
-                    } else {
-                        //TODO: Oh my god, somebody fix this, please.
-                        //PWA adamantServerApi.js, line: 129
-                        if ("Account not found".equalsIgnoreCase(authorize.getError())) {
-                            onClickCreateNewAccount(finalPassPhrase);
+        Disposable subscription = authorizeInteractor
+                .authorize(passPhrase)
+                .subscribe(
+                    (authorize)->{
+                        if (authorize.isSuccess()){
+                            router.navigateTo(Screens.WALLET_SCREEN);
                         } else {
                             LoggerHelper.e("ERR", authorize.getError());
                             router.showSystemMessage(authorize.getError());
                         }
-                    }
-                },
-                (error) -> {
-                    error.printStackTrace();
-                    router.showSystemMessage(error.getMessage());
-                    getViewState().unLockAuthorization();
-                },
-                () -> getViewState().unLockAuthorization()
-        );
+                    },
+                    (error) -> {
+                        LoggerHelper.e("ERR", error.getMessage(), error);
+                        router.showSystemMessage(error.getMessage());
+                        getViewState().unlockUI();
+                    },
+                    () -> getViewState().unlockUI()
+                );
 
        subscriptions.add(subscription);
     }
 
-    public void onClickGeneratePassphrase() {
-        getViewState().passPhraseWasGenerated(
-                authorizeInteractor.generatePassPhrase()
-        );
-    }
 
-    public void onClickCreateNewAccount(String passPhrase) {
-        passPhrase = passPhrase.trim();
-
-        if (!authorizeInteractor.isValidPassphrase(passPhrase)){
-            getViewState().loginError(R.string.wrong_passphrase);
+    public void onInputPassphrase(String passphrase){
+        if (authorizeInteractor.isValidPassphrase(passphrase)) {
+            getViewState().unlockUI();
+        } else {
+            getViewState().lockUI();
         }
-
-        getViewState().lockAuthorization();
-
-        Disposable subscription = authorizeInteractor
-                .createNewAccount(passPhrase)
-                .subscribe(
-                        (authorize)->{
-                            if (authorize.isSuccess()){
-                                router.navigateTo(Screens.WALLET_SCREEN);
-                            } else {
-                                LoggerHelper.e("ERR", authorize.getError());
-                                router.showSystemMessage(authorize.getError());
-                            }
-                        },
-                        (error) -> {
-                            router.showSystemMessage(error.getMessage());
-                        },
-                        () -> getViewState().unLockAuthorization()
-                );
-
-        subscriptions.add(subscription);
     }
 
     public void onClickScanQrCodeButton() {

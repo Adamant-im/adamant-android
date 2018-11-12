@@ -62,7 +62,7 @@
     <string name="activity_scan_qrcode_camera_permission_view">No permission to access camera</string>
 
     <!--ERRORS-->
-    <string name="wrong_passphrase">Wrong password</string>
+    <string name="wrong_passphrase">Wrong passphrase</string>
     <string name="authorization_error">Authorization error, we try reconnecting…</string>
     <string name="account_not_found">Account not found, sorry</string>
     <string name="wrong_address">Incorrect recipient address</string>

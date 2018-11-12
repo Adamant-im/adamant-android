@@ -1,9 +1,13 @@
 package im.adamant.android.ui;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.MotionEvent;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -40,6 +44,8 @@ import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
+
+//TODO: Optimize UI
 public class RegistrationScreen extends BaseActivity implements RegistrationView {
 
     @Inject
@@ -67,7 +73,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_vp_carousel)
     DiscreteScrollView passphrasesListView;
 
-    @BindView(R.id.activity_registration_et_pass_phrase)
+    @BindView(R.id.fragment_login_et_passphrase)
     TextInputEditText inputPassphraseView;
 
     @BindView(R.id.activity_registration_il_layout)
@@ -91,6 +97,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         return true;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -107,6 +114,28 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         passphrasesListView.addOnItemChangedListener(((viewHolder, i) -> {
             presenter.onSelectedPassphrase(i);
         }));
+
+        inputPassphraseView.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
+
+            if(event.getAction() == MotionEvent.ACTION_UP) {
+                if(event.getRawX() >= (inputPassphraseView.getRight() - inputPassphraseView.getCompoundDrawablesRelative()[DRAWABLE_RIGHT].getBounds().width())) {
+                    ClipData clip = ClipData.newPlainText("passphrase", inputPassphraseView.getText().toString());
+                    ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+
+                    if(clipboard != null){
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(this, R.string.address_was_copied, Toast.LENGTH_LONG).show();
+                    }
+
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 
     @OnClick(R.id.activity_registration_btn_refresh)
@@ -193,7 +222,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         Observable<String> obs = RxTextView
                 .textChanges(inputPassphraseView)
                 .filter(charSequence -> charSequence.length() > 0)
-                .debounce(2, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
                 .doOnNext(presenter::onInputPassphrase)
                 .retry();

@@ -6,6 +6,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import dagger.multibindings.IntoMap;
+import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
@@ -38,6 +39,7 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
@@ -493,7 +495,7 @@ public abstract class AppModule {
     @Singleton
     @Provides
     @Named("main")
-    public static CompositeDisposable provideComposite() {
+    public static CompositeDisposable provideMainComposite() {
         return new CompositeDisposable();
     }
 
@@ -507,4 +509,5 @@ public abstract class AppModule {
     ){
         return new MainPresenter(router, accountInteractor, refreshChatsInteractor, compositeDisposable);
     }
+
 }

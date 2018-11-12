@@ -18,7 +18,11 @@ import com.gun0912.tedpermission.TedPermission;
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.image.ImageType;
 
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
@@ -48,7 +52,7 @@ import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
-public class LoginScreen extends BaseActivity implements LoginView {
+public class LoginScreen extends BaseActivity implements  HasSupportFragmentInjector {
 
     @Inject
     @Named(value = Screens.LOGIN_SCREEN)
@@ -57,17 +61,20 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @Inject
     NavigatorHolder navigatorHolder;
 
+//    @Inject
+//    Provider<LoginPresenter> presenterProvider;
+
     @Inject
-    Provider<LoginPresenter> presenterProvider;
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
     //--Moxy
-    @InjectPresenter
-    LoginPresenter presenter;
+//    @InjectPresenter
+//    LoginPresenter presenter;
 
-    @ProvidePresenter
-    public LoginPresenter getPresenter(){
-        return presenterProvider.get();
-    }
+//    @ProvidePresenter
+//    public LoginPresenter getPresenter(){
+//        return presenterProvider.get();
+//    }
 
     //--ButterKnife
 //    @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
@@ -158,26 +165,26 @@ public class LoginScreen extends BaseActivity implements LoginView {
         navigatorHolder.removeNavigator();
     }
 
-    @Override
-    public void passPhraseWasGenerated(CharSequence passphrase) {
-//        newPassPhrase.setText(passphrase);
-//        newPassPhraseForm.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void loginError(int resourceId) {
-        Toast.makeText(getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void lockAuthorization() {
-//        loginButton.setEnabled(false);
-    }
-
-    @Override
-    public void unLockAuthorization() {
-//        loginButton.setEnabled(true);
-    }
+//    @Override
+//    public void passPhraseWasGenerated(CharSequence passphrase) {
+////        newPassPhrase.setText(passphrase);
+////        newPassPhraseForm.setVisibility(View.VISIBLE);
+//    }
+//
+//    @Override
+//    public void loginError(int resourceId) {
+//        Toast.makeText(getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
+//    }
+//
+//    @Override
+//    public void lockAuthorization() {
+////        loginButton.setEnabled(false);
+//    }
+//
+//    @Override
+//    public void unLockAuthorization() {
+////        loginButton.setEnabled(true);
+//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -187,8 +194,13 @@ public class LoginScreen extends BaseActivity implements LoginView {
 
         if (!qrCode.isEmpty()){
 //            passPhrase.setText(qrCode);
-            presenter.onClickLoginButton(qrCode);
+//            presenter.onClickLoginButton(qrCode);
         }
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
     }
 
     private Navigator navigator = new Navigator() {
