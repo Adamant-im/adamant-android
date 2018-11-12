@@ -122,7 +122,13 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
             final int DRAWABLE_BOTTOM = 3;
 
             if(event.getAction() == MotionEvent.ACTION_UP) {
-                if(event.getRawX() >= (inputPassphraseView.getRight() - inputPassphraseView.getCompoundDrawablesRelative()[DRAWABLE_RIGHT].getBounds().width())) {
+                Drawable drawable = inputPassphraseView.getCompoundDrawablesRelative()[DRAWABLE_RIGHT];
+
+                if (drawable == null) {
+                    return false;
+                }
+
+                if(event.getRawX() >= (inputPassphraseView.getRight() - drawable.getBounds().width())) {
                     ClipData clip = ClipData.newPlainText("passphrase", inputPassphraseView.getText().toString());
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
