@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/secondary</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowLightStatusBar">true</item>
         <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
         <!--<item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>-->
         <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
@@ -87,25 +88,25 @@
 
     <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">-->
     <style name="AdamantLight.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
-        <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
-        <item name="android:textColorSecondary">@color/primaryDarkVariant</item>
+        <item name="android:textColorPrimary">@color/onPrimary</item>
+        <item name="android:textColorSecondary">@color/onSecondary</item>
     </style>
 
     <style name="AdamantLight.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
-        <item name="android:colorBackground">@color/primaryDarkVariant</item>
-        <item name="android:textColor">@color/primaryDarkVariant</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="android:textColor">@color/onPrimary</item>
     </style>
 
     <!--<style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">-->
     <style name="AdamantLight.AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="android:textColorPrimary">@color/primaryDarkVariant</item>
+        <item name="android:textColorPrimary">@color/onPrimary</item>
         <item name="colorPrimaryDark">@color/secondary</item>
         <item name="android:windowTitleStyle">@style/AdamantLight.AlertDialogTitle</item>
     </style>
 
     <style name="AdamantLight.AlertDialogTitle">
         <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/primaryDarkVariant</item>
+        <item name="android:textColor">@color/onPrimary</item>
         <item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>
     </style>
 
