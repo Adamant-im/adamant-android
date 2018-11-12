@@ -82,6 +82,8 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
 //    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
 //    @BindView(R.id.activity_login_btn_login) Button loginButton;
 
+    private BottomLoginFragment loginFragment;
+
     //--Activity
     @Override
     public int getLayoutId() {
@@ -98,6 +100,10 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
+        if (loginFragment == null) {
+            loginFragment = new BottomLoginFragment();
+        }
+
 //        passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
 //            if (!isFocused){
 //                AdamantApplication.hideKeyboard(this, passPhrase);
@@ -111,7 +117,6 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
 //        AdamantApplication.hideKeyboard(this, passPhrase);
 
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        BottomLoginFragment loginFragment = new BottomLoginFragment();
         loginFragment.show(supportFragmentManager, loginFragment.getTag());
     }
 
@@ -190,11 +195,8 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        String qrCode = qrCodeHelper.parseActivityResult(this, requestCode, resultCode, data);
-
-        if (!qrCode.isEmpty()){
-//            passPhrase.setText(qrCode);
-//            presenter.onClickLoginButton(qrCode);
+        if (loginFragment != null){
+            loginFragment.onActivityResult(requestCode, resultCode, data);
         }
     }
 
