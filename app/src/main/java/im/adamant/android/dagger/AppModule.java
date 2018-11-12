@@ -27,6 +27,7 @@ import im.adamant.android.currencies.SupportedCurrencyTypeKey;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.AccountInteractor;
@@ -430,6 +431,12 @@ public abstract class AppModule {
     @Provides
     public static CurrencyInfoDriver provideBinanceInfoDriver() {
         return new BinanceCoinInfoDriver();
+    }
+
+    @Singleton
+    @Provides
+    public static QrCodeHelper provideQrCodeParser() {
+        return new QrCodeHelper();
     }
 
     //--Activities

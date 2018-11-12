@@ -17,13 +17,6 @@ import ru.terrakok.cicerone.Router;
 @Module
 public abstract class LoginScreenModule {
 
-    @ActivityScope
-    @Provides
-    @Named(value = Screens.LOGIN_SCREEN)
-    public static QrCodeHelper provideQrCodeParser() {
-        return new QrCodeHelper();
-    }
-
     @FragmentScope
     @ContributesAndroidInjector(modules = {BottomLoginModule.class})
     public abstract BottomLoginFragment provideBottomFragment();

@@ -57,6 +57,7 @@
 
     <string name="address_was_copied">Адрес скопирован</string>
     <string name="address_qrcode_was_copied">Создан QR-Код адреса</string>
+    <string name="passphrase_qrcode_was_created">QR-Код с паролем сохранен в галерею</string>
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>

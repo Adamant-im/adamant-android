@@ -53,34 +53,11 @@ import ru.terrakok.cicerone.commands.SystemMessage;
 
 
 public class LoginScreen extends BaseActivity implements  HasSupportFragmentInjector {
-
-    @Inject
-    @Named(value = Screens.LOGIN_SCREEN)
-    QrCodeHelper qrCodeHelper;
-
     @Inject
     NavigatorHolder navigatorHolder;
 
-//    @Inject
-//    Provider<LoginPresenter> presenterProvider;
-
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
-
-    //--Moxy
-//    @InjectPresenter
-//    LoginPresenter presenter;
-
-//    @ProvidePresenter
-//    public LoginPresenter getPresenter(){
-//        return presenterProvider.get();
-//    }
-
-    //--ButterKnife
-//    @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
-//    @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
-//    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
-//    @BindView(R.id.activity_login_btn_login) Button loginButton;
 
     private BottomLoginFragment loginFragment;
 
@@ -103,60 +80,19 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         if (loginFragment == null) {
             loginFragment = new BottomLoginFragment();
         }
-
-//        passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
-//            if (!isFocused){
-//                AdamantApplication.hideKeyboard(this, passPhrase);
-//            }
-//        });
     }
 
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
-//        presenter.onClickLoginButton(passPhrase.getText().toString());
-//        AdamantApplication.hideKeyboard(this, passPhrase);
-
         FragmentManager supportFragmentManager = getSupportFragmentManager();
         loginFragment.show(supportFragmentManager, loginFragment.getTag());
     }
 
     @OnClick(R.id.activity_login_btn_generate_new_passphrase)
     public void generateNewPassphraseClick() {
-//        presenter.onClickGeneratePassphrase();
         Intent intent = new Intent(getApplicationContext(), RegistrationScreen.class);
         startActivity(intent);
     }
-//
-//    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
-//    public void copyNewPassPhraseToClipboardClick() {
-//        ClipData clip = ClipData.newPlainText("passphrase", newPassPhrase.getText().toString());
-//        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-//
-//        if(clipboard != null){
-//            clipboard.setPrimaryClip(clip);
-//        }
-//    }
-
-//    @OnClick(R.id.activity_login_btn_scan_qrcode)
-//    public void scanQrCodeClick() {
-//        presenter.onClickScanQrCodeButton();
-//    }
-//
-//    @OnClick(R.id.activity_login_btn_load_qrcode_from_gallery)
-//    public void loadQrCodeClick() {
-//        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-//        photoPickerIntent.setType("image/*");
-//        startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
-//    }
-//
-//    @OnClick(R.id.activity_login_btn_create_qrcode)
-//    public void generateQrCodeClick(){
-//        TedPermission.with(this)
-//                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-//                .setPermissionListener(permissionlistener)
-//                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                .check();
-//    }
 
     @Override
     protected void onResume() {
@@ -169,27 +105,6 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         super.onPause();
         navigatorHolder.removeNavigator();
     }
-
-//    @Override
-//    public void passPhraseWasGenerated(CharSequence passphrase) {
-////        newPassPhrase.setText(passphrase);
-////        newPassPhraseForm.setVisibility(View.VISIBLE);
-//    }
-//
-//    @Override
-//    public void loginError(int resourceId) {
-//        Toast.makeText(getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public void lockAuthorization() {
-////        loginButton.setEnabled(false);
-//    }
-//
-//    @Override
-//    public void unLockAuthorization() {
-////        loginButton.setEnabled(true);
-//    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -249,22 +164,5 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         }
     };
 
-    //TODO: Refactor this. This code must be in presenter. If its not possible when it should be called from presenter.
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
-            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-//                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
-                qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
 
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-
-        }
-    };
 }

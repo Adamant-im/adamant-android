@@ -56,6 +56,7 @@
 
     <string name="address_was_copied">Copied!</string>
     <string name="address_qrcode_was_copied">QR-code has been created!</string>
+    <string name="passphrase_qrcode_was_created">QR-code with passphrase has been saved in gallery</string>
     <string name="dialog_logout_title">Exit</string>
     <string name="dialog_logout_message">Are you sure you want to quit?</string>
     <string name="rationale_qrcode_write_permission">Application needs a write permission for save QR code in your gallery.</string>

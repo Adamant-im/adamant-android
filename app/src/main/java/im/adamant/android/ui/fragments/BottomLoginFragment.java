@@ -28,6 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.support.AndroidSupportInjection;
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
@@ -43,7 +44,6 @@ import io.reactivex.disposables.Disposable;
 public class BottomLoginFragment extends BaseBottomFragment implements LoginView {
 
     @Inject
-    @Named(value = Screens.LOGIN_SCREEN)
     QrCodeHelper qrCodeHelper;
 
     @Inject
@@ -107,7 +107,12 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
 
     @OnClick(R.id.fragment_login_btn_enter)
     public void onClickLoginButton() {
-        loginPresenter.onClickLoginButton(passPhraseView.getText().toString());
+        FragmentActivity activity = getActivity();
+        if (activity == null) {return;}
+        AdamantApplication.hideKeyboard(activity, passPhraseView);
+
+        String passphrase = (passPhraseView.getText() == null) ? "" : passPhraseView.getText().toString();
+        loginPresenter.onClickLoginButton(passphrase);
     }
 
     @OnClick(R.id.fragment_login_btn_by_camera_qr)

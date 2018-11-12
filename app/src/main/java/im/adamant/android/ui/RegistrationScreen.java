@@ -1,5 +1,6 @@
 package im.adamant.android.ui;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,21 +16,33 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.TedPermission;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
+import net.glxn.qrgen.android.QRCode;
+import net.glxn.qrgen.core.image.ImageType;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
@@ -47,6 +60,9 @@ import ru.terrakok.cicerone.commands.SystemMessage;
 
 //TODO: Optimize UI
 public class RegistrationScreen extends BaseActivity implements RegistrationView {
+
+    @Inject
+    QrCodeHelper qrCodeHelper;
 
     @Inject
     NavigatorHolder navigatorHolder;
@@ -132,7 +148,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                     ClipData clip = ClipData.newPlainText("passphrase", inputPassphraseView.getText().toString());
                     ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
 
-                    if(clipboard != null){
+                    if(clipboard != null) {
                         clipboard.setPrimaryClip(clip);
                         Toast.makeText(this, R.string.address_was_copied, Toast.LENGTH_LONG).show();
                     }
@@ -141,6 +157,12 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                 }
             }
             return false;
+        });
+
+        inputPassphraseView.setOnFocusChangeListener((view, isFocused) -> {
+            if (!isFocused) {
+                AdamantApplication.hideKeyboard(this, inputPassphraseView);
+            }
         });
     }
 
@@ -152,6 +174,15 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @OnClick(R.id.activity_registration_btn_register)
     public void onClickRegisterButton() {
         presenter.onClickRegisterAccount();
+    }
+
+    @OnClick(R.id.activity_registration_btn_save_qr)
+    public void onClickSaveQrCode() {
+        TedPermission.with(this)
+                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+                .setPermissionListener(permissionlistener)
+                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .check();
     }
 
     @Override
@@ -294,6 +325,28 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
             }
+        }
+    };
+
+
+    //TODO: Refactor this. This code must be in presenter. If its not possible when it should be called from presenter.
+    PermissionListener permissionlistener = new PermissionListener() {
+        @Override
+        public void onPermissionGranted() {
+            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
+            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
+                String passphrase = (inputPassphraseView.getText() == null) ? "" : inputPassphraseView.getText().toString();
+                QRCode.from(passphrase).to(ImageType.PNG).writeTo(stream);
+                qrCodeHelper.registerImageInGallery(RegistrationScreen.this, qrCodeFile);
+                Toast.makeText(RegistrationScreen.this, R.string.passphrase_qrcode_was_created, Toast.LENGTH_LONG).show();
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
+
         }
     };
 }
