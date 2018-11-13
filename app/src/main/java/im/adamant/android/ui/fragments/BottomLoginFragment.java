@@ -1,16 +1,21 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -32,6 +37,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.presenters.MainPresenter;
@@ -80,7 +86,6 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
                 .retry();
 
         compositeDisposable.add(obs.subscribe());
-
     }
 
     @Override
@@ -89,6 +94,12 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
 
         compositeDisposable.dispose();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+       handleUserExit();
+        super.onDismiss(dialog);
     }
 
     @Override
@@ -148,5 +159,13 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     @Override
     public void unlockUI() {
         loginButtonView.setEnabled(true);
+    }
+
+    private void handleUserExit() {
+        LoggerHelper.d("YOBA", "YIOBA");
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            AdamantApplication.hideKeyboard(activity, passPhraseView);
+        }
     }
 }

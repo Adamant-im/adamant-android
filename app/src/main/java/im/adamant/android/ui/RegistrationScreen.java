@@ -286,6 +286,12 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         compositeDisposable.clear();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        AdamantApplication.hideKeyboard(this, inputPassphraseView);
+    }
+
     private void showError(String error) {
         inputLayoutView.setError(error);
         inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
