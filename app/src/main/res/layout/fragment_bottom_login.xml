@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/activity_login_et_pass_phrase"
             android:textColor="@color/onSurface"
-            android:maxLines="3" />
+            android:maxLines="4" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton

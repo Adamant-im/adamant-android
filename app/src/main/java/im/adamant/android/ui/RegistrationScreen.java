@@ -36,12 +36,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
+import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
@@ -211,12 +213,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
     @Override
     public void onEnteredValidPassphrase() {
-        Drawable copyButton = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            copyButton = getResources().getDrawable(R.drawable.ic_copy, getTheme());
-        } else {
-            copyButton = getResources().getDrawable(R.drawable.ic_copy);
-        }
+        Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.ic_copy);
+
         inputLayoutView.setError("");
         inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyButton, null);
         saveQrCodeButton.setEnabled(true);
@@ -262,6 +260,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                 .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
                 .doOnNext(presenter::onInputPassphrase)
+                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
                 .retry();
 
         Disposable subscribe = obs.subscribe();
@@ -271,11 +270,11 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         Disposable clickSubscription = passphraseAdapter
                 .getObservable()
                 .doOnNext(index -> passphrasesListView.smoothScrollToPosition(index))
+                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
                 .retry()
                 .subscribe();
 
-        compositeDisposable.add(clickSubscription);
-    }
+        compositeDisposable.add(clickSubscription);    }
 
     @Override
     protected void onPause() {
