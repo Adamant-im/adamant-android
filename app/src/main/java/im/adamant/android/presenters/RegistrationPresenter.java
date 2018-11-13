@@ -114,13 +114,16 @@ public class RegistrationPresenter extends BasePresenter<RegistrationView> {
         int current = words.length;
         int necessary = 12 - current;
 
-        if (current < 12) {
-            getViewState().invalidCount(current, necessary);
-            return false;
-        }
-
         try {
             authorizeInteractor.validatePassphrase(passphrase);
+
+            //The InvalidWordCountException exception is not always called.
+            //(For example: in some cases, the passphrase of 9 words does not raise an exception), therefore this check is implemented
+            if (current < 12) {
+                getViewState().invalidCount(current, necessary);
+                return false;
+            }
+
             getViewState().onEnteredValidPassphrase();
         } catch (WordNotFoundException e) {
             getViewState().invalidWords(e.getWord(), e.getSuggestion1(), e.getSuggestion2());

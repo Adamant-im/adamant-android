@@ -56,7 +56,7 @@
                 android:id="@+id/fragment_login_et_passphrase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textNoSuggestions"
+                android:inputType="textMultiLine|textNoSuggestions"
                 android:maxLines="4"
                 android:textColor="@color/onSurface" />
         </com.google.android.material.textfield.TextInputLayout>
