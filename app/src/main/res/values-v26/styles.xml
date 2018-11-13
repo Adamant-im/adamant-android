@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">300</item>
+        <item name="fontWeight">300</item>
+    </style>
+</resources>

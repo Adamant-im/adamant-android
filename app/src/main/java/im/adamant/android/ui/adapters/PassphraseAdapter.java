@@ -35,8 +35,11 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
     private CompositeDisposable subscriptions = new CompositeDisposable();
     private final PublishSubject<Integer> clickItemPublisher = PublishSubject.create();
 
-    public PassphraseAdapter(Avatar avatar, PassphraseAvatarOutlineProvider outlineProvider) {
+    public PassphraseAdapter(Avatar avatar) {
         this.avatar = avatar;
+    }
+
+    public void setOutlineProvider(PassphraseAvatarOutlineProvider outlineProvider) {
         this.outlineProvider = outlineProvider;
     }
 
@@ -88,7 +91,9 @@ public class PassphraseAdapter extends RecyclerView.Adapter<PassphraseAdapter.Pa
 
             avatarView = itemView.findViewById(R.id.list_item_passphrase_avatar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatarView.setOutlineProvider(outlineProvider);
+                if (outlineProvider != null) {
+                    avatarView.setOutlineProvider(outlineProvider);
+                }
             }
 
             avatarView.setOnClickListener((v) -> {
