@@ -1,51 +1,32 @@
 package im.adamant.android.ui.fragments;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
-import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
-import im.adamant.android.Screens;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
-import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
 public class BottomLoginFragment extends BaseBottomFragment implements LoginView {
 
@@ -98,7 +79,7 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-       handleUserExit();
+       handleDismissWindow();
         super.onDismiss(dialog);
     }
 
@@ -161,8 +142,7 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
         loginButtonView.setEnabled(true);
     }
 
-    private void handleUserExit() {
-        LoggerHelper.d("YOBA", "YIOBA");
+    private void handleDismissWindow() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
             AdamantApplication.hideKeyboard(activity, passPhraseView);
