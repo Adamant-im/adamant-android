@@ -1,12 +1,20 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -15,12 +23,14 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
@@ -56,6 +66,36 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     }
 
     @Override
+    public void setupDialog(Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                FrameLayout bottomSheet = (FrameLayout) dialog.findViewById(R.id.design_bottom_sheet);
+                if (bottomSheet == null) { return; }
+
+                BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+                if (behavior == null) { return; }
+
+                behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View view, int newState) {
+                        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                            handleDismissWindow();
+                        }
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View view, float v) {
+
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
 
@@ -75,6 +115,12 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
 
         compositeDisposable.dispose();
         compositeDisposable.clear();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        handleDismissWindow();
+        super.onCancel(dialog);
     }
 
     @Override
@@ -145,7 +191,11 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     private void handleDismissWindow() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
-            AdamantApplication.hideKeyboard(activity, passPhraseView);
+            activity.getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+            );
         }
+
+
     }
 }
