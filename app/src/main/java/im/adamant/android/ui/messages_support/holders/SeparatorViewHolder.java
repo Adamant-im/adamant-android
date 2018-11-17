@@ -41,9 +41,9 @@ public class SeparatorViewHolder extends AbstractMessageListContentViewHolder {
             leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
             rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
         } else {
-            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.disabled));
-            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.disabled));
-            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.disabled));
+            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.inactiveInputOutline));
+            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.inactiveInputOutline));
+            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.inactiveInputOutline));
         }
     }
 

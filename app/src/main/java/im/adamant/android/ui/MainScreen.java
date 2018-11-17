@@ -178,6 +178,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
                     case Screens.LOGIN_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         MainScreen.this.finish();
                     }
