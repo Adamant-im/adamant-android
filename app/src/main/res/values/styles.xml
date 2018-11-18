@@ -89,15 +89,16 @@
         <item name="android:textColor">@color/onPrimary</item>
     </style>
 
-    <!--<style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">-->
     <style name="AdamantLight.AlertDialogCustom" parent="Theme.MaterialComponents.Light.Dialog.Alert">
         <item name="android:textColorPrimary">@color/onPrimary</item>
         <item name="colorPrimaryDark">@color/secondary</item>
+        <item name="colorAccent">@color/secondary</item>
         <item name="android:windowTitleStyle">@style/AdamantLight.AlertDialogTitle</item>
     </style>
 
     <style name="AdamantLight.AlertDialogTitle">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/onPrimary</item>
         <item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>
     </style>
