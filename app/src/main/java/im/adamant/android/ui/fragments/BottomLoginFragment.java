@@ -37,6 +37,7 @@ import im.adamant.android.ui.mvp_view.LoginView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class BottomLoginFragment extends BaseBottomFragment implements LoginView {
 
@@ -58,7 +59,7 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     @BindView(R.id.fragment_login_et_passphrase) TextInputEditText passPhraseView;
     @BindView(R.id.fragment_login_btn_enter) Button loginButtonView;
 
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
+    Disposable passphraseListener;
 
     @Override
     public int getLayoutId() {
@@ -99,24 +100,22 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     public void onResume() {
         super.onResume();
 
-        Observable<String> obs = RxTextView
+        passphraseListener = RxTextView
                 .textChanges(passPhraseView)
                 .filter(charSequence -> charSequence.length() > 0)
                 .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
                 .doOnNext(loginPresenter::onInputPassphrase)
                 .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
-                .retry();
-
-        compositeDisposable.add(obs.subscribe());
+                .retry()
+                .subscribe();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-
-        compositeDisposable.dispose();
-        compositeDisposable.clear();
+        passphraseListener.dispose();
+        passphraseListener = null;
     }
 
     @Override
