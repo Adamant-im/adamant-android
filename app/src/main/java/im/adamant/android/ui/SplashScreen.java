@@ -111,13 +111,14 @@ public class SplashScreen extends AppCompatActivity {
         super.onStop();
 
         if (subscriptions != null) {
+            subscriptions.clear();
             subscriptions.dispose();
         }
     }
 
     private static void goToScreen(Class target, Context context, WeakReference<SplashScreen> splashScreenWeakReference) {
         Intent intent = new Intent(context, target);
-        intent.addFlags(FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
 
         SplashScreen splashScreen = splashScreenWeakReference.get();

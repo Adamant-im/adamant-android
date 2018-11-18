@@ -101,9 +101,11 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
 
         Observable<String> obs = RxTextView
                 .textChanges(passPhraseView)
+                .filter(charSequence -> charSequence.length() > 0)
                 .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                 .map(CharSequence::toString)
                 .doOnNext(loginPresenter::onInputPassphrase)
+                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
                 .retry();
 
         compositeDisposable.add(obs.subscribe());

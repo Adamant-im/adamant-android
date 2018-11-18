@@ -70,6 +70,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
 
     public void onInputPassphrase(String passphrase){
+        passphrase = passphrase.trim();
         if (authorizeInteractor.isValidPassphrase(passphrase)) {
             getViewState().unlockUI();
         } else {
