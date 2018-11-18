@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -88,8 +89,15 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         String versionText = String.format(Locale.ENGLISH, getString(R.string.fragment_settings_version), BuildConfig.VERSION_NAME);
         versionView.setText(versionText);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         nodeListView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                nodeListView.getContext(),
+                layoutManager.getOrientation()
+        );
+        nodeListView.addItemDecoration(dividerItemDecoration);
+
         nodeListView.setAdapter(nodeAdapter);
 
         newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
