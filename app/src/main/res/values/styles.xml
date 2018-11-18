@@ -107,4 +107,12 @@
         <item name="android:listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->
         <item name="listPreferredItemHeightSmall">56dp</item><!-- item size in menu-->
     </style>
+
+    <style name="AdamantLight.TableRowStyle">
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:layout_height">@dimen/tablerow_default_height</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
 </resources>
