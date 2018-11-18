@@ -45,7 +45,7 @@
 
     <string name="fragment_settings_general_title">Общие</string>
     <string name="fragment_settings_nodes_title">Ноды</string>
-    <string name="fragment_settings_language">Язык приложения</string>
+    <string name="fragment_settings_language">Язык</string>
     <string name="fragment_settings_choose_language">Выберите язык</string>
     <string name="fragment_settings_new_node">Новая нода</string>
     <string name="fragment_settings_add_new_node">Добавить ноду</string>
@@ -61,8 +61,8 @@
     <string name="address_qrcode_was_copied">Создан QR-Код адреса</string>
     <string name="passphrase_qrcode_was_created">QR-Код с паролем сохранен в галерею</string>
     <string name="dialog_logout_title">Выход</string>
-    <string name="dialog_logout_message">Подтверждаете выход из аккаунта?</string>
-    <string name="rationale_qrcode_write_permission">Для записи QR-кода в галерею требуется разрешение</string>
+    <string name="dialog_logout_message">Вы действительно хотите выйти из аккаунта?</string>
+    <string name="rationale_qrcode_write_permission">Приложению необходимо разрешение на запись, чтобы сохранить QR-код в галерею</string>
     <string name="activity_scan_qrcode_camera_permission_view">Отсутсвует разрешение на доступ к камере</string>
 
     <!--NOTIFICATIONS-->
@@ -70,7 +70,7 @@
     <string name="adamant_default_notification_channel">Новое сообщение</string>
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
     <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
-    <string name="default_notification_message">У вас новое сообщение</string>
+    <string name="default_notification_message">У Вас новое сообщение</string>
 
 
     <!--ERRORS-->
@@ -81,9 +81,9 @@
     <string name="empty_message">Сообщение не может быть пустым</string>
     <string name="wrong_node_address">Некорректный адрес ноды</string>
     <string name="unsupported_message_type">Неподдерживаемое сообщение: %s</string>
-    <string name="invalid_word_in_passphrase">Слово не найдено в списке разрешенных слов: "%s", попробуйте "%s", "%s"</string>
+    <string name="invalid_word_in_passphrase">Слово "%s" отсутствует в списке разрешенных слов, попробуйте "%s", "%s"</string>
     <string name="invalid_symbol_in_passphrase">Некорректный символ. Разрешены только [a-z] и пробел</string>
-    <string name="invalid_count_words_in_passphrase">Должно быть 12 слов. Уже введено %d осталось %d</string>
+    <string name="invalid_count_words_in_passphrase">Парольная фраза состоит из 12 слов. Уже введено %d, осталось %d</string>
     <string name="invalid_checksum_in_passphrase">Некорректная контрольная сумма</string>
 
     <!--HELLO-->
