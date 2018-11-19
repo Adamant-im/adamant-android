@@ -46,6 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
         getViewState().lockUI();
 
+        final String finalPassPhrase = passPhrase;
         Disposable subscription = authorizeInteractor
                 .authorize(passPhrase)
                 .subscribe(
@@ -53,8 +54,15 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                         if (authorize.isSuccess()){
                             router.navigateTo(Screens.WALLET_SCREEN);
                         } else {
-                            LoggerHelper.e("ERR", authorize.getError());
-                            router.showSystemMessage(authorize.getError());
+
+                            //TODO: Oh my god, somebody fix this, please.
+                            //PWA adamantServerApi.js, line: 129
+                            if ("Account not found".equalsIgnoreCase(authorize.getError())) {
+                                createNewAccount(finalPassPhrase);
+                            } else {
+                                LoggerHelper.e("ERR", authorize.getError());
+                                router.showSystemMessage(authorize.getError());
+                            }
                         }
                     },
                     (error) -> {
@@ -82,4 +90,24 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
     }
 
+    private void createNewAccount(String passphrase) {
+        Disposable subscription = authorizeInteractor
+                .createNewAccount(passphrase)
+                .subscribe(
+                        (authorize)->{
+                            if (authorize.isSuccess()){
+                                router.navigateTo(Screens.CHATS_SCREEN);
+                            } else {
+                                LoggerHelper.e("ERR", authorize.getError());
+                                router.showSystemMessage(authorize.getError());
+                            }
+                        },
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                        },
+                        () -> getViewState().unlockUI()
+                );
+
+        subscriptions.add(subscription);
+    }
 }
