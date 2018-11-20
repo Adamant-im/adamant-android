@@ -109,6 +109,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
 
         if (transactionMessage != null){
             switch (transactionMessage.getType()){
+                case TransactionMessage.OLD_BASE_MESSAGE_TYPE:
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
                     return SupportedMessageListContentType.ADAMANT_BASIC;
                 }
