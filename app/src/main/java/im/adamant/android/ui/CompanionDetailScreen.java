@@ -15,7 +15,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
-import im.adamant.android.presenters.CompanionDetailPresenter;
+import im.adamant.android.ui.presenters.CompanionDetailPresenter;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.mvp_view.CompanionDetailView;
 import ru.terrakok.cicerone.NavigatorHolder;

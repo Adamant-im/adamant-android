@@ -32,7 +32,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.LoginPresenter;
+import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

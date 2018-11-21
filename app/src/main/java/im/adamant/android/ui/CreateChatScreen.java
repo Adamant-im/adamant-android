@@ -12,7 +12,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.CreateChatPresenter;
+import im.adamant.android.ui.presenters.CreateChatPresenter;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 
 import java.io.Serializable;

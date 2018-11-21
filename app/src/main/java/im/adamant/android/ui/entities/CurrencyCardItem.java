@@ -10,6 +10,8 @@ public class CurrencyCardItem {
     private int backgroundLogoResource;
     private int precision;
     private String abbreviation;
+    private int airdropLinkResource;
+    private String airdropLinkString;
 
     public BigDecimal getBalance() {
         return balance;
@@ -65,5 +67,21 @@ public class CurrencyCardItem {
 
     public void setAbbreviation(String abbreviation) {
         this.abbreviation = abbreviation;
+    }
+
+    public int getAirdropLinkResource() {
+        return airdropLinkResource;
+    }
+
+    public void setAirdropLinkResource(int airdropLinkResource) {
+        this.airdropLinkResource = airdropLinkResource;
+    }
+
+    public String getAirdropLinkString() {
+        return airdropLinkString;
+    }
+
+    public void setAirdropLinkString(String airdropLinkString) {
+        this.airdropLinkString = airdropLinkString;
     }
 }

@@ -9,7 +9,7 @@ import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
-import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import io.reactivex.disposables.CompositeDisposable;
 

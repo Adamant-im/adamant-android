@@ -24,7 +24,7 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.presenters.MainPresenter;
+import im.adamant.android.ui.presenters.MainPresenter;
 import ru.terrakok.cicerone.Router;
 
 //TODO: Parrent class must be the BaseBottomFragment

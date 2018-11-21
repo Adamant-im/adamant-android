@@ -1,4 +1,4 @@
-package im.adamant.android.currencies;
+package im.adamant.android.interactors.wallets;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -11,16 +11,16 @@ import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
-import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
-public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
+public class AdamantWalletFacade implements WalletFacade {
     private AdamantApiWrapper api;
     private ChatsStorage chatsStorage;
 
-    public AdamantCurrencyInfoDriver(AdamantApiWrapper api) {
+    public AdamantWalletFacade(AdamantApiWrapper api) {
         this.api = api;
     }
 
@@ -44,8 +44,8 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
     }
 
     @Override
-    public SupportedCurrencyType getCurrencyType() {
-        return SupportedCurrencyType.ADM;
+    public SupportedWalletFacadeType getCurrencyType() {
+        return SupportedWalletFacadeType.ADM;
     }
 
     @Override
@@ -111,6 +111,22 @@ public class AdamantCurrencyInfoDriver implements CurrencyInfoDriver {
                 })
                 .first(new ArrayList<>());
 
+    }
+
+    @Override
+    public boolean isAvailableAirdropLink() {
+        //TODO: if balance = 0 and count transactions = 0
+        return true;
+    }
+
+    @Override
+    public int getAirdropLinkResource() {
+        return R.string.free_token_url;
+    }
+
+    @Override
+    public String getAirdropLinkString() {
+        return "";
     }
 
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {

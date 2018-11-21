@@ -23,7 +23,7 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import im.adamant.android.R;
-import im.adamant.android.presenters.ChatsPresenter;
+import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;

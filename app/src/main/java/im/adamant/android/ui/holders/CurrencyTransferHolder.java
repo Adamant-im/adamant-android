@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
-import im.adamant.android.currencies.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 
 public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
     private Context context;
@@ -24,9 +24,9 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
 
         this.context = context;
 
-        addressView = itemView.findViewById(R.id.list_item_currency_transfer_tv_address);
-        amountView = itemView.findViewById(R.id.list_item_currency_transfer_tv_amount);
-        titleView = itemView.findViewById(R.id.list_item_currency_transfer_tv_title);
+        addressView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_address);
+        amountView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_amount);
+        titleView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_title);
     }
 
     public void bind(CurrencyTransferEntity transferEntity) {

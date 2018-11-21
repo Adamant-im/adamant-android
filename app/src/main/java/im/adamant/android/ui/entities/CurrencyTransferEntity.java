@@ -1,4 +1,4 @@
-package im.adamant.android.currencies;
+package im.adamant.android.ui.entities;
 
 import java.math.BigDecimal;
 
@@ -14,6 +14,7 @@ public class CurrencyTransferEntity {
     private Direction direction;
     private String currencyAbbreviation;
     private String contactName;
+
 
     public String getAddress() {
         return address;

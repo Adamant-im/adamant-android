@@ -4,7 +4,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.presenters.ChatsPresenter;
+import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 

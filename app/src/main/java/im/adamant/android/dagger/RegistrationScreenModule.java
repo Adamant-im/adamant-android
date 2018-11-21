@@ -12,7 +12,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.presenters.RegistrationPresenter;
+import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.transformations.PassphraseAvatarOutlineProvider;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;

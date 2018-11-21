@@ -6,10 +6,10 @@ import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.presenters.WalletPresenter;
+import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
+import im.adamant.android.ui.presenters.WalletPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
@@ -19,10 +19,10 @@ public class WalletScreenModule {
     @Provides
     public WalletPresenter provideWalletPresenter(
             Router router,
-            AccountInteractor accountInteractor,
+            WalletInteractor walletInteractor,
             @Named(value = Screens.WALLET_SCREEN) CompositeDisposable subscriptions
     ){
-        return new WalletPresenter(router, accountInteractor, subscriptions);
+        return new WalletPresenter(router, walletInteractor, subscriptions);
     }
 
     @FragmentScope

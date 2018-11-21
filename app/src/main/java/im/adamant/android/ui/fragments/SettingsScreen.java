@@ -33,7 +33,7 @@ import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;

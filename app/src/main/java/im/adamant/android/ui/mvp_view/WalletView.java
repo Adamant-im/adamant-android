@@ -4,10 +4,9 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-import im.adamant.android.currencies.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 
 public interface WalletView extends MvpView {

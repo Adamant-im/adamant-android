@@ -10,7 +10,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
-import im.adamant.android.currencies.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.holders.CurrencyTransferHolder;
 
 public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTransferHolder> {
@@ -27,7 +27,7 @@ public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTrans
     @Override
     public CurrencyTransferHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.list_item_currency_transfer, parent, false);
+        View v = inflater.inflate(R.layout.list_item_wallet_transfer, parent, false);
         return new CurrencyTransferHolder(v, parent.getContext());
     }
 

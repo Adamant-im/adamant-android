@@ -26,7 +26,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.presenters.MainPresenter;
+import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;

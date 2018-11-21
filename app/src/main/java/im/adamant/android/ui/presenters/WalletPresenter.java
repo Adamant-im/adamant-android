@@ -1,12 +1,12 @@
-package im.adamant.android.presenters;
+package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.core.AdamantApi;
-import im.adamant.android.currencies.SupportedCurrencyType;
-import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -17,17 +17,17 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
-    private AccountInteractor accountInteractor;
+    private WalletInteractor walletInteractor;
     private Disposable lastTransfersSubscription;
     private CurrencyCardItem currencyCardItem;
 
     public WalletPresenter(
             Router router,
-            AccountInteractor accountInteractor,
+            WalletInteractor walletInteractor,
             CompositeDisposable subscription
     ) {
         super(subscription);
-        this.accountInteractor = accountInteractor;
+        this.walletInteractor = walletInteractor;
         this.router = router;
     }
 
@@ -35,7 +35,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     public void attachView(WalletView view) {
         super.attachView(view);
 
-        Disposable subscribe = accountInteractor
+        Disposable subscribe = walletInteractor
                 .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
@@ -56,7 +56,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
 
         this.currencyCardItem = cardItem;
 
-        lastTransfersSubscription = accountInteractor
+        lastTransfersSubscription = walletInteractor
                 .getLastTransfersByCurrencyAbbr(cardItem.getAbbreviation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess((transfers) -> getViewState().showLastTransfers(transfers))
@@ -85,7 +85,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     public void onClickCreateQrCodeCurrentCardAddress() {
         if (this.currencyCardItem != null){
             String address = this.currencyCardItem.getAddress();
-            if (currencyCardItem.getAbbreviation().equalsIgnoreCase(SupportedCurrencyType.ADM.name())){
+            if (currencyCardItem.getAbbreviation().equalsIgnoreCase(SupportedWalletFacadeType.ADM.name())){
                 address = "adm:" + address;
             }
             getViewState().createQrCode(address);

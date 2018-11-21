@@ -45,7 +45,7 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.RegistrationPresenter;
+import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;

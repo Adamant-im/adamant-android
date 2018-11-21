@@ -28,7 +28,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.LoginPresenter;
+import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.fragments.BottomLoginFragment;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.mvp_view.LoginView;

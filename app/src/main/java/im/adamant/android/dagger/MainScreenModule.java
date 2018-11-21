@@ -13,7 +13,7 @@ import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.R;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.presenters.MainPresenter;
+import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;

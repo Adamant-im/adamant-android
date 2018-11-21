@@ -6,7 +6,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.presenters.MessagesPresenter;
+import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 

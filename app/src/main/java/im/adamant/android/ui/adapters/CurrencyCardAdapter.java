@@ -1,5 +1,8 @@
 package im.adamant.android.ui.adapters;
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.PagerAdapter;
 import im.adamant.android.R;
+import im.adamant.android.ui.entities.Contact;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
@@ -87,10 +91,10 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         View view = LayoutInflater.from(container.getContext())
-                .inflate(R.layout.list_item_currency_card, container, false);
+                .inflate(R.layout.list_item_wallet_card, container, false);
         container.addView(view);
         bind(items.get(position), view);
-        CardView cardView = (CardView) view.findViewById(R.id.list_item_currency_card_cv_card);
+        CardView cardView = (CardView) view.findViewById(R.id.list_item_wallet_card_cv_card);
 
         if (mBaseElevation == 0) {
             mBaseElevation = cardView.getCardElevation();
@@ -124,18 +128,36 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     //TODO: Maybe use ViewHolder
     private void bind(CurrencyCardItem item, View view) {
-        TextView copyBtnView = view.findViewById(R.id.list_item_currency_card_tv_copy);
-        TextView createQrView = view.findViewById(R.id.list_item_currency_card_tv_create_qr);
+        TextView copyBtnView = view.findViewById(R.id.list_item_wallet_card_tv_copy);
+        TextView createQrView = view.findViewById(R.id.list_item_wallet_card_tv_create_qr);
 
-        TextView titleView = view.findViewById(R.id.list_item_currency_card_tv_title);
-        TextView balanceView = view.findViewById(R.id.list_item_currency_card_tv_balance);
-        TextView addressView = view.findViewById(R.id.list_item_currency_card_tv_address);
-        ImageView backgroundLogoView = view.findViewById(R.id.list_item_currency_card_background_logo);
+        TextView titleView = view.findViewById(R.id.list_item_wallet_card_tv_title);
+        TextView balanceView = view.findViewById(R.id.list_item_wallet_card_tv_balance);
+        TextView addressView = view.findViewById(R.id.list_item_wallet_card_tv_address);
+        TextView airdropLinkView = view.findViewById(R.id.list_item_wallet_card_tv_get_free_token);
+
+        ImageView backgroundLogoView = view.findViewById(R.id.list_item_wallet_card_background_logo);
 
         titleView.setText(item.getTitleString());
         balanceView.setText(String.format(Locale.ENGLISH, "%." + item.getPrecision() + "f", item.getBalance()));
         addressView.setText(item.getAddress());
         backgroundLogoView.setImageResource(item.getBackgroundLogoResource());
+
+        boolean isAirdropAvaliable = item.getAirdropLinkResource() > 0 || (item.getAirdropLinkString() != null && !item.getAirdropLinkString().isEmpty());
+
+        if (isAirdropAvaliable){
+            Context ctx = view.getContext().getApplicationContext();
+            String link = item.getAirdropLinkResource() > 0 ? ctx.getString(item.getAirdropLinkResource()) : item.getAirdropLinkString();
+            airdropLinkView.setVisibility(View.VISIBLE);
+            airdropLinkView.setOnClickListener(v -> {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+                browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                ctx.startActivity(browserIntent);
+            });
+        } else {
+            airdropLinkView.setVisibility(View.GONE);
+            airdropLinkView.setOnClickListener(null);
+        }
 
         copyBtnView.setOnClickListener(v -> publisher.onNext(Events.COPY));
         createQrView.setOnClickListener(v -> publisher.onNext(Events.CREATE_QR));

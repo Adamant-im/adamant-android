@@ -4,7 +4,7 @@ import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.presenters.LoginPresenter;
+import im.adamant.android.ui.presenters.LoginPresenter;
 
 import javax.inject.Named;
 import dagger.Module;

@@ -20,7 +20,7 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.presenters.MessagesPresenter;
+import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;

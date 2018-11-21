@@ -1,4 +1,4 @@
-package im.adamant.android.presenters;
+package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.arellomobile.mvp.MvpPresenter;

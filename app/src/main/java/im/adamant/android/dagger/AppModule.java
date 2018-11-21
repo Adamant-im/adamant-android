@@ -6,7 +6,6 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import dagger.multibindings.IntoMap;
-import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
@@ -18,12 +17,13 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
-import im.adamant.android.currencies.AdamantCurrencyInfoDriver;
-import im.adamant.android.currencies.BinanceCoinInfoDriver;
-import im.adamant.android.currencies.CurrencyInfoDriver;
-import im.adamant.android.currencies.EthereumCurrencyInfoDriver;
-import im.adamant.android.currencies.SupportedCurrencyType;
-import im.adamant.android.currencies.SupportedCurrencyTypeKey;
+import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.wallets.AdamantWalletFacade;
+import im.adamant.android.interactors.wallets.BinanceWalletFacade;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.interactors.wallets.EthereumWalletFacade;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeTypeKey;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
@@ -40,8 +40,6 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
-import im.adamant.android.presenters.LoginPresenter;
-import im.adamant.android.presenters.MainPresenter;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -83,6 +81,7 @@ import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionM
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import im.adamant.android.ui.presenters.MainPresenter;
 import io.github.novacrypto.bip39.MnemonicGenerator;
 import io.github.novacrypto.bip39.SeedCalculator;
 import io.github.novacrypto.bip39.wordlists.English;
@@ -304,6 +303,14 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static WalletInteractor provideWalletInteractor(
+            Map<SupportedWalletFacadeType, WalletFacade> wallets
+    ) {
+        return new WalletInteractor(wallets);
+    }
+
+    @Singleton
+    @Provides
     public static AuthorizeInteractor provideAuthorizationInteractor(
             AdamantApiWrapper api,
             AdamantKeyGenerator keyGenerator,
@@ -318,10 +325,9 @@ public abstract class AppModule {
     public static AccountInteractor provideAccountInteractor(
             AdamantApiWrapper api,
             Settings settings,
-            ChatsStorage chatsStorage,
-            Map<SupportedCurrencyType, CurrencyInfoDriver> infoDrivers
+            ChatsStorage chatsStorage
     ) {
-        return new AccountInteractor(api, settings, chatsStorage, infoDrivers);
+        return new AccountInteractor(api, settings, chatsStorage);
     }
 
     @Singleton
@@ -406,11 +412,11 @@ public abstract class AppModule {
     }
 
     @IntoMap
-    @SupportedCurrencyTypeKey(SupportedCurrencyType.ADM)
+    @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ADM)
     @Singleton
     @Provides
-    public static CurrencyInfoDriver provideAdamantInfoDriver(AdamantApiWrapper api, ChatsStorage chatStorage) {
-        AdamantCurrencyInfoDriver driver = new AdamantCurrencyInfoDriver(api);
+    public static WalletFacade provideAdamantInfoDriver(AdamantApiWrapper api, ChatsStorage chatStorage) {
+        AdamantWalletFacade driver = new AdamantWalletFacade(api);
         driver.setChatStorage(chatStorage);
 
         return driver;
@@ -418,19 +424,19 @@ public abstract class AppModule {
 
     //TODO: Don't forget inject ChatStorage
     @IntoMap
-    @SupportedCurrencyTypeKey(SupportedCurrencyType.ETH)
+    @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ETH)
     @Singleton
     @Provides
-    public static CurrencyInfoDriver provideEthereumInfoDriver() {
-        return new EthereumCurrencyInfoDriver();
+    public static WalletFacade provideEthereumInfoDriver() {
+        return new EthereumWalletFacade();
     }
 
     @IntoMap
-    @SupportedCurrencyTypeKey(SupportedCurrencyType.BNB)
+    @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.BNB)
     @Singleton
     @Provides
-    public static CurrencyInfoDriver provideBinanceInfoDriver() {
-        return new BinanceCoinInfoDriver();
+    public static WalletFacade provideBinanceInfoDriver() {
+        return new BinanceWalletFacade();
     }
 
     @Singleton

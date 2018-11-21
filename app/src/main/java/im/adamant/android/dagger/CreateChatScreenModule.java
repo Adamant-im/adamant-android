@@ -4,7 +4,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.SendMessageInteractor;
-import im.adamant.android.presenters.CreateChatPresenter;
+import im.adamant.android.ui.presenters.CreateChatPresenter;
 
 import javax.inject.Named;
 
