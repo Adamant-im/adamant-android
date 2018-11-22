@@ -85,7 +85,10 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        loginFragment.show(supportFragmentManager, loginFragment.getTag());
+        Fragment fragment = supportFragmentManager.findFragmentByTag(loginFragment.getTag());
+        if (fragment == null) {
+            loginFragment.show(supportFragmentManager, loginFragment.getTag());
+        }
     }
 
     @OnClick(R.id.activity_login_btn_generate_new_passphrase)

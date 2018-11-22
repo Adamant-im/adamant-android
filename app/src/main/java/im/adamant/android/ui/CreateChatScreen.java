@@ -92,6 +92,17 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
     public void showError(int resourceId) {
         Toast.makeText(this, resourceId, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void lockUI() {
+
+    }
+
+    @Override
+    public void unlockUI() {
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();

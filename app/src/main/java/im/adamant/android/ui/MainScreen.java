@@ -3,6 +3,7 @@ package im.adamant.android.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -23,6 +24,7 @@ import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
@@ -78,6 +80,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     Avatar avatar;
 
+    Fragment currentFragment;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -96,24 +100,29 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         setSupportActionBar(appBar);
     }
 
+    //TODO: Don't recreate fragments
+
     @Override
     public void showWalletScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new WalletScreen());
+        currentFragment = new WalletScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
         transaction.commit();
     }
 
     @Override
     public void showChatsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new ChatsScreen());
+        currentFragment = new ChatsScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
         transaction.commit();
     }
 
     @Override
     public void showSettingsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new SettingsScreen());
+        currentFragment = new SettingsScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
         transaction.commit();
     }
 
@@ -149,6 +158,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return false;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (currentFragment != null) {
+            currentFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
     private Navigator navigator = new Navigator() {
         @Override
         public void applyCommands(Command[] commands) {
@@ -176,6 +193,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 //                        startActivity(intent);
 
                         BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
+                        currentFragment = createChatFragment;
 
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
@@ -189,10 +207,17 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         MainScreen.this.finish();
                     }
                     break;
+
                     case Screens.SPLASH_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                         startActivity(intent);
                         finish();
+                    }
+                    break;
+
+                    case Screens.SCAN_QRCODE_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
                 }

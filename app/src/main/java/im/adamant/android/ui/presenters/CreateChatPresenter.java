@@ -36,6 +36,25 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
         this.addressProcessor = addressProcessor;
     }
 
+    public void onInputAddress(String addressPart) {
+        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressPart);
+
+        if (addresses.size() == 0){
+            getViewState().showError(R.string.wrong_address);
+            getViewState().lockUI();
+            return;
+        }
+
+        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
+
+        if (!validate(addressEntity.getAddress())){
+            getViewState().showError(R.string.wrong_address);
+            getViewState().lockUI();
+        } else {
+            getViewState().unlockUI();
+        }
+    }
+
     public void onClickCreateNewChat(String addressUriString) {
         List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressUriString);
 
