@@ -22,7 +22,7 @@
     <string name="activity_chats_action_create_new">Start a new chat</string>
 
     <string name="activity_create_chat_recipient">Recipient address</string>
-    <string name="activity_create_chat_send">Add</string>
+    <string name="activity_create_chat_send">Start new chat</string>
     <string name="activity_companion_detail_rename">Rename contact</string>
 
     <string name="activity_messages_btn_send">Send</string>
@@ -33,6 +33,9 @@
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
     <string name="bottom_menu_title_settings">Settings</string>
+
+    <string name="fragment_create_chat_title">Create chat</string>
+    <string name="fragment_create_chat_attention">You can add the recipient\'s address through an image from the gallery or by scanning the QR code:</string>
 
     <string name="fragment_login_title">Login</string>
 

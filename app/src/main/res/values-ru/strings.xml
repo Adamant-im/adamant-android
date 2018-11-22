@@ -35,6 +35,9 @@
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
 
+    <string name="fragment_create_chat_title">Создать чат</string>
+    <string name="fragment_create_chat_attention">Вы можете добавить адрес получателя через изображение из галереи или сканирование QR-кода:</string>
+
     <string name="fragment_login_title">Вход</string>
 
     <string name="fragment_wallet_address_title">Номер</string>

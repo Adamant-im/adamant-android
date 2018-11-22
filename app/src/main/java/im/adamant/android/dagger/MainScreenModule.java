@@ -13,6 +13,8 @@ import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.R;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.ui.CreateChatScreen;
+import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
@@ -41,6 +43,10 @@ public abstract class MainScreenModule {
     @FragmentScope
     @ContributesAndroidInjector(modules = {BottomNavigationScreenModule.class})
     public abstract BottomNavigationDrawerFragment drawerFragment();
+
+    @FragmentScope
+    @ContributesAndroidInjector(modules = {CreateChatScreenModule.class})
+    public abstract BottomCreateChatFragment createChatScreenInjector();
 
     @Named("main")
     @ActivityScope

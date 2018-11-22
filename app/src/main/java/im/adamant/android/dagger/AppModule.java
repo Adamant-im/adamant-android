@@ -456,10 +456,6 @@ public abstract class AppModule {
     public abstract MessagesScreen messagesScreenInjector();
 
     @ActivityScope
-    @ContributesAndroidInjector(modules = {CreateChatScreenModule.class})
-    public abstract CreateChatScreen createChatScreenInjector();
-
-    @ActivityScope
     @ContributesAndroidInjector(modules = {MainScreenModule.class})
     public abstract MainScreen createMainScreenInjector();
 

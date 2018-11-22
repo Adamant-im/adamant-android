@@ -26,6 +26,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
@@ -171,8 +172,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     break;
 
                     case Screens.CREATE_CHAT_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
+//                        startActivity(intent);
+
+                        BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
+
+                        FragmentManager supportFragmentManager = getSupportFragmentManager();
+                        createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
                     }
                     break;
 
