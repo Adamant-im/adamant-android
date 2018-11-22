@@ -67,6 +67,7 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
     @Override
     public void unlockUI() {
         startChatButtonView.setEnabled(true);
+        addressLayoutView.setError("");
     }
 
     @OnClick(R.id.fragment_create_chat_btn_enter)

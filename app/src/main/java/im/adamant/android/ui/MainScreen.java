@@ -130,6 +130,10 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        FragmentManager fragManager = this.getSupportFragmentManager();
+        int count = this.getSupportFragmentManager().getBackStackEntryCount();
+        currentFragment = fragManager.getFragments().get(count>0?count-1:count);
     }
 
     @Override
