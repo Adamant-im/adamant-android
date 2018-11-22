@@ -135,7 +135,6 @@
                 android:id="@+id/list_item_wallet_card_tv_get_free_token"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:text="@string/fragment_wallet_free_tokens_title"
                 android:textAllCaps="true"
                 android:textColor="@color/secondary"

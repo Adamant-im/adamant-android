@@ -8,6 +8,7 @@ import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
+//Facade is needed to simplify each blockchain's API for working with a wallet.
 public interface WalletFacade {
     BigDecimal getBalance();
     String getAddress();

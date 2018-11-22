@@ -20,6 +20,9 @@ public class AdamantWalletFacade implements WalletFacade {
     private AdamantApiWrapper api;
     private ChatsStorage chatsStorage;
 
+    private boolean isReceivedTransactionList = false;
+    private boolean isEmptyTransactionList = false;
+
     public AdamantWalletFacade(AdamantApiWrapper api) {
         this.api = api;
     }
@@ -80,6 +83,12 @@ public class AdamantWalletFacade implements WalletFacade {
                         return Flowable.error(new Exception(transactionList.getError()));
                     }
                 })
+                .doOnNext(list -> {
+                    isReceivedTransactionList = true;
+                    if (list.size() == 0) {
+                        isEmptyTransactionList = true;
+                    }
+                })
                 .map(list -> {
                     List<CurrencyTransferEntity> transfers = new ArrayList<>();
 
@@ -116,7 +125,13 @@ public class AdamantWalletFacade implements WalletFacade {
     @Override
     public boolean isAvailableAirdropLink() {
         //TODO: if balance = 0 and count transactions = 0
-        return true;
+        boolean isZeroBalance = (getBalance().compareTo(BigDecimal.ZERO) == 0);
+        boolean isEmptyTransactionList = (isReceivedTransactionList && this.isEmptyTransactionList);
+        if (isZeroBalance && isEmptyTransactionList) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
