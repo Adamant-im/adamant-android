@@ -180,21 +180,13 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
     @OnClick(R.id.activity_registration_btn_save_qr)
     public void onClickSaveQrCode() {
-//        TedPermission.with(this)
-//                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-//                .setPermissionListener(permissionlistener)
-//                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-//                .check();
-
         Bundle bundle = new Bundle();
-        bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, "QR DATA, YAY!");
+        bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, inputPassphraseView.getText().toString());
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
-
         intent.putExtras(bundle);
 
         startActivity(intent);
-        finish();
     }
 
     @Override
@@ -343,25 +335,4 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         }
     };
 
-
-    //TODO: Refactor this. This code must be in presenter. If its not possible when it should be called from presenter.
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
-            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                String passphrase = (inputPassphraseView.getText() == null) ? "" : inputPassphraseView.getText().toString();
-                QRCode.from(passphrase).to(ImageType.PNG).writeTo(stream);
-                qrCodeHelper.registerImageInGallery(RegistrationScreen.this, qrCodeFile);
-                Toast.makeText(RegistrationScreen.this, R.string.passphrase_qrcode_was_created, Toast.LENGTH_LONG).show();
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
-
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-
-        }
-    };
 }

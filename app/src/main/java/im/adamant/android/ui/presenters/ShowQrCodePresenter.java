@@ -4,16 +4,21 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.InjectViewState;
+import com.gun0912.tedpermission.PermissionListener;
+
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.image.ImageType;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import im.adamant.android.R;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.RegistrationScreen;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -28,8 +33,11 @@ public class ShowQrCodePresenter extends BasePresenter<ShowQrCodeView> {
         this.qrCodeHelper = qrCodeHelper;
     }
 
-    public void onBuildQrCode(String data, int sizePixel) {
-        qrCode = QRCode.from(data).to(ImageType.PNG).withSize(sizePixel, sizePixel);
+    public void onBuildQrCode(String data, int sizePixel, int onColor, int backgroundColor) {
+        qrCode = QRCode.from(data)
+                .to(ImageType.PNG)
+                .withSize(sizePixel, sizePixel)
+                .withColor(onColor, backgroundColor);
         getViewState().showQrCode(qrCode.bitmap());
     }
 
@@ -40,7 +48,7 @@ public class ShowQrCodePresenter extends BasePresenter<ShowQrCodeView> {
         try (OutputStream stream = new FileOutputStream(qrCodeFile)) {
             qrCode.writeTo(stream);
             qrCodeHelper.registerImageInGallery(context, qrCodeFile);
-            getViewState().showMessage(R.string.passphrase_qrcode_was_created);
+            getViewState().showMessage(R.string.qrcode_was_created_in_gallery);
         } catch (Exception ex) {
             ex.printStackTrace();
         }

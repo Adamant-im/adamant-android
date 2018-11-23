@@ -5,6 +5,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
@@ -40,6 +41,7 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.presenters.WalletPresenter;
@@ -216,15 +218,13 @@ public class WalletScreen extends BaseFragment implements WalletView {
     public void createQrCode(String address) {
         Activity activity = getActivity();
         if (activity != null){
-            File qrCodeFile = qrCodeHelper.makeImageFile("address_");
-            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from(address).to(ImageType.PNG).writeTo(stream);
-                qrCodeHelper.registerImageInGallery(activity, qrCodeFile);
+            Bundle bundle = new Bundle();
+            bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, address);
 
-                Toast.makeText(activity.getApplicationContext(), R.string.address_qrcode_was_copied, Toast.LENGTH_LONG).show();
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
+            Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
         }
     }
 

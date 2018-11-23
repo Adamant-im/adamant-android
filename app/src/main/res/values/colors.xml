@@ -6,6 +6,7 @@
     <color name="secondaryDarkVariant">#0053ba</color>
     
     <color name="background">#FFFFFF</color>
+    <color name="qr_background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>
     <color name="error">#B00020</color>
 
