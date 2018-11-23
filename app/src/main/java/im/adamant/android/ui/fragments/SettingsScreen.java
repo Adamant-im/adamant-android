@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -71,6 +72,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
     @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
     @BindView(R.id.fragment_settings_et_push_service_address) EditText addressPushService;
+    @BindView(R.id.fragment_settings_btn_change_lang) Button changeLanguageButtonView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -105,6 +107,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 hideKeyboard();
             }
         });
+
+        Locale locale = LocaleChanger.getLocale();
+        changeLanguageButtonView.setText(locale.getDisplayLanguage());
 
         return view;
     }
@@ -158,6 +163,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
     }
+
     @OnClick(R.id.fragment_settings_btn_change_lang)
     public void onSelectLanguage() {
         androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
