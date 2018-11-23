@@ -190,6 +190,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, "QR DATA, YAY!");
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
+
         intent.putExtras(bundle);
 
         startActivity(intent);
