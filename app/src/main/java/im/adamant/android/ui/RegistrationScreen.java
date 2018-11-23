@@ -180,11 +180,20 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
     @OnClick(R.id.activity_registration_btn_save_qr)
     public void onClickSaveQrCode() {
-        TedPermission.with(this)
-                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-                .setPermissionListener(permissionlistener)
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
+//        TedPermission.with(this)
+//                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
+//                .setPermissionListener(permissionlistener)
+//                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+//                .check();
+
+        Bundle bundle = new Bundle();
+        bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, "QR DATA, YAY!");
+
+        Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+        finish();
     }
 
     @Override

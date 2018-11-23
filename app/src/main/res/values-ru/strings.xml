@@ -20,6 +20,9 @@
     <string name="activity_registration_btn_save_qr">Сохранить пароль, как Qr-код</string>
     <string name="activity_registration_btn_create_address">Создать адрес</string>
 
+    <string name="activity_show_qr_code_title">QR-код</string>
+    <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>
+
     <string name="activity_chats_action_create_new">Новый чат</string>
 
     <string name="activity_create_chat_recipient">Адрес получателя</string>

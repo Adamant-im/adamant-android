@@ -52,6 +52,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
@@ -474,6 +475,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {RegistrationScreenModule.class})
     public abstract RegistrationScreen createRegistrationScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {ShowQrCodeScreenModule.class})
+    public abstract ShowQrCodeScreen createShowQrCodeScreenInjector();
 
 
     //--Services
