@@ -69,8 +69,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
                         LoggerHelper.e("ERR", error.getMessage(), error);
                         router.showSystemMessage(error.getMessage());
                         getViewState().unlockUI();
-                    },
-                    () -> getViewState().unlockUI()
+                    }
                 );
 
        subscriptions.add(subscription);
