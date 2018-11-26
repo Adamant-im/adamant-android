@@ -4,7 +4,9 @@ import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.entities.CurrencyCardItem;
@@ -60,7 +62,14 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .getLastTransfersByCurrencyAbbr(cardItem.getAbbreviation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess((transfers) -> getViewState().showLastTransfers(transfers))
-                .doOnError((error) -> router.showSystemMessage(error.getMessage()))
+                .doOnError((error) -> {
+                    //TODO: Create general logout control subsystem
+                    if (error instanceof NotAuthorizedException){
+                        router.navigateTo(Screens.SPLASH_SCREEN);
+                    } else {
+                        router.showSystemMessage(error.getMessage());
+                    }
+                })
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();

@@ -9,6 +9,7 @@ import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
@@ -73,6 +74,10 @@ public class AdamantWalletFacade implements WalletFacade {
 
     @Override
     public Single<List<CurrencyTransferEntity>> getLastTransfers() {
+        if (!api.isAuthorized()){
+            return Single.error(new NotAuthorizedException("Not Authorized"));
+        }
+
         String myAddress = api.getAccount().getAddress();
         return api
                 .getAdamantTransactions(Transaction.SEND, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
