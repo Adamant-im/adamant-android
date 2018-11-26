@@ -184,10 +184,11 @@ public class WalletScreen extends BaseFragment implements WalletView {
     }
 
     @Override
-    public void onStop() {
+    public void onPause() {
+        super.onPause();
+        presenter.onStopTransfersUpdate();
         subscriptions.dispose();
         subscriptions.clear();
-        super.onStop();
     }
 
     @Override

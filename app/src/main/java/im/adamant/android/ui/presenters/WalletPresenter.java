@@ -70,6 +70,10 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        onStopTransfersUpdate();
+    }
+
+    public void onStopTransfersUpdate() {
         if (lastTransfersSubscription != null){
             lastTransfersSubscription.dispose();
             lastTransfersSubscription = null;
