@@ -142,7 +142,6 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public void onResume() {
         super.onResume();
-        WeakReference<Activity> activityReference = new WeakReference<>(getActivity());
         WeakReference<WalletPresenter> thisReference = new WeakReference<>(presenter);
         Disposable subscribe = currencyCardAdapter
                 .getObservable()
@@ -155,28 +154,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
                             presenter.onClickCopyCurrentCardAddress();
                             break;
                         case CREATE_QR:
-                            Activity activity = activityReference.get();
-                            if (activity == null){return;}
-                            if (TedPermission.isGranted(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-                                presenter.onClickCreateQrCodeCurrentCardAddress();
-                            } else {
-                                TedPermission.with(activity)
-                                        .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-                                        .setPermissionListener(new PermissionListener() {
-                                            @Override
-                                            public void onPermissionGranted() {
-                                                presenter.onClickCreateQrCodeCurrentCardAddress();
-                                            }
-
-                                            @Override
-                                            public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-
-                                            }
-                                        })
-                                        .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                                        .check();
-                            }
-
+                            presenter.onClickCreateQrCodeCurrentCardAddress();
+                            break;
                     }
                 });
 
