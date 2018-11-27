@@ -28,6 +28,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.fragments.BottomLoginFragment;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
@@ -59,6 +60,9 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
+    @Inject
+    AuthorizeInteractor authorizeInteractor;
+
     private BottomLoginFragment loginFragment;
 
     //--Activity
@@ -75,6 +79,11 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
+        if (authorizeInteractor.isAuthorized()) {
+            navigator.applyCommands(new Command[]{
+                    new Forward(Screens.WALLET_SCREEN, null)
+            });
+        }
         super.onCreate(savedInstanceState);
 
         if (loginFragment == null) {
