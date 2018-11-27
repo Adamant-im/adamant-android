@@ -37,6 +37,6 @@ public class EthereumTransferMessageFactory implements MessageFactory<EthereumTr
 
     @Override
     public MessageProcessor<EthereumTransferMessage> getMessageProcessor() {
-        throw new Error("EthereumTransferMessage not implemented!");
+        throw new Error("EthereumTransferMessageProcessor not implemented!");
     }
 }

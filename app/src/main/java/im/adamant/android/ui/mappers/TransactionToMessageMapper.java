@@ -113,11 +113,13 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
                     return SupportedMessageListContentType.ADAMANT_BASIC;
                 }
-                case TransactionMessage.RICH_MESSAGE_TYPE: {
+                case TransactionMessage.RICH_MESSAGE_TYPE : {
                     String richType = getRichType(decryptedMessage);
                     switch (richType){
                         case "eth_transaction":
-                          return SupportedMessageListContentType.ETHEREUM_TRANSFER;
+                            return SupportedMessageListContentType.ETHEREUM_TRANSFER;
+                        case "bnb_transaction":
+                            return SupportedMessageListContentType.BINANCE_TRANSFER;
                     }
                 }
             }

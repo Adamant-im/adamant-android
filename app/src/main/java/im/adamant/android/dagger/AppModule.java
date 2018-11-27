@@ -79,6 +79,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
+import im.adamant.android.ui.messages_support.factories.BinanceTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -238,6 +239,11 @@ public abstract class AppModule {
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
                 new AdamantPushSubscriptionMessageFactory(encryptor, api)
+        );
+
+        provider.registerFactory(
+                SupportedMessageListContentType.BINANCE_TRANSFER,
+                new BinanceTransferMessageFactory(adamantAddressProcessor, avatar)
         );
 
         return provider;
