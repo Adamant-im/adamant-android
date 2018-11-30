@@ -13,4 +13,6 @@ public interface MessagesView extends MvpView {
     void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);
     void showMessageCost(String cost);
+    void showRenameDialog(String currentName);
+    void startSavingContacts();
 }

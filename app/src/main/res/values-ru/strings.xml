@@ -27,11 +27,18 @@
 
     <string name="activity_create_chat_recipient">Адрес получателя</string>
     <string name="activity_create_chat_send">Начать чат</string>
-    <string name="activity_companion_detail_rename">Переименовать контакт</string>
+
+    <string name="dialog_rename_contact_title">Переименовать контакт</string>
+    <string name="dialog_rename_contact_name">Имя контакта</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="activity_messages_tv_cost_text">Стоимость сообщения</string>
     <string name="activity_messages_ev_message_placeholder">Введите текст сообщения…</string>
+
+    <string name="activity_messages_action_rename">Переименовать</string>
+    <string name="activity_messages_action_copy">Копировать</string>
+    <string name="activity_messages_action_qrcode">Показать QR-код</string>
+
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
@@ -101,13 +108,11 @@
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
 
-
     <!--STATUSES-->
     <string name="node_status_active">активна</string>
     <string name="node_status_connected">подключена</string>
     <string name="node_status_unavailable">недоступна</string>
     <string name="node_status_connecting">подключение…</string>
-
 
     <!--GENERAL-->
     <string name="yes">Да</string>

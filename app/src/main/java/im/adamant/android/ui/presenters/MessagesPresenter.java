@@ -211,4 +211,23 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         return abstractMessage;
     }
 
+
+    public void onClickShowRenameDialog() {
+        if (currentChat != null){
+            if (currentChat.getCompanionId().equalsIgnoreCase(currentChat.getTitle())){
+                getViewState().showRenameDialog(currentChat.getCompanionId());
+            } else {
+                getViewState().showRenameDialog(currentChat.getTitle());
+            }
+        }
+    }
+
+    public void onClickRenameButton(String newName) {
+        if (currentChat != null){
+            currentChat.setTitle(newName);
+            getViewState().changeTitles(newName, currentChat.getCompanionId());
+        }
+
+        getViewState().startSavingContacts();
+    }
 }

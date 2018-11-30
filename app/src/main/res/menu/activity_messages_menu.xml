@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_copy_chat_address"
+        android:title="@string/activity_messages_action_copy"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_rename_chat"
+        android:title="@string/activity_messages_action_rename"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_show_qr_code"
+        android:title="@string/activity_messages_action_qrcode"
+        app:showAsAction="never"/>
+</menu>

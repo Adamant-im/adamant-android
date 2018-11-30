@@ -1,12 +1,19 @@
 package im.adamant.android.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -15,11 +22,14 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -27,6 +37,7 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -193,6 +204,46 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         runOnUiThread( () -> messageCostView.setText(cost));
     }
 
+    @Override
+    public void showRenameDialog(String currentName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AdamantLight_AlertDialogCustom);
+        builder.setTitle(getString(R.string.dialog_rename_contact_title));
+
+        View viewInflated = LayoutInflater
+                .from(this)
+                .inflate(R.layout.dialog_rename_contact, null);
+
+        final TextInputEditText input = viewInflated.findViewById(R.id.dialog_rename_contact_name);
+        input.setText(currentName);
+
+        builder.setView(viewInflated);
+
+        final MessagesPresenter localPresenter = presenter;
+        WeakReference<MessagesScreen> messagesScreenReference = new WeakReference<>(this);
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            dialog.dismiss();
+            if (input.getText() != null) {
+                String inputText = input.getText().toString();
+                localPresenter.onClickRenameButton(inputText);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    @Override
+    public void startSavingContacts() {
+        Intent intent = new Intent(getApplicationContext(), SaveContactsService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+    }
+
     @OnClick(R.id.activity_messages_btn_send)
     protected void onClickSendButton() {
         presenter.onClickSendAdamantBasicMessage(
@@ -203,9 +254,30 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_messages_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_rename_chat: {
+                presenter.onClickShowRenameDialog();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    @Override
     public void onClickTitle() {
         presenter.onClickShowCompanionDetail();
     }
+
 
     private Navigator navigator = new Navigator() {
         @Override

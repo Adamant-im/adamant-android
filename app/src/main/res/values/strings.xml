@@ -19,15 +19,21 @@
     <string name="activity_registration_btn_save_qr">Save passphrase as qr-code</string>
     <string name="activity_registration_btn_create_address">Create address</string>
 
-    <string name="activity_chats_action_create_new">Start a new chat</string>
-
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Start new chat</string>
-    <string name="activity_companion_detail_rename">Rename contact</string>
+
+    <string name="dialog_rename_contact_title">Rename contact</string>
+    <string name="dialog_rename_contact_name">Contact name</string>
+
+    <string name="activity_chats_action_create_new">Start a new chat</string>
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_messages_tv_cost_text">Cost of message</string>
     <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
+
+    <string name="activity_messages_action_rename">Rename</string>
+    <string name="activity_messages_action_copy">Copy</string>
+    <string name="activity_messages_action_qrcode">Show QR-code</string>
 
     <string name="activity_show_qr_code_title">QR-Code</string>
     <string name="activity_show_qr_code_btn_save">Save qr-code in gallery</string>
