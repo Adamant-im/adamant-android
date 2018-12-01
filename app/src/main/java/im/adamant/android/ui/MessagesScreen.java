@@ -219,7 +219,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         builder.setView(viewInflated);
 
         final MessagesPresenter localPresenter = presenter;
-        WeakReference<MessagesScreen> messagesScreenReference = new WeakReference<>(this);
 
         builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
             dialog.dismiss();

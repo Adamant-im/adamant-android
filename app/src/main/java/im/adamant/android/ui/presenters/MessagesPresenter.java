@@ -225,9 +225,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void onClickRenameButton(String newName) {
         if (currentChat != null){
             currentChat.setTitle(newName);
+
             getViewState().changeTitles(newName, currentChat.getCompanionId());
+            getViewState().startSavingContacts();
         }
 
-        getViewState().startSavingContacts();
     }
 }

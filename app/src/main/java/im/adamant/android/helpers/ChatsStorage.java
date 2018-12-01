@@ -89,6 +89,8 @@ public class ChatsStorage {
                     Chat originalChat = chats.get(index);
                     originalChat.setTitle(contact.getDisplayName());
                 }
+
+                contactsVersion = currentVersion;
             }
         }
     }

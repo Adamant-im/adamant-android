@@ -30,6 +30,7 @@
 
     <string name="dialog_rename_contact_title">Переименовать контакт</string>
     <string name="dialog_rename_contact_name">Имя контакта</string>
+    <string name="dialog_rename_contact_cost">Стоимость переименования 0.001 ADM</string>
 
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="activity_messages_tv_cost_text">Стоимость сообщения</string>
