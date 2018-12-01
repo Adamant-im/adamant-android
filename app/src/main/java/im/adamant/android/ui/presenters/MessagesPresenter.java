@@ -1,6 +1,9 @@
 package im.adamant.android.ui.presenters;
 
 
+import android.content.ClipboardManager;
+import android.widget.Toast;
+
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
@@ -117,8 +120,20 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     }
 
     public void onResume() {
-        if (currentChat != null){
+        if (currentChat != null) {
             getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
+        }
+    }
+
+    public void onClickCopyAddress() {
+        if (currentChat != null) {
+            getViewState().copyCompanionId(currentChat.getCompanionId());
+        }
+    }
+
+    public void onClickShowQrCodeAddress() {
+        if (currentChat != null) {
+            getViewState().showQrCodeCompanionId(currentChat.getCompanionId());
         }
     }
 

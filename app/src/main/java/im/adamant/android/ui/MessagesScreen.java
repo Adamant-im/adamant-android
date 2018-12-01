@@ -1,6 +1,8 @@
 package im.adamant.android.ui;
 
 import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -243,6 +245,28 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         }
     }
 
+    @Override
+    public void copyCompanionId(String companionId) {
+        ClipData clip = ClipData.newPlainText("adamant_address", companionId);
+        ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
+
+        if(clipboard != null){
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void showQrCodeCompanionId(String companionId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
+
+        Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
+    }
+
     @OnClick(R.id.activity_messages_btn_send)
     protected void onClickSendButton() {
         presenter.onClickSendAdamantBasicMessage(
@@ -264,6 +288,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         switch (item.getItemId()) {
             case R.id.action_rename_chat: {
                 presenter.onClickShowRenameDialog();
+                return true;
+            }
+            case R.id.action_copy_chat_address: {
+                presenter.onClickCopyAddress();
+                return true;
+            }
+            case R.id.action_show_qr_code: {
+                presenter.onClickShowQrCodeAddress();
                 return true;
             }
             default:
