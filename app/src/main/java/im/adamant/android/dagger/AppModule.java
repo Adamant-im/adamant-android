@@ -45,8 +45,6 @@ import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.services.ServerNodesPingService;
-import im.adamant.android.ui.CompanionDetailScreen;
-import im.adamant.android.ui.CreateChatScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
@@ -473,10 +471,6 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {SplashScreenModule.class})
     public abstract SplashScreen createSplashScreenInjector();
-
-    @ActivityScope
-    @ContributesAndroidInjector(modules = {CompanionDetailScreenModule.class})
-    public abstract CompanionDetailScreen createCompanionDetailInjector();
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {RegistrationScreenModule.class})

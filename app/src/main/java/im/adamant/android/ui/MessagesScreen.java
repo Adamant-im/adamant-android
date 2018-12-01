@@ -304,10 +304,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     }
 
-    @Override
-    public void onClickTitle() {
-        presenter.onClickShowCompanionDetail();
-    }
+
 
 
     private Navigator navigator = new Navigator() {
@@ -331,14 +328,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                         MessagesScreen.this.finish();
                     }
                     break;
-                    case Screens.COMPANION_DETAIL_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), CompanionDetailScreen.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(CompanionDetailScreen.ARG_COMPANION_ID, (Serializable) forward.getTransitionData());
-                        intent.putExtras(bundle);
-
-                        startActivity(intent);
-                    }
                 }
             }
         }

@@ -203,10 +203,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     }
 
-    public void onClickShowCompanionDetail() {
-        router.navigateTo(Screens.COMPANION_DETAIL_SCREEN, currentChat.getCompanionId());
-    }
-
     private AdamantBasicMessage getAdamantMessage(String message, AdamantBasicMessageFactory messageFactory) {
         AdamantBasicMessage abstractMessage = null;
         try {

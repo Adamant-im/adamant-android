@@ -15,6 +15,8 @@ public interface MessagesView extends MvpView {
     void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);
     void showMessageCost(String cost);
+
+    @StateStrategyType(SkipStrategy.class)
     void showRenameDialog(String currentName);
 
     @StateStrategyType(SkipStrategy.class)
