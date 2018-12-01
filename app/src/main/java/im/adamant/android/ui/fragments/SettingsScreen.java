@@ -2,17 +2,21 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -30,10 +34,12 @@ import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.presenters.SettingsPresenter;
+import im.adamant.android.ui.presenters.SettingsPresenter;
+import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.Disposable;
+import sm.euzee.github.com.servicemanager.ServiceManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -63,6 +69,10 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
     @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
+    @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
+    @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
+    @BindView(R.id.fragment_settings_et_push_service_address) EditText addressPushService;
+    @BindView(R.id.fragment_settings_btn_change_lang) Button changeLanguageButtonView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -75,19 +85,21 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public int getActivityTitleId() {
-        return R.string.bottom_menu_title_settings;
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  super.onCreateView(inflater, container, savedInstanceState);
 
         String versionText = String.format(Locale.ENGLISH, getString(R.string.fragment_settings_version), BuildConfig.VERSION_NAME);
         versionView.setText(versionText);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         nodeListView.setLayoutManager(layoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                nodeListView.getContext(),
+                layoutManager.getOrientation()
+        );
+        nodeListView.addItemDecoration(dividerItemDecoration);
+
         nodeListView.setAdapter(nodeAdapter);
 
         newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
@@ -95,6 +107,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 hideKeyboard();
             }
         });
+
+        Locale locale = LocaleChanger.getLocale();
+        changeLanguageButtonView.setText(locale.getDisplayLanguage());
 
         return view;
     }
@@ -107,7 +122,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 .subscribe(serverNode -> {
                     Activity activity = getActivity();
                     if (activity != null){
-                        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(activity);
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
                         builder
                                 .setTitle(R.string.warning)
                                 .setMessage(R.string.fragment_settings_dialog_delete_node)
@@ -118,13 +133,29 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                                 .show();
                     }
                 });
+
+        nodeAdapter.startListenChanges();
+    }
+
+    //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
+    @Override
+    public void onPause() {
+        presenter.onClickSaveSettings();
+        nodeAdapter.stopListenChanges();
+
+        if (adapterDisposable != null){
+            adapterDisposable.dispose();
+        }
+
+        super.onPause();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        if (adapterDisposable != null){
-            adapterDisposable.dispose();
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
+        if (!isVisibleToUser && (presenter != null)){
+            presenter.onClickSaveSettings();
         }
     }
 
@@ -132,14 +163,10 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
     }
+
     @OnClick(R.id.fragment_settings_btn_change_lang)
     public void onSelectLanguage() {
-//        Activity activity = getActivity();
-//        if (activity != null){
-//            AdamantApplication.getLanguageSwitcher().showChangeLanguageDialog(getActivity());
-//        }
-
-        android.support.v7.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
+        androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
     }
 
@@ -155,13 +182,43 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         }
     }
 
+    @Override
+    public void setStoreKeyPairOption(boolean value) {
+        storeKeypairView.setChecked(value);
+    }
+
+    @Override
+    public void setEnablePushOption(boolean value) {
+        enablePushNotifications.setChecked(value);
+    }
+
+    @Override
+    public void setAddressPushService(String address) {
+        addressPushService.setText(address);
+    }
+
+    @Override
+    public void callSaveSettingsService() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            Context context = activity.getApplicationContext();
+            Intent intent = new Intent(context, SaveSettingsService.class);
+            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
+            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
+            intent.putExtra(SaveSettingsService.NOTIFICATION_SERVICE_ADDRESS, addressPushService.getText().toString());
+
+            ServiceManager.runService(context, intent);
+        }
+    }
+
+
     //TODO: Refactor: method to long and dirty
-    private android.support.v7.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
-        android.support.v7.app.AlertDialog.Builder builder = null;
+    private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
+        androidx.appcompat.app.AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
         if (activity != null){
-            builder = new android.support.v7.app.AlertDialog.Builder(activity);
+            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
 
             builder.setTitle(getString(R.string.fragment_settings_choose_language));
 

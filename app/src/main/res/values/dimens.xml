@@ -1,7 +1,13 @@
 <resources>
+    <dimen name="main_button_width">210dp</dimen>
+    <dimen name="main_button_height">54dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="app_bar_bottom_height">56dp</dimen>
+    <dimen name="bottom_sheet_corner_radius">18dp</dimen>
+
     <dimen name="list_item_chat_text_size">16sp</dimen>
-    <dimen name="list_item_chat_padding">20dp</dimen>
+    <dimen name="list_item_chat_padding">16dp</dimen>
 
     <dimen name="list_item_chat_placeholder_name_width">120dp</dimen>
     <dimen name="list_item_chat_placeholder_name_height">20dp</dimen>
@@ -16,16 +22,27 @@
     <dimen name="activity_login_max_form_width">600dp</dimen>
     <dimen name="activity_login_title_text_size">30sp</dimen>
 
-    <dimen name="list_item_message_padding">42dp</dimen>
+    <dimen name="activity_show_qr_code_size_of_qr_code">150dp</dimen>
+
+    <dimen name="list_item_message_padding">16dp</dimen>
+    <dimen name="list_item_message_avatar_margin">8dp</dimen>
     <dimen name="list_item_message_processed">10dp</dimen>
+    <dimen name="list_item_message_corner_radius">10dp</dimen>
     <dimen name="list_item_message_bubble_max_width">232dp</dimen>
     <dimen name="list_item_message_bubble_content_max_width">200dp</dimen>
     <dimen name="list_item_message_bubble_content_min_width">80dp</dimen>
 
-    <dimen name="wallet_rounded_panel_height">66dp</dimen>
+    <dimen name="tablerow_default_margin_horizontal">10dp</dimen>
+    <dimen name="tablerow_default_height">20dp</dimen>
+
+    <dimen name="fragment_wallet_card_padding">20dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="list_item_avatar_size">48dp</dimen>
+    <dimen name="list_item_passphrase_avatar_size">96dp</dimen>
+
     <dimen name="fragment_settings_list_nodes_height">300dp</dimen>
+    <dimen name="fragment_bottom_navigation_avatar_size">48dp</dimen>
 </resources>

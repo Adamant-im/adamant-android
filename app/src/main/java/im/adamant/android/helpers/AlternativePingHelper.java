@@ -4,8 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.util.Log;
+import androidx.annotation.Nullable;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -44,7 +43,7 @@ public class AlternativePingHelper {
                 r.reachable = true;
             }
             catch (Exception ex) {
-                Log.e("PING","Unable to ping");
+                LoggerHelper.e("PING","Unable to ping");
             }
         }
 

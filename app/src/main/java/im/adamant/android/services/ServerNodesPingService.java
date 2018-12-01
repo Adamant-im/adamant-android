@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.stealthcopter.networktools.Ping;
 import com.stealthcopter.networktools.ping.PingResult;
-import com.stealthcopter.networktools.ping.PingTools;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -25,6 +24,7 @@ import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.dagger.ServerNodePingServiceModule;
 import im.adamant.android.helpers.AlternativePingHelper;
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.rx.ObservableRxList;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -52,7 +52,8 @@ public class ServerNodesPingService extends Service {
     public void onCreate() {
         AndroidInjection.inject(this);
         super.onCreate();
-        pingServers();
+
+        pingServers(settings.getNodes());
     }
 
     @Nullable
@@ -61,9 +62,9 @@ public class ServerNodesPingService extends Service {
         return binder;
     }
 
-    private void pingServers() {
-        Disposable disposable = settings
-                .getNodes()
+    private void pingServers(ObservableRxList<ServerNode> nodes) {
+        Context ctx = getApplicationContext();
+        Disposable disposable = nodes
                 .getCurrentList()
                 .observeOn(Schedulers.io())
                 .doOnNext(serverNode -> {
@@ -71,7 +72,7 @@ public class ServerNodesPingService extends Service {
                         Uri uri = Uri.parse(serverNode.getUrl());
                         InetAddress address = InetAddress.getByName(uri.getHost());
 
-                        PingResult pingResult = ping(address, uri);
+                        PingResult pingResult = ping(address, uri, ctx);
 
                         if ((!"localhost".equalsIgnoreCase(address.getHostName()))){
                             parsePingValue(serverNode, pingResult);
@@ -88,14 +89,14 @@ public class ServerNodesPingService extends Service {
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(serverNode -> settings.getNodes().wasUpdated(serverNode))
+                .doOnNext(nodes::wasUpdated)
                 .repeatWhen((completed) -> completed.delay(BuildConfig.PING_SECONDS_DELAY, TimeUnit.SECONDS))
                 .subscribe();
 
         compositeDisposable.add(disposable);
     }
 
-    private void parsePingValue(ServerNode serverNode, PingResult pingResult) {
+    private static void parsePingValue(ServerNode serverNode, PingResult pingResult) {
         if (pingResult.isReachable()) {
             if (serverNode.getStatus() != ServerNode.Status.CONNECTED){
                 serverNode.setStatus(ServerNode.Status.ACTIVE);
@@ -107,7 +108,7 @@ public class ServerNodesPingService extends Service {
         }
     }
 
-    private PingResult ping(InetAddress address, Uri uri) throws UnknownHostException {
+    private static PingResult ping(InetAddress address, Uri uri, Context context) throws UnknownHostException {
         PingResult pingResult = Ping.onAddress(address).setTimeOutMillis(PING_TIMEOUT).doPing();
         if ((pingResult.error != null) && (!pingResult.error.isEmpty())){
             AlternativePingHelper.Ping ping = AlternativePingHelper.ping(uri, context);

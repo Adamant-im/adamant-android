@@ -3,13 +3,14 @@ package im.adamant.android.dagger;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.interactors.ChatsInteractor;
-import im.adamant.android.presenters.CreateChatPresenter;
+import im.adamant.android.interactors.SendMessageInteractor;
+import im.adamant.android.ui.presenters.CreateChatPresenter;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.helpers.ChatsStorage;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
@@ -19,11 +20,12 @@ public class CreateChatScreenModule {
     @Provides
     public CreateChatPresenter provideLoginPresenter(
             Router router,
-            ChatsInteractor interactor,
+            SendMessageInteractor interactor,
             AdamantAddressProcessor addressProcessor,
+            ChatsStorage chatsStorage,
             @Named(Screens.CREATE_CHAT_SCREEN) CompositeDisposable subscriptions
     ){
-        return new CreateChatPresenter(router,interactor, addressProcessor, subscriptions);
+        return new CreateChatPresenter(router,interactor, addressProcessor, chatsStorage, subscriptions);
     }
 
     @ActivityScope

@@ -1,26 +1,47 @@
 package im.adamant.android.ui;
 
+import android.app.AlertDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.textfield.TextInputEditText;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
-import im.adamant.android.presenters.MessagesPresenter;
+import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.services.SaveContactsService;
+import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
-import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -28,9 +49,14 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MessagesScreen extends BaseActivity implements MessagesView {
@@ -57,7 +83,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     //--ButterKnife
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
-    @BindView(R.id.activity_messages_btn_send) Button buttonSend;
+    @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
+    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
+    @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
+
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
 
 
     //--Activity
@@ -83,8 +113,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         Intent intent = getIntent();
         if (intent != null){
             if (intent.hasExtra(ARG_CHAT)){
-                Chat currentChat = (Chat) getIntent().getSerializableExtra(ARG_CHAT);
-                presenter.onShowChat(currentChat);
+                String companionId = getIntent().getStringExtra(ARG_CHAT);
+                presenter.onShowChatByCompanionId(companionId);
             }
 
             if (Intent.ACTION_VIEW.equals(intent.getAction())){
@@ -108,21 +138,43 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @Override
     protected void onResume() {
         super.onResume();
+        presenter.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        Observable<String> obs = RxTextView
+                .textChanges(newMessageText)
+                .filter(charSequence -> charSequence.length() > 0)
+                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                .map(CharSequence::toString);
+
+        MessagesPresenter localPresenter = presenter;
+        Disposable subscribe = obs.subscribe(localPresenter::onChangeMessageText);
+
+        compositeDisposable.add(subscribe);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+        compositeDisposable.dispose();
+        compositeDisposable.clear();
     }
 
     @Override
-    public void showChatMessages(List<AbstractMessage> messages) {
+    public void showChatMessages(List<MessageListContent> messages) {
         if (messages != null){
             adapter.updateDataset(
                     messages
             );
+
+            if (messages.size() == 0){
+                emptyView.setVisibility(View.VISIBLE);
+                messagesList.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                messagesList.setVisibility(View.VISIBLE);
+            }
 
             goToLastMessage();
         }
@@ -136,8 +188,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void changeTitle(String title) {
+    public void changeTitles(String title, String subTitle) {
         setTitle(title);
+        setSubTitle(subTitle);
     }
 
     @Override
@@ -145,16 +198,114 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
+        messageCostView.setText("");
+    }
+
+    @Override
+    public void showMessageCost(String cost) {
+        runOnUiThread( () -> messageCostView.setText(cost));
+    }
+
+    @Override
+    public void showRenameDialog(String currentName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AdamantLight_AlertDialogCustom);
+        builder.setTitle(getString(R.string.dialog_rename_contact_title));
+
+        View viewInflated = LayoutInflater
+                .from(this)
+                .inflate(R.layout.dialog_rename_contact, null);
+
+        final TextInputEditText input = viewInflated.findViewById(R.id.dialog_rename_contact_name);
+        input.setText(currentName);
+
+        builder.setView(viewInflated);
+
+        final MessagesPresenter localPresenter = presenter;
+
+        builder.setPositiveButton(android.R.string.ok, (dialog, which) -> {
+            dialog.dismiss();
+            if (input.getText() != null) {
+                String inputText = input.getText().toString();
+                localPresenter.onClickRenameButton(inputText);
+            }
+        });
+
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+
+    @Override
+    public void startSavingContacts() {
+        Intent intent = new Intent(getApplicationContext(), SaveContactsService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
+    }
+
+    @Override
+    public void copyCompanionId(String companionId) {
+        ClipData clip = ClipData.newPlainText("adamant_address", companionId);
+        ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
+
+        if(clipboard != null){
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(this.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void showQrCodeCompanionId(String companionId) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
+
+        Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
+        intent.putExtras(bundle);
+
+        startActivity(intent);
     }
 
     @OnClick(R.id.activity_messages_btn_send)
     protected void onClickSendButton() {
-        presenter.onClickSendMessage(
+        presenter.onClickSendAdamantBasicMessage(
             newMessageText.getText().toString()
         );
 
         newMessageText.setText("");
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_messages_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_rename_chat: {
+                presenter.onClickShowRenameDialog();
+                return true;
+            }
+            case R.id.action_copy_chat_address: {
+                presenter.onClickCopyAddress();
+                return true;
+            }
+            case R.id.action_show_qr_code: {
+                presenter.onClickShowQrCodeAddress();
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+
+
 
     private Navigator navigator = new Navigator() {
         @Override
@@ -168,6 +319,16 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
                 Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            } else if(command instanceof Forward) {
+                Forward forward = ((Forward) command);
+                switch (forward.getScreenKey()){
+                    case Screens.LOGIN_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        startActivity(intent);
+                        MessagesScreen.this.finish();
+                    }
+                    break;
+                }
             }
         }
     };

@@ -1,6 +1,7 @@
 package im.adamant.android.core.responses;
 
 public class TransactionWasProcessed {
+    private int nodeTimestamp;
     private boolean success;
     private String transactionId;
 
@@ -18,5 +19,13 @@ public class TransactionWasProcessed {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 }

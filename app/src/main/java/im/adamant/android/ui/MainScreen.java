@@ -1,26 +1,22 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.view.menu.MenuBuilder;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-
-import java.io.Serializable;
+import com.google.android.material.bottomappbar.BottomAppBar;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
@@ -28,18 +24,23 @@ import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.presenters.MainPresenter;
-import im.adamant.android.ui.adapters.FragmentsAdapter;
-import im.adamant.android.ui.fragments.BaseFragment;
+import im.adamant.android.avatars.Avatar;
+import im.adamant.android.ui.fragments.BottomCreateChatFragment;
+import im.adamant.android.ui.presenters.MainPresenter;
+import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
+import im.adamant.android.ui.fragments.ChatsScreen;
+import im.adamant.android.ui.fragments.SettingsScreen;
+import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.mvp_view.MainView;
-import im.adamant.android.ui.mvp_view.WalletView;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
+
 
 public class MainScreen extends BaseActivity implements MainView, HasSupportFragmentInjector {
     public static final String ARG_CURRENT_SCREEN = "current_screen";
@@ -62,12 +63,24 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-    @Named("main")
-    @Inject
-    FragmentsAdapter mainAdapter;
+//    @Named("main")
+//    @Inject
+//    FragmentsAdapter mainAdapterReference;
 
-    @BindView(R.id.main_screen_content) ViewPager content;
-    @BindView(R.id.main_screen_navigation) BottomNavigationView navigation;
+    @BindView(R.id.main_screen_content) FrameLayout content;
+//    @BindView(R.id.main_screen_navigation)
+//    BottomNavigationView navigation;
+
+//    @BindView(R.id.fab)
+//    FloatingActionButton fab;
+
+    @BindView(R.id.bottom_appbar)
+    BottomAppBar appBar;
+
+    @Inject
+    Avatar avatar;
+
+    Fragment currentFragment;
 
     @Override
     public int getLayoutId() {
@@ -84,53 +97,43 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        navigation.setOnNavigationItemSelectedListener(item -> {
-            BaseFragment fragment = null;
-            switch (item.getItemId()) {
-                case R.id.navigation_wallet:
-                    presenter.onSelectedWalletTab();
-                    return true;
-                case R.id.navigation_chats:
-                    presenter.onSelectedChatsTab();
-                    return true;
-                case R.id.navigation_settings:
-                    presenter.onSelectedSettingsTab();
-                    return true;
-            }
-            return false;
-        });
-
-        content.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                setTitle(mainAdapter.getPageTitle(position));
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        content.setAdapter(mainAdapter);
-        setTitle(mainAdapter.getPageTitle(0));
+        setSupportActionBar(appBar);
     }
 
+    //TODO: Don't recreate fragments
 
+    @Override
+    public void showWalletScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        currentFragment = new WalletScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void showChatsScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        currentFragment = new ChatsScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.commit();
+    }
+
+    @Override
+    public void showSettingsScreen() {
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        currentFragment = new SettingsScreen();
+        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.commit();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
 
-        if (mainAdapter != null){
-            setTitle(mainAdapter.getPageTitle(content.getCurrentItem()));
-        }
+        FragmentManager fragManager = this.getSupportFragmentManager();
+        int count = this.getSupportFragmentManager().getBackStackEntryCount();
+        currentFragment = fragManager.getFragments().get(count>0?count-1:count);
     }
 
     @Override
@@ -145,6 +148,27 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return fragmentDispatchingAndroidInjector;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home: {
+                FragmentManager supportFragmentManager = getSupportFragmentManager();
+                BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
+                bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (currentFragment != null) {
+            currentFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
     private Navigator navigator = new Navigator() {
         @Override
@@ -161,7 +185,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     case Screens.MESSAGES_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(MessagesScreen.ARG_CHAT, (Serializable) forward.getTransitionData());
+                        bundle.putString(MessagesScreen.ARG_CHAT, (String)forward.getTransitionData());
                         intent.putExtras(bundle);
 
                         startActivity(intent);
@@ -169,37 +193,35 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     break;
 
                     case Screens.CREATE_CHAT_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
+//                        startActivity(intent);
+
+                        BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
+                        currentFragment = createChatFragment;
+
+                        FragmentManager supportFragmentManager = getSupportFragmentManager();
+                        createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
                     }
                     break;
 
                     case Screens.LOGIN_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         MainScreen.this.finish();
                     }
                     break;
 
-                    case Screens.WALLET_SCREEN: {
-                        content.setCurrentItem(0);
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
                     }
                     break;
 
-                    case Screens.CHATS_SCREEN: {
-                        content.setCurrentItem(1);
-                    }
-                    break;
-
-                    case Screens.SETTINGS_SCREEN: {
-                        content.setCurrentItem(2);
-                    }
-                    break;
-
-                    case WalletView.SHOW_FREE_TOKEN_PAGE : {
-                        String url = getString(R.string.free_token_url) + forward.getTransitionData();
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(browserIntent);
+                    case Screens.SCAN_QRCODE_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
                 }

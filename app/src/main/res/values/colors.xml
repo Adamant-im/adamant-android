@@ -1,12 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#ffffff</color>
-    <color name="colorPrimaryDark">#4a4a4a</color>
-    <color name="colorAccent">#2e7eed</color>
-    <color name="placeholder_bg">#dddddd</color>
+    <color name="primary">#FFFFFF</color>
+    <color name="primaryDarkVariant">#EEEEEE</color>
+    <color name="secondary">#2E7EED</color>
+    <color name="secondaryDarkVariant">#0053ba</color>
+    
+    <color name="background">#FFFFFF</color>
+    <color name="qr_background">#FAFAFA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#B00020</color>
 
-    <color name="status_active">#1E6E50</color>
-    <color name="status_connected">#1562E0</color>
-    <color name="status_unavailable">#8D182B</color>
-    <color name="status_connecting">#6D6F72</color>
+    <color name="onPrimary">#212121</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="onBackground">#212121</color>
+    <color name="onSurface">#212121</color>
+    <color name="onError">#FFFFFF</color>
+
+    <color name="inactiveInputOutline">#9E9E9E</color>
+    <color name="strokeDark">#9497a3</color>
+    <color name="disabled">#ECEFF1</color>
+
+    <color name="colorSuccess">#32d296</color>
+    <color name="colorWarning">#faa05a</color>
+
+    <color name="statusActive">#1E6E50</color>
+    <color name="statusConnected">#1562E0</color>
+    <color name="statusUnavailable">#8D182B</color>
+    <color name="statusConnecting">#6D6F72</color>
 </resources>

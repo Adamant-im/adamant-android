@@ -1,32 +1,63 @@
 <resources>
     <string name="app_name">ADAMANT Messenger</string>
 
+    <string name="activity_splash_text">Receiving account information</string>
+
     <string name="activity_login_tv_title">ADAMANT</string>
     <string name="activity_login_tv_subtitle">A top-notch anonymous messenger encrypted with a Blockchain</string>
     <string name="activity_login_tv_create_new_suggestion">Or create a new anonymous address:</string>
     <string name="activity_login_tv_new_password_label"><b>Save</b> the passphrase for new Wallet and Messenger account. There is no login to enter Wallet, only the passphrase needed. If lost, no way to recover it.</string>
-    <string name="activity_login_et_pass_phrase">Input your passphrase to login</string>
-    <string name="activity_login_btn_enter">Login</string>
+    <string name="activity_login_et_pass_phrase">Enter your passphrase</string>
+    <string name="activity_login_btn_enter">Login now</string>
+    <string name="activity_login_btn_enter_in_net">Login in net</string>
+    <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
     <string name="activity_login_btn_new_account">Create new</string>
+
+    <string name="activity_registration_tv_title">Creating new address</string>
+    <string name="activity_registration_btn_refresh_passphrase">Generate passphrase and avatar</string>
+    <string name="activity_registration_tv_generate_passphrase">Generate passphrase</string>
+    <string name="activity_registration_btn_save_qr">Save passphrase as qr-code</string>
+    <string name="activity_registration_btn_create_address">Create address</string>
+
+    <string name="activity_create_chat_recipient">Recipient address</string>
+    <string name="activity_create_chat_send">Start new chat</string>
+
+    <string name="dialog_rename_contact_title">Rename contact</string>
+    <string name="dialog_rename_contact_name">Contact name</string>
+    <string name="dialog_rename_contact_cost">Renaming cost is 0.001 ADM</string>
 
     <string name="activity_chats_action_create_new">Start a new chat</string>
 
-    <string name="activity_create_chat_recipient">Recipient address</string>
-    <string name="activity_create_chat_send">Add</string>
-
     <string name="activity_messages_btn_send">Send</string>
-    <string name="activity_scan_qrcode_title">Scan QR code</string>
+    <string name="activity_messages_tv_cost_text">Cost of message</string>
+    <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
+
+    <string name="activity_messages_action_rename">Rename</string>
+    <string name="activity_messages_action_copy">Copy</string>
+    <string name="activity_messages_action_qrcode">Show QR-code</string>
+
+    <string name="activity_show_qr_code_title">QR-Code</string>
+    <string name="activity_show_qr_code_btn_save">Save qr-code in gallery</string>
+
+    <string name="activity_scan_qrcode_title">Scan QR-code</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
     <string name="bottom_menu_title_settings">Settings</string>
 
-    <string name="fragment_wallet_adamant_address_title">ADAMANT address</string>
-    <string name="fragment_wallet_adamant_balance_title">ADAMANT balance</string>
-    <string name="fragment_wallet_free_tokens_title">Free ADM tokens</string>
-    <string name="fragment_wallet_create_qrcode_title">Create QR code of your address</string>
+    <string name="fragment_create_chat_title">Create chat</string>
+    <string name="fragment_create_chat_attention">You can add the recipient\'s address through an image from the gallery or by scanning the QR code:</string>
+
+    <string name="fragment_login_title">Login</string>
+
+    <string name="fragment_wallet_address_title">Number</string>
+    <string name="fragment_wallet_balance_title">Balance</string>
+    <string name="fragment_wallet_free_tokens_title">Free tokens</string>
+    <string name="fragment_wallet_create_qrcode_title">Create QR-code</string>
     <string name="fragment_wallet_exit_title">Exit</string>
 
+    <string name="fragment_settings_general_title">General</string>
+    <string name="fragment_settings_nodes_title">Nodes</string>
     <string name="fragment_settings_language">Language</string>
     <string name="fragment_settings_choose_language">Choose language</string>
     <string name="fragment_settings_new_node">New node\'s address</string>
@@ -34,19 +65,38 @@
     <string name="fragment_settings_version">Version: %s</string>
     <string name="fragment_settings_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="fragment_settings_node_status">Node %s, Ping: %.0f ms</string>
+    <string name="fragment_settings_store_keypair">Store a key pair on the device</string>
+    <string name="fragment_settings_subscribe_to_push_notifications">Subscribe to push notifications</string>
+    <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>
+    <string name="fragment_settings_push_service_address">Notification service address</string>
 
     <string name="address_was_copied">Copied!</string>
+    <string name="qrcode_was_created_in_gallery">QR-code has been saved in gallery</string>
     <string name="dialog_logout_title">Exit</string>
     <string name="dialog_logout_message">Are you sure you want to quit?</string>
     <string name="rationale_qrcode_write_permission">Application needs a write permission for save QR code in your gallery.</string>
-
+    <string name="activity_scan_qrcode_camera_permission_view">No permission to access camera</string>
 
     <!--ERRORS-->
-    <string name="wrong_passphrase">Wrong password</string>
+    <string name="wrong_passphrase">Wrong passphrase</string>
+    <string name="authorization_error">Authorization error, we try reconnecting…</string>
+    <string name="account_not_found">Account not found, sorry</string>
     <string name="wrong_address">Incorrect recipient address</string>
     <string name="empty_message">Message cannot be empty</string>
     <string name="wrong_node_address">Node\'s address has incorrect format</string>
     <string name="unsupported_message_type">Unsupported message type: %s</string>
+    <string name="invalid_word_in_passphrase">Word not found in word list: "%s", suggestions "%s", "%s"</string>
+    <string name="invalid_symbol_in_passphrase">Invalid symbol in passphrase. Available only [a-z] and space</string>
+    <string name="invalid_count_words_in_passphrase">Wrong count of words in passphrase. Need 12, current count: %d. Necessary: %d</string>
+    <string name="invalid_checksum_in_passphrase">Invalid checksum</string>
+
+    <!--NOTIFICATIONS-->
+    <string name="adamant_system_notification_channel">Important operation</string>
+    <string name="adamant_default_notification_channel">New message</string>
+    <string name="encrypt_keypair_notification_message">Executing encrypt keypair</string>
+    <string name="save_contacts_notification_message">Saving contact list</string>
+    <string name="default_notification_message">You have a new message</string>
+
 
     <!--HELLO-->
     <string name="hello_message_ico_name">ADAMANT tokens</string>
@@ -56,8 +106,7 @@
     <string name="hello_message_baunty"><p>Welcome to ADAMANT, the most secure and anonymous messenger. Remember, your security and anonymity is up to you also. Do not follow links you receive, otherwise your IP can be compromised. Do not trust browser extensions. Better to share your ADM address personally, but not using other messengers. Keep your secret passphrase secure. Set a password on your device or logout before leaving.</p><p>Learn more about security and anonymity at <a href="https://adamant.im/staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>All the transactions within the blockchain do need to have their minimal fees. This is necessary to support the network infrastructure. To start messengning now, <b>get free tokens</b> — go to Wallet tab and click Free ADM tokens. Then click Start new chat on Chats tab and put your interlocutor\'s address. To copy your address, click on ADAMANT address on Wallet tab.</p><p>Do not reply to this message, it is a system account. If you still have any questions, contact account U15677078342684640219.</p></string>
 
     <!--LOCALIZED URLS-->
-    <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
-
+    <string name="free_token_url">https://adamant.im/free-adm-tokens/?wallet=</string>
 
     <!--STATUSES-->
     <string name="node_status_active">is active</string>
@@ -70,4 +119,9 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="warning">Warning</string>
+    <string name="adm_currency_abbr">ADM</string>
+    <string name="eth_currency_abbr">ETH</string>
+    <string name="bnb_currency_abbr">BNB</string>
+    <string name="copy">Copy</string>
+    <string name="today">Today</string>
 </resources>

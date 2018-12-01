@@ -1,15 +1,18 @@
 package im.adamant.android.ui.entities;
 
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
 public class Chat implements Serializable {
     private String companionId;
     private AbstractMessage lastMessage;
     private String title;
+    private String companionPublicKey;
 
     public String getCompanionId() {
         return companionId;
@@ -33,6 +36,14 @@ public class Chat implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getCompanionPublicKey() {
+        return companionPublicKey;
+    }
+
+    public void setCompanionPublicKey(String companionPublicKey) {
+        this.companionPublicKey = companionPublicKey;
     }
 
     @Override

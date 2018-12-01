@@ -1,46 +1,54 @@
 package im.adamant.android.interactors;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.helpers.Settings;
+import im.adamant.android.ui.entities.CurrencyCardItem;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 public class AccountInteractor {
-    private static final BigDecimal HUNDRED_MILLION = new BigDecimal(100_000_000L);
     private AdamantApiWrapper api;
+    private Settings settings;
+    private ChatsStorage chatsStorage;
 
-    public AccountInteractor(AdamantApiWrapper api) {
+    public AccountInteractor(
+            AdamantApiWrapper api,
+            Settings settings,
+            ChatsStorage chatsStorage
+    ) {
         this.api = api;
-    }
-
-    public String getAdamantAddress() {
-        String address = "";
-        if (api.isAuthorized()){
-            address = api.getAccount().getAddress();
-        }
-
-        return address;
+        this.settings = settings;
+        this.chatsStorage = chatsStorage;
     }
 
     public Flowable<BigDecimal> getAdamantBalance() {
-        return Flowable.fromCallable(() -> {
-            if (api.isAuthorized()){
-                return (new BigDecimal(
-                        api.getAccount().getUnconfirmedBalance()
-                ))
-                .divide(
-                        HUNDRED_MILLION,
-                        3,
-                        RoundingMode.HALF_EVEN
-                );
-            } else {
-                return BigDecimal.ZERO;
-            }
-        });
+        return Flowable.fromCallable(this::getBalance);
     }
 
+
     public void logout() {
+        settings.setAccountKeypair("");
+        chatsStorage.cleanUp();
         api.logout();
+    }
+
+    private BigDecimal getBalance() {
+        if (api.isAuthorized()){
+            return BalanceConvertHelper.convert(api.getAccount().getUnconfirmedBalance());
+        } else {
+            return BigDecimal.ZERO;
+        }
     }
 }

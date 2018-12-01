@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/list_item_wallet_card_cv_card"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        app:cardCornerRadius="10dp"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintDimensionRatio="H,3:2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/currency_card_background" />
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="20dp">
+
+            <ImageView
+                android:id="@+id/list_item_wallet_card_background_logo"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHeight_default="percent"
+                app:layout_constraintHeight_percent="1"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.50" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="textEnd"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_absoluteHeight="19dp"
+                tools:layout_conversion_absoluteWidth="334dp" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_balance_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/fragment_wallet_balance_title"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_title"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_title"
+                tools:layout_conversion_absoluteHeight="16dp"
+                tools:layout_conversion_absoluteWidth="43dp" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_balance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="TextView"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_card_tv_get_free_token"
+                app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_balance_title"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance_title"
+                tools:layout_conversion_absoluteHeight="19dp"
+                tools:layout_conversion_absoluteWidth="60dp" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_address_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/fragment_wallet_address_title"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_balance"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance"
+                tools:layout_conversion_absoluteHeight="16dp"
+                tools:layout_conversion_absoluteWidth="44dp" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:maxLines="3"
+                android:text="TextView"
+                android:textColor="@android:color/black"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_address_title"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_address_title"
+                tools:layout_conversion_absoluteHeight="59dp"
+                tools:layout_conversion_absoluteWidth="1dp" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_create_qr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_wallet_create_qrcode_title"
+                android:textAllCaps="true"
+                android:textColor="@color/secondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/copy"
+                android:textAllCaps="true"
+                android:textColor="@color/secondary"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/list_item_wallet_card_tv_get_free_token"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_wallet_free_tokens_title"
+                android:textAllCaps="true"
+                android:textColor="@color/secondary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance_title" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

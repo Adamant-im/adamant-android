@@ -18,18 +18,25 @@ import com.gun0912.tedpermission.TedPermission;
 import net.glxn.qrgen.android.QRCode;
 import net.glxn.qrgen.core.image.ImageType;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.LoginPresenter;
+import im.adamant.android.interactors.AuthorizeInteractor;
+import im.adamant.android.ui.presenters.LoginPresenter;
+import im.adamant.android.ui.fragments.BottomLoginFragment;
+import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.mvp_view.LoginView;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -46,32 +53,17 @@ import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
-public class LoginScreen extends BaseActivity implements LoginView {
-
-    @Inject
-    @Named(value = Screens.LOGIN_SCREEN)
-    QrCodeHelper qrCodeHelper;
-
+public class LoginScreen extends BaseActivity implements  HasSupportFragmentInjector {
     @Inject
     NavigatorHolder navigatorHolder;
 
     @Inject
-    Provider<LoginPresenter> presenterProvider;
+    DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-    //--Moxy
-    @InjectPresenter
-    LoginPresenter presenter;
+    @Inject
+    AuthorizeInteractor authorizeInteractor;
 
-    @ProvidePresenter
-    public LoginPresenter getPresenter(){
-        return presenterProvider.get();
-    }
-
-    //--ButterKnife
-    @BindView(R.id.activity_login_et_pass_phrase) EditText passPhrase;
-    @BindView(R.id.activity_login_et_new_passphrase) EditText newPassPhrase;
-    @BindView(R.id.activity_login_cl_new_account_form) View newPassPhraseForm;
-    @BindView(R.id.activity_login_btn_login) Button loginButton;
+    private BottomLoginFragment loginFragment;
 
     //--Activity
     @Override
@@ -87,55 +79,31 @@ public class LoginScreen extends BaseActivity implements LoginView {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
+        if (authorizeInteractor.isAuthorized()) {
+            navigator.applyCommands(new Command[]{
+                    new Forward(Screens.WALLET_SCREEN, null)
+            });
+        }
         super.onCreate(savedInstanceState);
 
-        passPhrase.setOnFocusChangeListener( (view, isFocused) -> {
-            if (!isFocused){
-                AdamantApplication.hideKeyboard(this, passPhrase);
-            }
-        });
+        if (loginFragment == null) {
+            loginFragment = new BottomLoginFragment();
+        }
     }
 
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
-        presenter.onClickLoginButton(passPhrase.getText().toString());
-        AdamantApplication.hideKeyboard(this, passPhrase);
+        FragmentManager supportFragmentManager = getSupportFragmentManager();
+        Fragment fragment = supportFragmentManager.findFragmentByTag(loginFragment.getTag());
+        if (fragment == null) {
+            loginFragment.show(supportFragmentManager, loginFragment.getTag());
+        }
     }
 
     @OnClick(R.id.activity_login_btn_generate_new_passphrase)
     public void generateNewPassphraseClick() {
-        presenter.onClickGeneratePassphrase();
-    }
-
-    @OnClick(R.id.activity_login_btn_copy_new_passphrase)
-    public void copyNewPassPhraseToClipboardClick() {
-        ClipData clip = ClipData.newPlainText("passphrase", newPassPhrase.getText().toString());
-        ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-
-        if(clipboard != null){
-            clipboard.setPrimaryClip(clip);
-        }
-    }
-
-    @OnClick(R.id.activity_login_btn_scan_qrcode)
-    public void scanQrCodeClick() {
-        presenter.onClickScanQrCodeButton();
-    }
-
-    @OnClick(R.id.activity_login_btn_load_qrcode_from_gallery)
-    public void loadQrCodeClick() {
-        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-        photoPickerIntent.setType("image/*");
-        startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
-    }
-
-    @OnClick(R.id.activity_login_btn_create_qrcode)
-    public void generateQrCodeClick(){
-        TedPermission.with(this)
-                .setRationaleMessage(R.string.rationale_qrcode_write_permission)
-                .setPermissionListener(permissionlistener)
-                .setPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .check();
+        Intent intent = new Intent(getApplicationContext(), RegistrationScreen.class);
+        startActivity(intent);
     }
 
     @Override
@@ -151,36 +119,17 @@ public class LoginScreen extends BaseActivity implements LoginView {
     }
 
     @Override
-    public void passPhraseWasGenerated(CharSequence passphrase) {
-        newPassPhrase.setText(passphrase);
-        newPassPhraseForm.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void loginError(int resourceId) {
-        Toast.makeText(getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void lockAuthorization() {
-        loginButton.setEnabled(false);
-    }
-
-    @Override
-    public void unLockAuthorization() {
-        loginButton.setEnabled(true);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        String qrCode = qrCodeHelper.parseActivityResult(this, requestCode, resultCode, data);
-
-        if (!qrCode.isEmpty()){
-            passPhrase.setText(qrCode);
-            presenter.onClickLoginButton(qrCode);
+        if (loginFragment != null){
+            loginFragment.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentDispatchingAndroidInjector;
     }
 
     private Navigator navigator = new Navigator() {
@@ -213,6 +162,12 @@ public class LoginScreen extends BaseActivity implements LoginView {
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;
@@ -221,22 +176,5 @@ public class LoginScreen extends BaseActivity implements LoginView {
         }
     };
 
-    //TODO: Refactor this. This code must be in presenter. If its not possible when it should be called from presenter.
-    PermissionListener permissionlistener = new PermissionListener() {
-        @Override
-        public void onPermissionGranted() {
-            File qrCodeFile = qrCodeHelper.makeImageFile("pass_");
-            try (OutputStream stream = new FileOutputStream(qrCodeFile)){
-                QRCode.from(passPhrase.getText().toString()).to(ImageType.PNG).writeTo(stream);
-                qrCodeHelper.registerImageInGallery(LoginScreen.this, qrCodeFile);
-            }catch (Exception ex){
-                ex.printStackTrace();
-            }
-        }
 
-        @Override
-        public void onPermissionDenied(ArrayList<String> deniedPermissions) {
-
-        }
-    };
 }

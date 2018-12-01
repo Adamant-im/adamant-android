@@ -1,11 +1,10 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,13 +22,11 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
-import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.R;
-import im.adamant.android.presenters.ChatsPresenter;
+import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
-import ru.terrakok.cicerone.NavigatorHolder;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -72,18 +69,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         return R.layout.fragment_chats_screen;
     }
 
-    @Override
-    public int getActivityTitleId() {
-        return R.string.bottom_menu_title_chats;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
-        chatList.setVisibility(View.GONE);
-        shimmer.setVisibility(View.VISIBLE);
-        shimmer.startShimmerAnimation();
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         chatList.setLayoutManager(layoutManager);
@@ -97,6 +86,23 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
+        shimmer.stopShimmerAnimation();
+        chatList.setVisibility(View.VISIBLE);
+        shimmer.setVisibility(View.GONE);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        chatList.setVisibility(View.GONE);
+        shimmer.setVisibility(View.VISIBLE);
+        shimmer.startShimmerAnimation();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         shimmer.stopShimmerAnimation();
         chatList.setVisibility(View.VISIBLE);
         shimmer.setVisibility(View.GONE);

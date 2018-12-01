@@ -1,8 +1,11 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
-import im.adamant.android.interactors.ChatsInteractor;
-import im.adamant.android.presenters.ChatsPresenter;
+import im.adamant.android.avatars.Avatar;
+import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.ui.presenters.ChatsPresenter;
+import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 
 import javax.inject.Named;
@@ -19,10 +22,12 @@ public class ChatsScreenModule {
     @Provides
     public ChatsPresenter provideChatsPresenter(
             Router router,
-            ChatsInteractor interactor,
+            GetContactsInteractor getContactsInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage,
             @Named(Screens.CHATS_SCREEN) CompositeDisposable subscriptions
     ){
-        return new ChatsPresenter(router,interactor,subscriptions);
+        return new ChatsPresenter(router,getContactsInteractor, refreshChatsInteractor, chatsStorage, subscriptions);
     }
 
     @FragmentScope
@@ -34,7 +39,11 @@ public class ChatsScreenModule {
 
     @FragmentScope
     @Provides
-    public ChatsAdapter provideAdapter(ChatsScreen chatsScreen){
-        return new ChatsAdapter(null, chatsScreen);
+    public ChatsAdapter provideAdapter(
+            ChatsScreen chatsScreen,
+            @Named(Screens.CHATS_SCREEN) CompositeDisposable compositeDisposable,
+            Avatar avatar
+    ){
+        return new ChatsAdapter(null, chatsScreen, compositeDisposable, avatar);
     }
 }

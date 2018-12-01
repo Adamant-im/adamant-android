@@ -7,3 +7,6 @@
 /captures
 .externalNativeBuild
 adamant-keystore.jks
+/fastlane/README.md
+/fastlane/report.xml
+google-services.json

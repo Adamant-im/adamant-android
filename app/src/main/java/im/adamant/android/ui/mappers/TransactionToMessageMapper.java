@@ -10,10 +10,11 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.helpers.PublicKeyStorage;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -42,8 +43,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     public AbstractMessage apply(Transaction transaction) throws Exception {
         AbstractMessage message = null;
 
-        //TODO: call api.isAuthorized
-        if (api.getKeyPair() == null || api.getAccount() == null){
+        if (!api.isAuthorized()){
             throw new Exception("You are not authorized.");
         }
 
@@ -64,17 +64,13 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                 transaction,
                 decryptedMessage,
                 !iRecipient,
-                messageMagicTimestamp(transaction.getTimestamp()),
-                companionId
+                transaction.getUnixTimestamp(),
+                companionId,
+                "" //Detect by transaction
             );
 
 
         return message;
-    }
-
-    private long messageMagicTimestamp(long receivedTimestamp) {
-        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
-        return (receivedTimestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 
     private String decryptMessage(Transaction transaction, boolean iRecipient, String ownSecretKey) {
@@ -83,8 +79,9 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         TransactionMessage transactionMessage = getTransactionMessage(transaction);
         if (transactionMessage == null){return decryptedMessage;}
 
-        String encryptedMessage = transaction.getAsset().getChat().getMessage();
-        String encryptedNonce = transaction.getAsset().getChat().getOwnMessage();
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        String encryptedMessage = chatAsset.getChat().getMessage();
+        String encryptedNonce = chatAsset.getChat().getOwnMessage();
         String senderPublicKey = transaction.getSenderPublicKey();
 
         if (iRecipient){
@@ -107,25 +104,28 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         return decryptedMessage;
     }
 
-    private SupportedMessageTypes detectMessageType(Transaction transaction, String decryptedMessage) {
+    private SupportedMessageListContentType detectMessageType(Transaction transaction, String decryptedMessage) {
         TransactionMessage transactionMessage = getTransactionMessage(transaction);
 
         if (transactionMessage != null){
             switch (transactionMessage.getType()){
+                case TransactionMessage.OLD_BASE_MESSAGE_TYPE:
                 case TransactionMessage.BASE_MESSAGE_TYPE : {
-                    return SupportedMessageTypes.ADAMANT_BASIC;
+                    return SupportedMessageListContentType.ADAMANT_BASIC;
                 }
-                case TransactionMessage.RICH_MESSAGE_TYPE: {
+                case TransactionMessage.RICH_MESSAGE_TYPE : {
                     String richType = getRichType(decryptedMessage);
                     switch (richType){
                         case "eth_transaction":
-                          return SupportedMessageTypes.ETHEREUM_TRANSFER;
+                            return SupportedMessageListContentType.ETHEREUM_TRANSFER;
+                        case "bnb_transaction":
+                            return SupportedMessageListContentType.BINANCE_TRANSFER;
                     }
                 }
             }
         }
 
-        return SupportedMessageTypes.FALLBACK;
+        return SupportedMessageListContentType.FALLBACK;
     }
 
     private String getRichType(String decryptedMessage) {
@@ -149,9 +149,10 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     private TransactionMessage getTransactionMessage(Transaction transaction) {
 
         if (transaction.getAsset() == null){ return null; }
-        if (transaction.getAsset().getChat() == null){ return null; }
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        if (chatAsset.getChat() == null){ return null; }
 
-        return transaction.getAsset().getChat();
+        return chatAsset.getChat();
     }
 
 }

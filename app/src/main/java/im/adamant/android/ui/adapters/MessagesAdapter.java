@@ -1,29 +1,31 @@
 package im.adamant.android.ui.adapters;
 
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 
 import im.adamant.android.R;
-import im.adamant.android.ui.entities.messages.AbstractMessage;
-import im.adamant.android.ui.holders.messages.AbstractMessageViewHolder;
-import im.adamant.android.ui.holders.messages.AdamantBasicMessageViewHolder;
-import im.adamant.android.ui.messages_support.SupportedMessageTypes;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import im.adamant.android.ui.messages_support.holders.SeparatorViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHolder> {
+public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListContentViewHolder> {
 
-    private List<AbstractMessage> messages = new ArrayList<>();
+    private List<MessageListContent> messages = new ArrayList<>();
     private MessageFactoryProvider messageFactoryProvider;
 
-    public MessagesAdapter(MessageFactoryProvider messageFactoryProvider, List<AbstractMessage> messages) {
+    public MessagesAdapter(MessageFactoryProvider messageFactoryProvider, List<MessageListContent> messages) {
         this.messageFactoryProvider = messageFactoryProvider;
 
         if (messages != null){
@@ -33,19 +35,26 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHol
 
     @Override
     public int getItemViewType(int position) {
-        AbstractMessage message = messages.get(position);
+        MessageListContent message = messages.get(position);
         return message.getSupportedType().ordinal();
     }
 
     @NonNull
     @Override
-    public AbstractMessageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public AbstractMessageListContentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         try {
-            MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(
-                    SupportedMessageTypes.values()[viewType]
-            );
+            int separatorType = SupportedMessageListContentType.SEPARATOR.ordinal();
+            if (viewType == separatorType) {
+                LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+                View v = inflater.inflate(R.layout.list_item_separator_message, parent, false);
+                return new SeparatorViewHolder(parent.getContext(), v);
+            } else {
+                MessageFactory messageFactory = messageFactoryProvider.getFactoryByType(
+                        SupportedMessageListContentType.values()[viewType]
+                );
 
-            return messageFactory.getViewHolder(parent);
+                return messageFactory.getViewHolder(parent);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,8 +65,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHol
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AbstractMessageViewHolder holder, int position) {
-        AbstractMessage message = messages.get(position);
+    public void onBindViewHolder(@NonNull AbstractMessageListContentViewHolder holder, int position) {
+        MessageListContent message = messages.get(position);
         holder.bind(message);
     }
 
@@ -66,7 +75,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageViewHol
         return messages.size();
     }
 
-    public void updateDataset(List<AbstractMessage> messages){
+    public void updateDataset(List<MessageListContent> messages){
         if (messages != null){
             this.messages = messages;
         } else {

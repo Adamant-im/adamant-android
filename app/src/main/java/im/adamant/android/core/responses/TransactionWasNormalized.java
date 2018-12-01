@@ -1,10 +1,12 @@
 package im.adamant.android.core.responses;
 
 import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
-public class TransactionWasNormalized {
+public class TransactionWasNormalized<T extends TransactionAsset> {
+    private int nodeTimestamp;
     private boolean success;
-    private Transaction transaction;
+    private Transaction<T> transaction;
     private String error;
 
     public boolean isSuccess() {
@@ -15,11 +17,11 @@ public class TransactionWasNormalized {
         this.success = success;
     }
 
-    public Transaction getTransaction() {
+    public Transaction<T> getTransaction() {
         return transaction;
     }
 
-    public void setTransaction(Transaction transaction) {
+    public void setTransaction(Transaction<T> transaction) {
         this.transaction = transaction;
     }
 
@@ -29,5 +31,13 @@ public class TransactionWasNormalized {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 }

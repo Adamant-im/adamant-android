@@ -3,6 +3,7 @@ package im.adamant.android.core.responses;
 import im.adamant.android.core.entities.Account;
 
 public class Authorization {
+    private int nodeTimestamp;
     private boolean success;
     private Account account;
     private String error;
@@ -29,6 +30,14 @@ public class Authorization {
 
     public void setError(String error) {
         this.error = error;
+    }
+
+    public int getNodeTimestamp() {
+        return nodeTimestamp;
+    }
+
+    public void setNodeTimestamp(int nodeTimestamp) {
+        this.nodeTimestamp = nodeTimestamp;
     }
 
     @Override

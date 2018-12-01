@@ -12,7 +12,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.presenters.CreateChatPresenter;
+import im.adamant.android.ui.presenters.CreateChatPresenter;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 
 import java.io.Serializable;
@@ -92,6 +92,17 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
     public void showError(int resourceId) {
         Toast.makeText(this, resourceId, Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void lockUI() {
+
+    }
+
+    @Override
+    public void unlockUI() {
+
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -131,7 +142,7 @@ public class CreateChatScreen extends BaseActivity implements CreateChatView {
                     case Screens.MESSAGES_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(MessagesScreen.ARG_CHAT, (Serializable) forward.getTransitionData());
+                        bundle.putString(MessagesScreen.ARG_CHAT, (String) forward.getTransitionData());
                         intent.putExtras(bundle);
 
                         startActivity(intent);

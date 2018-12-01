@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="im.adamant.android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,11 +17,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".ui.LoginScreen"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateUnchanged|adjustResize">
+        android:theme="@style/AdamantLight"
+        >
+        <activity android:name=".ui.SplashScreen"
+            android:theme="@style/AdamantLight.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,7 +28,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ui.LoginScreen"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
+        <activity
             android:name=".ui.MessagesScreen"
+            android:theme="@style/AdamantLight.WithActionBar"
             android:exported="true">
 
             <!--
@@ -49,13 +53,33 @@
         </activity>
         <activity
             android:name=".ui.CreateChatScreen"
+            android:theme="@style/AdamantLight.WithActionBar"
             android:exported="false"
             android:label="@string/activity_chats_action_create_new" />
-        <activity android:name=".ui.MainScreen" />
+        <activity
+            android:name=".ui.MainScreen"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.ScanQrCodeScreen"
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
+        <activity
+            android:name=".ui.PinCodeScreen" />
+        <activity
+            android:name=".ui.CompanionDetailScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar" />
+        <activity
+            android:name=".ui.RegistrationScreen"
+            android:exported="false"
+            android:label="@string/activity_registration_tv_title"
+            android:theme="@style/AdamantLight.WithActionBar"/>
+        <activity
+            android:exported="false"
+            android:name=".ui.ShowQrCodeScreen"
+            android:label="@string/activity_show_qr_code_title"
+            android:theme="@style/AdamantLight.WithActionBar"/>
 
         <service
             android:name=".services.ServerNodesPingService"
@@ -63,12 +87,16 @@
         <service
             android:name=".services.AdamantBalanceUpdateService"
             android:exported="false" />
-
-        <activity
-            android:name=".ui.PinCodeScreen"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+        <service
+            android:name=".services.SaveContactsService"
+            android:exported="false"
+            />
+        <service android:name=".services.AdamantFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name=".services.SaveSettingsService" />
     </application>
 
 </manifest>
