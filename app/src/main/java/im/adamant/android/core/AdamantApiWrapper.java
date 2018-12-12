@@ -1,6 +1,8 @@
 package im.adamant.android.core;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
@@ -17,11 +19,13 @@ import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
+import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Completable;
@@ -35,7 +39,6 @@ import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Query;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
@@ -122,6 +125,29 @@ public class AdamantApiWrapper {
 
         return api
                 .getMessageTransactions(account.getAddress(), order, offset)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+
+    public Flowable<ChatList> getChats(String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return api
+                .getChats(account.getAddress(), order)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<ChatList> getChatsByOffset(int offset, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return api
+                .getChatsByOffset(account.getAddress(), offset, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
@@ -242,9 +268,14 @@ public class AdamantApiWrapper {
                     currentServerNode = serverSelect();
                     currentServerNode.setStatus(ServerNode.Status.CONNECTED);
 
+                    //TODO: Final static element
+                    Gson gson = new GsonBuilder()
+                    .registerTypeAdapterFactory(new AdamantTransactonTypeAdapterFactory())
+                    .create();
+
                     Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
-                        .addConverterFactory(GsonConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create(gson))
                         .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                         .client(httpClient.build())
                         .build();

@@ -46,6 +46,8 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
         Gson gson = new Gson();
         try {
             MessageDescription description = gson.fromJson(decryptedMessage, MessageDescription.class);
+
+            if (description == null) {return;}
             messageContainer.setFallbackMessage(description.textFallback);
             messageContainer.setFallbackType(description.type);
         }catch (Exception ex){

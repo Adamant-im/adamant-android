@@ -130,14 +130,15 @@ public class Settings {
 
     private Set<String> getDefaultNodes() {
         Set<String> defaults = new HashSet<>();
-        defaults.add("https://clown.adamant.im");
-        defaults.add("https://lake.adamant.im");
-        defaults.add("https://endless.adamant.im");
+//        defaults.add("https://clown.adamant.im");
+//        defaults.add("https://lake.adamant.im");
+//        defaults.add("https://endless.adamant.im");
+        defaults.add("http://51.15.63.208:36666");
 
         return defaults;
     }
 
-    private void loadNodes(){
+    private void loadNodes() {
         Set<String> nodeUrls = preferences.getStringSet(NODES_KEY, getDefaultNodes());
 
         if (nodeUrls.size() == 0){

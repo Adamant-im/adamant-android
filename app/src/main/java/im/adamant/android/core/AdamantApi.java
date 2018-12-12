@@ -9,6 +9,7 @@ import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
@@ -19,6 +20,8 @@ import io.reactivex.Flowable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface AdamantApi {
@@ -44,6 +47,19 @@ public interface AdamantApi {
             @Query("isIn") String address,
             @Query("orderBy") String order,
             @Query("offset") int offset
+    );
+
+    @GET("chatrooms/{address}")
+    Flowable<ChatList> getChatsByOffset(
+            @Path("address") String address,
+            @Query("offset") int offset,
+            @Query("orderBy") String order
+    );
+
+    @GET("chatrooms/{address}")
+    Flowable<ChatList> getChats(
+            @Path("address") String address,
+            @Query("orderBy") String order
     );
 
     @GET("accounts/getPublicKey")
@@ -76,4 +92,6 @@ public interface AdamantApi {
             @Query("and:fromHeight") int height,
             @Query("orderBy") String order
     );
+
+
 }

@@ -17,6 +17,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.interactors.GetChatListInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
@@ -52,6 +53,8 @@ import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
+import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
@@ -266,6 +269,12 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static ChatTransactionToChatMapper providesChatTransactionsToChatMapper(AdamantApiWrapper api) {
+        return new ChatTransactionToChatMapper(api);
+    }
+
+    @Singleton
+    @Provides
     public static LocalizedMessageMapper providesLocalizedMessageMapper(Context ctx) {
         return new LocalizedMessageMapper(ctx);
     }
@@ -396,6 +405,20 @@ public abstract class AppModule {
                 messageMapper,
                 localizedMessageMapper,
                 localizedChatMapper,
+                chatsStorage
+        );
+    }
+
+    @Singleton
+    @Provides
+    public static GetChatListInteractor provideGetChatListInteractor(
+            AdamantApiWrapper api,
+            ChatTransactionToChatMapper chatMapper,
+            ChatsStorage chatsStorage
+    ){
+        return new GetChatListInteractor(
+                api,
+                chatMapper,
                 chatsStorage
         );
     }
