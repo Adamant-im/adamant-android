@@ -414,11 +414,13 @@ public abstract class AppModule {
     public static GetChatListInteractor provideGetChatListInteractor(
             AdamantApiWrapper api,
             ChatTransactionToChatMapper chatMapper,
+            TransactionToMessageMapper messageMapper,
             ChatsStorage chatsStorage
     ){
         return new GetChatListInteractor(
                 api,
                 chatMapper,
+                messageMapper,
                 chatsStorage
         );
     }

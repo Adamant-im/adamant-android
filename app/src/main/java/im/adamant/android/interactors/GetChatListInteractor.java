@@ -7,6 +7,8 @@ import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
+import im.adamant.android.ui.mappers.TransactionToMessageMapper;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
@@ -14,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 public class GetChatListInteractor {
     private AdamantApiWrapper api;
     private ChatTransactionToChatMapper chatMapper;
+    private TransactionToMessageMapper messageMapper;
 
     private ChatsStorage chatsStorage;
 
@@ -21,10 +24,16 @@ public class GetChatListInteractor {
     private int currentHeight = 1;
     private int offsetItems = 0;
 
-    public GetChatListInteractor(AdamantApiWrapper api, ChatTransactionToChatMapper chatMapper, ChatsStorage chatsStorage) {
+    public GetChatListInteractor(
+            AdamantApiWrapper api,
+            ChatTransactionToChatMapper chatMapper,
+            TransactionToMessageMapper messageMapper,
+            ChatsStorage chatsStorage
+    ) {
         this.api = api;
         this.chatMapper = chatMapper;
         this.chatsStorage = chatsStorage;
+        this.messageMapper = messageMapper;
     }
 
     public Completable execute() {
@@ -59,6 +68,8 @@ public class GetChatListInteractor {
                             })
                             .doOnNext(transaction -> {
                                 Chat chat = chatMapper.apply(transaction);
+                                AbstractMessage message = messageMapper.apply(transaction);
+                                chat.setLastMessage(message);
                                 //TODO: Inject predefined chats
                                 //chat = localizedChatMapper.apply(chat);
                                 chatsStorage.addNewChat(chat);
