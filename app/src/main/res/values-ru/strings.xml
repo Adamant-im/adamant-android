@@ -124,4 +124,6 @@
     <string name="bnb_currency_abbr">BNB</string>
     <string name="copy">Копировать</string>
     <string name="today">Сегодня</string>
+    <string name="sended">Отправлено: </string>
+    <string name="received">Получено: </string>
 </resources>

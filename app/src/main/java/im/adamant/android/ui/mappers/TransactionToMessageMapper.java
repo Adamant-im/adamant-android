@@ -124,6 +124,8 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                     }
                 }
             }
+        } else if (transaction.getType() == Transaction.SEND) {
+            return SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE;
         }
 
         return SupportedMessageListContentType.FALLBACK;
@@ -148,17 +150,13 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     }
 
     private TransactionMessage getTransactionMessage(Transaction transaction) {
-        try {
-            if (transaction.getAsset() == null){ return null; }
-            TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
-            if (chatAsset.getChat() == null){ return null; }
+       if (transaction.getType() == Transaction.SEND) {return null;}
 
-            return chatAsset.getChat();
-        } catch (Exception ex) {
-            LoggerHelper.e("TRANSACTION ERR", ex.getMessage(), ex);
-        }
+        if (transaction.getAsset() == null){ return null; }
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        if (chatAsset.getChat() == null){ return null; }
 
-        return null;
+        return chatAsset.getChat();
     }
 
 }
