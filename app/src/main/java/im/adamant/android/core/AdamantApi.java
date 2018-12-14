@@ -76,4 +76,5 @@ public interface AdamantApi {
             @Query("and:fromHeight") int height,
             @Query("orderBy") String order
     );
+
 }

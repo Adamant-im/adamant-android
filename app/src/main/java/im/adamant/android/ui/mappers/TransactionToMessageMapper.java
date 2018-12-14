@@ -11,6 +11,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
@@ -147,12 +148,17 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     }
 
     private TransactionMessage getTransactionMessage(Transaction transaction) {
+        try {
+            if (transaction.getAsset() == null){ return null; }
+            TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+            if (chatAsset.getChat() == null){ return null; }
 
-        if (transaction.getAsset() == null){ return null; }
-        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
-        if (chatAsset.getChat() == null){ return null; }
+            return chatAsset.getChat();
+        } catch (Exception ex) {
+            LoggerHelper.e("TRANSACTION ERR", ex.getMessage(), ex);
+        }
 
-        return chatAsset.getChat();
+        return null;
     }
 
 }

@@ -1,7 +1,13 @@
 package im.adamant.android.interactors;
 
+import org.reactivestreams.Publisher;
+
+import androidx.constraintlayout.solver.widgets.Flow;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
+import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionList;
@@ -26,8 +32,9 @@ public class RefreshChatsInteractor {
     private ChatsStorage chatsStorage;
 
     private int countItems = 0;
-    private int currentHeight = 1;
-    private int offsetItems = 0;
+    private int currentMessageHeight = 1;
+    private int currentTransactionHeight = 1;
+    private int offsetMessageItems = 0;
 
     public RefreshChatsInteractor(
             AdamantApiWrapper api,
@@ -57,11 +64,11 @@ public class RefreshChatsInteractor {
         if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
 
         return Flowable
-                .defer(() -> Flowable.just(currentHeight))
+                .defer(() -> Flowable.just(currentMessageHeight))
                 .flatMap((height) -> {
                     Flowable<TransactionList<TransactionChatAsset>> transactionFlowable = null;
-                    if (offsetItems > 0){
-                        transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetItems);
+                    if (offsetMessageItems > 0){
+                        transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetMessageItems);
                     } else {
                         transactionFlowable = api.getTransactions(height, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
                     }
@@ -81,15 +88,19 @@ public class RefreshChatsInteractor {
                                 chatsStorage.addNewChat(chat);
                             })
                             .doOnNext(transaction -> {
-                                AbstractMessage message = messageMapper.apply(transaction);
+                                countItems++;
+                                if (transaction.getHeight() > currentMessageHeight) {
+                                    currentMessageHeight = transaction.getHeight();
+                                }
+                            })
+                            .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)))
+                            .mergeWith(getAllAdamantTransfers())
+                            .toSortedList()
+                            .toFlowable()
+                            .flatMap(list -> Flowable.just(list).flatMapIterable(item -> item))
+                            .doOnNext(message -> {
                                 message = localizedMessageMapper.apply(message);
                                 chatsStorage.addMessageToChat(message);
-                            })
-                            .doOnNext(transaction -> {
-                                countItems++;
-                                if (transaction.getHeight() > currentHeight) {
-                                    currentHeight = transaction.getHeight();
-                                }
                             })
                             .doOnError(Throwable::printStackTrace)
                             .doOnComplete(() -> {
@@ -100,9 +111,9 @@ public class RefreshChatsInteractor {
                     boolean noRepeat = countItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
                     if (noRepeat){
                         countItems = 0;
-                        offsetItems = 0;
+                        offsetMessageItems = 0;
                     } else {
-                        offsetItems += countItems;
+                        offsetMessageItems += countItems;
                         countItems = 0;
 
                     }
@@ -113,8 +124,30 @@ public class RefreshChatsInteractor {
 
     public void cleanUp() {
         countItems = 0;
-        currentHeight = 1;
-        offsetItems = 0;
+        currentMessageHeight = 1;
+        offsetMessageItems = 0;
         chatsStorage.cleanUp();
+    }
+
+    private Flowable<AbstractMessage> getAllAdamantTransfers() {
+        return Flowable
+                .defer(() -> Flowable.just(currentTransactionHeight))
+                .flatMap((height) -> api
+                        .getAdamantTransactions(Transaction.SEND, height, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
+                        .observeOn(Schedulers.computation())
+                        .flatMap(transactionList -> {
+                            if (transactionList.isSuccess()){
+                                return Flowable.fromIterable(transactionList.getTransactions());
+                            } else {
+                                return Flowable.error(new Exception(transactionList.getError()));
+                            }
+                        }))
+                .doOnNext(transaction -> {
+                    countItems++;
+                    if (transaction.getHeight() > currentTransactionHeight) {
+                        currentTransactionHeight = transaction.getHeight();
+                    }
+                })
+                .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)));
     }
 }
