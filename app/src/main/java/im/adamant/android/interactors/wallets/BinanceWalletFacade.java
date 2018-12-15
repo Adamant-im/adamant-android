@@ -7,6 +7,7 @@ import java.util.List;
 import im.adamant.android.R;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.SendCurrencyEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -64,5 +65,13 @@ public class BinanceWalletFacade implements WalletFacade {
     @Override
     public String getAirdropLinkString() {
         return "";
+    }
+
+    @Override
+    public SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey) {
+        SendCurrencyEntity entity = new SendCurrencyEntity();
+        entity.setWalletType(SupportedWalletFacadeType.BNB);
+        entity.setNotSupportedYet(true);
+        return entity;
     }
 }

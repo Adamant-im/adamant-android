@@ -19,19 +19,28 @@ android {
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"
         buildConfigField "int", "PING_SECONDS_DELAY", "4"
         buildConfigField "int", "UPDATE_BALANCE_SECONDS_DELAY", "30"
+        buildConfigField "double", "ADM_TRANSFER_FEE", "0.5"
+
         buildConfigField "String", "API_BASE", "\"/api/\""
         buildConfigField "String", "WELCOME_MESSAGE_ADDR", "\"U15423595369615486571\""
         buildConfigField "String", "MESSAGE_CTNCR_ADDR", "\"U7047165086065693428\""
         buildConfigField "boolean", "RELEASE_LOG", "false"
+
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_1", "\"https://clown.adamant.im\""
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_2", "\"https://lake.adamant.im\""
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_3", "\"https://endless.adamant.im\""
+        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
     }
 
     buildTypes {
         debug {
+            buildConfigField "boolean", "TEST_NET", "true"
             buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
 
             minifyEnabled false
         }
         release {
+            buildConfigField "boolean", "TEST_NET", "false" //Do not change
             buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
 
             minifyEnabled true

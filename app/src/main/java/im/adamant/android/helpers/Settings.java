@@ -130,9 +130,13 @@ public class Settings {
 
     private Set<String> getDefaultNodes() {
         Set<String> defaults = new HashSet<>();
-        defaults.add("https://clown.adamant.im");
-        defaults.add("https://lake.adamant.im");
-        defaults.add("https://endless.adamant.im");
+        if (BuildConfig.TEST_NET) {
+            defaults.add(BuildConfig.TEST_NET_DEFAULT_NODE_1);
+        } else {
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_1);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_2);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_3);
+        }
 
         return defaults;
     }

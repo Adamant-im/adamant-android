@@ -17,6 +17,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.interactors.SendCurrencyInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
@@ -50,6 +51,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.SendCurrencyTransferScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -422,6 +424,16 @@ public abstract class AppModule {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
     }
 
+    @Singleton
+    @Provides
+    public static SendCurrencyInteractor provideSendCurrencyInteractor(
+            Map<SupportedWalletFacadeType, WalletFacade> wallets,
+            PublicKeyStorage publicKeyStorage
+    ) {
+        return new SendCurrencyInteractor(wallets, publicKeyStorage);
+    }
+
+
     @IntoMap
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ADM)
     @Singleton
@@ -485,6 +497,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {ShowQrCodeScreenModule.class})
     public abstract ShowQrCodeScreen createShowQrCodeScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {SendCurrencyTransferScreenModule.class})
+    public abstract SendCurrencyTransferScreen createSendCurrencyTransferScreenInjector();
 
 
     //--Services

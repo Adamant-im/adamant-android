@@ -240,6 +240,11 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             getViewState().changeTitles(newName, currentChat.getCompanionId());
             getViewState().startSavingContacts();
         }
+    }
 
+    public void onClickSendCurrencyButton() {
+        if (currentChat != null){
+            router.navigateTo(Screens.SEND_CURRENCY_TRANSFER_SCREEN, currentChat.getCompanionId());
+        }
     }
 }

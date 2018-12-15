@@ -276,6 +276,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         newMessageText.setText("");
     }
 
+    @OnClick(R.id.activity_messages_btn_currency_transfer)
+    protected void onClickSendCurrencyButton() {
+        presenter.onClickSendCurrencyButton();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_messages_menu, menu);
@@ -328,6 +333,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                         MessagesScreen.this.finish();
                     }
                     break;
+                    case Screens.SEND_CURRENCY_TRANSFER_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SendCurrencyTransferScreen.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(SendCurrencyTransferScreen.ARG_COMPANION_ID, (String)forward.getTransitionData());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 }
             }
         }

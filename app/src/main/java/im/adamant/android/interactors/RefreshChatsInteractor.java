@@ -7,6 +7,7 @@ import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -82,10 +83,8 @@ public class RefreshChatsInteractor {
                     message = localizedMessageMapper.apply(message);
                     chatsStorage.addMessageToChat(message);
                 })
-                .doOnError(Throwable::printStackTrace)
-                .doOnComplete(() -> {
-                    chatsStorage.updateLastMessages();
-                })
+                .doOnError(error -> LoggerHelper.e("CHAT TRANS", error.getMessage(), error))
+                .doOnComplete(() -> chatsStorage.updateLastMessages())
                 .ignoreElements();
     }
 

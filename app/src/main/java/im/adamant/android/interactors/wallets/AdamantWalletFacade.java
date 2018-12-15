@@ -1,9 +1,11 @@
 package im.adamant.android.interactors.wallets;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -14,6 +16,7 @@ import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.SendCurrencyEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -147,6 +150,20 @@ public class AdamantWalletFacade implements WalletFacade {
     @Override
     public String getAirdropLinkString() {
         return "";
+    }
+
+    @Override
+    public SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey) {
+        SendCurrencyEntity entity = new SendCurrencyEntity();
+        entity.setWalletType(SupportedWalletFacadeType.ADM);
+        entity.setRecipientAddress(adamantAddress);
+        entity.setCurrencyIconResource(R.drawable.ic_adm_currency);
+        entity.setCurrentBalance(getBalance());
+        entity.setSupportComment(false);
+
+        BigDecimal fee = new BigDecimal(BuildConfig.ADM_TRANSFER_FEE).setScale(2, RoundingMode.HALF_EVEN);
+        entity.setFee(fee);
+        return entity;
     }
 
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {
