@@ -28,6 +28,7 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
+import io.reactivex.Flowable;
 
 public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";

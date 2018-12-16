@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -17,10 +18,12 @@ import im.adamant.android.R;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.ui.adapters.SendCurrencyAdapter;
 import im.adamant.android.ui.entities.SendCurrencyEntity;
 import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
 import im.adamant.android.ui.presenters.SendCurrencyPresenter;
+import io.reactivex.Flowable;
 import ru.terrakok.cicerone.NavigatorHolder;
 
 public class SendCurrencyTransferScreen extends BaseActivity implements SendCurrencyTransferView {

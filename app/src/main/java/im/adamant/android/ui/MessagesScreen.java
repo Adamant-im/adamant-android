@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,6 +31,8 @@ import com.jakewharton.rxbinding2.widget.RxTextView;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
+import im.adamant.android.avatars.AvatarTypes;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.presenters.MessagesPresenter;
@@ -44,11 +47,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -70,6 +75,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Inject
     MessagesAdapter adapter;
+
+    @Inject
+    Avatar avatar;
 
     //--Moxy
     @InjectPresenter
@@ -204,6 +212,18 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @Override
     public void showMessageCost(String cost) {
         runOnUiThread( () -> messageCostView.setText(cost));
+    }
+
+    @Override
+    public void showAvatarInTitle(String publicKey) {
+        int avatarSize = (int)getResources().getDimension(R.dimen.list_item_avatar_size);
+        Disposable disposable = avatar
+                .build(publicKey, avatarSize)
+                .subscribe(
+                        this::setTitleIcon,
+                        error -> hideIcon()
+                );
+        compositeDisposable.add(disposable);
     }
 
     @Override

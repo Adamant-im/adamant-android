@@ -9,6 +9,7 @@ import dagger.multibindings.IntoMap;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
+import im.adamant.android.avatars.AvatarTypes;
 import im.adamant.android.avatars.CachedAvatar;
 import im.adamant.android.avatars.RoundWithBorderAvatar;
 import im.adamant.android.avatars.SquareAvatar;
@@ -140,6 +141,7 @@ public abstract class AppModule {
                 1024 * 1024 * 10 // 10Mb
         );
     }
+
 
     @Singleton
     @Provides

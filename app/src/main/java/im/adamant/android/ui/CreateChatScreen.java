@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,6 +12,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import im.adamant.android.ui.mvp_view.CreateChatView;
@@ -24,6 +26,7 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import io.reactivex.Flowable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
