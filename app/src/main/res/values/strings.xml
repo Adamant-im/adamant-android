@@ -77,6 +77,9 @@
     <string name="rationale_qrcode_write_permission">Application needs a write permission for save QR code in your gallery.</string>
     <string name="activity_scan_qrcode_camera_permission_view">No permission to access camera</string>
 
+    <string name="list_item_currency_send_not_supported">This currency is not yet supported</string>
+    <string name="list_item_currency_send_amount">Amount for send. Max: %s %s</string>
+
     <!--ERRORS-->
     <string name="wrong_passphrase">Wrong passphrase</string>
     <string name="authorization_error">Authorization error, we try reconnecting…</string>

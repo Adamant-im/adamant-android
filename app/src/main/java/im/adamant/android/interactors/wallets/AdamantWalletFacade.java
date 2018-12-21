@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
@@ -153,12 +154,20 @@ public class AdamantWalletFacade implements WalletFacade {
     }
 
     @Override
+    public boolean isSupportCurrencySending() {
+        return true;
+    }
+
+    @Override
     public SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey) {
         SendCurrencyEntity entity = new SendCurrencyEntity();
         entity.setWalletType(SupportedWalletFacadeType.ADM);
         entity.setRecipientAddress(adamantAddress);
         entity.setCurrencyIconResource(R.drawable.ic_adm_currency);
-        entity.setCurrentBalance(getBalance());
+        entity.setBalanceObserver(Flowable
+                .interval(0,  5, TimeUnit.SECONDS)
+                .flatMap(i -> Flowable.fromCallable(this::getBalance))
+        );
         entity.setSupportComment(false);
 
         BigDecimal fee = new BigDecimal(BuildConfig.ADM_TRANSFER_FEE).setScale(2, RoundingMode.HALF_EVEN);

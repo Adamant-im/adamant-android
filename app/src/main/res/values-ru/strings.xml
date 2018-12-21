@@ -76,6 +76,10 @@
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Вы действительно хотите выйти из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Приложению необходимо разрешение на запись, чтобы сохранить QR-код в галерею</string>
+
+    <string name="list_item_currency_send_not_supported">Отправка данной валюты пока не поддерживается</string>
+    <string name="list_item_currency_send_amount">Сумма для отправки. Макс: %s %s</string>
+
     <string name="activity_scan_qrcode_camera_permission_view">Отсутсвует разрешение на доступ к камере</string>
 
     <!--NOTIFICATIONS-->

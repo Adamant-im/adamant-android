@@ -24,5 +24,6 @@ public interface WalletFacade {
     boolean isAvailableAirdropLink();
     int getAirdropLinkResource();
     String getAirdropLinkString();
+    boolean isSupportCurrencySending();
     SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey);
 }

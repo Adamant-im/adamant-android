@@ -3,6 +3,7 @@ package im.adamant.android.ui.entities;
 import java.math.BigDecimal;
 
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import io.reactivex.Flowable;
 
 public class SendCurrencyEntity {
 
@@ -22,6 +23,8 @@ public class SendCurrencyEntity {
     private String comment;
     private boolean isSupportComment;
     private boolean isNotSupportedYet;
+
+    private Flowable<BigDecimal> balanceObserver;
 
     public SupportedWalletFacadeType getWalletType() {
         return walletType;
@@ -49,10 +52,6 @@ public class SendCurrencyEntity {
 
     public BigDecimal getCurrentBalance() {
         return currentBalance;
-    }
-
-    public void setCurrentBalance(BigDecimal currentBalance) {
-        this.currentBalance = currentBalance;
     }
 
     public BigDecimal getAmount() {
@@ -109,5 +108,16 @@ public class SendCurrencyEntity {
 
     public void setNotSupportedYet(boolean notSupportedYet) {
         isNotSupportedYet = notSupportedYet;
+    }
+
+    public Flowable<BigDecimal> getBalanceObserver() {
+        return balanceObserver;
+    }
+
+    public void setBalanceObserver(Flowable<BigDecimal> balanceObserver) {
+        if (balanceObserver != null) {
+            this.balanceObserver = balanceObserver
+                    .doOnNext(balance -> this.currentBalance = balance);
+        }
     }
 }
