@@ -78,7 +78,12 @@
     <string name="rationale_qrcode_write_permission">Приложению необходимо разрешение на запись, чтобы сохранить QR-код в галерею</string>
 
     <string name="list_item_currency_send_not_supported">Отправка данной валюты пока не поддерживается</string>
-    <string name="list_item_currency_send_amount">Сумма для отправки. Макс: %s %s</string>
+    <string name="list_item_currency_send_amount_hint">Сумма для отправки. Макс: %s %s</string>
+    <string name="list_item_currency_send_address_hint">Пользователю "\%s\"</string>
+    <string name="list_item_currency_send_fee_hint">Коммиссия</string>
+    <string name="list_item_currency_send_totalAmount_hint">Сумма, включая плату за перевод</string>
+    <string name="list_item_currency_send_reminder_hint">Остаток на вашем счету %s %s</string>
+    <string name="list_item_currency_send_comment_hint">Сообщение получателю. %s/%s символов</string>
 
     <string name="activity_scan_qrcode_camera_permission_view">Отсутсвует разрешение на доступ к камере</string>
 
@@ -102,6 +107,7 @@
     <string name="invalid_symbol_in_passphrase">Некорректный символ. Разрешены только [a-z] и пробел</string>
     <string name="invalid_count_words_in_passphrase">Парольная фраза состоит из 12 слов. Уже введено %d, осталось %d</string>
     <string name="invalid_checksum_in_passphrase">Некорректная контрольная сумма</string>
+    <string name="not_a_number">Это значение должно быть числом</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>

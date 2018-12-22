@@ -159,20 +159,14 @@ public class AdamantWalletFacade implements WalletFacade {
     }
 
     @Override
-    public SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey) {
-        SendCurrencyEntity entity = new SendCurrencyEntity();
-        entity.setWalletType(SupportedWalletFacadeType.ADM);
-        entity.setRecipientAddress(adamantAddress);
-        entity.setCurrencyIconResource(R.drawable.ic_adm_currency);
-        entity.setBalanceObserver(Flowable
-                .interval(0,  5, TimeUnit.SECONDS)
-                .flatMap(i -> Flowable.fromCallable(this::getBalance))
-        );
-        entity.setSupportComment(false);
+    public Flowable<BigDecimal> getFee() {
+        return Flowable.just(new BigDecimal(BuildConfig.ADM_TRANSFER_FEE)
+                .setScale(2, RoundingMode.HALF_EVEN));
+    }
 
-        BigDecimal fee = new BigDecimal(BuildConfig.ADM_TRANSFER_FEE).setScale(2, RoundingMode.HALF_EVEN);
-        entity.setFee(fee);
-        return entity;
+    @Override
+    public String getCurrencyAddress(String adamantAddress, String adamantPublicKey) {
+        return adamantAddress;
     }
 
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {

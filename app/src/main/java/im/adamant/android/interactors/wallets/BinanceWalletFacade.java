@@ -73,10 +73,12 @@ public class BinanceWalletFacade implements WalletFacade {
     }
 
     @Override
-    public SendCurrencyEntity getSendCurrencyEntity(String adamantAddress, String adamantPublicKey) {
-        SendCurrencyEntity entity = new SendCurrencyEntity();
-        entity.setWalletType(SupportedWalletFacadeType.BNB);
-        entity.setNotSupportedYet(true);
-        return entity;
+    public Flowable<BigDecimal> getFee() {
+        return Flowable.just(BigDecimal.ZERO);
+    }
+
+    @Override
+    public String getCurrencyAddress(String adamantAddress, String adamantPublicKey) {
+        return "";
     }
 }
