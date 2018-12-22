@@ -27,13 +27,7 @@ import im.adamant.android.R;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.ui.adapters.SendCurrencyAdapter;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
-import im.adamant.android.ui.entities.SendCurrencyEntity;
-import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
-import im.adamant.android.ui.presenters.SendCurrencyPresenter;
-import io.reactivex.Flowable;
 import ru.terrakok.cicerone.NavigatorHolder;
 
 public class SendCurrencyTransferScreen extends BaseActivity implements HasSupportFragmentInjector {

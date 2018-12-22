@@ -16,7 +16,6 @@ import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.SendCurrencyTransferScreen;
-import im.adamant.android.ui.adapters.SendCurrencyAdapter;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.fragments.SendCurrencyFragment;
@@ -26,12 +25,6 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public abstract class SendCurrencyTransferScreenModule {
-    @ActivityScope
-    @Provides
-    public static SendCurrencyAdapter provideAdapter(){
-        return new SendCurrencyAdapter();
-    }
-
     @ActivityScope
     @Provides
     public static SendCurrencyFragmentAdapter provideFragmentAdapter(

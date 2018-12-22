@@ -2,6 +2,11 @@ package im.adamant.android.ui.fragments;
 
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -12,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import im.adamant.android.R;
@@ -40,6 +46,10 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     @BindView(R.id.list_item_currency_send_il_amount_layout) TextInputLayout amountLayoutView;
     @BindView(R.id.list_item_currency_send_fee) TextInputEditText feeView;
     @BindView(R.id.list_item_currency_send_il_fee_layout) TextInputLayout feeLayoutView;
+    @BindView(R.id.list_item_currency_send_ll_not_supported) LinearLayout notSupportedView;
+    @BindView(R.id.list_item_currency_send_cl_supported) ConstraintLayout supportedView;
+    @BindView(R.id.list_item_currency_send_ll_content_container) LinearLayout contentContainerView;
+
 
     public static SendCurrencyFragment newInstance(
             SupportedWalletFacadeType facadeType,
@@ -78,6 +88,24 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
         FragmentActivity activity = getActivity();
         if (activity != null){
             DrawableColorHeleper.changeColorForDrawable(activity, feeView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+        }
+    }
+
+    @Override
+    public void setTransferIsSupported(boolean value) {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) contentContainerView.getLayoutParams();
+        if (value) {
+            layoutParams.gravity = Gravity.TOP;
+
+            contentContainerView.setLayoutParams(layoutParams);
+            supportedView.setVisibility(View.VISIBLE);
+            notSupportedView.setVisibility(View.GONE);
+        } else {
+            layoutParams.gravity = Gravity.CENTER;
+
+            contentContainerView.setLayoutParams(layoutParams);
+            supportedView.setVisibility(View.GONE);
+            notSupportedView.setVisibility(View.VISIBLE);
         }
     }
 }

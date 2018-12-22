@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SendCurrencyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -28,18 +29,11 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
     public void setCompanionIdAndFacadeType(String companionId, SupportedWalletFacadeType type) {
         this.companionId = companionId;
         this.facadeType = type;
-    }
 
-    public void onClickShowInterfaceFor(String recipientAddress) {
-//        Disposable subscribe = sendCurrencyInteractor
-//                .getAvailableCurrencies(recipientAddress)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .toList()
-//                .subscribe(
-//                        list -> getViewState().showSendCurrencyInterface(list),
-//                        error -> LoggerHelper.e("Send Currency", error.getMessage(), error)
-//                );
-//
-//        subscriptions.add(subscribe);
+        WalletFacade facade = sendCurrencyInteractor.getFacade(type);
+
+        getViewState().setTransferIsSupported(
+                facade.isSupportCurrencySending()
+        );
     }
 }

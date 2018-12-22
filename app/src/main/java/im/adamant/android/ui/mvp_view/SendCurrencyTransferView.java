@@ -7,5 +7,5 @@ import java.util.List;
 import im.adamant.android.ui.entities.SendCurrencyEntity;
 
 public interface SendCurrencyTransferView extends MvpView {
-//    void showSendCurrencyInterface(List<SendCurrencyEntity> entityList);
+    void setTransferIsSupported(boolean value);
 }

@@ -24,24 +24,7 @@ public class SendCurrencyInteractor {
         this.publicKeyStorage = publicKeyStorage;
     }
 
-    public Flowable<SendCurrencyEntity> getAvailableCurrencies(String recipientAddress) {
-        return Flowable
-                .fromArray(SupportedWalletFacadeType.values())
-                .flatMap(type -> {
-                    if (wallets.containsKey(type)) {
-                        WalletFacade walletFacade = wallets.get(type);
-
-                        return walletFacade == null ?
-                                Flowable.error(new NotSupportedWalletFacade("Not supported wallet: " + type)) :
-                                Flowable.just(walletFacade);
-                    } else {
-                        return Flowable.error(new NotSupportedWalletFacade("Not supported wallet: " + type));
-                    }
-                })
-                .flatMap(walletFacade -> {
-                    String pKey = publicKeyStorage.getPublicKey(recipientAddress);
-                    SendCurrencyEntity sendCurrencyEntity = walletFacade.getSendCurrencyEntity(recipientAddress, pKey);
-                    return Flowable.just(sendCurrencyEntity);
-                });
+    public WalletFacade getFacade(SupportedWalletFacadeType type) {
+        return wallets.get(type);
     }
 }
