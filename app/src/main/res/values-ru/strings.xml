@@ -136,4 +136,6 @@
     <string name="today">Сегодня</string>
     <string name="sended">Отправлено: </string>
     <string name="received">Получено: </string>
+    <string name="send">Отправить</string>
+    <string name="cancel">Отмена</string>
 </resources>

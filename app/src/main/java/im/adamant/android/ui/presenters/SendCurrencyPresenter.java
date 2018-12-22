@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState;
 import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
+import androidx.core.content.ContextCompat;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
@@ -108,5 +109,11 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
 
         BigDecimal reminder = balance.subtract(totalAmount);
         getViewState().setReminder(reminder, facadeType.name());
+
+        if (reminder.compareTo(BigDecimal.ZERO) < 0) {
+            getViewState().lockSendButton();
+        } else {
+            getViewState().unlockSendButton();
+        }
     }
 }

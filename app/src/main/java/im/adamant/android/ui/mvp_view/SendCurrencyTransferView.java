@@ -15,4 +15,6 @@ public interface SendCurrencyTransferView extends MvpView {
     void setReminder(BigDecimal reminder, String currencyAbbr);
     void setTotalAmount(BigDecimal totalAmount, String currencyAbbr);
     void setRecipientName(String name);
+    void lockSendButton();
+    void unlockSendButton();
 }

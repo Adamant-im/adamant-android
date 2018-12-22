@@ -135,4 +135,6 @@
     <string name="today">Today</string>
     <string name="sended">Sended: </string>
     <string name="received">Received: </string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
 </resources>

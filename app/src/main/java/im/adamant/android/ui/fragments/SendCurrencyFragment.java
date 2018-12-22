@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -64,6 +65,7 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     @BindView(R.id.list_item_currency_send_ll_content_container) LinearLayout contentContainerView;
     @BindView(R.id.list_item_currency_send_remainder) TextView reminderView;
     @BindView(R.id.list_item_currency_send_comment) TextInputEditText commentView;
+    @BindView(R.id.list_item_currency_send_btn_send) MaterialButton sendButtonView;
 
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
@@ -152,12 +154,14 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
             contentContainerView.setLayoutParams(layoutParams);
             supportedView.setVisibility(View.VISIBLE);
             notSupportedView.setVisibility(View.GONE);
+            sendButtonView.setVisibility(View.VISIBLE);
         } else {
             layoutParams.gravity = Gravity.CENTER;
 
             contentContainerView.setLayoutParams(layoutParams);
             supportedView.setVisibility(View.GONE);
             notSupportedView.setVisibility(View.VISIBLE);
+            sendButtonView.setVisibility(View.GONE);
         }
     }
 
@@ -207,5 +211,15 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
         String pattern = getString(R.string.list_item_currency_send_address_hint);
         String hint = String.format(Locale.ENGLISH, pattern, name);
         recipientAddressLayoutView.setHint(hint);
+    }
+
+    @Override
+    public void lockSendButton() {
+        sendButtonView.setEnabled(false);
+    }
+
+    @Override
+    public void unlockSendButton() {
+        sendButtonView.setEnabled(true);
     }
 }

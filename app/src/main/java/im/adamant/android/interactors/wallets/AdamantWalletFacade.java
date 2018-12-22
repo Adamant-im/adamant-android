@@ -161,7 +161,7 @@ public class AdamantWalletFacade implements WalletFacade {
     @Override
     public Flowable<BigDecimal> getFee() {
         return Flowable.just(new BigDecimal(BuildConfig.ADM_TRANSFER_FEE)
-                .setScale(2, RoundingMode.HALF_EVEN));
+                .setScale(getPrecision(), RoundingMode.HALF_EVEN));
     }
 
     @Override
