@@ -81,6 +81,12 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
                 )
         );
 
+        if (currentFacade.isSupportComment()){
+            getViewState().showCommentField();
+        } else {
+            getViewState().hideCommentField();
+        }
+
         int resourceId = currentFacade.getIconForEditText();
         if (resourceId != 0) {
             getViewState().setEditTextIcons(resourceId);

@@ -86,4 +86,9 @@ public class BinanceWalletFacade implements WalletFacade {
     public int getIconForEditText() {
         return 0;
     }
+
+    @Override
+    public boolean isSupportComment() {
+        return true;
+    }
 }

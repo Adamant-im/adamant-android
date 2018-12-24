@@ -71,6 +71,7 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     @BindView(R.id.list_item_currency_send_ll_content_container) LinearLayout contentContainerView;
     @BindView(R.id.list_item_currency_send_remainder) TextView reminderView;
     @BindView(R.id.list_item_currency_send_comment) TextInputEditText commentView;
+    @BindView(R.id.list_item_currency_send_il_comment_layout) TextInputLayout commentLayoutView;
     @BindView(R.id.list_item_currency_send_btn_send) MaterialButton sendButtonView;
 
     private CompositeDisposable subscriptions = new CompositeDisposable();
@@ -250,6 +251,16 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
             DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
             DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
         }
+    }
+
+    @Override
+    public void hideCommentField() {
+        commentLayoutView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCommentField() {
+        commentLayoutView.setVisibility(View.VISIBLE);
     }
 
     private Drawable getIcon(Context context, int resourceId) {

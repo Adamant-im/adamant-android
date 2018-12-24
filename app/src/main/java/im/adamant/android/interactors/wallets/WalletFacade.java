@@ -28,4 +28,5 @@ public interface WalletFacade {
     Flowable<BigDecimal> getFee();
     String getCurrencyAddress(String adamantAddress, String adamantPublicKey);
     int getIconForEditText();
+    boolean isSupportComment();
 }

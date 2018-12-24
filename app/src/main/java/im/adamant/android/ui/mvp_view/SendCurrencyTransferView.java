@@ -18,4 +18,6 @@ public interface SendCurrencyTransferView extends MvpView {
     void lockSendButton();
     void unlockSendButton();
     void setEditTextIcons(int resourceId);
+    void hideCommentField();
+    void showCommentField();
 }
