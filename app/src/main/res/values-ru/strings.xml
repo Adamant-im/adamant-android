@@ -42,6 +42,8 @@
 
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
+    <string name="activity_currency_send_title">Отправка валюты</string>
+
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>

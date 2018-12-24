@@ -89,12 +89,10 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
         Disposable balanceUpdateFlowable = Flowable
                 .interval(0, BuildConfig.UPDATE_BALANCE_SECONDS_DELAY, TimeUnit.SECONDS)
                 .withLatestFrom(currentFacade.getFee(), (i, fee) -> fee)
-                .doOnNext(fee -> {
-                    BigDecimal balance = currentFacade.getBalance();
-                    calculate(currentAmount, balance, fee);
-                })
                 .subscribe(
                         fee -> {
+                            BigDecimal balance = currentFacade.getBalance();
+                            calculate(currentAmount, balance, fee);
                         },
                         error -> LoggerHelper.e("UPDATED BALANCE", error.getMessage(), error)
                 );
@@ -131,6 +129,7 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
     }
 
     private void calculate(BigDecimal amount, BigDecimal balance, BigDecimal fee) {
+
         getViewState().setFee(fee, facadeType.name());
 
         BigDecimal totalAmount = amount.add(fee);
@@ -141,7 +140,9 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
         BigDecimal reminder = balance.subtract(totalAmount);
         getViewState().setReminder(reminder, facadeType.name());
 
-        if (reminder.compareTo(BigDecimal.ZERO) < 0) {
+        boolean isSendButtonMustLocked = (reminder.compareTo(BigDecimal.ZERO) < 0) || (amount.compareTo(BigDecimal.ZERO) <= 0);
+
+        if (isSendButtonMustLocked) {
             getViewState().lockSendButton();
         } else {
             getViewState().unlockSendButton();

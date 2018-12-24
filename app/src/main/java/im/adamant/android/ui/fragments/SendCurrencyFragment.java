@@ -29,13 +29,16 @@ import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.R;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
 import im.adamant.android.ui.presenters.SendCurrencyPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTransferView {
     public static final String ARG_WALLET_FACADE_TYPE = "wallet_facade_type";

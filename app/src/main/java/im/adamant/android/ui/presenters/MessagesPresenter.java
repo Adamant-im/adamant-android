@@ -109,7 +109,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         );
 
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
-        getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
+//        getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
 
         getViewState()
             .showChatMessages(

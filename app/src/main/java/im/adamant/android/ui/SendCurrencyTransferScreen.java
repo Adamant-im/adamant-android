@@ -30,6 +30,7 @@ import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
+import im.adamant.android.ui.fragments.SendCurrencyFragment;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
@@ -80,7 +81,10 @@ public class SendCurrencyTransferScreen extends BaseActivity implements HasSuppo
         }
 
         slider.setAdapter(adapter);
+
         tabs.setupWithViewPager(slider);
+
+        setTitle(getString(R.string.activity_currency_send_title));
     }
 
     @Override

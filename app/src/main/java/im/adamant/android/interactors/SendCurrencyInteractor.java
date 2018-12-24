@@ -29,7 +29,10 @@ public class SendCurrencyInteractor {
 
     public Single<TransactionWasProcessed> sendCurrency(String recipientAddress, String text, BigDecimal amount, SupportedWalletFacadeType facadeType) {
         Single<TransactionWasProcessed> result = Single.error(new Exception("Unimplemented message type"));
-        if (!api.isAuthorized()){result =  Single.error(new NotAuthorizedException("Not authorized"));}
+
+        if (!api.isAuthorized()) {return Single.error(new NotAuthorizedException("Not authorized"));}
+        if (BigDecimal.ZERO.compareTo(amount) >= 0) {return Single.error(new Exception("Amount less or equal 0"));}
+
 
         String pKey = api.getAccount().getPublicKey();
 
