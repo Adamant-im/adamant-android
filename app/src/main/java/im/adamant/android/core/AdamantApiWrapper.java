@@ -211,6 +211,14 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
+    public Flowable<TransactionWasProcessed> sendAdmTransferTransaction(ProcessTransaction transaction) {
+        return api.sendAdmTransferTransaction(transaction)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
     public boolean isAuthorized() {
         return account != null && keyPair != null;
     }

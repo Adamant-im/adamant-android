@@ -77,4 +77,7 @@ public interface AdamantApi {
             @Query("orderBy") String order
     );
 
+    @POST("/api/transactions/process")
+    Flowable<TransactionWasProcessed> sendAdmTransferTransaction(@Body ProcessTransaction transaction);
+
 }

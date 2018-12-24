@@ -7,7 +7,6 @@ import java.util.List;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CreateChatView;
@@ -18,20 +17,17 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     private Router router;
-    private SendMessageInteractor interactor;
     private ChatsStorage chatsStorage;
     private AdamantAddressProcessor addressProcessor;
 
     public CreateChatPresenter(
             Router router,
-            SendMessageInteractor interactor,
             AdamantAddressProcessor addressProcessor,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
         this.router = router;
-        this.interactor = interactor;
         this.chatsStorage = chatsStorage;
         this.addressProcessor = addressProcessor;
     }

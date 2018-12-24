@@ -37,7 +37,6 @@ import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
@@ -220,13 +219,14 @@ public abstract class AppModule {
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
+            PublicKeyStorage publicKeyStorage,
             Avatar avatar
     ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatar)
+                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
         );
 
         provider.registerFactory(
@@ -241,7 +241,7 @@ public abstract class AppModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
-                new AdamantPushSubscriptionMessageFactory(encryptor, api)
+                new AdamantPushSubscriptionMessageFactory(encryptor, api, publicKeyStorage)
         );
 
         provider.registerFactory(
@@ -251,7 +251,7 @@ public abstract class AppModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE,
-                new AdamantTransferMessageFactory(adamantAddressProcessor, avatar)
+                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
         );
 
         return provider;
@@ -360,10 +360,17 @@ public abstract class AppModule {
     public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
             Settings settings,
             AdamantApiWrapper api,
-            MessageFactoryProvider messageFactoryProvider,
-            SendMessageInteractor sendMessageInteractor
+            MessageFactoryProvider messageFactoryProvider
     ) {
-        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider, sendMessageInteractor);
+        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider);
+    }
+
+    @Singleton
+    @Provides
+    public static SendCurrencyInteractor provideSendCurrencyInteractor(
+            AdamantApiWrapper api, ChatsStorage chatsStorage, MessageFactoryProvider messageFactoryProvider
+    ) {
+        return new SendCurrencyInteractor(api, chatsStorage, messageFactoryProvider);
     }
 
     @Singleton
@@ -380,18 +387,6 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SendMessageInteractor provideSendMessageInteractor(
-            AdamantApiWrapper api,
-            Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage
-    ){
-        return new SendMessageInteractor(
-                api, encryptor, publicKeyStorage
-        );
-    }
-
-    @Singleton
-    @Provides
     public static RefreshChatsInteractor provideRefreshInteractor(
             AdamantApiWrapper api,
             TransactionToMessageMapper messageMapper,
@@ -399,7 +394,7 @@ public abstract class AppModule {
             LocalizedMessageMapper localizedMessageMapper,
             LocalizedChatMapper localizedChatMapper,
             ChatsStorage chatsStorage
-    ){
+    ) {
         return new RefreshChatsInteractor(
                 api,
                 chatMapper,
@@ -424,15 +419,6 @@ public abstract class AppModule {
     @Provides
     public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage, KvsHelper kvsHelper) {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
-    }
-
-    @Singleton
-    @Provides
-    public static SendCurrencyInteractor provideSendCurrencyInteractor(
-            Map<SupportedWalletFacadeType, WalletFacade> wallets,
-            PublicKeyStorage publicKeyStorage
-    ) {
-        return new SendCurrencyInteractor(wallets, publicKeyStorage);
     }
 
 

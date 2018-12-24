@@ -3,7 +3,6 @@ package im.adamant.android.dagger;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 
 import javax.inject.Named;
@@ -20,12 +19,11 @@ public class CreateChatScreenModule {
     @Provides
     public CreateChatPresenter provideLoginPresenter(
             Router router,
-            SendMessageInteractor interactor,
             AdamantAddressProcessor addressProcessor,
             ChatsStorage chatsStorage,
             @Named(Screens.CREATE_CHAT_SCREEN) CompositeDisposable subscriptions
     ){
-        return new CreateChatPresenter(router,interactor, addressProcessor, chatsStorage, subscriptions);
+        return new CreateChatPresenter(router, addressProcessor, chatsStorage, subscriptions);
     }
 
     @ActivityScope

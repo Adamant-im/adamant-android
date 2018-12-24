@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
+import butterknife.OnClick;
 import im.adamant.android.R;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
@@ -143,6 +144,11 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
 
         subscriptions.dispose();
         subscriptions.clear();
+    }
+
+    @OnClick(R.id.list_item_currency_send_btn_send)
+    public void onClickSendButton() {
+        presenter.onClickSendButton();
     }
 
     @Override

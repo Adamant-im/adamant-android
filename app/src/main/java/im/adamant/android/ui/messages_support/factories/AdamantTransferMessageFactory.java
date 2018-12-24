@@ -6,7 +6,10 @@ import android.view.ViewGroup;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.builders.AdamantTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.EthereumTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
@@ -15,15 +18,28 @@ import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
 import im.adamant.android.ui.messages_support.holders.AdamantTransferMessageViewHolder;
 import im.adamant.android.ui.messages_support.holders.EthereumTransferMessageViewHolder;
+import im.adamant.android.ui.messages_support.processors.AdamantTransferMessageProcessor;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class AdamantTransferMessageFactory implements MessageFactory<AdamantTransferMessage> {
     private AdamantAddressProcessor adamantAddressProcessor;
+    private Encryptor encryptor;
+    private AdamantApiWrapper api;
     private Avatar avatar;
+    private PublicKeyStorage publicKeyStorage;
 
-    public AdamantTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+    public AdamantTransferMessageFactory(
+            AdamantAddressProcessor adamantAddressProcessor,
+            Encryptor encryptor,
+            AdamantApiWrapper api,
+            PublicKeyStorage publicKeyStorage,
+            Avatar avatar
+    ) {
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
+        this.encryptor = encryptor;
+        this.api = api;
+        this.publicKeyStorage = publicKeyStorage;
     }
 
     @Override
@@ -40,6 +56,6 @@ public class AdamantTransferMessageFactory implements MessageFactory<AdamantTran
 
     @Override
     public MessageProcessor<AdamantTransferMessage> getMessageProcessor() {
-        throw new Error("AdamantTransferMessageProcessor not implemented!");
+        return new AdamantTransferMessageProcessor(api, encryptor, publicKeyStorage);
     }
 }

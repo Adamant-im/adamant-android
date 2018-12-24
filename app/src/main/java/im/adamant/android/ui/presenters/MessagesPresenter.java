@@ -14,7 +14,6 @@ import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -23,6 +22,7 @@ import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
@@ -36,7 +36,6 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class MessagesPresenter extends BasePresenter<MessagesView>{
     private Router router;
-    private SendMessageInteractor sendMessageInteractor;
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
@@ -50,7 +49,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public MessagesPresenter(
             Router router,
-            SendMessageInteractor sendMessageInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
@@ -59,7 +57,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     ) {
         super(subscriptions);
         this.router = router;
-        this.sendMessageInteractor = sendMessageInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
@@ -165,8 +162,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             AdamantBasicMessage messageEntity = getAdamantMessage(message, messageFactory);
             chatsStorage.addMessageToChat(messageEntity);
 
-            Disposable subscription = sendMessageInteractor
-                    .sendMessage(messageFactory.getMessageProcessor(), messageEntity)
+            MessageProcessor<AdamantBasicMessage> messageProcessor = messageFactory.getMessageProcessor();
+
+            Disposable subscription = messageProcessor
+                    .sendMessage(messageEntity)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
                                 if (transaction.isSuccess()){

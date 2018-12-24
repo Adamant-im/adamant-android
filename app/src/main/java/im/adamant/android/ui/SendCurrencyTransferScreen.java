@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -27,8 +28,15 @@ import im.adamant.android.R;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
+import im.adamant.android.Screens;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
+import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
+import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class SendCurrencyTransferScreen extends BaseActivity implements HasSupportFragmentInjector {
     public static final String ARG_COMPANION_ID = "companion_id";
@@ -72,41 +80,49 @@ public class SendCurrencyTransferScreen extends BaseActivity implements HasSuppo
         }
 
         slider.setAdapter(adapter);
-
-        slider.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                CurrencyCardItem item = currencyCardAdapter.getItem(position);
-//                if (item != null){
-//                    presenter.onSelectCurrencyCard(item);
-//                }
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
         tabs.setupWithViewPager(slider);
-
-
     }
-
-//    @Override
-//    public void showSendCurrencyInterface(List<SendCurrencyEntity> entityList) {
-//        if (adapter != null){
-//            adapter.setItems(entityList);
-//        }
-//    }
 
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentDispatchingAndroidInjector;
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        navigatorHolder.setNavigator(navigator);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        navigatorHolder.removeNavigator();
+    }
+
+    private Navigator navigator = new Navigator() {
+        @Override
+        public void applyCommands(Command[] commands) {
+            for (Command command : commands){
+                apply(command);
+            }
+        }
+
+        private void apply(Command command){
+            if (command instanceof BackTo) {
+                BackTo backTo = (BackTo)command;
+                switch (backTo.getScreenKey()) {
+                    case Screens.MESSAGES_SCREEN: {
+                        finish();
+                    }
+                    break;
+                }
+            } else if(command instanceof SystemMessage){
+                SystemMessage message = (SystemMessage) command;
+                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }
+    };
 }

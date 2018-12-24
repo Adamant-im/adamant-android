@@ -12,16 +12,14 @@ import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import io.reactivex.Single;
 
-public class AdamantPushSubsciptionMessageProcessor implements MessageProcessor<AdamantPushSubscriptionMessage> {
-    private AdamantApiWrapper api;
-    private Encryptor encryptor;
+public class AdamantPushSubscriptionMessageProcessor extends AbstractMessageProcessor<AdamantPushSubscriptionMessage> {
 
-    public AdamantPushSubsciptionMessageProcessor(AdamantApiWrapper api, Encryptor encryptor) {
-        this.api = api;
-        this.encryptor = encryptor;
+    public AdamantPushSubscriptionMessageProcessor(AdamantApiWrapper api, Encryptor encryptor, PublicKeyStorage publicKeyStorage) {
+        super(api, encryptor, publicKeyStorage);
     }
 
     @Override

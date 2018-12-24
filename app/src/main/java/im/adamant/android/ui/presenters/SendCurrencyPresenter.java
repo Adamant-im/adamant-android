@@ -3,10 +3,12 @@ package im.adamant.android.ui.presenters;
 import com.arellomobile.mvp.InjectViewState;
 
 import java.math.BigDecimal;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import androidx.core.content.ContextCompat;
 import im.adamant.android.BuildConfig;
+import im.adamant.android.Screens;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -14,6 +16,13 @@ import im.adamant.android.interactors.SendCurrencyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.builders.MessageBuilder;
+import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
+import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
+import im.adamant.android.ui.messages_support.factories.AdamantTransferMessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -24,27 +33,34 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferView> {
     private Router router;
+    private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private SendCurrencyInteractor sendCurrencyInteractor;
     private PublicKeyStorage publicKeyStorage;
     private ChatsStorage chatsStorage;
+    private MessageFactoryProvider messageFactoryProvider;
 
     private String companionId;
     private SupportedWalletFacadeType facadeType;
     private WalletFacade currentFacade;
 
     private BigDecimal currentAmount = BigDecimal.ZERO;
+    private String comment = "";
 
     public SendCurrencyPresenter(
             Router router,
+            Map<SupportedWalletFacadeType, WalletFacade> wallets,
             SendCurrencyInteractor sendCurrencyInteractor,
+            MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
         this.router = router;
+        this.wallets = wallets;
         this.sendCurrencyInteractor = sendCurrencyInteractor;
         this.publicKeyStorage = publicKeyStorage;
+        this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
     }
 
@@ -52,7 +68,7 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
         this.companionId = companionId;
         this.facadeType = type;
 
-        currentFacade = sendCurrencyInteractor.getFacade(type);
+        currentFacade = wallets.get(type);
 
         getViewState().setTransferIsSupported(
                 currentFacade.isSupportCurrencySending()
@@ -97,6 +113,21 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
                     );
             subscriptions.add(subscribe);
         }
+    }
+
+    public void onClickSendButton() {
+        Disposable subscribe = sendCurrencyInteractor
+                .sendCurrency(companionId, comment, currentAmount, facadeType)
+                .subscribe(
+                        transactionWasProcessed -> {
+                            router.backTo(Screens.MESSAGES_SCREEN);
+                        },
+                        error -> {
+                            router.showSystemMessage(error.getMessage());
+                        }
+                );
+
+        subscriptions.add(subscribe);
     }
 
     private void calculate(BigDecimal amount, BigDecimal balance, BigDecimal fee) {
