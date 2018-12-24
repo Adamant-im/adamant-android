@@ -1,6 +1,8 @@
 package im.adamant.android.ui.fragments;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -110,9 +112,7 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
         super.onResume();
         FragmentActivity activity = getActivity();
         if (activity != null){
-            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
 
             RxTextView
                     .textChanges(amountView)
@@ -230,5 +230,35 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     @Override
     public void unlockSendButton() {
         sendButtonView.setEnabled(true);
+    }
+
+    @Override
+    public void setEditTextIcons(int resourceId) {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+
+            Drawable drawable = getIcon(activity, resourceId);
+            feeView.setCompoundDrawablesRelative(drawable, null, null, null);
+
+            drawable = getIcon(activity, resourceId);
+            amountView.setCompoundDrawablesRelative(drawable, null, null, null);
+
+            drawable = getIcon(activity, resourceId);
+            totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
+
+            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+        }
+    }
+
+    private Drawable getIcon(Context context, int resourceId) {
+        Drawable drawable = ContextCompat.getDrawable(context, resourceId);
+        if (drawable == null) {return null;}
+        int h = drawable.getIntrinsicHeight();
+        int w = drawable.getIntrinsicWidth();
+        drawable.setBounds( 0, 0, w, h );
+
+        return drawable;
     }
 }

@@ -17,4 +17,5 @@ public interface SendCurrencyTransferView extends MvpView {
     void setRecipientName(String name);
     void lockSendButton();
     void unlockSendButton();
+    void setEditTextIcons(int resourceId);
 }

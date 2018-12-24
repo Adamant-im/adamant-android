@@ -81,4 +81,9 @@ public class BinanceWalletFacade implements WalletFacade {
     public String getCurrencyAddress(String adamantAddress, String adamantPublicKey) {
         return "";
     }
+
+    @Override
+    public int getIconForEditText() {
+        return 0;
+    }
 }

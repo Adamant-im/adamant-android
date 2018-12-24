@@ -169,6 +169,11 @@ public class AdamantWalletFacade implements WalletFacade {
         return adamantAddress;
     }
 
+    @Override
+    public int getIconForEditText() {
+        return R.drawable.ic_adm_currency;
+    }
+
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {
         String title = "";
         if (chatsStorage == null){ return "";}

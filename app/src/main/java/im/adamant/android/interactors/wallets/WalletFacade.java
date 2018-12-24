@@ -27,4 +27,5 @@ public interface WalletFacade {
     boolean isSupportCurrencySending();
     Flowable<BigDecimal> getFee();
     String getCurrencyAddress(String adamantAddress, String adamantPublicKey);
+    int getIconForEditText();
 }

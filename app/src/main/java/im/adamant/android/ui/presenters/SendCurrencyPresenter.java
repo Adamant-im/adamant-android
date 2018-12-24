@@ -81,6 +81,11 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
                 )
         );
 
+        int resourceId = currentFacade.getIconForEditText();
+        if (resourceId != 0) {
+            getViewState().setEditTextIcons(resourceId);
+        }
+
         Chat chat = chatsStorage.findChatByCompanionId(companionId);
         if (chat != null) {
             getViewState().setRecipientName(chat.getTitle());
