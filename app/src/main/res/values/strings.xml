@@ -41,7 +41,9 @@
 
     <string name="activity_scan_qrcode_title">Scan QR-code</string>
 
-    <string name="activity_currency_send_title">Send currency</string>
+    <string name="activity_currency_send_title">Send funds</string>
+    <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>
+    <string name="activity_currency_send_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>

@@ -1,6 +1,8 @@
 package im.adamant.android.ui.mvp_view;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
+import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,4 +22,7 @@ public interface SendCurrencyTransferView extends MvpView {
     void setEditTextIcons(int resourceId);
     void hideCommentField();
     void showCommentField();
+
+    @StateStrategyType(SkipStrategy.class)
+    void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address);
 }

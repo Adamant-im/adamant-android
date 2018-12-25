@@ -125,6 +125,10 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
     }
 
     public void onClickSendButton() {
+        getViewState().showTransferConfirmationDialog(currentAmount, facadeType.name(), companionId);
+    }
+
+    public void onClickConfirmSend() {
         Disposable subscribe = sendCurrencyInteractor
                 .sendCurrency(companionId, comment, currentAmount, facadeType)
                 .subscribe(

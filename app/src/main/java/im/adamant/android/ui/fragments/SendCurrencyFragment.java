@@ -1,5 +1,6 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -25,6 +26,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -261,6 +263,25 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     @Override
     public void showCommentField() {
         commentLayoutView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {
+        Activity activity = getActivity();
+        if (activity != null){
+            String pattern = getString(R.string.activity_currency_send_dialog_funds_message);
+            String message = String.format(Locale.ENGLISH, pattern, amount, currencyAbbr, address);
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder
+                    .setTitle(R.string.activity_currency_send_dialog_funds_title)
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        presenter.onClickConfirmSend();
+                    })
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
+                    .show();
+        }
     }
 
     private Drawable getIcon(Context context, int resourceId) {

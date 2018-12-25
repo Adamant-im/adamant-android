@@ -42,7 +42,9 @@
 
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
-    <string name="activity_currency_send_title">Отправка валюты</string>
+    <string name="activity_currency_send_title">Отправить средства</string>
+    <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>
+    <string name="activity_currency_send_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
