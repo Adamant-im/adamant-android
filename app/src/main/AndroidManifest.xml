@@ -78,7 +78,7 @@
             android:theme="@style/AdamantLight.WithActionBar"/>
         <activity
             android:exported="false"
-            android:name=".ui.SendCurrencyTransferScreen"
+            android:name=".ui.SendFundsScreen"
             android:theme="@style/AdamantLight.WithActionBar" />
 
         <service

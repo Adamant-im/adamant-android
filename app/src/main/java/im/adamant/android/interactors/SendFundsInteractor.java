@@ -16,12 +16,12 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
-public class SendCurrencyInteractor {
+public class SendFundsInteractor {
     private AdamantApiWrapper api;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
 
-    public SendCurrencyInteractor(AdamantApiWrapper api, ChatsStorage chatsStorage, MessageFactoryProvider messageFactoryProvider) {
+    public SendFundsInteractor(AdamantApiWrapper api, ChatsStorage chatsStorage, MessageFactoryProvider messageFactoryProvider) {
         this.chatsStorage = chatsStorage;
         this.messageFactoryProvider = messageFactoryProvider;
         this.api = api;

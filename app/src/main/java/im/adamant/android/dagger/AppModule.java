@@ -9,7 +9,6 @@ import dagger.multibindings.IntoMap;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.avatars.AvatarGraphics;
 import im.adamant.android.avatars.AvatarThemesProvider;
-import im.adamant.android.avatars.AvatarTypes;
 import im.adamant.android.avatars.CachedAvatar;
 import im.adamant.android.avatars.RoundWithBorderAvatar;
 import im.adamant.android.avatars.SquareAvatar;
@@ -18,7 +17,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
-import im.adamant.android.interactors.SendCurrencyInteractor;
+import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
@@ -51,7 +50,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
-import im.adamant.android.ui.SendCurrencyTransferScreen;
+import im.adamant.android.ui.SendFundsScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -367,10 +366,10 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SendCurrencyInteractor provideSendCurrencyInteractor(
+    public static SendFundsInteractor provideSendCurrencyInteractor(
             AdamantApiWrapper api, ChatsStorage chatsStorage, MessageFactoryProvider messageFactoryProvider
     ) {
-        return new SendCurrencyInteractor(api, chatsStorage, messageFactoryProvider);
+        return new SendFundsInteractor(api, chatsStorage, messageFactoryProvider);
     }
 
     @Singleton
@@ -488,7 +487,7 @@ public abstract class AppModule {
 
     @ActivityScope
     @ContributesAndroidInjector(modules = {SendCurrencyTransferScreenModule.class})
-    public abstract SendCurrencyTransferScreen createSendCurrencyTransferScreenInjector();
+    public abstract SendFundsScreen createSendCurrencyTransferScreenInjector();
 
 
     //--Services

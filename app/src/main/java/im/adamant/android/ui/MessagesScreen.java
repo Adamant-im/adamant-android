@@ -3,9 +3,7 @@ package im.adamant.android.ui;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,8 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -32,8 +28,6 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.avatars.AvatarTypes;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
@@ -41,19 +35,15 @@ import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -354,9 +344,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                     }
                     break;
                     case Screens.SEND_CURRENCY_TRANSFER_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), SendCurrencyTransferScreen.class);
+                        Intent intent = new Intent(getApplicationContext(), SendFundsScreen.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString(SendCurrencyTransferScreen.ARG_COMPANION_ID, (String)forward.getTransitionData());
+                        bundle.putString(SendFundsScreen.ARG_COMPANION_ID, (String)forward.getTransitionData());
                         intent.putExtras(bundle);
                         startActivity(intent);
                     }

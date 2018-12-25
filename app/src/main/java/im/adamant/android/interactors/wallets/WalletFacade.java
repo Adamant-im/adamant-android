@@ -5,8 +5,6 @@ import java.util.List;
 
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
-import im.adamant.android.ui.entities.SendCurrencyEntity;
-import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -24,7 +22,7 @@ public interface WalletFacade {
     boolean isAvailableAirdropLink();
     int getAirdropLinkResource();
     String getAirdropLinkString();
-    boolean isSupportCurrencySending();
+    boolean isSupportFundsSending();
     Flowable<BigDecimal> getFee();
     String getCurrencyAddress(String adamantAddress, String adamantPublicKey);
     int getIconForEditText();

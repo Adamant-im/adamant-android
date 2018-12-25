@@ -7,10 +7,8 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import java.math.BigDecimal;
 import java.util.List;
 
-import im.adamant.android.ui.entities.SendCurrencyEntity;
-
-public interface SendCurrencyTransferView extends MvpView {
-    void setTransferIsSupported(boolean value);
+public interface SendFundsView extends MvpView {
+    void setFundsSendingIsSupported(boolean value);
     void setRecipientAddress(String address);
     void setFee(BigDecimal fee, String currencyAbbr);
     void setCurrentBalance(BigDecimal balance, String currencyAbbr);

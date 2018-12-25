@@ -17,7 +17,6 @@ import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
-import im.adamant.android.ui.entities.SendCurrencyEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
@@ -154,7 +153,7 @@ public class AdamantWalletFacade implements WalletFacade {
     }
 
     @Override
-    public boolean isSupportCurrencySending() {
+    public boolean isSupportFundsSending() {
         return true;
     }
 

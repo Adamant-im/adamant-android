@@ -33,30 +33,27 @@ import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.R;
-import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
-import im.adamant.android.ui.BaseActivity;
-import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
-import im.adamant.android.ui.presenters.SendCurrencyPresenter;
+import im.adamant.android.ui.mvp_view.SendFundsView;
+import im.adamant.android.ui.presenters.SendFundsPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 
-public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTransferView {
+public class SendFundsFragment extends BaseFragment implements SendFundsView {
     public static final String ARG_WALLET_FACADE_TYPE = "wallet_facade_type";
     public static final String ARG_COMPANION_ID = "companion_id";
 
     @Inject
-    Provider<SendCurrencyPresenter> presenterProvider;
+    Provider<SendFundsPresenter> presenterProvider;
 
     //--Moxy
     @InjectPresenter
-    SendCurrencyPresenter presenter;
+    SendFundsPresenter presenter;
 
     @ProvidePresenter
-    public SendCurrencyPresenter getPresenter(){
+    public SendFundsPresenter getPresenter(){
         return presenterProvider.get();
     }
 
@@ -79,11 +76,11 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
 
-    public static SendCurrencyFragment newInstance(
+    public static SendFundsFragment newInstance(
             SupportedWalletFacadeType facadeType,
             String companionId
     ) {
-        SendCurrencyFragment pageFragment = new SendCurrencyFragment();
+        SendFundsFragment pageFragment = new SendFundsFragment();
         Bundle arguments = new Bundle();
         arguments.putSerializable(ARG_WALLET_FACADE_TYPE, facadeType);
         arguments.putString(ARG_COMPANION_ID, companionId);
@@ -93,7 +90,7 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
 
     @Override
     public int getLayoutId() {
-        return R.layout.list_item_currency_send_view;
+        return R.layout.fragment_send_funds;
     }
 
     @Override
@@ -158,7 +155,7 @@ public class SendCurrencyFragment extends BaseFragment implements SendCurrencyTr
     }
 
     @Override
-    public void setTransferIsSupported(boolean value) {
+    public void setFundsSendingIsSupported(boolean value) {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) contentContainerView.getLayoutParams();
         if (value) {
             layoutParams.gravity = Gravity.TOP;

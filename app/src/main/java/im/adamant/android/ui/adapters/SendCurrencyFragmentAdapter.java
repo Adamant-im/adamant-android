@@ -11,8 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
-import im.adamant.android.ui.entities.SendCurrencyEntity;
-import im.adamant.android.ui.fragments.SendCurrencyFragment;
+import im.adamant.android.ui.fragments.SendFundsFragment;
 
 
 public class SendCurrencyFragmentAdapter extends FragmentStatePagerAdapter {
@@ -41,7 +40,7 @@ public class SendCurrencyFragmentAdapter extends FragmentStatePagerAdapter {
         WalletFacade walletFacade = items.get(position);
 
         if (walletFacade == null) {return null;}
-        return SendCurrencyFragment.newInstance(walletFacade.getCurrencyType(), companionId);
+        return SendFundsFragment.newInstance(walletFacade.getCurrencyType(), companionId);
     }
 
     @Override

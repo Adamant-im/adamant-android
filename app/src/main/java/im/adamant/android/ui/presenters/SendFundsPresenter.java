@@ -6,35 +6,27 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import androidx.core.content.ContextCompat;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
-import im.adamant.android.interactors.SendCurrencyInteractor;
+import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
-import im.adamant.android.ui.messages_support.builders.MessageBuilder;
-import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
-import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
-import im.adamant.android.ui.messages_support.factories.AdamantTransferMessageFactory;
-import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
-import im.adamant.android.ui.mvp_view.SendCurrencyTransferView;
+import im.adamant.android.ui.mvp_view.SendFundsView;
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferView> {
+public class SendFundsPresenter extends BasePresenter<SendFundsView> {
     private Router router;
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
-    private SendCurrencyInteractor sendCurrencyInteractor;
+    private SendFundsInteractor sendCurrencyInteractor;
     private PublicKeyStorage publicKeyStorage;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
@@ -46,10 +38,10 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
     private BigDecimal currentAmount = BigDecimal.ZERO;
     private String comment = "";
 
-    public SendCurrencyPresenter(
+    public SendFundsPresenter(
             Router router,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
-            SendCurrencyInteractor sendCurrencyInteractor,
+            SendFundsInteractor sendCurrencyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
             ChatsStorage chatsStorage,
@@ -70,8 +62,8 @@ public class SendCurrencyPresenter extends BasePresenter<SendCurrencyTransferVie
 
         currentFacade = wallets.get(type);
 
-        getViewState().setTransferIsSupported(
-                currentFacade.isSupportCurrencySending()
+        getViewState().setFundsSendingIsSupported(
+                currentFacade.isSupportFundsSending()
         );
 
         getViewState().setRecipientAddress(
