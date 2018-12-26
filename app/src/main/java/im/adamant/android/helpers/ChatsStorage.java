@@ -2,6 +2,8 @@ package im.adamant.android.helpers;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +22,7 @@ public class ChatsStorage {
     private List<Chat> chats = new ArrayList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
     private Calendar separatorCalendar = Calendar.getInstance();
+    private ChatsByLastMessageComparator comparator = new ChatsByLastMessageComparator();
     private long contactsVersion = 0;
 
     public List<Chat> getChatList() {
@@ -73,6 +76,8 @@ public class ChatsStorage {
                 }
             }
         }
+
+        Collections.sort(chats, comparator);
     }
 
     public void refreshContacts(Map<String, Contact> contacts, long currentVersion) {
@@ -158,6 +163,29 @@ public class ChatsStorage {
                 separatorsForChat.add(startDayTimestamp);
             }
         }
+    }
 
+    private static class ChatsByLastMessageComparator implements Comparator<Chat> {
+
+        @Override
+        public int compare(Chat o1, Chat o2) {
+            if (o1 == o2) {return 0;}
+
+            AbstractMessage firstObjectMessage = o1.getLastMessage();
+            AbstractMessage secondObjectMessage = o2.getLastMessage();
+
+            if (secondObjectMessage == null) {return 1;}
+            if (firstObjectMessage == null) {return -1;}
+
+            long diff = secondObjectMessage.getTimestamp() - firstObjectMessage.getTimestamp();
+
+            if (diff > 0) {
+                return 1;
+            } if (diff == 0) {
+                return 0;
+            } else {
+                return -1;
+            }
+        }
     }
 }
