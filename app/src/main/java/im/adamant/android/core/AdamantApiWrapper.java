@@ -7,6 +7,7 @@ import java.io.IOException;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
+import im.adamant.android.core.encryption.LiskKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
@@ -35,14 +36,15 @@ import retrofit2.HttpException;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Query;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
     private ObservableRxList<ServerNode> nodes;
-    private KeyPair keyPair;
+    private KeyPair adamantKeyPair;
+    private KeyPair liskKeyPair;
     private Account account;
-    private AdamantKeyGenerator keyGenerator;
+    private AdamantKeyGenerator adamantKeyGenerator;
+    private LiskKeyGenerator liskKeyGenerator;
 
     private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
@@ -50,17 +52,25 @@ public class AdamantApiWrapper {
     private volatile int serverTimeDelta;
     private int errorsCount;
 
-    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, AdamantKeyGenerator keyGenerator) {
+    public AdamantApiWrapper(
+            ObservableRxList<ServerNode> nodes,
+            AdamantKeyGenerator adamantKeyGenerator,
+            LiskKeyGenerator liskKeyGenerator
+    ) {
         this.nodes = nodes;
-        this.keyGenerator = keyGenerator;
+        this.adamantKeyGenerator = adamantKeyGenerator;
+        this.liskKeyGenerator = liskKeyGenerator;
 
         buildApi();
     }
 
     public Flowable<Authorization> authorize(String passPhrase) {
-        KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
+        KeyPair tempKeyPair = adamantKeyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
-        return authorize(tempKeyPair);
+        return authorize(tempKeyPair)
+                .doOnNext(authorization -> {
+                    this.liskKeyPair = liskKeyGenerator.getKeyPairFromPassPhrase(passPhrase);
+                });
     }
 
     public Flowable<Authorization> authorize(KeyPair tempKeyPair) {
@@ -69,7 +79,7 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
-                    this.keyPair = tempKeyPair;
+                    this.adamantKeyPair = tempKeyPair;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
@@ -79,7 +89,7 @@ public class AdamantApiWrapper {
     public Completable updateBalance(){
         try {
             return api
-                    .authorize(keyPair.getPublicKeyString().toLowerCase())
+                    .authorize(adamantKeyPair.getPublicKeyString().toLowerCase())
                     .subscribeOn(Schedulers.io())
                     .doOnNext((authorization -> {
                         if (authorization.getAccount() == null){return;}
@@ -156,7 +166,7 @@ public class AdamantApiWrapper {
     }
 
     public Flowable<Authorization> createNewAccount(String passPhrase) {
-        KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
+        KeyPair tempKeyPair = adamantKeyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         NewAccount newAccount = new NewAccount();
         newAccount.setPublicKey(tempKeyPair.getPublicKeyString().toLowerCase());
@@ -165,7 +175,7 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
-                    this.keyPair = tempKeyPair;
+                    this.adamantKeyPair = tempKeyPair;
                 }))
                 .doOnError(this::checkNodeError)
                 .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
@@ -220,12 +230,12 @@ public class AdamantApiWrapper {
     }
 
     public boolean isAuthorized() {
-        return account != null && keyPair != null;
+        return account != null && adamantKeyPair != null;
     }
 
     public void logout() {
         account = null;
-        keyPair = null;
+        adamantKeyPair = null;
         errorsCount = 0;
     }
 
@@ -233,8 +243,12 @@ public class AdamantApiWrapper {
         return account;
     }
 
-    public KeyPair getKeyPair() {
-        return keyPair;
+    public KeyPair getAdamantKeyPair() {
+        return adamantKeyPair;
+    }
+
+    public KeyPair getLiskKeyPair() {
+        return liskKeyPair;
     }
 
     private void buildApi() {

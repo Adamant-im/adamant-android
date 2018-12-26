@@ -5,13 +5,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
@@ -49,7 +47,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         }
 
         String ownAddress = api.getAccount().getAddress();
-        String ownSecretKey = api.getKeyPair().getSecretKeyString().toLowerCase();
+        String ownSecretKey = api.getAdamantKeyPair().getSecretKeyString().toLowerCase();
 
         boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
         String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();

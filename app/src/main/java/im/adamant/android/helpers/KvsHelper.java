@@ -2,13 +2,10 @@ package im.adamant.android.helpers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
@@ -16,8 +13,6 @@ import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionState;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.exceptions.InvalidValueForKeyValueStorage;
-import im.adamant.android.ui.entities.Contact;
-import io.reactivex.Flowable;
 
 public class KvsHelper {
     private AdamantApiWrapper api;
@@ -35,7 +30,7 @@ public class KvsHelper {
         valueObject.add("payload", gson.toJsonTree(object));
         String valueString = valueObject.toString();
 
-        KeyPair keyPair = api.getKeyPair();
+        KeyPair keyPair = api.getAdamantKeyPair();
         Account account = api.getAccount();
 
         if (keyPair == null || account == null){return null;}
@@ -81,7 +76,7 @@ public class KvsHelper {
 
         String decryptedStateString = "";
         if (encrypted){
-            KeyPair keyPair = api.getKeyPair();
+            KeyPair keyPair = api.getAdamantKeyPair();
             decryptedStateString = encryptor.decryptState(state, keyPair.getSecretKeyString());
         } else {
             decryptedStateString = state.getValue();

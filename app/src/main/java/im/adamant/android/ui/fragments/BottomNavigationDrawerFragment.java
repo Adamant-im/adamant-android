@@ -25,7 +25,6 @@ import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.presenters.MainPresenter;
-import ru.terrakok.cicerone.Router;
 
 //TODO: Parrent class must be the BaseBottomFragment
 public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
@@ -68,7 +67,7 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
 
         if (api.isAuthorized()){
             avatar.build(
-                        api.getKeyPair().getPublicKeyString().toLowerCase(),
+                        api.getAdamantKeyPair().getPublicKeyString().toLowerCase(),
                         (int) getResources().getDimension(R.dimen.fragment_bottom_navigation_avatar_size)
                 ).subscribe(bitmap -> {
                     avatarView.setImageBitmap(bitmap);

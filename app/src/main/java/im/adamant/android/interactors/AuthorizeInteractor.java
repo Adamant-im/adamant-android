@@ -1,10 +1,7 @@
 package im.adamant.android.interactors;
 
-import android.util.Pair;
-
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import im.adamant.android.Constants;
@@ -14,13 +11,10 @@ import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.responses.Authorization;
 
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.ObservableRxList;
-import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException;
 import io.github.novacrypto.bip39.Validation.UnexpectedWhiteSpaceException;
 import io.github.novacrypto.bip39.Validation.WordNotFoundException;
-import io.github.novacrypto.bip39.wordlists.English;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -51,7 +45,7 @@ public class AuthorizeInteractor {
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(authorization -> {
                         if (settings.isKeyPairMustBeStored()){
-                            String account = keyStoreCipher.encrypt(Constants.ADAMANT_ACCOUNT_ALIAS, api.getKeyPair());
+                            String account = keyStoreCipher.encrypt(Constants.ADAMANT_ACCOUNT_ALIAS, api.getAdamantKeyPair());
                             settings.setAccountKeypair(account);
                         }
                     });

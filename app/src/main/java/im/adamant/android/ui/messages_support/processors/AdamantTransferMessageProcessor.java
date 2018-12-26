@@ -9,7 +9,6 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
@@ -20,7 +19,6 @@ import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
 import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 
 public class AdamantTransferMessageProcessor extends AbstractMessageProcessor<AdamantTransferMessage> {
 
@@ -45,7 +43,7 @@ public class AdamantTransferMessageProcessor extends AbstractMessageProcessor<Ad
 
         if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
-        KeyPair keyPair = api.getKeyPair();
+        KeyPair keyPair = api.getAdamantKeyPair();
         Account account = api.getAccount();
 
         long currentMessageCost = this.calculateMessageCostInAdamant(message);

@@ -80,4 +80,34 @@ public class Hex {
 
         return hash;
     }
+
+    public static byte[] SHA256digest(byte[] data) {
+        byte[] cryptoHashSha256 = new byte[0];
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            cryptoHashSha256 = digest.digest(data);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return cryptoHashSha256;
+    }
+
+    public static void reverse(byte[] array) {
+
+        if (null == array) {
+            return;
+        }
+
+        int i = 0;
+        int j = array.length - 1;
+        byte tmp;
+        while (j > i) {
+            tmp = array[j];
+            array[j] = array[i];
+            array[i] = tmp;
+            j--;
+            i++;
+        }
+    }
 }

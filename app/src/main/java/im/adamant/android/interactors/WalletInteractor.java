@@ -33,7 +33,9 @@ public class WalletInteractor {
                     item.setBalance(wallet.getBalance());
                     item.setTitleString(wallet.getTitle());
                     item.setPrecision(wallet.getPrecision());
-                    item.setBackgroundLogoResource(wallet.getBackgroundLogoResource());
+                    if (wallet.getBackgroundLogoResource() != 0) {
+                        item.setBackgroundLogoResource(wallet.getBackgroundLogoResource());
+                    }
                     item.setAbbreviation(currencyType.name());
                     if (wallet.isAvailableAirdropLink()){
                         item.setAirdropLinkResource(wallet.getAirdropLinkResource());

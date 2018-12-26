@@ -21,23 +21,26 @@ import io.github.novacrypto.bip39.Validation.WordNotFoundException;
 import io.github.novacrypto.bip39.Words;
 import io.github.novacrypto.bip39.wordlists.English;
 
-public class AdamantKeyGenerator {
+public class AdamantKeyGenerator implements KeyGenerator {
+    public static final String KEY = "AdamantKeyGenerator";
+
     private MnemonicGenerator mnemonicGenerator;
-    private SeedCalculator seedCalculator;
+    private SeedCalculator adamantSeedCalculator;
     private Sign.Lazy sodium;
 
-    public AdamantKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, Sign.Lazy sodium) {
+    public AdamantKeyGenerator(SeedCalculator adamantSeedCalculator, MnemonicGenerator mnemonicGenerator, Sign.Lazy sodium) {
         this.mnemonicGenerator = mnemonicGenerator;
-        this.seedCalculator = seedCalculator;
+        this.adamantSeedCalculator = adamantSeedCalculator;
         this.sodium = sodium;
     }
 
+    @Override
     public KeyPair getKeyPairFromPassPhrase(String passPhrase) {
         KeyPair pair = null;
 
         try {
 
-            byte[] blankCalculatedSeed = seedCalculator.calculateSeed(passPhrase, "");
+            byte[] blankCalculatedSeed = adamantSeedCalculator.calculateSeed(passPhrase, "");
             String seedString = Hex.bytesToHex(blankCalculatedSeed);
 
             byte[] seedForHash = Hex.encodeStringToHexArray(seedString);

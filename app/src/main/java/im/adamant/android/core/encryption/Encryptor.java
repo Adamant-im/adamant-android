@@ -193,14 +193,6 @@ public class Encryptor {
 
     private byte[] createCryptoHashSha256FromPrivateKey(String mySecretKey) {
         mySecretKey = mySecretKey.toLowerCase();
-        byte[] cryptoHashSha256 = new byte[0];
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            cryptoHashSha256 = digest.digest(Hex.encodeStringToHexArray(mySecretKey));
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-
-        return cryptoHashSha256;
+        return Hex.SHA256digest(Hex.encodeStringToHexArray(mySecretKey));
     }
 }

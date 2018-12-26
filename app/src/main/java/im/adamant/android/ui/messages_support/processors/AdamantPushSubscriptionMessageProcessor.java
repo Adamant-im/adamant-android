@@ -31,7 +31,7 @@ public class AdamantPushSubscriptionMessageProcessor extends AbstractMessageProc
     public Single<UnnormalizedTransactionMessage> buildTransactionMessage(AdamantPushSubscriptionMessage message, String recipientPublicKey) {
         if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
-        KeyPair keyPair = api.getKeyPair();
+        KeyPair keyPair = api.getAdamantKeyPair();
         Account account = api.getAccount();
 
         String content = buildJsonRepresentation(message);

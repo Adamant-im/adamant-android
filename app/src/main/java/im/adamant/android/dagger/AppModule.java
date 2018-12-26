@@ -16,11 +16,13 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.core.encryption.LiskKeyGenerator;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
+import im.adamant.android.interactors.wallets.LiskWalletFacade;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;
@@ -165,7 +167,7 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static SeedCalculator provideSeedCalculator() {
+    public static SeedCalculator provideAdamantSeedCalculator() {
         return new SeedCalculator();
     }
 
@@ -182,10 +184,25 @@ public abstract class AppModule {
         return new LazySodiumAndroid(sodium);
     }
 
+    @Named(AdamantKeyGenerator.KEY)
     @Singleton
     @Provides
-    public static AdamantKeyGenerator providesKeyGenerator(SeedCalculator seedCalculator, MnemonicGenerator mnemonicGenerator, LazySodium sodium) {
+    public static AdamantKeyGenerator providesAdamantKeyGenerator(
+            SeedCalculator seedCalculator,
+            MnemonicGenerator mnemonicGenerator,
+            LazySodium sodium
+    ) {
         return new AdamantKeyGenerator(seedCalculator, mnemonicGenerator, sodium);
+    }
+
+    @Named(LiskKeyGenerator.KEY)
+    @Singleton
+    @Provides
+    public static LiskKeyGenerator providesLiskKeyGenerator(
+            MnemonicGenerator mnemonicGenerator,
+            LazySodium sodium
+    ) {
+        return new LiskKeyGenerator(mnemonicGenerator, sodium);
     }
 
     @Singleton
@@ -287,8 +304,13 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, AdamantKeyGenerator keyGenerator) {
-        return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
+    public static AdamantApiWrapper provideAdamantApiWrapper(
+            Settings settings,
+            @Named(AdamantKeyGenerator.KEY) AdamantKeyGenerator adamantKeyGenerator,
+            @Named(LiskKeyGenerator.KEY) LiskKeyGenerator liskKeyGenerator
+
+    ) {
+        return new AdamantApiWrapper(settings.getNodes(), adamantKeyGenerator, liskKeyGenerator);
     }
 
     @Singleton
@@ -327,7 +349,7 @@ public abstract class AppModule {
     @Provides
     public static AuthorizeInteractor provideAuthorizationInteractor(
             AdamantApiWrapper api,
-            AdamantKeyGenerator keyGenerator,
+            @Named(AdamantKeyGenerator.KEY) AdamantKeyGenerator keyGenerator,
             KeyStoreCipher keyStoreCipher,
             Settings settings
     ) {
@@ -425,7 +447,7 @@ public abstract class AppModule {
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ADM)
     @Singleton
     @Provides
-    public static WalletFacade provideAdamantInfoDriver(AdamantApiWrapper api, ChatsStorage chatStorage) {
+    public static WalletFacade provideAdamantWalletFacade(AdamantApiWrapper api, ChatsStorage chatStorage) {
         AdamantWalletFacade driver = new AdamantWalletFacade(api);
         driver.setChatStorage(chatStorage);
 
@@ -437,7 +459,7 @@ public abstract class AppModule {
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ETH)
     @Singleton
     @Provides
-    public static WalletFacade provideEthereumInfoDriver() {
+    public static WalletFacade provideEthereumWalletFacade() {
         return new EthereumWalletFacade();
     }
 
@@ -445,8 +467,16 @@ public abstract class AppModule {
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.BNB)
     @Singleton
     @Provides
-    public static WalletFacade provideBinanceInfoDriver() {
+    public static WalletFacade provideBinanceWalletFacade() {
         return new BinanceWalletFacade();
+    }
+
+    @IntoMap
+    @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.LSK)
+    @Singleton
+    @Provides
+    public static WalletFacade provideLiskWalletFacade(AdamantApiWrapper api) {
+        return new LiskWalletFacade(api);
     }
 
     @Singleton

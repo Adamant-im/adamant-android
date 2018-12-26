@@ -4,10 +4,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.ObservableRxList;
-import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Completable;
-import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
 public class SaveKeypairInteractor {
@@ -34,7 +31,7 @@ public class SaveKeypairInteractor {
                     if (api.isAuthorized()){
                         String account = keyStoreCipher.encrypt(
                                 Constants.ADAMANT_ACCOUNT_ALIAS,
-                                api.getKeyPair()
+                                api.getAdamantKeyPair()
                         );
                         settings.setAccountKeypair(account);
                     }
