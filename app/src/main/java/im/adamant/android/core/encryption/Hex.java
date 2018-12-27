@@ -110,4 +110,18 @@ public class Hex {
             i++;
         }
     }
+
+    public static String getUnsignedLongString(long i) {
+        /*
+        * We can get the effect of an unsigned division by 10
+        * on a long value by first shifting right, yielding a
+        * positive value, and then dividing by 5.  This
+        * allows the last digit and preceding digits to be
+        * isolated more quickly than by an initial conversion
+        * to BigInteger.
+        */
+        long quot = (i >>> 1) / 5;
+        long rem = i - quot * 10;
+        return Long.toString(quot) + rem;
+    }
 }

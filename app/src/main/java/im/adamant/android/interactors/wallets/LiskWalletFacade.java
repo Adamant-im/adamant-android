@@ -109,20 +109,6 @@ public class LiskWalletFacade implements WalletFacade {
 
     //Test address code
 
-//    public static func address(fromPublicKey publicKey: String) -> String {
-//        let bytes = SHA256(publicKey.hexBytes()).digest()
-//        let identifier = byteIdentifier(from: bytes)
-//        return "\(identifier)L"
-//    }
-//
-//    internal static func byteIdentifier(from bytes: [UInt8]) -> String {
-//        guard bytes.count >= 8 else { return "" }
-//        let leadingBytes = bytes[0..<8].reversed()
-//        let data = Data(bytes: Array(leadingBytes))
-//        let value = UInt64(bigEndian: data.withUnsafeBytes { $0.pointee })
-//        return "\(value)"
-//    }
-
     private String generateAddress() throws NotAuthorizedException {
         if (!api.isAuthorized()) {throw new NotAuthorizedException("Not Authorized");}
 
@@ -140,7 +126,7 @@ public class LiskWalletFacade implements WalletFacade {
         buffer.flip();//need flip
         long address = buffer.getLong();
 
-        return address + "L";
+        return Hex.getUnsignedLongString(address) + "L";
     }
 
 
