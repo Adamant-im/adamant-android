@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import im.adamant.android.core.encryption.Hex;
 
@@ -69,7 +70,6 @@ public class AvatarGraphics {
                 path.lineTo(x, y);
             }
         }
-        //TODO: CubicTo
 
         path.close();
         canvas.drawPath(path, paint);
@@ -127,7 +127,8 @@ public class AvatarGraphics {
     }
 
     public float[] mirrorCoordinates(float[] xs, float lines, float fringeSize, float offset) {
-        //TODO: null checks
+        if (xs == null){return new float[0];}
+
         float[] xsMirror = new float[xs.length];
 
         for (int i = 0; i < xs.length; i++) {
@@ -137,28 +138,41 @@ public class AvatarGraphics {
         return xsMirror;
     }
 
-    //TODO: Make private inner methods
     public int[] triangleColors(int id, String key, int lines) {
-        //TODO: check null
+        if (Triangle.triangles[id] == null) {return new int[0];}
+
         int[] tColors = new int[Triangle.triangles[id].length];
 
-        long seed = getPublicKeySeed(key);
+        try {
+            Seed seed = new Seed(key);
 
-        Random rnd = new Random(seed);
-        int minRand = 0;
-        int maxRand = Integer.MAX_VALUE / 2;
+            // process hash values to number array with 10 values. 1 - avatar color set (merge first 5), 2-10 - values for triange colors (merged by 3 values)
+            int[] keyArray = new int[10];
+            keyArray[0] = seed.reduceRawKeyArray(0, 5);
+            int start = 5;
+            int c = 1;
+            while (start < 32) {
+                if (c < keyArray.length){
+                    keyArray[c] = seed.reduceRawKeyArray(start, start + 3);
+                }
+                c++;
+                start += 3;
+            }
 
-        int[] rndColors = avatarThemesProvider.provide(
-                randRange(rnd, minRand, maxRand) % avatarThemesProvider.count()
-        );
+            int setId = seed.getSeed() % getValue(seed.getKeyHash(), keyArray[0]);
+            int[] colorsSet = avatarThemesProvider.provide(setId % avatarThemesProvider.count());
 
-        for (int i = 0; i < Triangle.triangles[id].length; i++) {
-            Triangle t = Triangle.triangles[id][i];
-            int x = t.getX();
-            int y = t.getY();
-            int index = (x + 3 * y + lines + randRange(rnd, minRand, maxRand)) % 15;
-            int color = PickColor(key, rndColors, index);
-            tColors[i] = color;
+            for (int i = 0; i < Triangle.triangles[id].length; i++) {
+                Triangle t = Triangle.triangles[id][i];
+                int x = t.getX();
+                int y = t.getY();
+                int index = x + 3 * y + lines + seed.getSeed() % getValue(seed.getKeyHash(), keyArray[i+1]);
+                int color = pickColor(seed.getKeyHash(), colorsSet, index);
+                tColors[i] = color;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return tColors;
@@ -168,7 +182,7 @@ public class AvatarGraphics {
         return !isFill1InHexagon(xL, yL, lines) && !isFill2InHexagon(xL, yL, lines);
     }
 
-    public boolean isFill1InHexagon(int xL, int yL, int lines) {
+    private boolean isFill1InHexagon(int xL, int yL, int lines) {
         int half = lines / 2;
         int start = half / 2;
 
@@ -186,7 +200,7 @@ public class AvatarGraphics {
         return false;
     }
 
-    public boolean isFill2InHexagon(int xL, int yL, int lines) {
+    private boolean isFill2InHexagon(int xL, int yL, int lines) {
         int half = lines / 2;
         int start = half / 2;
 
@@ -208,29 +222,29 @@ public class AvatarGraphics {
         return false;
     }
 
-    // PickColor returns a color given a key string, an array of colors and an index.
+    // pickColor returns a color given a key string, an array of colors and an index.
     // key: should be a md5 hash string.
-    // index: is an index from the key string. Should be in interval [0, 16]
-    // Algorithm: PickColor converts the key[index] value to a decimal value.
+    // index: is an index from the key string.
+    // Algorithm: pickColor converts the key[index] value to a decimal value.
     // We pick the ith colors that respects the equality value%numberOfColors == i.
-    public int PickColor(String key, int[] colors, int index) {
+    private int pickColor(String key, int[] colors, int index) {
         int n = colors.length;
-        int i = PickIndex(key, n, index);
+        int i = pickIndex(key, n, index);
         return colors[i];
     }
 
-    // PickIndex returns an index of given a key string, the size of an array of colors
+    // pickIndex returns an index of given a key string, the size of an array of colors
     //  and an index.
     // key: should be a md5 hash string.
-    // index: is an index from the key string. Should be in interval [0, 16]
-    // Algorithm: PickIndex converts the key[index] value to a decimal value.
+    // index: is an index from the key string.
+    // Algorithm: pickIndex converts the key[index] value to a decimal value.
     // We pick the ith index that respects the equality value%sizeOfArray == i.
-    public int PickIndex(String key, int n, int index) {
-        String keyHash = Hex.md5Hash(key);
-        char s = keyHash.charAt(index);
-//        let s = String(key.md5()[index])
-        int r = ((byte) s) & 0xff;
-//        let r = Int([UInt8](s.utf8).first ?? 0)
+    private int pickIndex(String key, int n, int index) {
+//        String keyHash = Hex.md5Hash(key);
+//        char s = keyHash.charAt(index);
+//        int r = ((byte) s) & 0xff;
+
+        int r = getValue(key, index);
 
         for(int i = 0; i < n; i++){
             if (r % n == i){
@@ -258,19 +272,64 @@ public class AvatarGraphics {
         return 0;
     }
 
-    public static int randRange(Random rnd, int min, int max) {
-        return rnd.nextInt((max - min) + 1) + min;
+    private int getValue(String string, int index) {
+        char stringChar = string.charAt(index % string.length());
+        return (int)((byte)stringChar);
     }
 
-    public long getPublicKeySeed(String key) {
-        long seed = 0;
+    private static class Seed {
+        private String keyHash;
+        private int seed = 0;
+        private int[] rawKeyArray;
 
-        String keyHash = Hex.md5Hash(key);
+        public Seed(String key) throws Exception {
+            seed = 0;
 
-        for(char s : keyHash.toCharArray()){
-            seed += s;
+            keyHash =  Hex.md5Hash(key);
+            if (keyHash.length() != 32) {
+                throw new Exception("Invalid md5 hash");
+            }
+
+            char[] preparedKeyHash = keyHash.toCharArray();
+            rawKeyArray = new int[preparedKeyHash.length];
+            int sum = 0;
+            for (int i = 0; i < preparedKeyHash.length; i++) {
+                int item = (int)preparedKeyHash[i];
+                rawKeyArray[i] = item;
+                sum += item;
+            }
+
+            seed = scramble(sum);
         }
 
-        return seed;
+        public int getSeed() {
+            return seed;
+        }
+
+        public int[] getRawKeyArray() {
+            return rawKeyArray;
+        }
+
+        public String getKeyHash() {
+            return keyHash;
+        }
+
+        public int reduceRawKeyArray(int start, int end) {
+            int sum = 0;
+            for(int i = start; i < end; i++) {
+                if ((i >= 0) && (i < rawKeyArray.length)) {
+                    sum += rawKeyArray[i];
+                }
+            }
+
+            return sum;
+        }
+
+        private int scramble(int seed) {
+            long multiplier = 0x5DEECL;
+            long mask  = (1 << 30) - 1;
+
+            return (int)(((long)seed ^ multiplier) & mask);
+        }
     }
 }
