@@ -62,20 +62,8 @@ public class RefreshChatsInteractor {
 
         if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
 
-        return getBatchAdamantMessages()
-                .concatWith(Flowable.defer(() -> {
-                    boolean noRepeat = countMessageItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
-                    if (noRepeat){
-                        countMessageItems = 0;
-                        offsetMessageItems = 0;
-                        return Flowable.create(Emitter::onComplete, BackpressureStrategy.DROP);
-                    } else {
-                        offsetMessageItems += countMessageItems;
-                        countMessageItems = 0;
-                        return getBatchAdamantMessages();
-                    }
-                }))
-                .mergeWith(getAllAdamantTransfers())
+        return getBatchAdamantMessages(offsetMessageItems)
+                .concatWith(getAllAdamantTransfers())
                 .toSortedList()
                 .toFlowable()
                 .flatMap(list -> Flowable.just(list).flatMapIterable(item -> item))
@@ -97,13 +85,13 @@ public class RefreshChatsInteractor {
         chatsStorage.cleanUp();
     }
 
-    private Flowable<AbstractMessage> getBatchAdamantMessages() {
+    private Flowable<AbstractMessage> getBatchAdamantMessages(int offset) {
         return Flowable
                 .defer(() -> Flowable.just(currentMessageHeight))
                 .flatMap((height) -> {
                     Flowable<TransactionList<TransactionChatAsset>> transactionFlowable = null;
-                    if (offsetMessageItems > 0){
-                        transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offsetMessageItems);
+                    if (offset > 0){
+                        transactionFlowable = api.getTransactions(AdamantApi.ORDER_BY_TIMESTAMP_ASC, offset);
                     } else {
                         transactionFlowable = api.getTransactions(height, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
                     }
@@ -128,7 +116,19 @@ public class RefreshChatsInteractor {
                                     currentMessageHeight = transaction.getHeight();
                                 }
                             })
-                            .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)));
+                            .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)))
+                            .concatWith(Flowable.defer(() -> {
+                                boolean noRepeat = countMessageItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
+                                if (noRepeat) {
+                                    countMessageItems = 0;
+                                    offsetMessageItems = 0;
+                                    return Flowable.create(Emitter::onComplete, BackpressureStrategy.DROP);
+                                } else {
+                                    offsetMessageItems += countMessageItems;
+                                    countMessageItems = 0;
+                                    return getBatchAdamantMessages(offsetMessageItems);
+                                }
+                            }));
                 });
     }
 
