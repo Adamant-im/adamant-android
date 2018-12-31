@@ -3,6 +3,8 @@ package im.adamant.android.ui;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -228,6 +233,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         final TextInputEditText input = viewInflated.findViewById(R.id.dialog_rename_contact_name);
         input.setText(currentName);
 
+
         builder.setView(viewInflated);
 
         final MessagesPresenter localPresenter = presenter;
@@ -240,9 +246,30 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             }
         });
 
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            AdamantApplication.hideKeyboard(this, input);
+            dialog.cancel();
+        });
 
-        builder.show();
+        AlertDialog dialog = builder.show();
+
+        dialog.setOnDismissListener(dialog1 -> {
+            AdamantApplication.hideKeyboard(this, input);
+        });
+
+        input.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                Window window = dialog.getWindow();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if ((window != null) && (imm != null)) {
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                }
+            }
+        });
+
+        input.requestFocus();
+
     }
 
     @Override

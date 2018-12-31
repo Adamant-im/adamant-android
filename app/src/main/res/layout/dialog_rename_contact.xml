@@ -33,6 +33,7 @@
             android:id="@+id/dialog_rename_contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:selectAllOnFocus="true"
             android:hint="@string/dialog_rename_contact_name"
             android:maxLines="1"
             android:textColor="@color/onSurface" />
