@@ -80,4 +80,31 @@ public class Hex {
 
         return hash;
     }
+
+    public static byte[] sha256HashDigest(String data) {
+        byte[] sha256KeyHash = new byte[0];
+        try {
+            byte[] bytesOfMessage = data.getBytes("UTF-8");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            sha256KeyHash = md.digest(bytesOfMessage);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return sha256KeyHash;
+    }
+
+    public static String sha256Hash(String data) {
+        String hash = "";
+        try {
+            byte[] bytesOfMessage = data.getBytes("UTF-8");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] sha256KeyHash = md.digest(bytesOfMessage);
+            hash = bytesToHex(sha256KeyHash);
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return hash;
+    }
 }

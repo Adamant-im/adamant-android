@@ -21,6 +21,7 @@ import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
+import im.adamant.android.interactors.wallets.DogeWalletFacade;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;
@@ -447,6 +448,14 @@ public abstract class AppModule {
     @Provides
     public static WalletFacade provideBinanceInfoDriver() {
         return new BinanceWalletFacade();
+    }
+
+    @IntoMap
+    @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.DOGE)
+    @Singleton
+    @Provides
+    public static WalletFacade provideDogeWalletFacade(AdamantApiWrapper api) {
+        return new DogeWalletFacade(api);
     }
 
     @Singleton

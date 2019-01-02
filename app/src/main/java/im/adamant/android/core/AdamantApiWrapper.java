@@ -3,10 +3,14 @@ package im.adamant.android.core;
 
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
+import org.bitcoinj.core.Address;
+import org.bitcoinj.core.ECKey;
+
 import java.io.IOException;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
+import im.adamant.android.core.encryption.Hex;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
@@ -41,6 +45,7 @@ public class AdamantApiWrapper {
     private AdamantApi api;
     private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
+    private ECKey keyPairDodge;
     private Account account;
     private AdamantKeyGenerator keyGenerator;
 
@@ -59,7 +64,8 @@ public class AdamantApiWrapper {
 
     public Flowable<Authorization> authorize(String passPhrase) {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
-
+        byte[] pwHash = Hex.sha256HashDigest(passPhrase);
+        keyPairDodge = ECKey.fromPrivate(pwHash);
         return authorize(tempKeyPair);
     }
 
@@ -76,7 +82,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Completable updateBalance(){
+    public Completable updateBalance() {
         try {
             return api
                     .authorize(keyPair.getPublicKeyString().toLowerCase())
@@ -235,6 +241,10 @@ public class AdamantApiWrapper {
 
     public KeyPair getKeyPair() {
         return keyPair;
+    }
+
+    public ECKey getKeyPairDodge() {
+        return keyPairDodge;
     }
 
     private void buildApi() {
