@@ -33,6 +33,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.adapters.MessagesAdapter;
@@ -233,7 +234,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         final TextInputEditText input = viewInflated.findViewById(R.id.dialog_rename_contact_name);
         input.setText(currentName);
 
-
         builder.setView(viewInflated);
 
         final MessagesPresenter localPresenter = presenter;
@@ -242,20 +242,20 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             dialog.dismiss();
             if (input.getText() != null) {
                 String inputText = input.getText().toString();
+                AdamantApplication.hideKeyboard(MessagesScreen.this, input);
                 localPresenter.onClickRenameButton(inputText);
             }
         });
 
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
-            AdamantApplication.hideKeyboard(this, input);
+            AdamantApplication.hideKeyboard(MessagesScreen.this, input);
             dialog.cancel();
         });
 
+
         AlertDialog dialog = builder.show();
 
-        dialog.setOnDismissListener(dialog1 -> {
-            AdamantApplication.hideKeyboard(this, input);
-        });
+        dialog.setCanceledOnTouchOutside(false);
 
         input.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {

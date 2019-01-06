@@ -73,6 +73,13 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
         }
     }
 
+    public static void hideKeyboard(Context ctx, View view, int flags) {
+        InputMethodManager imm = (InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.hideSoftInputFromWindow(view.getWindowToken(), flags);
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
