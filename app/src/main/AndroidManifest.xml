@@ -52,11 +52,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.CreateChatScreen"
-            android:theme="@style/AdamantLight.WithActionBar"
-            android:exported="false"
-            android:label="@string/activity_chats_action_create_new" />
-        <activity
             android:name=".ui.MainScreen"
             android:screenOrientation="portrait"
             />
