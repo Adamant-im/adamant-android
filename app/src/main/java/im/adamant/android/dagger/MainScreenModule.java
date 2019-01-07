@@ -19,8 +19,6 @@ import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.holders.FragmentClassHolder;
-import io.reactivex.disposables.CompositeDisposable;
-import ru.terrakok.cicerone.Router;
 
 @Module
 public abstract class MainScreenModule {

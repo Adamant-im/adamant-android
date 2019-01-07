@@ -58,7 +58,7 @@
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
-    <string name="fragment_wallet_create_qrcode_title">Создать QR-код</string>
+    <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_general_title">Общие</string>
