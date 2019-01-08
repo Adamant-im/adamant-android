@@ -1,6 +1,8 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -21,6 +23,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -70,6 +73,20 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         addressLayoutView.setError("");
     }
 
+    @Override
+    public void showQrCode(String content) {
+        Activity activity = getActivity();
+        if (activity != null){
+            Bundle bundle = new Bundle();
+            bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, content);
+
+            Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+        }
+    }
+
     @OnClick(R.id.fragment_create_chat_btn_enter)
     public void createNewChatClick() {
         createChatPresenter.onClickCreateNewChat(
@@ -88,6 +105,11 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
+    }
+
+    @OnClick(R.id.fragment_create_chat_btn_show_my_qr)
+    public void showMyQrCodeClick() {
+        createChatPresenter.onClickShowMyQrCodeButton();
     }
 
     @Override

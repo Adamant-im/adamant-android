@@ -1,8 +1,13 @@
 package im.adamant.android.dagger;
 
+import java.util.Map;
+
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.interactors.wallets.AdamantWalletFacade;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 
 import javax.inject.Named;
@@ -19,11 +24,12 @@ public class CreateChatScreenModule {
     @Provides
     public CreateChatPresenter provideLoginPresenter(
             Router router,
+            Map<SupportedWalletFacadeType, WalletFacade> wallets,
             AdamantAddressProcessor addressProcessor,
             ChatsStorage chatsStorage,
             @Named(Screens.CREATE_CHAT_SCREEN) CompositeDisposable subscriptions
     ){
-        return new CreateChatPresenter(router, addressProcessor, chatsStorage, subscriptions);
+        return new CreateChatPresenter(router, wallets, addressProcessor, chatsStorage, subscriptions);
     }
 
     @ActivityScope
