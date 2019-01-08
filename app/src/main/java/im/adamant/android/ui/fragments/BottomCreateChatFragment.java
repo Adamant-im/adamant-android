@@ -75,6 +75,7 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         createChatPresenter.onClickCreateNewChat(
                 addressView.getText().toString()
         );
+        dismiss();
     }
 
     @OnClick(R.id.fragment_create_chat_btn_by_camera_qr)
@@ -120,6 +121,7 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
             if (!qrCode.isEmpty()){
                 addressView.setText(qrCode);
                 createChatPresenter.onClickCreateNewChat(qrCode);
+                dismiss();
             }
         }
     }

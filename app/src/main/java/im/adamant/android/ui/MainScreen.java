@@ -80,8 +80,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     Avatar avatar;
 
-    Fragment currentFragment;
-
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -105,24 +103,21 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Override
     public void showWalletScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new WalletScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new WalletScreen());
         transaction.commit();
     }
 
     @Override
     public void showChatsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new ChatsScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new ChatsScreen());
         transaction.commit();
     }
 
     @Override
     public void showSettingsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new SettingsScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new SettingsScreen());
         transaction.commit();
     }
 
@@ -130,10 +125,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
-
-        FragmentManager fragManager = this.getSupportFragmentManager();
-        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-        currentFragment = fragManager.getFragments().get(count>0?count-1:count);
     }
 
     @Override
@@ -165,6 +156,10 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        FragmentManager fragManager = this.getSupportFragmentManager();
+        int count = this.getSupportFragmentManager().getBackStackEntryCount();
+
+        Fragment currentFragment = fragManager.getFragments().get(count>0?count-1:count);
         if (currentFragment != null) {
             currentFragment.onActivityResult(requestCode, resultCode, data);
         }
@@ -193,12 +188,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     break;
 
                     case Screens.CREATE_CHAT_SCREEN: {
-//                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
-//                        startActivity(intent);
 
                         BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
-                        currentFragment = createChatFragment;
-
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
                     }
