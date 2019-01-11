@@ -44,14 +44,14 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
 
         super.bind(message);
 
-        AdamantTransferMessage ethereumTransferMessage = (AdamantTransferMessage) message;
+        AdamantTransferMessage adamantTransferMessage = (AdamantTransferMessage) message;
 
 
-        String amountText = String.format(Locale.ENGLISH, "%.3f", ethereumTransferMessage.getAmount()) + " " +
+        String amountText = String.format(Locale.ENGLISH, "%.3f", adamantTransferMessage.getAmount()) + " " +
                 context.getResources().getString(R.string.adm_currency_abbr);
 
         amountView.setText(amountText);
 
-        displayProcessedStatus(processedView, ethereumTransferMessage);
+        displayProcessedStatus(processedView, adamantTransferMessage);
     }
 }

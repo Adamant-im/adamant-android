@@ -121,15 +121,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 presenter.onShowChatByCompanionId(companionId);
             }
 
-            if (Intent.ACTION_VIEW.equals(intent.getAction())){
-                Uri uri = intent.getData();
-                if (uri != null){
-                    String address = uri.getQueryParameter("address");
-                    String label = uri.getQueryParameter("label");
-
-                    presenter.onShowChatByAddress(address, label);
-                }
-            }
+            //if intent contains special action
+            showByAddress(intent);
         }
 
         newMessageText.setOnFocusChangeListener( (view, isFocused) -> {
@@ -137,6 +130,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 AdamantApplication.hideKeyboard(this, newMessageText);
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        showByAddress(intent);
     }
 
     @Override
@@ -346,7 +345,17 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     }
 
+    private void showByAddress(Intent intent) {
+        if (Intent.ACTION_VIEW.equals(intent.getAction())){
+            Uri uri = intent.getData();
+            if (uri != null){
+                String address = uri.getQueryParameter("address");
+                String label = uri.getQueryParameter("label");
 
+                presenter.onShowChatByAddress(address, label);
+            }
+        }
+    }
 
 
     private Navigator navigator = new Navigator() {
