@@ -1,9 +1,6 @@
 package im.adamant.android.ui.presenters;
 
 
-import android.content.ClipboardManager;
-import android.widget.Toast;
-
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
@@ -12,11 +9,10 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -39,6 +35,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
+    private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor;
     private AdamantApiWrapper api;
 
     private Chat currentChat;
@@ -50,6 +47,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public MessagesPresenter(
             Router router,
             RefreshChatsInteractor refreshChatsInteractor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             AdamantApiWrapper api,
@@ -58,6 +56,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         super(subscriptions);
         this.router = router;
         this.refreshChatsInteractor = refreshChatsInteractor;
+        this.chatUpdatePublicKeyInteraactor = chatUpdatePublicKeyInteraactor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
         this.api = api;
@@ -109,7 +108,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         );
 
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
-//        getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
 
         getViewState()
             .showChatMessages(
@@ -144,9 +142,17 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             chat.setTitle(address);
         }
 
-        chatsStorage.addNewChat(chat);
-
-        onShowChatByCompanionId(address);
+        Disposable subscribe = chatUpdatePublicKeyInteraactor
+                .execute(chat)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        chatWithKey -> {
+                            chatsStorage.addNewChat(chatWithKey);
+                            onShowChatByCompanionId(address);
+                        },
+                        error -> LoggerHelper.e("messagePresenter", error.getMessage())
+                );
+        subscriptions.add(subscribe);
     }
 
     public void onClickSendAdamantBasicMessage(String message){

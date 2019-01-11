@@ -5,7 +5,7 @@ import java.util.Map;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.AdamantAddressProcessor;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.interactors.wallets.AdamantWalletFacade;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
@@ -26,10 +26,18 @@ public class CreateChatScreenModule {
             Router router,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             AdamantAddressProcessor addressProcessor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
             ChatsStorage chatsStorage,
             @Named(Screens.CREATE_CHAT_SCREEN) CompositeDisposable subscriptions
     ){
-        return new CreateChatPresenter(router, wallets, addressProcessor, chatsStorage, subscriptions);
+        return new CreateChatPresenter(
+                router,
+                wallets,
+                chatUpdatePublicKeyInteraactor,
+                addressProcessor,
+                chatsStorage,
+                subscriptions
+        );
     }
 
     @ActivityScope

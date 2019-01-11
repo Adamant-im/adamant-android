@@ -17,6 +17,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
@@ -313,6 +314,12 @@ public abstract class AppModule {
     @Provides
     public static NavigatorHolder provideNavigatorHolder(Cicerone<Router> cicerone) {
         return cicerone.getNavigatorHolder();
+    }
+
+    @Singleton
+    @Provides
+    public static ChatUpdatePublicKeyInteractor provideCharUpdatePublicKeyInteractor(AdamantApiWrapper api) {
+        return new ChatUpdatePublicKeyInteractor(api);
     }
 
     @Singleton

@@ -2,8 +2,7 @@ package im.adamant.android.dagger;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.helpers.ChatsStorage;
@@ -24,6 +23,7 @@ public class MessagesScreenModule {
     public MessagesPresenter provideMessagesPresenter(
             Router router,
             RefreshChatsInteractor refreshChatsInteractor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
             MessageFactoryProvider messageFactoryProvider,
             AdamantApiWrapper api,
             ChatsStorage chatsStorage,
@@ -32,6 +32,7 @@ public class MessagesScreenModule {
         return new MessagesPresenter(
                 router,
                 refreshChatsInteractor,
+                chatUpdatePublicKeyInteraactor,
                 messageFactoryProvider,
                 chatsStorage,
                 api,
