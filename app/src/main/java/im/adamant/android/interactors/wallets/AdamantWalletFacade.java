@@ -170,7 +170,7 @@ public class AdamantWalletFacade implements WalletFacade {
 
     @Override
     public int getIconForEditText() {
-        return R.drawable.ic_adm_currency;
+        return R.drawable.ic_adm_line;
     }
 
     @Override
