@@ -34,6 +34,7 @@ import static android.content.pm.PackageManager.GET_META_DATA;
  * Because there is a code from the support library.
  * */
 public abstract class BaseActivity extends AppCompatActivity {
+    private static boolean activityInForeground = false;
     private MvpDelegate<? extends BaseActivity> mMvpDelegate;
 
     protected AdamantBalanceUpdateService balanceUpdateService;
@@ -50,6 +51,11 @@ public abstract class BaseActivity extends AppCompatActivity {
     public abstract boolean withBackButton();
 
     public void onClickTitle(){}
+
+    public static boolean isActivityInForeground() {
+        return activityInForeground;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +101,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         Intent admBalanceIntent = new Intent(this, AdamantBalanceUpdateService.class);
         bindService(admBalanceIntent, admBalanceServiceConnection, Context.BIND_AUTO_CREATE);
+
+        activityInForeground = true;
     }
 
     @Override
@@ -119,6 +127,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             balanceUpdateService = null;
             admBalanceServiceConnection = null;
         }
+
+        activityInForeground = false;
     }
 
     @Override

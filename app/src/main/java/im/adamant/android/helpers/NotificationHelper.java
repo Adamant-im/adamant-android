@@ -5,6 +5,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
@@ -12,13 +14,21 @@ import androidx.core.app.NotificationCompat;
 import im.adamant.android.R;
 
 public class NotificationHelper {
+    public static final long[] VIBRATE_PATTERN = new long[] { 1000, 1000, 1000, 1000, 1000 };
+    public static final Uri SOUND_URI = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
     public static Notification buildMessageNotification(String channelId, Context context, String title, String text) {
+
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, channelId);
         notificationBuilder
                 .setSmallIcon(getNotificationIcon())
                 .setColor(Color.WHITE)
                 .setContentTitle(title)
-                .setContentText(text);
+                .setContentText(text)
+                .setLights(Color.RED, 3000, 3000)
+                .setVibrate(VIBRATE_PATTERN)
+                .setSound(SOUND_URI)
+                .setAutoCancel(true);
 
         return notificationBuilder.build();
     }
