@@ -132,7 +132,6 @@ public class AdamantWalletFacade implements WalletFacade {
 
     @Override
     public boolean isAvailableAirdropLink() {
-        //TODO: if balance = 0 and count transactions = 0
         boolean isZeroBalance = (getBalance().compareTo(BigDecimal.ZERO) == 0);
         boolean isEmptyTransactionList = (isReceivedTransactionList && this.isEmptyTransactionList);
         if (isZeroBalance && isEmptyTransactionList) {

@@ -34,7 +34,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="4dp"
             android:background="@android:color/transparent"
-            android:maxLines="4"
+            android:maxLines="2"
             android:text="TextView"
             android:textSize="@dimen/list_item_chat_text_size"
             android:textStyle="italic"
