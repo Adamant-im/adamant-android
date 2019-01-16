@@ -78,14 +78,12 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     }
                     LoggerHelper.e("Messages", error.getMessage(), error);
                 })
-                .doOnComplete(() -> {
+                .doOnNext((irrelevant) -> {
                     if (currentMessageCount != messages.size()){
                         getViewState().showChatMessages(messages);
                         currentMessageCount = messages.size();
                     }
                 })
-                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
         subscriptions.add(syncSubscription);
@@ -94,6 +92,9 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     @Override
     public void detachView(MessagesView view) {
         super.detachView(view);
+
+        refreshChatsInteractor.pause();
+
         if (syncSubscription != null){
             syncSubscription.dispose();
         }

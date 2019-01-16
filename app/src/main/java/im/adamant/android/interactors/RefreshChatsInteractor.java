@@ -1,5 +1,7 @@
 package im.adamant.android.interactors;
 
+import java.util.concurrent.TimeUnit;
+
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
@@ -15,10 +17,11 @@ import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import io.reactivex.BackpressureStrategy;
-import io.reactivex.Completable;
 import io.reactivex.Emitter;
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 public class RefreshChatsInteractor {
     private AdamantApiWrapper api;
@@ -34,6 +37,15 @@ public class RefreshChatsInteractor {
     private int currentMessageHeight = 1;
     private int currentTransactionHeight = 1;
     private int offsetMessageItems = 0;
+
+    // This flag indicates the need for a soft stop synchronization.
+    // (The current synchronization process must be completed)
+    private boolean isPaused = false;
+    private boolean isCompleted = false;
+    private Disposable subscription;
+    private PublishSubject<Irrelevant> publisher = PublishSubject.create();
+
+    public enum Irrelevant { INSTANCE }
 
     public RefreshChatsInteractor(
             AdamantApiWrapper api,
@@ -51,7 +63,7 @@ public class RefreshChatsInteractor {
         this.chatsStorage = chatsStorage;
     }
 
-    public Completable execute() {
+    public Flowable<Irrelevant> execute() {
         //TODO: Schedulers must be injected through Dagger for comfort unit-testing
 
         //TODO: The current height should be "Atomic" changed
@@ -60,20 +72,52 @@ public class RefreshChatsInteractor {
 
         //TODO: Well test the erroneous execution path, replace where you need doOnError
 
-        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
+//        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
+        if (api.isAuthorized()){
+            isPaused = false;
 
-        return getBatchAdamantMessages(offsetMessageItems)
-                .concatWith(getAllAdamantTransfers())
-                .toSortedList()
-                .toFlowable()
-                .flatMap(list -> Flowable.just(list).flatMapIterable(item -> item))
-                .doOnNext(message -> {
-                    message = localizedMessageMapper.apply(message);
-                    chatsStorage.addMessageToChat(message);
-                })
-                .doOnError(error -> LoggerHelper.e("CHAT TRANS", error.getMessage(), error))
-                .doOnComplete(() -> chatsStorage.updateLastMessages())
-                .ignoreElements();
+            boolean isNewStart = (subscription == null) || (isCompleted);
+
+            if (isNewStart) {
+                isCompleted = false;
+
+                if (subscription != null){
+                    subscription.dispose();
+                }
+
+                // This complex construction is necessary in order to notify clients of events,
+                // but to prohibit the interruption of synchronization.
+                subscription = getBatchAdamantMessages(offsetMessageItems)
+                        .concatWith(getAllAdamantTransfers())
+                        .toSortedList()
+                        .toFlowable()
+                        .flatMap(list -> Flowable.just(list).flatMapIterable(item -> item))
+                        .doOnNext(message -> {
+                            message = localizedMessageMapper.apply(message);
+                            chatsStorage.addMessageToChat(message);
+                        })
+                        .doOnError(error -> {
+                            LoggerHelper.e("CHAT TRANS", error.getMessage(), error);
+                            publisher.onError(error);
+                        })
+                        .doOnComplete(() -> {
+                            isCompleted = true;
+                            chatsStorage.updateLastMessages();
+                            publisher.onNext(Irrelevant.INSTANCE);
+                        })
+                        .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                        .repeatWhen((completed) -> completed.filter(nothing -> !isPaused).delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                        .subscribe();
+            }
+        } else {
+            publisher.onError(new NotAuthorizedException("Not authorized"));
+        }
+
+        return publisher.toFlowable(BackpressureStrategy.LATEST);
+    }
+
+    public void pause() {
+        this.isPaused = true;
     }
 
     public void cleanUp() {
@@ -162,5 +206,11 @@ public class RefreshChatsInteractor {
                         return getAllAdamantTransfers();
                     }
                 }));
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        subscription.dispose();
+        super.finalize();
     }
 }

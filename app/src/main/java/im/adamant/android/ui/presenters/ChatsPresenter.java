@@ -59,8 +59,8 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
 
                     LoggerHelper.e("Chats", error.getMessage(), error);
                 })
-                .doOnComplete(
-                        () -> {
+                .doOnNext(
+                        (irrelevant) -> {
                             finalSubscription.add(
                                     getContactsInteractor
                                             .execute()
@@ -69,8 +69,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                             getViewState().showChats(chatsStorage.getChatList());
                         }
                 )
-                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
         finalSubscription.add(syncSubscription);
@@ -79,6 +77,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     @Override
     public void detachView(ChatsView view) {
         super.detachView(view);
+        refreshChatsInteractor.pause();
 
         if (syncSubscription != null){
             syncSubscription.dispose();
