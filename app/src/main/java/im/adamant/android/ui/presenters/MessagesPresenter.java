@@ -35,7 +35,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
-    private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor;
+    private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
     private AdamantApiWrapper api;
 
     private Chat currentChat;
@@ -47,7 +47,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public MessagesPresenter(
             Router router,
             RefreshChatsInteractor refreshChatsInteractor,
-            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             AdamantApiWrapper api,
@@ -56,7 +56,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         super(subscriptions);
         this.router = router;
         this.refreshChatsInteractor = refreshChatsInteractor;
-        this.chatUpdatePublicKeyInteraactor = chatUpdatePublicKeyInteraactor;
+        this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
         this.api = api;
@@ -142,17 +142,10 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             chat.setTitle(address);
         }
 
-        Disposable subscribe = chatUpdatePublicKeyInteraactor
-                .execute(chat)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        chatWithKey -> {
-                            chatsStorage.addNewChat(chatWithKey);
-                            onShowChatByCompanionId(address);
-                        },
-                        error -> LoggerHelper.e("messagePresenter", error.getMessage())
-                );
-        subscriptions.add(subscribe);
+        chatUpdatePublicKeyInteractor.execute(chat);
+        chatsStorage.addNewChat(chat);
+        onShowChatByCompanionId(address);
+
     }
 
     public void onClickSendAdamantBasicMessage(String message){
