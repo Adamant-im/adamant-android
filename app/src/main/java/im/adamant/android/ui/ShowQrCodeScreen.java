@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -26,6 +28,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.helpers.DrawableColorHelper;
+import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.CreateQrCodeBitmapInteractor;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
 import io.reactivex.Flowable;
@@ -70,13 +75,27 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {
                 final int backgroundColor = ContextCompat.getColor(this, R.color.qr_background);
                 final int onColor = ContextCompat.getColor(this, R.color.onPrimary);
+                Drawable overlayDrawable = ContextCompat.getDrawable(this, R.mipmap.ic_launcher_round);
+                Bitmap overlay = DrawableColorHelper.drawableToBitmap(overlayDrawable);
                 qrCodeView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         qrCodeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         int size = qrCodeView.getWidth();
 
-                        presenter.onBuildQrCode(intent.getStringExtra(ARG_DATA_FOR_QR_CODE), size, onColor, backgroundColor);
+                        CreateQrCodeBitmapInteractor interactor = new CreateQrCodeBitmapInteractor();
+                        interactor
+                                .execute(
+                                        intent.getStringExtra(ARG_DATA_FOR_QR_CODE),
+                                        overlay,
+                                        size,
+                                        size
+                                )
+                                .subscribe(
+                                        bitmap -> qrCodeView.setImageBitmap(bitmap),
+                                        error -> LoggerHelper.e("qrcode", error.getMessage(), error)
+                                );
+//                        presenter.onBuildQrCode(intent.getStringExtra(ARG_DATA_FOR_QR_CODE), size, onColor, backgroundColor);
                     }
                 });
             }

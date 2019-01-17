@@ -31,6 +31,9 @@ import java.util.Map;
 
 import im.adamant.android.Constants;
 import im.adamant.android.ui.LoginScreen;
+import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 
