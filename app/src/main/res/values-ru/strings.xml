@@ -15,10 +15,10 @@
     <string name="activity_login_btn_new_account">Создать новый</string>
 
     <string name="activity_registration_tv_title">Создание нового адреса</string>
-    <string name="activity_registration_btn_refresh_passphrase">Сгенерировать пароль и аватар</string>
-    <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пароль</string>
-    <string name="activity_registration_btn_save_qr">Сохранить пароль, как Qr-код</string>
-    <string name="activity_registration_btn_create_address">Создать адрес</string>
+    <string name="activity_registration_btn_refresh_passphrase">Сгенерировать другие пассфразы</string>
+    <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пассфразу</string>
+    <string name="activity_registration_btn_save_qr">Сохранить пассфразу, как Qr-код</string>
+    <string name="activity_registration_btn_create_address">Войти</string>
 
     <string name="activity_show_qr_code_title">QR-код</string>
     <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>

@@ -34,7 +34,9 @@ public class RegistrationPresenter extends BasePresenter<RegistrationView> {
         this.authorizeInteractor = authorizeInteractor;
         this.router = router;
 
-        passphrases.add(currentItemIndex, new Pair<>("", ""));
+//        passphrases.add(currentItemIndex, new Pair<>("", ""));
+
+        onClickGeneratePassphrases();
     }
 
     @Override

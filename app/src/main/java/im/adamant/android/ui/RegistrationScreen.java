@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.MotionEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -94,7 +95,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_vp_carousel)
     DiscreteScrollView passphrasesListView;
 
-    @BindView(R.id.fragment_login_et_passphrase)
+    @BindView(R.id.activity_registration_et_passphrase)
     TextInputEditText inputPassphraseView;
 
     @BindView(R.id.activity_registration_il_layout)
@@ -135,6 +136,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         passphrasesListView.addOnItemChangedListener(((viewHolder, i) -> {
             presenter.onSelectedPassphrase(i);
         }));
+
+        inputPassphraseView.setKeyListener(null);
 
         inputPassphraseView.setOnTouchListener((v, event) -> {
             final int DRAWABLE_LEFT = 0;
