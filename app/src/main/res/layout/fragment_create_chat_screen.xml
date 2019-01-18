@@ -42,7 +42,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/activity_create_chat_recipient"
-            android:maxLines="4"
+            android:imeOptions="actionSend"
+            android:singleLine="true"
             android:textColor="@color/onSurface" />
     </com.google.android.material.textfield.TextInputLayout>
 
