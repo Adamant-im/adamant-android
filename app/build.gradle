@@ -84,7 +84,7 @@ ext {
     supportLibraryVersion = "28.0.0-rc02"
     moxyVersion = "1.5.5"
     daggerVersion = "2.16"
-    butterKnifeVersion = "9.0.0-SNAPSHOT"
+    butterKnifeVersion = "10.0.0"
     retrofitVersion = "2.4.0"
 }
 
