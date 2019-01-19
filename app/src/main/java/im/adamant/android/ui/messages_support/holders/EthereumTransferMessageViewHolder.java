@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -22,7 +22,7 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
     private ImageView processedView;
     private View contentView;
 
-    public EthereumTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+    public EthereumTransferMessageViewHolder(Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
         super(context, v, adamantAddressProcessor, avatar);
 
         LayoutInflater inflater = LayoutInflater.from(context);

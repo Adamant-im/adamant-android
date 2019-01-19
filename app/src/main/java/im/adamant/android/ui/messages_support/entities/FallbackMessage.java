@@ -6,7 +6,7 @@ import android.text.Spanned;
 import java.util.Locale;
 
 import im.adamant.android.R;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 
 public class FallbackMessage extends AbstractMessage {
@@ -32,7 +32,7 @@ public class FallbackMessage extends AbstractMessage {
         return fallbackMessage;
     }
 
-    public Spanned getHtmlFallBackMessage(AdamantAddressProcessor adamantAddressProcessor) {
+    public Spanned getHtmlFallBackMessage(AdamantMarkdownProcessor adamantAddressProcessor) {
         if (htmlFallBackMessage == null) {
             try {
                 htmlFallBackMessage = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(fallbackMessage));

@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.transition.TransitionManager;
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -40,13 +40,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected ConstraintSet constraintSet = new ConstraintSet();
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    protected AdamantAddressProcessor adamantAddressProcessor;
+    protected AdamantMarkdownProcessor adamantAddressProcessor;
     protected Avatar avatar;
 
     public AbstractMessageViewHolder(
             Context context,
             View itemView,
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Avatar avatar
     ) {
         super(context, itemView);

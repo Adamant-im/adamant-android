@@ -26,7 +26,8 @@ import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeTypeKey;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantAddressExtractor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -41,6 +42,9 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.markdown.renderers.AdamantLinkRenderer;
+import im.adamant.android.markdown.renderers.AllowedOtherLinkRenderer;
+import im.adamant.android.markdown.renderers.NewLineRenderer;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -216,7 +220,7 @@ public abstract class AppModule {
     @Singleton
     @Provides
     public static MessageFactoryProvider provideMessageFactoryProvider(
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
@@ -387,8 +391,19 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantAddressProcessor provideAdamantAddressProcessor() {
-        return new AdamantAddressProcessor();
+    public static AdamantMarkdownProcessor provideAdamantAddressProcessor() {
+        AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
+        processor.registerRenderer(new AllowedOtherLinkRenderer());
+        processor.registerRenderer(new AdamantLinkRenderer());
+        processor.registerRenderer(new NewLineRenderer());
+
+        return processor;
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantAddressExtractor provideAdamantAddressExtractor() {
+        return new AdamantAddressExtractor();
     }
 
     @Singleton
