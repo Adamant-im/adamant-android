@@ -21,6 +21,8 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
+import im.adamant.android.helpers.LoggerHelper;
+import io.reactivex.plugins.RxJavaPlugins;
 
 public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
 
@@ -36,6 +38,8 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
     @Override
     public void onCreate() {
         super.onCreate();
+
+        RxJavaPlugins.setErrorHandler(e -> LoggerHelper.e("UNCAUGHT RX", e.getMessage(), e));
 
         DaggerAppComponent
                 .builder()

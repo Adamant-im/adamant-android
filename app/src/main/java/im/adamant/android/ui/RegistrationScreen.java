@@ -20,7 +20,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import net.glxn.qrgen.android.QRCode;
@@ -262,6 +262,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
         navigatorHolder.setNavigator(navigator);
 
+        //TODO: Refactor. The user can no longer enter the text by himself, this code is not necessary.
         Observable<String> obs = RxTextView
                 .textChanges(inputPassphraseView)
                 .filter(charSequence -> charSequence.length() > 0)

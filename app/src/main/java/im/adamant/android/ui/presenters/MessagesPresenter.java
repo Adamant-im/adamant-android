@@ -70,21 +70,22 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         syncSubscription = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError((error) -> {
-                    if (error instanceof NotAuthorizedException){
-                        router.navigateTo(Screens.SPLASH_SCREEN);
-                    } else {
-                        router.showSystemMessage(error.getMessage());
-                    }
-                    LoggerHelper.e("Messages", error.getMessage(), error);
-                })
-                .doOnNext((irrelevant) -> {
-                    if (currentMessageCount != messages.size()){
-                        getViewState().showChatMessages(messages);
-                        currentMessageCount = messages.size();
-                    }
-                })
-                .subscribe();
+                .subscribe(
+                        (irrelevant) -> {
+                            if (currentMessageCount != messages.size()){
+                                getViewState().showChatMessages(messages);
+                                currentMessageCount = messages.size();
+                            }
+                        },
+                        (error) -> {
+                            if (error instanceof NotAuthorizedException){
+                                router.navigateTo(Screens.SPLASH_SCREEN);
+                            } else {
+                                router.showSystemMessage(error.getMessage());
+                            }
+                            LoggerHelper.e("Messages", error.getMessage(), error);
+                        }
+                );
 
         subscriptions.add(syncSubscription);
     }
