@@ -121,6 +121,12 @@ public class RefreshChatsInteractor {
     }
 
     public void cleanUp() {
+        subscription.dispose();
+        subscription = null;
+
+        isPaused = false;
+        isCompleted = false;
+
         countMessageItems = 0;
         countTransactionItems = 0;
         currentMessageHeight = 1;

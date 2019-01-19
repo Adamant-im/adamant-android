@@ -50,16 +50,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
         syncSubscription = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError((error) -> {
-                    if (error instanceof NotAuthorizedException){
-                        router.navigateTo(Screens.SPLASH_SCREEN);
-                    } else {
-                        router.showSystemMessage(error.getMessage());
-                    }
-
-                    LoggerHelper.e("Chats", error.getMessage(), error);
-                })
-                .doOnNext(
+                .subscribe(
                         (irrelevant) -> {
                             finalSubscription.add(
                                     getContactsInteractor
@@ -67,9 +58,18 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                                             .subscribe()
                             );
                             getViewState().showChats(chatsStorage.getChatList());
+                        },
+                        (error) -> {
+                            RefreshChatsInteractor localinteractor = refreshChatsInteractor;
+                            if (error instanceof NotAuthorizedException){
+                                router.navigateTo(Screens.SPLASH_SCREEN);
+                            } else {
+                                router.showSystemMessage(error.getMessage());
+                            }
+
+                            LoggerHelper.e("Chats", error.getMessage(), error);
                         }
-                )
-                .subscribe();
+                );
 
         finalSubscription.add(syncSubscription);
     }
