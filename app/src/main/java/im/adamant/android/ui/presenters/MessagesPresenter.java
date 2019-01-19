@@ -72,7 +72,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     (irrelevant) -> {
-                        if (currentMessageCount != messages.size()){
+                        if (currentMessageCount != messages.size()) {
                             getViewState().showChatMessages(messages);
                             currentMessageCount = messages.size();
                         }
@@ -93,8 +93,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     @Override
     public void detachView(MessagesView view) {
         super.detachView(view);
-
-        refreshChatsInteractor.pause();
 
         if (syncSubscription != null){
             syncSubscription.dispose();

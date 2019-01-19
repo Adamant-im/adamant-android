@@ -19,6 +19,7 @@ import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Emitter;
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subjects.PublishSubject;
@@ -38,12 +39,12 @@ public class RefreshChatsInteractor {
     private int currentTransactionHeight = 1;
     private int offsetMessageItems = 0;
 
-    // This flag indicates the need for a soft stop synchronization.
-    // (The current synchronization process must be completed)
-    private boolean isPaused = false;
+    private long subscribers = 0;
     private boolean isCompleted = false;
+
     private Disposable subscription;
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
+    private Flowable<Irrelevant> executeFlowable;
 
     public enum Irrelevant { INSTANCE }
 
@@ -61,6 +62,15 @@ public class RefreshChatsInteractor {
         this.localizedMessageMapper = localizedMessageMapper;
         this.localizedChatMapper = localizedChatMapper;
         this.chatsStorage = chatsStorage;
+
+        executeFlowable = publisher
+                .doOnDispose(() -> {
+                    if (subscribers > 0) { subscribers--; }
+                })
+                .doOnSubscribe(disposable -> {
+                    subscribers++;
+                })
+                .toFlowable(BackpressureStrategy.LATEST);
     }
 
     public Flowable<Irrelevant> execute() {
@@ -73,12 +83,11 @@ public class RefreshChatsInteractor {
         //TODO: Well test the erroneous execution path, replace where you need doOnError
 
 //        if (!api.isAuthorized()){return Completable.error(new NotAuthorizedException("Not authorized"));}
-        if (api.isAuthorized()){
-            isPaused = false;
+        if (api.isAuthorized()) {
 
-            boolean isNewStart = (subscription == null) || (isCompleted);
+            boolean isNewStart = (subscription == null) || isCompleted;
 
-            if (isNewStart) {
+            if (isNewStart){
                 isCompleted = false;
 
                 if (subscription != null){
@@ -106,25 +115,23 @@ public class RefreshChatsInteractor {
                             publisher.onNext(Irrelevant.INSTANCE);
                         })
                         .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                        .repeatWhen((completed) -> completed.filter(nothing -> !isPaused).delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                        .repeatWhen((completed) -> completed
+                                .delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS)
+                                .filter(nothing -> subscribers > 0))
                         .subscribe();
             }
+
         } else {
             publisher.onError(new NotAuthorizedException("Not authorized"));
         }
 
-        return publisher.toFlowable(BackpressureStrategy.LATEST);
-    }
-
-    public void pause() {
-        this.isPaused = true;
+        return executeFlowable;
     }
 
     public void cleanUp() {
         subscription.dispose();
         subscription = null;
 
-        isPaused = false;
         isCompleted = false;
 
         countMessageItems = 0;

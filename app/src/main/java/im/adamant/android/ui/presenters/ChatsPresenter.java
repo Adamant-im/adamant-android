@@ -76,7 +76,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     @Override
     public void detachView(ChatsView view) {
         super.detachView(view);
-        refreshChatsInteractor.pause();
 
         if (syncSubscription != null){
             syncSubscription.dispose();
