@@ -1,12 +1,16 @@
-package im.adamant.android.markdown.renderers;
+package im.adamant.android.markdown.renderers.inline;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class AllowedOtherLinkRenderer implements Renderer {
+import im.adamant.android.markdown.renderers.InlineRenderer;
+
+public class AllowedOtherLinkRenderer implements InlineRenderer {
+    public static final Pattern PATTERN = Pattern.compile("((eth|bch|bitcoin|https?|s?ftp|magnet|tor|onion|tg):([^\\s\\x00-\\x1f<>]+[^\\s\\x00-\\x1f<>.]))");
+
     @Override
     public Pattern providePattern() {
-        return ALLOWED_LINK;
+        return PATTERN;
     }
 
     @Override

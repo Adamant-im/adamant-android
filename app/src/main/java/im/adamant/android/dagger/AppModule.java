@@ -42,9 +42,14 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
-import im.adamant.android.markdown.renderers.AdamantLinkRenderer;
-import im.adamant.android.markdown.renderers.AllowedOtherLinkRenderer;
-import im.adamant.android.markdown.renderers.NewLineRenderer;
+import im.adamant.android.markdown.renderers.block.NewLineBlockRenderer;
+import im.adamant.android.markdown.renderers.block.ParagraphBlockRenderer;
+import im.adamant.android.markdown.renderers.block.QuoteBlockRenderer;
+import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.AllowedOtherLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.BoldRenderer;
+import im.adamant.android.markdown.renderers.inline.EmailLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.NewLineRenderer;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -393,9 +398,17 @@ public abstract class AppModule {
     @Provides
     public static AdamantMarkdownProcessor provideAdamantAddressProcessor() {
         AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
-        processor.registerRenderer(new AllowedOtherLinkRenderer());
-        processor.registerRenderer(new AdamantLinkRenderer());
-        processor.registerRenderer(new NewLineRenderer());
+
+        // The order of registration is very important.
+        processor.registerBlockRenderer(new QuoteBlockRenderer());
+        processor.registerBlockRenderer(new NewLineBlockRenderer());
+        processor.registerBlockRenderer(new ParagraphBlockRenderer());
+
+        processor.registerInlineRenderer(new AllowedOtherLinkRenderer());
+        processor.registerInlineRenderer(new AdamantLinkRenderer());
+        processor.registerInlineRenderer(new NewLineRenderer());
+        processor.registerInlineRenderer(new EmailLinkRenderer());
+        processor.registerInlineRenderer(new BoldRenderer());
 
         return processor;
     }

@@ -1,13 +1,17 @@
-package im.adamant.android.markdown.renderers;
+package im.adamant.android.markdown.renderers.inline;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import im.adamant.android.markdown.renderers.InlineRenderer;
 
-public class AdamantLinkRenderer implements Renderer {
+
+public class AdamantLinkRenderer implements InlineRenderer {
+   public static final Pattern PATTERN = Pattern.compile("U(\\d{15,})(\\?\\S*\\b)*");
+
     @Override
     public Pattern providePattern() {
-        return ADM_LINK;
+        return PATTERN;
     }
 
     @Override

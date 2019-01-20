@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import im.adamant.android.markdown.renderers.Renderer;
+import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
 
 public class AdamantAddressExtractor {
 
     public List<AdamantAddressEntity> extractAdamantAddresses(String s) {
         List<AdamantAddressEntity> addresses = new ArrayList<>();
-        Matcher matcher = Renderer.ADM_LINK.matcher(s);
+        Matcher matcher = AdamantLinkRenderer.PATTERN.matcher(s);
 
         while (matcher.find()){
             String address = matcher.group(1);
