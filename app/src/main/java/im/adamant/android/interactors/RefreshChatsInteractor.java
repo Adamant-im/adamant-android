@@ -63,6 +63,7 @@ public class RefreshChatsInteractor {
         this.localizedChatMapper = localizedChatMapper;
         this.chatsStorage = chatsStorage;
 
+        //TODO: Counting the number of subscribers in a variable is an ugly decision. Think more
         executeFlowable = publisher
                 .doOnDispose(() -> {
                     if (subscribers > 0) { subscribers--; }
@@ -129,7 +130,9 @@ public class RefreshChatsInteractor {
     }
 
     public void cleanUp() {
-        subscription.dispose();
+        if (subscription != null) {
+            subscription.dispose();
+        }
         subscription = null;
 
         isCompleted = false;

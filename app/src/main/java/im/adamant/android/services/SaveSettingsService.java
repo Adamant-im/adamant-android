@@ -50,7 +50,6 @@ public class SaveSettingsService extends CompatService {
     @Override
     protected void onHandleWork(@NonNull Intent intent) {
         if (intent.getExtras() != null){
-            LoggerHelper.d("Settings", "Saving settings");
             boolean isSaveKeypair = intent.getExtras().getBoolean(IS_SAVE_KEYPAIR, false);
             saveKeyPair(isSaveKeypair);
 

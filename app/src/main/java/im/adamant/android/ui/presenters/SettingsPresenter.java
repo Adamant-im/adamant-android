@@ -35,12 +35,19 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().setStoreKeyPairOption(
                 saveKeypairInteractor.isKeyPairMustBeStored()
         );
-        getViewState().setEnablePushOption(
+        getViewState().switchPushOption(
                 subscribeToPushInteractor.isEnabledPush()
         );
         getViewState().setAddressPushService(
                 subscribeToPushInteractor.getPushServiceAddress()
         );
+        getViewState().enablePushOption(
+                saveKeypairInteractor.isKeyPairMustBeStored()
+        );
+    }
+
+    public void onSwitchStoreKeypair(boolean value) {
+        getViewState().enablePushOption(value);
     }
 
     public void onClickAddNewNode(String nodeUrl) {

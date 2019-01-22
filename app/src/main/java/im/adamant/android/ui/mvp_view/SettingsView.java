@@ -12,7 +12,8 @@ public interface SettingsView extends MvpView {
     void clearNodeTextField();
     void hideKeyboard();
     void setStoreKeyPairOption(boolean value);
-    void setEnablePushOption(boolean value);
+    void switchPushOption(boolean value);
+    void enablePushOption(boolean value);
     void setAddressPushService(String address);
 
     @StateStrategyType(SkipStrategy.class)

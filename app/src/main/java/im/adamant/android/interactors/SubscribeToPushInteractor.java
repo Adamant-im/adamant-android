@@ -58,7 +58,7 @@ public class SubscribeToPushInteractor {
                     .sendMessage(message)
                     .doOnSuccess(transactionWasProcessed -> localSettings.setNotificationToken(currentToken))
                     .onErrorReturn(error -> new TransactionWasProcessed())
-                    .toCompletable();
+                    .ignoreElement();
 
         } catch (Exception e) {
             return Completable.error(e);

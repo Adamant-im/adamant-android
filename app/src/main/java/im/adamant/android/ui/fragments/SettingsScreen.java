@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -30,7 +31,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
@@ -170,6 +173,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         languageDialogBuilder.create().show();
     }
 
+    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
+        presenter.onSwitchStoreKeypair(checked);
+    }
+
     @Override
     public void clearNodeTextField() {
         newNodeAddressView.setText("");
@@ -188,8 +196,17 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void setEnablePushOption(boolean value) {
+    public void switchPushOption(boolean value) {
         enablePushNotifications.setChecked(value);
+    }
+
+    @Override
+    public void enablePushOption(boolean value) {
+        enablePushNotifications.setEnabled(value);
+        if (!value){
+            enablePushNotifications.setChecked(false);
+        }
+        addressPushService.setEnabled(value);
     }
 
     @Override
