@@ -5,30 +5,28 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.ui.mvp_view.MainView;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MainPresenter extends MvpPresenter<MainView> {
+public class MainPresenter extends BasePresenter<MainView> {
     private Router router;
-    private CompositeDisposable compositeDisposable;
-    private AccountInteractor accountInteractor;
-    private RefreshChatsInteractor refreshChatsInteractor;
+    private LogoutInteractor logoutInteractor;
 
     private String currentWindowCode = Screens.WALLET_SCREEN;
 
     public MainPresenter(
             Router router,
-            AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
+            LogoutInteractor logoutInteractor,
             CompositeDisposable compositeDisposable
     ) {
+        super(compositeDisposable);
         this.router = router;
-        this.compositeDisposable = compositeDisposable;
-        this.accountInteractor = accountInteractor;
-        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.logoutInteractor = logoutInteractor;
     }
 
     @Override
@@ -50,13 +48,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
         }
     }
 
-    @Override
-    public void detachView(MainView view) {
-        super.detachView(view);
-        compositeDisposable.dispose();
-        compositeDisposable.clear();
-    }
-
     public void onSelectedWalletScreen() {
         currentWindowCode = Screens.WALLET_SCREEN;
         getViewState().showWalletScreen();
@@ -73,8 +64,18 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void onClickExitButton() {
-        accountInteractor.logout();
-        refreshChatsInteractor.cleanUp();
-        router.navigateTo(Screens.LOGIN_SCREEN);
+        Disposable subscribe = logoutInteractor
+                .execute()
+                .subscribe(
+                    (irrelevant) -> {
+                        //TODO: Подписка неактуальна на момент срабатывания
+                        router.navigateTo(Screens.LOGIN_SCREEN);
+                    },
+                    (error) -> {
+                        router.showSystemMessage(error.getMessage());
+                    }
+                );
+
+        subscriptions.add(subscribe);
     }
 }

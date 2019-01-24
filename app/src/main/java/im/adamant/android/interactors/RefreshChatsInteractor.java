@@ -10,6 +10,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.Irrelevant;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -46,7 +47,6 @@ public class RefreshChatsInteractor {
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
     private Flowable<Irrelevant> executeFlowable;
 
-    public enum Irrelevant { INSTANCE }
 
     public RefreshChatsInteractor(
             AdamantApiWrapper api,

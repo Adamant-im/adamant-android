@@ -2,6 +2,9 @@ package im.adamant.android.ui.messages_support.factories;
 
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -16,11 +19,13 @@ public class AdamantPushSubscriptionMessageFactory implements MessageFactory<Ada
     private Encryptor encryptor;
     private AdamantApiWrapper api;
     private PublicKeyStorage publicKeyStorage;
+    private GsonBuilder gsonBuilder;
 
-    public AdamantPushSubscriptionMessageFactory(Encryptor encryptor, AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
+    public AdamantPushSubscriptionMessageFactory(GsonBuilder gsonBuilder, Encryptor encryptor, AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
         this.encryptor = encryptor;
         this.api = api;
         this.publicKeyStorage = publicKeyStorage;
+        this.gsonBuilder = gsonBuilder;
     }
 
     //No need implementation
@@ -37,6 +42,6 @@ public class AdamantPushSubscriptionMessageFactory implements MessageFactory<Ada
 
     @Override
     public MessageProcessor<AdamantPushSubscriptionMessage> getMessageProcessor() {
-        return new AdamantPushSubscriptionMessageProcessor(api, encryptor, publicKeyStorage);
+        return new AdamantPushSubscriptionMessageProcessor(gsonBuilder, api, encryptor, publicKeyStorage);
     }
 }

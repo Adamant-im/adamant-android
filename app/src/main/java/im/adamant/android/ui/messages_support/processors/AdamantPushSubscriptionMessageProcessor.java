@@ -1,5 +1,7 @@
 package im.adamant.android.ui.messages_support.processors;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
@@ -17,9 +19,11 @@ import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMe
 import io.reactivex.Single;
 
 public class AdamantPushSubscriptionMessageProcessor extends AbstractMessageProcessor<AdamantPushSubscriptionMessage> {
+    private Gson gson;
 
-    public AdamantPushSubscriptionMessageProcessor(AdamantApiWrapper api, Encryptor encryptor, PublicKeyStorage publicKeyStorage) {
+    public AdamantPushSubscriptionMessageProcessor(GsonBuilder gsonBuilder, AdamantApiWrapper api, Encryptor encryptor, PublicKeyStorage publicKeyStorage) {
         super(api, encryptor, publicKeyStorage);
+        this.gson = gsonBuilder.excludeFieldsWithoutExposeAnnotation().setPrettyPrinting().create();
     }
 
     @Override
@@ -34,7 +38,7 @@ public class AdamantPushSubscriptionMessageProcessor extends AbstractMessageProc
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();
 
-        String content = buildJsonRepresentation(message);
+        String content = gson.toJson(message);
 
         return Single
                 .defer(() -> Single.just(recipientPublicKey))
@@ -57,13 +61,5 @@ public class AdamantPushSubscriptionMessageProcessor extends AbstractMessageProc
                             return unnormalizedMessage;
                         }
                 )));
-    }
-
-    private String buildJsonRepresentation(AdamantPushSubscriptionMessage message) {
-        JsonObject messageObject = new JsonObject();
-        messageObject.add("token", new JsonPrimitive(message.getToken()));
-        messageObject.add("provider", new JsonPrimitive(message.getProvider()));
-
-        return messageObject.toString();
     }
 }

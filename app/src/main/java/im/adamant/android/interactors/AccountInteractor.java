@@ -1,26 +1,12 @@
 package im.adamant.android.interactors;
 
-import com.google.firebase.iid.FirebaseInstanceId;
-
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
-import im.adamant.android.interactors.wallets.WalletFacade;
-import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.ui.entities.CurrencyCardItem;
 import io.reactivex.Flowable;
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 
 public class AccountInteractor {
     private AdamantApiWrapper api;
@@ -39,20 +25,6 @@ public class AccountInteractor {
 
     public Flowable<BigDecimal> getAdamantBalance() {
         return Flowable.fromCallable(this::getBalance);
-    }
-
-
-    public void logout() {
-        try {
-            FirebaseInstanceId.getInstance().deleteInstanceId();
-            settings.setEnablePushNotifications(false);
-        } catch (IOException e) {
-            LoggerHelper.e("LOGOUT", e.getMessage(), e);
-        }
-        settings.setAccountKeypair("");
-        settings.setKeyPairMustBeStored(false);
-        chatsStorage.cleanUp();
-        api.logout();
     }
 
     private BigDecimal getBalance() {

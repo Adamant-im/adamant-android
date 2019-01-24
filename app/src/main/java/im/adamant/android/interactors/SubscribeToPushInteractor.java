@@ -41,28 +41,19 @@ public class SubscribeToPushInteractor {
             return Completable.complete();
         }
 
-        try {
-            AdamantPushSubscriptionMessageFactory subscribeFactory = (AdamantPushSubscriptionMessageFactory)messageFactoryProvider
-                    .getFactoryByType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+        return sendMessageForNotificationService(currentToken, AdamantPushSubscriptionMessage.ADD_ACTION)
+                .doOnComplete(() -> settings.setNotificationToken(currentToken));
+    }
 
-            AdamantPushSubscriptionMessage message = new AdamantPushSubscriptionMessage();
-            message.setProvider("fcm");
-            message.setToken(currentToken);
-            message.setCompanionId(settings.getAddressOfNotificationService());
-            message.setSupportedType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+    public Completable deleteCurrentToken() {
+        String notificationToken = settings.getNotificationToken();
+        if (notificationToken == null || notificationToken.isEmpty()) { return Completable.complete(); }
 
-            Settings localSettings = settings;
-            MessageProcessor<AdamantPushSubscriptionMessage> messageProcessor = subscribeFactory.getMessageProcessor();
-
-            return messageProcessor
-                    .sendMessage(message)
-                    .doOnSuccess(transactionWasProcessed -> localSettings.setNotificationToken(currentToken))
-                    .onErrorReturn(error -> new TransactionWasProcessed())
-                    .ignoreElement();
-
-        } catch (Exception e) {
-            return Completable.error(e);
-        }
+        return sendMessageForNotificationService(notificationToken, AdamantPushSubscriptionMessage.REMOVE_ACTION)
+                .doOnComplete(() -> {
+                    settings.setNotificationToken("");
+                    settings.setEnablePushNotifications(false);
+                });
     }
 
     public boolean isEnabledPush() {
@@ -71,5 +62,28 @@ public class SubscribeToPushInteractor {
 
     public String getPushServiceAddress() {
         return settings.getAddressOfNotificationService();
+    }
+
+    private Completable sendMessageForNotificationService(String token, String action) {
+        try {
+            AdamantPushSubscriptionMessageFactory subscribeFactory = (AdamantPushSubscriptionMessageFactory)messageFactoryProvider
+                    .getFactoryByType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+
+            AdamantPushSubscriptionMessage message = new AdamantPushSubscriptionMessage();
+            message.setProvider("fcm");
+            message.setToken(token);
+            message.setCompanionId(settings.getAddressOfNotificationService());
+            message.setSupportedType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
+            message.setAction(action);
+
+            MessageProcessor<AdamantPushSubscriptionMessage> messageProcessor = subscribeFactory.getMessageProcessor();
+
+            return messageProcessor
+                    .sendMessage(message)
+                    .ignoreElement();
+
+        } catch (Exception e) {
+            return Completable.error(e);
+        }
     }
 }

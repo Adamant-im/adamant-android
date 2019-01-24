@@ -18,6 +18,7 @@ import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
@@ -60,6 +61,7 @@ import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
@@ -100,6 +102,12 @@ public abstract class AppModule {
     @Provides
     public static Gson provideGson() {
         return new Gson();
+    }
+
+    @Singleton
+    @Provides
+    public static GsonBuilder provideGsonBuilder() {
+        return new GsonBuilder();
     }
 
     @Singleton
@@ -216,6 +224,7 @@ public abstract class AppModule {
     @Singleton
     @Provides
     public static MessageFactoryProvider provideMessageFactoryProvider(
+            GsonBuilder gsonBuilder,
             AdamantAddressProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
@@ -241,7 +250,7 @@ public abstract class AppModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
-                new AdamantPushSubscriptionMessageFactory(encryptor, api, publicKeyStorage)
+                new AdamantPushSubscriptionMessageFactory(gsonBuilder, encryptor, api, publicKeyStorage)
         );
 
         provider.registerFactory(
@@ -427,6 +436,18 @@ public abstract class AppModule {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
     }
 
+    @Singleton
+    @Provides
+    public static LogoutInteractor provideLogoutInteractor(
+            ChatsStorage chatsStorage,
+            Settings settings,
+            AdamantApiWrapper api,
+            SubscribeToPushInteractor subscribeToPushInteractor,
+            RefreshChatsInteractor refreshChatsInteractor
+    ) {
+        return new LogoutInteractor(chatsStorage, settings, api, subscribeToPushInteractor, refreshChatsInteractor);
+    }
+
 
     @IntoMap
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ADM)
@@ -533,11 +554,10 @@ public abstract class AppModule {
     @Provides
     public static MainPresenter provideMainPresenter(
             Router router,
-            AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
+            LogoutInteractor logoutInteractor,
             @Named("main") CompositeDisposable compositeDisposable
     ){
-        return new MainPresenter(router, accountInteractor, refreshChatsInteractor, compositeDisposable);
+        return new MainPresenter(router, logoutInteractor, compositeDisposable);
     }
 
 }
