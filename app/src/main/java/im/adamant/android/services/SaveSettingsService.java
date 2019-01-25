@@ -2,7 +2,6 @@ package im.adamant.android.services;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -25,7 +24,7 @@ public class SaveSettingsService extends CompatService {
     public static final String NOTIFICATION_SERVICE_ADDRESS = "notification_service_address";
 
     @Inject
-    SaveKeypairInteractor settingsInteractor;
+    SaveKeypairInteractor saveKeypairInteractor;
 
     @Inject
     SubscribeToPushInteractor subscribeToPushInteractor;
@@ -63,19 +62,31 @@ public class SaveSettingsService extends CompatService {
         subscribeToPushInteractor.savePushConfig(enable, address);
         CompositeDisposable localSubscriptions = subscriptions;
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-            String deviceToken = instanceIdResult.getToken();
-            Disposable subscribe = subscribeToPushInteractor
-                    .savePushToken(deviceToken)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError((error) -> LoggerHelper.e("savePushToken", error.getMessage(), error))
-                    .subscribe();
-            localSubscriptions.add(subscribe);
-        });
+        if (enable) {
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+                String deviceToken = instanceIdResult.getToken();
+                Disposable subscribeToPush = subscribeToPushInteractor
+                        .savePushToken(deviceToken)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {},
+                                (error) -> LoggerHelper.e("savePushToken", error.getMessage(), error)
+                        );
+                localSubscriptions.add(subscribeToPush);
+            });
+        } else {
+            Disposable unsubscribeFromPush = subscribeToPushInteractor
+                    .deleteCurrentToken()
+                    .subscribe(
+                            () -> {},
+                            (error) -> LoggerHelper.e("savePushToken", error.getMessage(), error)
+                    );
+            localSubscriptions.add(unsubscribeFromPush);
+        }
     }
 
     private void saveKeyPair(boolean value) {
-        Disposable subscribe = settingsInteractor
+        Disposable subscribe = saveKeypairInteractor
                 .saveKeypair(value)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError((error) -> LoggerHelper.e("saveKeyPair", error.getMessage(), error))
