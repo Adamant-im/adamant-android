@@ -1,9 +1,12 @@
 package im.adamant.android.interactors.wallets;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -129,7 +132,6 @@ public class AdamantWalletFacade implements WalletFacade {
 
     @Override
     public boolean isAvailableAirdropLink() {
-        //TODO: if balance = 0 and count transactions = 0
         boolean isZeroBalance = (getBalance().compareTo(BigDecimal.ZERO) == 0);
         boolean isEmptyTransactionList = (isReceivedTransactionList && this.isEmptyTransactionList);
         if (isZeroBalance && isEmptyTransactionList) {
@@ -147,6 +149,32 @@ public class AdamantWalletFacade implements WalletFacade {
     @Override
     public String getAirdropLinkString() {
         return "";
+    }
+
+    @Override
+    public boolean isSupportFundsSending() {
+        return true;
+    }
+
+    @Override
+    public Flowable<BigDecimal> getFee() {
+        return Flowable.just(new BigDecimal(BuildConfig.ADM_TRANSFER_FEE)
+                .setScale(getPrecision(), RoundingMode.HALF_EVEN));
+    }
+
+    @Override
+    public String getCurrencyAddress(String adamantAddress, String adamantPublicKey) {
+        return adamantAddress;
+    }
+
+    @Override
+    public int getIconForEditText() {
+        return R.drawable.ic_adm_line;
+    }
+
+    @Override
+    public boolean isSupportComment() {
+        return false;
     }
 
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {

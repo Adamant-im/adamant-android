@@ -15,10 +15,10 @@
     <string name="activity_login_btn_new_account">Создать новый</string>
 
     <string name="activity_registration_tv_title">Создание нового адреса</string>
-    <string name="activity_registration_btn_refresh_passphrase">Сгенерировать пароль и аватар</string>
-    <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пароль</string>
-    <string name="activity_registration_btn_save_qr">Сохранить пароль, как Qr-код</string>
-    <string name="activity_registration_btn_create_address">Создать адрес</string>
+    <string name="activity_registration_btn_refresh_passphrase">Сгенерировать другие пассфразы</string>
+    <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пассфразу</string>
+    <string name="activity_registration_btn_save_qr">Сохранить пассфразу, как Qr-код</string>
+    <string name="activity_registration_btn_create_address">Войти</string>
 
     <string name="activity_show_qr_code_title">QR-код</string>
     <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>
@@ -42,19 +42,24 @@
 
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
+    <string name="activity_currency_send_title">Отправить средства</string>
+    <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>
+    <string name="activity_currency_send_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
+
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
 
     <string name="fragment_create_chat_title">Создать чат</string>
     <string name="fragment_create_chat_attention">Вы можете добавить адрес получателя через изображение из галереи или сканирование QR-кода:</string>
+    <string name="fragment_create_chat_show_my_qr">Показать мой QR-код</string>
 
     <string name="fragment_login_title">Вход</string>
 
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
-    <string name="fragment_wallet_create_qrcode_title">Создать QR-код</string>
+    <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_general_title">Общие</string>
@@ -66,7 +71,7 @@
     <string name="fragment_settings_version">Версия приложения: %s</string>
     <string name="fragment_settings_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
     <string name="fragment_settings_node_status">Нода %s, Пинг: %.0f мс</string>
-    <string name="fragment_settings_store_keypair">Хранить ключи на этом устройстве</string>
+    <string name="fragment_settings_store_keypair">Сохранить авторизацию</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления</string>
     <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>
     <string name="fragment_settings_push_service_address">Адрес сервиса push-уведомлений</string>
@@ -76,6 +81,15 @@
     <string name="dialog_logout_title">Выход</string>
     <string name="dialog_logout_message">Вы действительно хотите выйти из аккаунта?</string>
     <string name="rationale_qrcode_write_permission">Приложению необходимо разрешение на запись, чтобы сохранить QR-код в галерею</string>
+
+    <string name="list_item_currency_send_not_supported">Отправка данной валюты пока не поддерживается</string>
+    <string name="list_item_currency_send_amount_hint">Сумма для отправки. Макс: %s %s</string>
+    <string name="list_item_currency_send_address_hint">Пользователю "\%s\"</string>
+    <string name="list_item_currency_send_fee_hint">Коммиссия</string>
+    <string name="list_item_currency_send_totalAmount_hint">Сумма, включая плату за перевод</string>
+    <string name="list_item_currency_send_reminder_hint">Остаток на вашем счету %s %s</string>
+    <string name="list_item_currency_send_comment_hint">Сообщение получателю. %s/%s символов</string>
+
     <string name="activity_scan_qrcode_camera_permission_view">Отсутсвует разрешение на доступ к камере</string>
 
     <!--NOTIFICATIONS-->
@@ -98,6 +112,7 @@
     <string name="invalid_symbol_in_passphrase">Некорректный символ. Разрешены только [a-z] и пробел</string>
     <string name="invalid_count_words_in_passphrase">Парольная фраза состоит из 12 слов. Уже введено %d, осталось %d</string>
     <string name="invalid_checksum_in_passphrase">Некорректная контрольная сумма</string>
+    <string name="not_a_number">Это значение должно быть числом</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>
@@ -124,4 +139,8 @@
     <string name="bnb_currency_abbr">BNB</string>
     <string name="copy">Копировать</string>
     <string name="today">Сегодня</string>
+    <string name="sended">Отправлено: </string>
+    <string name="received">Получено: </string>
+    <string name="send">Отправить</string>
+    <string name="cancel">Отмена</string>
 </resources>

@@ -7,24 +7,22 @@ import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import io.reactivex.Completable;
 
 public class SubscribeToPushInteractor {
     private Settings settings;
     private AdamantApiWrapper api;
     private MessageFactoryProvider messageFactoryProvider;
-    private SendMessageInteractor sendMessageInteractor;
 
     public SubscribeToPushInteractor(
             Settings settings,
             AdamantApiWrapper api,
-            MessageFactoryProvider messageFactoryProvider,
-            SendMessageInteractor sendMessageInteractor
+            MessageFactoryProvider messageFactoryProvider
     ) {
         this.settings = settings;
         this.api = api;
         this.messageFactoryProvider = messageFactoryProvider;
-        this.sendMessageInteractor = sendMessageInteractor;
     }
 
     public void savePushConfig(boolean enable, String address) {
@@ -54,9 +52,10 @@ public class SubscribeToPushInteractor {
             message.setSupportedType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION);
 
             Settings localSettings = settings;
+            MessageProcessor<AdamantPushSubscriptionMessage> messageProcessor = subscribeFactory.getMessageProcessor();
 
-            return sendMessageInteractor
-                    .sendMessage(subscribeFactory.getMessageProcessor(), message)
+            return messageProcessor
+                    .sendMessage(message)
                     .doOnSuccess(transactionWasProcessed -> localSettings.setNotificationToken(currentToken))
                     .onErrorReturn(error -> new TransactionWasProcessed())
                     .toCompletable();

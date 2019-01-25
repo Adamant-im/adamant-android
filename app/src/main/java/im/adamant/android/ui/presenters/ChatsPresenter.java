@@ -50,28 +50,25 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
         syncSubscription = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError((error) -> {
-                    if (error instanceof NotAuthorizedException){
-                        router.navigateTo(Screens.SPLASH_SCREEN);
-                    } else {
-                        router.showSystemMessage(error.getMessage());
-                    }
-
-                    LoggerHelper.e("Chats", error.getMessage(), error);
-                })
-                .doOnComplete(
-                        () -> {
+                .subscribe(
+                        (irrelevant) -> {
                             finalSubscription.add(
                                     getContactsInteractor
                                             .execute()
                                             .subscribe()
                             );
                             getViewState().showChats(chatsStorage.getChatList());
+                        },
+                        (error) -> {
+                            if (error instanceof NotAuthorizedException){
+                                router.navigateTo(Screens.SPLASH_SCREEN);
+                            } else {
+                                router.showSystemMessage(error.getMessage());
+                            }
+
+                            LoggerHelper.e("Chats", error.getMessage(), error);
                         }
-                )
-                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .subscribe();
+                );
 
         finalSubscription.add(syncSubscription);
     }

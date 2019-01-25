@@ -4,20 +4,23 @@ import android.view.ViewGroup;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
-import im.adamant.android.ui.messages_support.processors.AdamantPushSubsciptionMessageProcessor;
+import im.adamant.android.ui.messages_support.processors.AdamantPushSubscriptionMessageProcessor;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 
 public class AdamantPushSubscriptionMessageFactory implements MessageFactory<AdamantPushSubscriptionMessage> {
     private Encryptor encryptor;
     private AdamantApiWrapper api;
+    private PublicKeyStorage publicKeyStorage;
 
-    public AdamantPushSubscriptionMessageFactory(Encryptor encryptor, AdamantApiWrapper api) {
+    public AdamantPushSubscriptionMessageFactory(Encryptor encryptor, AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
         this.encryptor = encryptor;
         this.api = api;
+        this.publicKeyStorage = publicKeyStorage;
     }
 
     //No need implementation
@@ -34,6 +37,6 @@ public class AdamantPushSubscriptionMessageFactory implements MessageFactory<Ada
 
     @Override
     public MessageProcessor<AdamantPushSubscriptionMessage> getMessageProcessor() {
-        return new AdamantPushSubsciptionMessageProcessor(api, encryptor);
+        return new AdamantPushSubscriptionMessageProcessor(api, encryptor, publicKeyStorage);
     }
 }

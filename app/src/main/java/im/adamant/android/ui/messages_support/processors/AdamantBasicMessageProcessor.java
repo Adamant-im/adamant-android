@@ -12,19 +12,17 @@ import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 import static im.adamant.android.core.AdamantApi.MINIMUM_COST;
 
-public class AdamantBasicMessageProcessor implements MessageProcessor<AdamantBasicMessage> {
-    private Encryptor encryptor;
-    private AdamantApiWrapper api;
+public class AdamantBasicMessageProcessor extends AbstractMessageProcessor<AdamantBasicMessage>{
 
-    public AdamantBasicMessageProcessor(Encryptor encryptor, AdamantApiWrapper api) {
-        this.encryptor = encryptor;
-        this.api = api;
+    public AdamantBasicMessageProcessor(AdamantApiWrapper api, Encryptor encryptor, PublicKeyStorage publicKeyStorage) {
+        super(api, encryptor, publicKeyStorage);
     }
 
     @Override

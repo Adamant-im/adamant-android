@@ -17,6 +17,8 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
@@ -24,7 +26,8 @@ import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeTypeKey;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantAddressExtractor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -35,11 +38,18 @@ import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SendMessageInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.markdown.renderers.block.NewLineBlockRenderer;
+import im.adamant.android.markdown.renderers.block.ParagraphBlockRenderer;
+import im.adamant.android.markdown.renderers.block.QuoteBlockRenderer;
+import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.AllowedOtherLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.BoldRenderer;
+import im.adamant.android.markdown.renderers.inline.EmailLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.NewLineRenderer;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -50,6 +60,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.SendFundsScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -77,6 +88,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
+import im.adamant.android.ui.messages_support.factories.AdamantTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.BinanceTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
@@ -137,6 +149,7 @@ public abstract class AppModule {
                 1024 * 1024 * 10 // 10Mb
         );
     }
+
 
     @Singleton
     @Provides
@@ -212,16 +225,17 @@ public abstract class AppModule {
     @Singleton
     @Provides
     public static MessageFactoryProvider provideMessageFactoryProvider(
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
+            PublicKeyStorage publicKeyStorage,
             Avatar avatar
     ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_BASIC,
-                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, avatar)
+                new AdamantBasicMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
         );
 
         provider.registerFactory(
@@ -236,12 +250,17 @@ public abstract class AppModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION,
-                new AdamantPushSubscriptionMessageFactory(encryptor, api)
+                new AdamantPushSubscriptionMessageFactory(encryptor, api, publicKeyStorage)
         );
 
         provider.registerFactory(
                 SupportedMessageListContentType.BINANCE_TRANSFER,
                 new BinanceTransferMessageFactory(adamantAddressProcessor, avatar)
+        );
+
+        provider.registerFactory(
+                SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE,
+                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
         );
 
         return provider;
@@ -308,6 +327,12 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
+    public static ChatUpdatePublicKeyInteractor provideCharUpdatePublicKeyInteractor(AdamantApiWrapper api) {
+        return new ChatUpdatePublicKeyInteractor(api);
+    }
+
+    @Singleton
+    @Provides
     public static WalletInteractor provideWalletInteractor(
             Map<SupportedWalletFacadeType, WalletFacade> wallets
     ) {
@@ -350,10 +375,17 @@ public abstract class AppModule {
     public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
             Settings settings,
             AdamantApiWrapper api,
-            MessageFactoryProvider messageFactoryProvider,
-            SendMessageInteractor sendMessageInteractor
+            MessageFactoryProvider messageFactoryProvider
     ) {
-        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider, sendMessageInteractor);
+        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider);
+    }
+
+    @Singleton
+    @Provides
+    public static SendFundsInteractor provideSendCurrencyInteractor(
+            AdamantApiWrapper api, ChatsStorage chatsStorage, MessageFactoryProvider messageFactoryProvider
+    ) {
+        return new SendFundsInteractor(api, chatsStorage, messageFactoryProvider);
     }
 
     @Singleton
@@ -364,20 +396,27 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantAddressProcessor provideAdamantAddressProcessor() {
-        return new AdamantAddressProcessor();
+    public static AdamantMarkdownProcessor provideAdamantAddressProcessor() {
+        AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
+
+        // The order of registration is very important.
+        processor.registerBlockRenderer(new QuoteBlockRenderer());
+        processor.registerBlockRenderer(new NewLineBlockRenderer());
+        processor.registerBlockRenderer(new ParagraphBlockRenderer());
+
+        processor.registerInlineRenderer(new AllowedOtherLinkRenderer());
+        processor.registerInlineRenderer(new AdamantLinkRenderer());
+        processor.registerInlineRenderer(new NewLineRenderer());
+        processor.registerInlineRenderer(new EmailLinkRenderer());
+        processor.registerInlineRenderer(new BoldRenderer());
+
+        return processor;
     }
 
     @Singleton
     @Provides
-    public static SendMessageInteractor provideSendMessageInteractor(
-            AdamantApiWrapper api,
-            Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage
-    ){
-        return new SendMessageInteractor(
-                api, encryptor, publicKeyStorage
-        );
+    public static AdamantAddressExtractor provideAdamantAddressExtractor() {
+        return new AdamantAddressExtractor();
     }
 
     @Singleton
@@ -389,7 +428,7 @@ public abstract class AppModule {
             LocalizedMessageMapper localizedMessageMapper,
             LocalizedChatMapper localizedChatMapper,
             ChatsStorage chatsStorage
-    ){
+    ) {
         return new RefreshChatsInteractor(
                 api,
                 chatMapper,
@@ -415,6 +454,7 @@ public abstract class AppModule {
     public static SaveContactsInteractor provideSaveContactsInteractor(ApiKvsProvider apiKvsProvider, ChatsStorage chatsStorage, KvsHelper kvsHelper) {
         return new SaveContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
     }
+
 
     @IntoMap
     @SupportedWalletFacadeTypeKey(SupportedWalletFacadeType.ADM)
@@ -479,6 +519,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {ShowQrCodeScreenModule.class})
     public abstract ShowQrCodeScreen createShowQrCodeScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {SendCurrencyTransferScreenModule.class})
+    public abstract SendFundsScreen createSendCurrencyTransferScreenInjector();
 
 
     //--Services

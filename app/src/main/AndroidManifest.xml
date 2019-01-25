@@ -33,6 +33,7 @@
         <activity
             android:name=".ui.MessagesScreen"
             android:theme="@style/AdamantLight.WithActionBar"
+            android:launchMode="singleTop"
             android:exported="true">
 
             <!--
@@ -52,11 +53,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.CreateChatScreen"
-            android:theme="@style/AdamantLight.WithActionBar"
-            android:exported="false"
-            android:label="@string/activity_chats_action_create_new" />
-        <activity
             android:name=".ui.MainScreen"
             android:screenOrientation="portrait"
             />
@@ -67,10 +63,6 @@
         <activity
             android:name=".ui.PinCodeScreen" />
         <activity
-            android:name=".ui.CompanionDetailScreen"
-            android:exported="false"
-            android:theme="@style/AdamantLight.WithActionBar" />
-        <activity
             android:name=".ui.RegistrationScreen"
             android:exported="false"
             android:label="@string/activity_registration_tv_title"
@@ -80,6 +72,10 @@
             android:name=".ui.ShowQrCodeScreen"
             android:label="@string/activity_show_qr_code_title"
             android:theme="@style/AdamantLight.WithActionBar"/>
+        <activity
+            android:exported="false"
+            android:name=".ui.SendFundsScreen"
+            android:theme="@style/AdamantLight.WithActionBar" />
 
         <service
             android:name=".services.ServerNodesPingService"

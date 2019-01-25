@@ -3,6 +3,7 @@ package im.adamant.android.ui;
 import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,8 +16,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,11 +27,12 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.textfield.TextInputEditText;
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.presenters.MessagesPresenter;
@@ -38,8 +41,6 @@ import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +71,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Inject
     MessagesAdapter adapter;
+
+    @Inject
+    Avatar avatar;
 
     //--Moxy
     @InjectPresenter
@@ -117,15 +121,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 presenter.onShowChatByCompanionId(companionId);
             }
 
-            if (Intent.ACTION_VIEW.equals(intent.getAction())){
-                Uri uri = intent.getData();
-                if (uri != null){
-                    String address = uri.getQueryParameter("address");
-                    String label = uri.getQueryParameter("label");
-
-                    presenter.onShowChatByAddress(address, label);
-                }
-            }
+            //if intent contains special action
+            showByAddress(intent);
         }
 
         newMessageText.setOnFocusChangeListener( (view, isFocused) -> {
@@ -133,6 +130,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 AdamantApplication.hideKeyboard(this, newMessageText);
             }
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        showByAddress(intent);
     }
 
     @Override
@@ -207,6 +210,18 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
+    public void showAvatarInTitle(String publicKey) {
+        int avatarSize = (int)getResources().getDimension(R.dimen.list_item_avatar_size);
+        Disposable disposable = avatar
+                .build(publicKey, avatarSize)
+                .subscribe(
+                        this::setTitleIcon,
+                        error -> hideIcon()
+                );
+        compositeDisposable.add(disposable);
+    }
+
+    @Override
     public void showRenameDialog(String currentName) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AdamantLight_AlertDialogCustom);
         builder.setTitle(getString(R.string.dialog_rename_contact_title));
@@ -226,13 +241,34 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
             dialog.dismiss();
             if (input.getText() != null) {
                 String inputText = input.getText().toString();
+                AdamantApplication.hideKeyboard(MessagesScreen.this, input);
                 localPresenter.onClickRenameButton(inputText);
             }
         });
 
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            AdamantApplication.hideKeyboard(MessagesScreen.this, input);
+            dialog.cancel();
+        });
 
-        builder.show();
+
+        AlertDialog dialog = builder.show();
+
+        dialog.setCanceledOnTouchOutside(false);
+
+        input.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                Window window = dialog.getWindow();
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if ((window != null) && (imm != null)) {
+                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+                }
+            }
+        });
+
+        input.requestFocus();
+
     }
 
     @Override
@@ -276,6 +312,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         newMessageText.setText("");
     }
 
+    @OnClick(R.id.activity_messages_btn_currency_transfer)
+    protected void onClickSendCurrencyButton() {
+        presenter.onClickSendCurrencyButton();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_messages_menu, menu);
@@ -304,7 +345,17 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     }
 
+    private void showByAddress(Intent intent) {
+        if (Intent.ACTION_VIEW.equals(intent.getAction())){
+            Uri uri = intent.getData();
+            if (uri != null){
+                String address = uri.getQueryParameter("address");
+                String label = uri.getQueryParameter("label");
 
+                presenter.onShowChatByAddress(address, label);
+            }
+        }
+    }
 
 
     private Navigator navigator = new Navigator() {
@@ -328,6 +379,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                         MessagesScreen.this.finish();
                     }
                     break;
+                    case Screens.SEND_CURRENCY_TRANSFER_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SendFundsScreen.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(SendFundsScreen.ARG_COMPANION_ID, (String)forward.getTransitionData());
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    }
                 }
             }
         }

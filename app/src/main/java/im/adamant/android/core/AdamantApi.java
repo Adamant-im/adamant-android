@@ -76,4 +76,8 @@ public interface AdamantApi {
             @Query("and:fromHeight") int height,
             @Query("orderBy") String order
     );
+
+    @POST("/api/transactions/process")
+    Flowable<TransactionWasProcessed> sendAdmTransferTransaction(@Body ProcessTransaction transaction);
+
 }

@@ -22,4 +22,9 @@ public interface WalletFacade {
     boolean isAvailableAirdropLink();
     int getAirdropLinkResource();
     String getAirdropLinkString();
+    boolean isSupportFundsSending();
+    Flowable<BigDecimal> getFee();
+    String getCurrencyAddress(String adamantAddress, String adamantPublicKey);
+    int getIconForEditText();
+    boolean isSupportComment();
 }

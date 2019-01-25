@@ -2,6 +2,7 @@ package im.adamant.android.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.ui.mvp_view.ScanQrCodeView;
+import io.reactivex.Flowable;
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 public class ScanQrCodeScreen extends BaseActivity implements ScanQrCodeView, ZXingScannerView.ResultHandler {

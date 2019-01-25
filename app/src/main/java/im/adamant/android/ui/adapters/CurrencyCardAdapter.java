@@ -146,7 +146,7 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         boolean isAirdropAvailable = item.getAirdropLinkResource() > 0 || (item.getAirdropLinkString() != null && !item.getAirdropLinkString().isEmpty());
 
         if (isAirdropAvailable){
-            Context ctx = view.getContext().getApplicationContext();
+            Context ctx = view.getContext();
             String link = item.getAirdropLinkResource() > 0 ? ctx.getString(item.getAirdropLinkResource()) + item.getAddress() : item.getAirdropLinkString();
             airdropLinkView.setVisibility(View.VISIBLE);
             airdropLinkView.setOnClickListener(v -> {
