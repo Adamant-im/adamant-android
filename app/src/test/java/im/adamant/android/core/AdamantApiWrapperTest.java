@@ -21,12 +21,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import im.adamant.android.TestConstants;
-import im.adamant.android.core.encryption.KeyGenerator;
+import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.responses.Authorization;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import retrofit2.http.Body;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -42,7 +41,7 @@ public class AdamantApiWrapperTest {
     AdamantApiBuilder apiBuilder;
 
     @Mock
-    KeyGenerator keyGenerator;
+    AdamantKeyGenerator keyGenerator;
 
     @Mock
     AdamantApi api;

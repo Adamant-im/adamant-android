@@ -44,9 +44,7 @@ public class AdamantApiBuilder {
                     .build();
 
             return  retrofit.create(AdamantApi.class);
-        })
-        .doOnError(Throwable::printStackTrace)
-        .retry(1000);
+        });
     }
 
     private ServerNode serverSelect() {
