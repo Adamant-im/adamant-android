@@ -72,7 +72,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
     @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
     @BindView(R.id.fragment_settings_et_push_service_address) EditText addressPushService;
-    @BindView(R.id.fragment_settings_btn_change_lang) Button changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
 
     public SettingsScreen() {
         // Required empty public constructor
