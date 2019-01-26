@@ -57,7 +57,6 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:layout_marginBottom="16dp"
                     android:divider="?android:attr/dividerHorizontal"
                     android:paddingStart="@dimen/tablerow_default_margin_horizontal"
@@ -80,12 +79,11 @@
                             style="@style/AdamantLight.TextViewNormal"
                             android:text="@string/fragment_settings_language" />
 
-                        <!--TODO: На кнопке должен отображаться текущий язык-->
                         <com.google.android.material.button.MaterialButton
-                            style="@style/AdamantLight.FlatIconButton"
                             android:id="@+id/fragment_settings_btn_change_lang"
+                            style="@style/AdamantLight.FlatIconButton"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="24dp"
                             android:layout_weight="1"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
@@ -113,48 +111,60 @@
                     </TableRow>
 
                     <TableRow style="@style/AdamantLight.TableRowStyle">
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="2">
-                            <TextView
-                                style="@style/AdamantLight.TextViewNormal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:maxLines="50"
-                                android:text="@string/fragment_settings_subscribe_to_push_notifications" />
-                            <TextView
-                                style="@style/AdamantLight.TextViewOverLine"
-                                android:textColor="@color/error"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:maxLines="50"
-                                android:text="@string/fragment_settings_subscribe_to_push_notifications_warning" />
-                        </LinearLayout>
 
-
-                        <Switch
-                            android:id="@+id/fragment_settings_sw_push_notifications"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1" />
-
-                    </TableRow>
-
-                    <TableRow style="@style/AdamantLight.TableRowStyle">
-
-                        <LinearLayout
-                            android:orientation="vertical"
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_span="2">
 
                             <TextView
                                 style="@style/AdamantLight.TextViewNormal"
-                                android:text="@string/fragment_settings_push_service_address"
+                                android:id="@+id/textView9"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:maxLines="50"
+                                android:text="@string/fragment_settings_subscribe_to_push_notifications"
+                                app:layout_constraintEnd_toStartOf="@+id/fragment_settings_sw_push_notifications"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                style="@style/AdamantLight.TextViewOverLine"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:maxLines="50"
+                                android:text="@string/fragment_settings_subscribe_to_push_notifications_warning"
+                                android:textColor="@color/error"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+
+                            <Switch
+                                android:id="@+id/fragment_settings_sw_push_notifications"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/textView9" />
+
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </TableRow>
+
+                    <TableRow style="@style/AdamantLight.TableRowStyle">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_span="2"
+                            android:orientation="vertical">
+
+                            <TextView
+                                style="@style/AdamantLight.TextViewNormal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/fragment_settings_push_service_address" />
 
                             <EditText
                                 style="@style/AdamantLight.TextViewNormal"
@@ -197,7 +207,6 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/fragment_settings_nodes_title"
-
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

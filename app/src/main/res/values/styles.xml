@@ -43,7 +43,6 @@
         <item name="android:textSize">10sp</item>
     </style>
 
-
     <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <!--<item name="backgroundTint">@color/secondary</item>-->
