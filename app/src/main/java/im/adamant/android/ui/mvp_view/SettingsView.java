@@ -9,11 +9,8 @@ import java.util.List;
 import im.adamant.android.core.entities.ServerNode;
 
 public interface SettingsView extends MvpView {
-    void clearNodeTextField();
-    void hideKeyboard();
     void setStoreKeyPairOption(boolean value);
     void setEnablePushOption(boolean value);
-    void setAddressPushService(String address);
 
     @StateStrategyType(SkipStrategy.class)
     void callSaveSettingsService();

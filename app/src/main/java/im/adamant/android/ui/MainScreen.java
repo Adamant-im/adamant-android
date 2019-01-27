@@ -215,6 +215,12 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
                     }
                     break;
+
+                    case Screens.NODES_LIST_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+                        startActivity(intent);
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;

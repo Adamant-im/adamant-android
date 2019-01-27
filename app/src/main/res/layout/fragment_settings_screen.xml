@@ -33,8 +33,10 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             app:cardCornerRadius="@dimen/list_item_message_corner_radius"
             app:cardElevation="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/fragment_settings_tv_version">
@@ -45,12 +47,12 @@
 
                 <TextView
                     android:id="@+id/textView3"
+                    style="@style/AdamantLight.TextViewHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/fragment_settings_general_title"
-                    style="@style/AdamantLight.TextViewHeader"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -73,10 +75,10 @@
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
+                            style="@style/AdamantLight.TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
-                            style="@style/AdamantLight.TextViewNormal"
                             android:text="@string/fragment_settings_language" />
 
                         <TextView
@@ -122,7 +124,6 @@
                                 style="@style/AdamantLight.TextViewNormal"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
                                 android:layout_marginEnd="8dp"
                                 android:maxLines="50"
                                 android:text="@string/fragment_settings_subscribe_to_push_notifications"
@@ -137,6 +138,7 @@
                                 android:maxLines="50"
                                 android:text="@string/fragment_settings_subscribe_to_push_notifications_warning"
                                 android:textColor="@color/error"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -145,122 +147,23 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                app:layout_constraintBottom_toBottomOf="@+id/textView9"
+                                app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/textView9" />
+                                app:layout_constraintTop_toTopOf="parent" />
 
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </TableRow>
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle">
+                    <TableRow style="@style/AdamantLight.TableRowStyle" android:id="@+id/fragment_settings_tr_show_nodes">
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                        <TextView
                             android:layout_span="2"
-                            android:orientation="vertical">
-
-                            <TextView
-                                style="@style/AdamantLight.TextViewNormal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/fragment_settings_push_service_address" />
-
-                            <EditText
-                                style="@style/AdamantLight.TextViewNormal"
-                                android:id="@+id/fragment_settings_et_push_service_address"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:hint="@string/fragment_settings_push_service_address" />
-
-                        </LinearLayout>
+                            android:layout_weight="1"
+                            android:text="@string/fragment_settings_nodes" />
                     </TableRow>
                 </TableLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:cardCornerRadius="@dimen/list_item_message_corner_radius"
-            app:cardElevation="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardView2">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    style="@style/AdamantLight.TextViewHeader"
-                    android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/fragment_settings_nodes_title"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/fragment_settings_rv_list_of_nodes"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/constraintLayout4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@android:color/white"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7">
-
-                    <EditText
-                        android:id="@+id/fragment_settings_et_new_node_address"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:hint="@string/fragment_settings_new_node"
-                        style="@style/AdamantLight.TextViewNormal"
-                        app:layout_constraintEnd_toStartOf="@+id/fragment_settings_btn_add_new_node"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/fragment_settings_btn_add_new_node"
-                        style="@style/AdamantLight.FlatIconButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:text="@string/fragment_settings_add_new_node"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>
 

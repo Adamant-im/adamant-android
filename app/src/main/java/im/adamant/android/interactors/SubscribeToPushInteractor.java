@@ -25,9 +25,8 @@ public class SubscribeToPushInteractor {
         this.messageFactoryProvider = messageFactoryProvider;
     }
 
-    public void savePushConfig(boolean enable, String address) {
+    public void savePushConfig(boolean enable) {
         settings.setEnablePushNotifications(enable);
-        settings.setAddressOfNotificationService(address);
     }
 
     public Completable savePushToken(String currentToken) {
