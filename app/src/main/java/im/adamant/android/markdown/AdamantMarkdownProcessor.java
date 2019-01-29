@@ -36,10 +36,7 @@ public class AdamantMarkdownProcessor {
     private String processing(String s) throws Exception {
         StringBuilder blocks = new StringBuilder();
 
-        s = s
-                .trim()
-                .replace("\r","");
-
+        s = s.trim().replace("\r","");
         s = FILTER_EMPTY_LINES_PATTERN.matcher(s).replaceAll("\n\n");
 
         String[] paragraphs = s.split("\n\n");

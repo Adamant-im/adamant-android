@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import im.adamant.android.markdown.renderers.InlineRenderer;
 
 public class AllowedOtherLinkRenderer implements InlineRenderer {
-    public static final Pattern PATTERN = Pattern.compile("((eth|bch|bitcoin|https?|s?ftp|magnet|tor|onion|tg):([^\\s\\x00-\\x1f<>]+[^\\s\\x00-\\x1f<>.]))");
+    public static final Pattern PATTERN = Pattern.compile("((eth|bch|bitcoin|https?|s?ftp|magnet|tor|onion|tg):([^\\s\\x00-\\x1f<>]+[^\\s\\x00-\\x1f<>.]))\\b");
 
     @Override
     public Pattern providePattern() {

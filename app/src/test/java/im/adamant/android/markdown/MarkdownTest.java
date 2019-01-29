@@ -1,15 +1,12 @@
 package im.adamant.android.markdown;
 
 import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 
-import im.adamant.android.dagger.AppComponent;
-import im.adamant.android.markdown.AdamantMarkdownProcessor;
-import im.adamant.android.markdown.renderers.block.BlockDescription;
-import im.adamant.android.markdown.renderers.block.NewLineBlockRenderer;
-import im.adamant.android.markdown.renderers.block.ParagraphBlockRenderer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import im.adamant.android.markdown.renderers.InlineRenderer;
 import im.adamant.android.markdown.renderers.block.QuoteBlockRenderer;
 import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
 import im.adamant.android.markdown.renderers.inline.AllowedOtherLinkRenderer;
@@ -22,7 +19,7 @@ public class MarkdownTest {
     public void testRNParagraphs() throws Exception {
         String message = "Test paragraph!\r\n\r\nTestParagraph\r\n";
 
-        AdamantMarkdownProcessor markdownProcessor = provideAdamantAddressProcessor();
+        AdamantMarkdownProcessor markdownProcessor = provideAdamantMarkdownProcessor();
 
         String htmlString = markdownProcessor.getHtmlString(message);
 
@@ -33,7 +30,7 @@ public class MarkdownTest {
     public void testParagraphsWithBlockquote() throws Exception {
         String message = "Test paragraph!\n\n> TestParagraph\n\n";
 
-        AdamantMarkdownProcessor markdownProcessor = provideAdamantAddressProcessor();
+        AdamantMarkdownProcessor markdownProcessor = provideAdamantMarkdownProcessor();
 
         String htmlString = markdownProcessor.getHtmlString(message);
 
@@ -44,15 +41,73 @@ public class MarkdownTest {
     public void testThreeNewLine() throws Exception {
         String message = "Test paragraph!\n\n\n TestParagraph\n\n";
 
-        AdamantMarkdownProcessor markdownProcessor = provideAdamantAddressProcessor();
+        AdamantMarkdownProcessor markdownProcessor = provideAdamantMarkdownProcessor();
 
         String htmlString = markdownProcessor.getHtmlString(message);
 
         Assert.assertEquals("Test paragraph!<br/><br/> TestParagraph", htmlString);
     }
 
+    @Test
+    public void testAdamantLink() {
+        String message = "sentence (U17493488006346417000?label=Test+User), next sentence";
 
-    public AdamantMarkdownProcessor provideAdamantAddressProcessor() {
+        AdamantLinkRenderer adamantLinkRenderer = new AdamantLinkRenderer();
+
+        String renderedMessage = render(adamantLinkRenderer, message);
+
+        Assert.assertEquals("sentence (<a href=\"adamant://messages?address=U17493488006346417000&label=Test+User\">17493488006346417000</a>), next sentence", renderedMessage);
+    }
+
+    @Test
+    public void testOtherLink() {
+        String message = "sentence (https://google.com?s=query), next sentence";
+
+        AllowedOtherLinkRenderer otherLinkRenderer = new AllowedOtherLinkRenderer();
+
+        String renderedMessage = render(otherLinkRenderer, message);
+
+        Assert.assertEquals("sentence (<a href=\"https://google.com?s=query\">https://google.com?s=query</a>), next sentence", renderedMessage);
+    }
+
+    @Test
+    public void testEmailLink() {
+        String message = "sentence (test@test.com), next sentence";
+
+        EmailLinkRenderer emailLinkRenderer = new EmailLinkRenderer();
+
+        String renderedMessage = render(emailLinkRenderer, message);
+
+        Assert.assertEquals("sentence (<a href=\"mailto:test@test.com\">test@test.com</a>), next sentence", renderedMessage);
+    }
+
+    @Test
+    public void testBold() {
+        String message = "sentence (*bold*), next sentence";
+
+        BoldRenderer bold = new BoldRenderer();
+
+        String renderedMessage = render(bold, message);
+
+        Assert.assertEquals("sentence (<b>bold</b>), next sentence", renderedMessage);
+    }
+
+
+    private String render(InlineRenderer renderer, String s) {
+        Matcher matcher = renderer.providePattern().matcher(s);
+        StringBuffer buffer = new StringBuffer();
+        StringBuilder itemBuilder = new StringBuilder();
+        while (matcher.find()){
+            renderer.renderItem(itemBuilder, matcher);
+            matcher.appendReplacement(buffer, itemBuilder.toString());
+        }
+
+        matcher.appendTail(buffer);
+
+        return buffer.toString();
+    }
+
+    private AdamantMarkdownProcessor provideAdamantMarkdownProcessor() {
         AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
 
         // The order of registration is very important.
