@@ -2,16 +2,15 @@ package im.adamant.android.core;
 
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
-import java.lang.ref.WeakReference;
-import java.sql.Wrapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,6 +45,7 @@ public class AdamantApiWrapperTest {
     @Mock
     AdamantApi api;
 
+    @Ignore
     @Test
     public void multiThreadingReadAndWriteAuthorization() throws Exception {
         configureMocks();

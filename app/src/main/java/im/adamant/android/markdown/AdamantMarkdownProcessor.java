@@ -2,15 +2,22 @@ package im.adamant.android.markdown;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.markdown.renderers.BlockRenderer;
 import im.adamant.android.markdown.renderers.InlineRenderer;
 import im.adamant.android.markdown.renderers.block.BlockDescription;
 
 public class AdamantMarkdownProcessor {
+    private static final String PARAGRAPH_SEPSRATOR = "<br/><br/>";
+//    public static final Pattern PARAGRAPH_PATTERN = Pattern.compile("^([^\\n]+(\\n[^\\n]+)*)");
+    public static final Pattern FILTER_EMPTY_LINES_PATTERN = Pattern.compile("\\n{3,}?", Pattern.MULTILINE);
+
     private Set<InlineRenderer> inlineRenderers = new LinkedHashSet<>();
     private Set<BlockRenderer> blockRenderers = new LinkedHashSet<>();
 
@@ -28,43 +35,48 @@ public class AdamantMarkdownProcessor {
 
     private String processing(String s) throws Exception {
         StringBuilder blocks = new StringBuilder();
-        StringBuilder originalString = new StringBuilder(s);
 
-        boolean isCorrect = false;
-        do {
+        s = s
+                .trim()
+                .replace("\r","");
 
-            for (BlockRenderer blockRenderer : blockRenderers) {
-                BlockDescription description = blockRenderer.getNextBlock(originalString);
-                boolean isFound = (description != null);
-                isCorrect |= isFound;
+        s = FILTER_EMPTY_LINES_PATTERN.matcher(s).replaceAll("\n\n");
 
-                if (isFound) {
-                    String block = description.getContent();
-                    originalString = originalString.delete(0, description.getLenghtInOriginal());
+        String[] paragraphs = s.split("\n\n");
 
-                    if (block.trim().isEmpty()) {
-                        continue;
-                    }
-
-                    block = escape(block);
-
-                    for (InlineRenderer inlineRenderer : inlineRenderers) {
-                        block = render(inlineRenderer, block);
-                    }
-
-                    blocks.append(blockRenderer.renderBlock(block));
+        for (String paragraph : paragraphs) {
+            boolean isBlockRendered = false;
+            for (BlockRenderer renderer : blockRenderers) {
+                String contentBlock = renderer.getContentBlock(paragraph);
+                if (!contentBlock.isEmpty()) {
+                    paragraph = applyInlineRenderers(escape(contentBlock));
+                    paragraph = renderer.renderBlock(paragraph);
+                    isBlockRendered = true;
+                    break;
                 }
             }
 
-            //TODO: Perhaps in the case of syntax corruption, you should not ignore the damaged part, but throw the exception
-            if (!isCorrect) {
-                break;
+            if (!isBlockRendered) {
+                paragraph = applyInlineRenderers(escape(paragraph));
             }
 
-        } while (originalString.length() > 0);
+            blocks.append(PARAGRAPH_SEPSRATOR);
+            blocks.append(paragraph);
+        }
+
+
+        int brLength = PARAGRAPH_SEPSRATOR.length();
+        blocks.delete(0, brLength);
 
         return blocks.toString();
 
+    }
+
+    private String applyInlineRenderers(String s) {
+        for (InlineRenderer renderer: inlineRenderers) {
+            s = render(renderer, s);
+        }
+        return s;
     }
 
     private String render(InlineRenderer renderer, String s) {
@@ -111,7 +123,6 @@ public class AdamantMarkdownProcessor {
                     sb.append("&#x3D;");
                 }
                 break;
-
                 default:
                     sb.append(c);
             }

@@ -408,8 +408,6 @@ public abstract class AppModule {
 
         // The order of registration is very important.
         processor.registerBlockRenderer(new QuoteBlockRenderer());
-        processor.registerBlockRenderer(new NewLineBlockRenderer());
-        processor.registerBlockRenderer(new ParagraphBlockRenderer());
 
         processor.registerInlineRenderer(new AllowedOtherLinkRenderer());
         processor.registerInlineRenderer(new AdamantLinkRenderer());
