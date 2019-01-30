@@ -16,6 +16,7 @@
 
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
@@ -23,8 +24,23 @@
     </style>
 
     <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
-        <item name="android:textSize">14sp</item>
         <item name="fontWeight">300</item>
+    </style>
+
+    <style name="AdamantLight.TextViewHeader">
+        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AdamantLight.TextViewNormal">
+        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AdamantLight.TextViewOverLine">
+        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">

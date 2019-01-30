@@ -12,36 +12,30 @@ import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 @Module
 public class SettingsScreenModule {
-
     @FragmentScope
     @Provides
     public static SettingsPresenter provideSettingsPresenter(
+            Router router,
             SaveKeypairInteractor saveKeypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
-            ServerNodeInteractor serverNodeInteractor,
-            @Named(value = Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
+            @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
     ) {
         return new SettingsPresenter(
+                router,
                 saveKeypairInteractor,
                 subscribeToPushInteractor,
-                serverNodeInteractor,
                 subscriptions
         );
     }
 
     @FragmentScope
     @Provides
-    @Named(value = Screens.SETTINGS_SCREEN)
+    @Named(Screens.SETTINGS_SCREEN)
     public CompositeDisposable provideComposite() {
         return new CompositeDisposable();
-    }
-
-    @FragmentScope
-    @Provides
-    public ServerNodeAdapter provideAdapter(Settings settings){
-        return new ServerNodeAdapter(settings.getNodes());
     }
 }

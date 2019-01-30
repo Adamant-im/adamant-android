@@ -4,29 +4,31 @@ import android.webkit.URLUtil;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import im.adamant.android.Screens;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
+    private Router router;
     private SaveKeypairInteractor saveKeypairInteractor;
     private SubscribeToPushInteractor subscribeToPushInteractor;
-    private ServerNodeInteractor serverNodeInteractor;
 
     public SettingsPresenter(
+            Router router,
             SaveKeypairInteractor saveKeypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
-            ServerNodeInteractor serverNodeInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
+        this.router = router;
         this.saveKeypairInteractor = saveKeypairInteractor;
         this.subscribeToPushInteractor = subscribeToPushInteractor;
-        this.serverNodeInteractor = serverNodeInteractor;
     }
 
     @Override
@@ -62,7 +64,8 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().callSaveSettingsService();
     }
 
-    public void onClickDeleteNode(ServerNode serverNode){
-        serverNodeInteractor.deleteNode(serverNode);
+    public void onClickShowNodesList() {
+        router.navigateTo(Screens.NODES_LIST_SCREEN);
     }
+
 }

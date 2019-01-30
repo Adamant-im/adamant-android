@@ -60,6 +60,7 @@ import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
+import im.adamant.android.ui.NodesListScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.SendFundsScreen;
@@ -550,6 +551,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {SendCurrencyTransferScreenModule.class})
     public abstract SendFundsScreen createSendCurrencyTransferScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {NodesListScreenModule.class})
+    public abstract NodesListScreen createNodesListScreenInjector();
 
 
     //--Services

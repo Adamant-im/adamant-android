@@ -21,7 +21,6 @@ import sm.euzee.github.com.servicemanager.CompatService;
 public class SaveSettingsService extends CompatService {
     public static final String IS_SAVE_KEYPAIR = "is_save_keypair";
     public static final String IS_RECEIVE_NOTIFICATIONS = "is_receive_notifications";
-    public static final String NOTIFICATION_SERVICE_ADDRESS = "notification_service_address";
 
     @Inject
     SaveKeypairInteractor settingsInteractor;
@@ -32,7 +31,6 @@ public class SaveSettingsService extends CompatService {
     @Named(SaveSettingsServiceModule.NAME)
     @Inject
     CompositeDisposable subscriptions;
-
 
     @Override
     public void onCreate() {
@@ -53,13 +51,12 @@ public class SaveSettingsService extends CompatService {
             saveKeyPair(isSaveKeypair);
 
             boolean isSubscribeToNotifications = intent.getExtras().getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
-            String addressOfNotificationService = intent.getExtras().getString(NOTIFICATION_SERVICE_ADDRESS, subscribeToPushInteractor.getPushServiceAddress());
-            savePushSettings(isSubscribeToNotifications, addressOfNotificationService);
+            savePushSettings(isSubscribeToNotifications);
         }
     }
 
-    private void savePushSettings(boolean enable, String address) {
-        subscribeToPushInteractor.enablePush(enable);
+    private void savePushSettings(boolean enable) {
+        subscribeToPushInteractor.savePushConfig(enable);
         subscribeToPushInteractor.changePushAddress(address);
 
         CompositeDisposable localSubscriptions = subscriptions;

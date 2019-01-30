@@ -76,6 +76,11 @@
             android:exported="false"
             android:name=".ui.SendFundsScreen"
             android:theme="@style/AdamantLight.WithActionBar" />
+        <activity
+            android:name=".ui.NodesListScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar"
+            />
 
         <service
             android:name=".services.ServerNodesPingService"

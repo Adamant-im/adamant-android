@@ -12,4 +12,5 @@ public interface Screens {
     String SPLASH_SCREEN = "splash_screen";
     String REGISTRATION_SCREEN = "registration_screen";
     String SEND_CURRENCY_TRANSFER_SCREEN = "send_currency_transfer_screen";
+    String NODES_LIST_SCREEN = "nodes_list_screen";
 }

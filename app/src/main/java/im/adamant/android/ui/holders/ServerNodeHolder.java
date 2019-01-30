@@ -40,7 +40,7 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
             serverStatusView.setTextColor(ContextCompat.getColor(context, detectStatusColor(serverNode)));
             String statusString = String.format(
                     Locale.ENGLISH,
-                    context.getString(R.string.fragment_settings_node_status),
+                    context.getString(R.string.activity_nodes_list_node_status),
                     detectStatus(serverNode),
                     serverNode.getPingInMilliseconds()
             );
