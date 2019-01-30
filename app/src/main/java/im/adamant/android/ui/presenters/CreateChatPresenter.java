@@ -7,7 +7,8 @@ import java.util.Map;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantAddressEntity;
+import im.adamant.android.markdown.AdamantAddressExtractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
@@ -24,13 +25,13 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private ChatsStorage chatsStorage;
     private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
-    private AdamantAddressProcessor addressProcessor;
+    private AdamantAddressExtractor adamantAddressExtractor;
 
     public CreateChatPresenter(
             Router router,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
-            AdamantAddressProcessor addressProcessor,
+            AdamantAddressExtractor adamantAddressExtractor,
             ChatsStorage chatsStorage,
             CompositeDisposable subscriptions
     ) {
@@ -38,12 +39,12 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
         this.router = router;
         this.chatsStorage = chatsStorage;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
-        this.addressProcessor = addressProcessor;
+        this.adamantAddressExtractor = adamantAddressExtractor;
         this.wallets = wallets;
     }
 
     public void onInputAddress(String addressPart) {
-        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressPart);
+        List<AdamantAddressEntity> addresses = adamantAddressExtractor.extractAdamantAddresses(addressPart);
 
         if (addresses.size() == 0){
             getViewState().showError(R.string.wrong_address);
@@ -51,7 +52,7 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
             return;
         }
 
-        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
+        AdamantAddressEntity addressEntity = addresses.get(0);
 
         if (!validate(addressEntity.getAddress())){
             getViewState().showError(R.string.wrong_address);
@@ -62,14 +63,14 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     }
 
     public void onClickCreateNewChat(String addressUriString) {
-        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressUriString);
+        List<AdamantAddressEntity> addresses = adamantAddressExtractor.extractAdamantAddresses(addressUriString);
 
         if (addresses.size() == 0){
             getViewState().showError(R.string.wrong_address);
             return;
         }
 
-        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
+        AdamantAddressEntity addressEntity = addresses.get(0);
 
         if (validate(addressEntity.getAddress())){
             Chat chat = new Chat();

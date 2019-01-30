@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.builders.BinanceTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.entities.BinanceTransferMessage;
@@ -15,10 +15,10 @@ import im.adamant.android.ui.messages_support.holders.BinanceTransferMessageView
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class BinanceTransferMessageFactory implements MessageFactory<BinanceTransferMessage> {
-    private AdamantAddressProcessor adamantAddressProcessor;
+    private AdamantMarkdownProcessor adamantAddressProcessor;
     private Avatar avatar;
 
-    public BinanceTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+    public BinanceTransferMessageFactory(AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
     }

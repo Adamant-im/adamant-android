@@ -12,6 +12,7 @@ import im.adamant.android.avatars.AvatarThemesProvider;
 import im.adamant.android.avatars.CachedAvatar;
 import im.adamant.android.avatars.RoundWithBorderAvatar;
 import im.adamant.android.avatars.SquareAvatar;
+import im.adamant.android.core.AdamantApiBuilder;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -27,7 +28,8 @@ import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeTypeKey;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantAddressExtractor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.NaivePublicKeyStorageImpl;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -42,6 +44,14 @@ import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.markdown.renderers.block.QuoteBlockRenderer;
+import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.AllowedOtherLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.BoldRenderer;
+import im.adamant.android.markdown.renderers.inline.EmailLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.ItalicRenderer;
+import im.adamant.android.markdown.renderers.inline.NewLineRenderer;
+import im.adamant.android.markdown.renderers.inline.StrikeRenderer;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
@@ -225,7 +235,7 @@ public abstract class AppModule {
     @Provides
     public static MessageFactoryProvider provideMessageFactoryProvider(
             GsonBuilder gsonBuilder,
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
@@ -297,8 +307,14 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantApiWrapper provideAdamantApiWrapper(Settings settings, AdamantKeyGenerator keyGenerator) {
-        return new AdamantApiWrapper(settings.getNodes(), keyGenerator);
+    public static AdamantApiBuilder provideApiBuilder(Settings settings) {
+        return new AdamantApiBuilder(settings.getNodes());
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantApiWrapper provideAdamantApiWrapper(AdamantApiBuilder apiBuilder, AdamantKeyGenerator keyGenerator) {
+        return new AdamantApiWrapper(apiBuilder, keyGenerator);
     }
 
     @Singleton
@@ -396,8 +412,26 @@ public abstract class AppModule {
 
     @Singleton
     @Provides
-    public static AdamantAddressProcessor provideAdamantAddressProcessor() {
-        return new AdamantAddressProcessor();
+    public static AdamantMarkdownProcessor provideAdamantAddressProcessor() {
+        AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
+
+        processor.registerBlockRenderer(new QuoteBlockRenderer());
+
+        processor.registerInlineRenderer(new AllowedOtherLinkRenderer());
+        processor.registerInlineRenderer(new AdamantLinkRenderer());
+        processor.registerInlineRenderer(new NewLineRenderer());
+        processor.registerInlineRenderer(new EmailLinkRenderer());
+        processor.registerInlineRenderer(new BoldRenderer());
+        processor.registerInlineRenderer(new ItalicRenderer());
+        processor.registerInlineRenderer(new StrikeRenderer());
+
+        return processor;
+    }
+
+    @Singleton
+    @Provides
+    public static AdamantAddressExtractor provideAdamantAddressExtractor() {
+        return new AdamantAddressExtractor();
     }
 
     @Singleton

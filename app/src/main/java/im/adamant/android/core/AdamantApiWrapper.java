@@ -39,10 +39,10 @@ import retrofit2.http.Query;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
-    private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
     private Account account;
     private AdamantKeyGenerator keyGenerator;
+    private AdamantApiBuilder apiBuilder;
 
     private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
@@ -50,8 +50,8 @@ public class AdamantApiWrapper {
     private volatile int serverTimeDelta;
     private int errorsCount;
 
-    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, AdamantKeyGenerator keyGenerator) {
-        this.nodes = nodes;
+    public AdamantApiWrapper(AdamantApiBuilder apiBuilder, AdamantKeyGenerator keyGenerator) {
+        this.apiBuilder = apiBuilder;
         this.keyGenerator = keyGenerator;
 
         buildApi();
@@ -243,43 +243,12 @@ public class AdamantApiWrapper {
             wrapperBuildSubscription.dispose();
         }
 
-        wrapperBuildSubscription = Observable.fromCallable(() -> {
-                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-                    if (BuildConfig.DEBUG){
-                        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                        httpClient.addInterceptor(logging);
-                    }
-
-                    if (currentServerNode != null){
-                        currentServerNode.setStatus(ServerNode.Status.CONNECTING);
-                    }
-
-                    currentServerNode = serverSelect();
-                    currentServerNode.setStatus(ServerNode.Status.CONNECTED);
-
-                    Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .client(httpClient.build())
-                        .build();
-
-                    return  retrofit.create(AdamantApi.class);
-                })
+        wrapperBuildSubscription = apiBuilder.build()
                 .doOnNext(buildedApi -> api = buildedApi)
                 .doOnError(Throwable::printStackTrace)
                 .retry(1000)
                 .subscribe();
 
-    }
-
-    private ServerNode serverSelect() {
-        int index =  (int) Math.round(Math.floor(Math.random() * nodes.size()));
-        if (index >= nodes.size()){index = nodes.size() - 1;}
-
-        return nodes.get(index);
     }
 
     private void checkNodeError(Throwable e){

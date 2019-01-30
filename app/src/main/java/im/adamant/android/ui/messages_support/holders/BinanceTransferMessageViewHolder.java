@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.BinanceTransferMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -23,7 +23,7 @@ public class BinanceTransferMessageViewHolder extends AbstractMessageViewHolder 
     private View contentView;
 
     public BinanceTransferMessageViewHolder(
-            Context context, View v, AdamantAddressProcessor adamantAddressProcessor, Avatar avatar
+            Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar
     ) {
         super(context, v, adamantAddressProcessor, avatar);
 

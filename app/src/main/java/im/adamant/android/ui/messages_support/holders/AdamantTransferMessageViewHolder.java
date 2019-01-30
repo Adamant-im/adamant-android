@@ -1,7 +1,6 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,10 +10,9 @@ import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
-import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder {
@@ -22,7 +20,7 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
     private ImageView processedView;
     private View contentView;
 
-    public AdamantTransferMessageViewHolder(Context context, View v, AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+    public AdamantTransferMessageViewHolder(Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
         super(context, v, adamantAddressProcessor, avatar);
 
         LayoutInflater inflater = LayoutInflater.from(context);
