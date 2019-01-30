@@ -11,11 +11,9 @@ import java.util.regex.Pattern;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.markdown.renderers.BlockRenderer;
 import im.adamant.android.markdown.renderers.InlineRenderer;
-import im.adamant.android.markdown.renderers.block.BlockDescription;
 
 public class AdamantMarkdownProcessor {
     private static final String PARAGRAPH_SEPSRATOR = "<br/><br/>";
-//    public static final Pattern PARAGRAPH_PATTERN = Pattern.compile("^([^\\n]+(\\n[^\\n]+)*)");
     public static final Pattern FILTER_EMPTY_LINES_PATTERN = Pattern.compile("\\n{3,}?", Pattern.MULTILINE);
 
     private Set<InlineRenderer> inlineRenderers = new LinkedHashSet<>();

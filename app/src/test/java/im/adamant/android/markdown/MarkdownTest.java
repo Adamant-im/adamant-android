@@ -12,7 +12,9 @@ import im.adamant.android.markdown.renderers.inline.AdamantLinkRenderer;
 import im.adamant.android.markdown.renderers.inline.AllowedOtherLinkRenderer;
 import im.adamant.android.markdown.renderers.inline.BoldRenderer;
 import im.adamant.android.markdown.renderers.inline.EmailLinkRenderer;
+import im.adamant.android.markdown.renderers.inline.ItalicRenderer;
 import im.adamant.android.markdown.renderers.inline.NewLineRenderer;
+import im.adamant.android.markdown.renderers.inline.StrikeRenderer;
 
 public class MarkdownTest {
     @Test
@@ -92,6 +94,40 @@ public class MarkdownTest {
         Assert.assertEquals("sentence (<b>bold</b>), next sentence", renderedMessage);
     }
 
+    @Test
+    public void testItalic() {
+        String message = "sentence (_italic_), next sentence";
+
+        ItalicRenderer italic = new ItalicRenderer();
+
+        String renderedMessage = render(italic, message);
+
+        Assert.assertEquals("sentence (<i>italic</i>), next sentence", renderedMessage);
+    }
+
+    @Test
+    public void testStrike() {
+        String message = "sentence (~strike~), next sentence";
+
+        StrikeRenderer strike = new StrikeRenderer();
+
+        String renderedMessage = render(strike, message);
+
+        Assert.assertEquals("sentence (<strike>strike</strike>), next sentence", renderedMessage);
+    }
+
+    @Test
+    public void testSpecialCharsEscaping() throws Exception {
+        String message = "&<>\"'=\r\n";
+
+        AdamantMarkdownProcessor markdownProcessor = provideAdamantMarkdownProcessor();
+
+        String htmlString = markdownProcessor.getHtmlString(message);
+
+        Assert.assertEquals("&amp;&lt;&gt;&quot;&#39;&#x3D;", htmlString);
+    }
+
+
 
     private String render(InlineRenderer renderer, String s) {
         Matcher matcher = renderer.providePattern().matcher(s);
@@ -110,7 +146,6 @@ public class MarkdownTest {
     private AdamantMarkdownProcessor provideAdamantMarkdownProcessor() {
         AdamantMarkdownProcessor processor = new AdamantMarkdownProcessor();
 
-        // The order of registration is very important.
         processor.registerBlockRenderer(new QuoteBlockRenderer());
 
         processor.registerInlineRenderer(new AllowedOtherLinkRenderer());
@@ -118,6 +153,8 @@ public class MarkdownTest {
         processor.registerInlineRenderer(new NewLineRenderer());
         processor.registerInlineRenderer(new EmailLinkRenderer());
         processor.registerInlineRenderer(new BoldRenderer());
+        processor.registerInlineRenderer(new ItalicRenderer());
+        processor.registerInlineRenderer(new StrikeRenderer());
 
         return processor;
     }
