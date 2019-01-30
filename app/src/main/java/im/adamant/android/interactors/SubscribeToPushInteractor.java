@@ -25,8 +25,11 @@ public class SubscribeToPushInteractor {
         this.messageFactoryProvider = messageFactoryProvider;
     }
 
-    public void savePushConfig(boolean enable, String address) {
+    public void enablePush(boolean enable) {
         settings.setEnablePushNotifications(enable);
+    }
+
+    public void changePushAddress(String address) {
         settings.setAddressOfNotificationService(address);
     }
 

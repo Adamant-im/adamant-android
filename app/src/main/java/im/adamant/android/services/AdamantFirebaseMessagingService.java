@@ -14,17 +14,33 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.IOException;
+
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
+import im.adamant.android.interactors.AuthorizeInteractor;
+import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.SplashScreen;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 import static im.adamant.android.Constants.ADAMANT_DEFAULT_NOTIFICATION_CHANNEL_ID;
 
 public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     private static final int NOTIFICATION_ID = 123445;
+
+    @Inject
+    AuthorizeInteractor authorizeInteractor;
+
+    @Inject
+    SubscribeToPushInteractor subscribeToPushInteractor;
 
     @Override
     public void onCreate() {
@@ -41,6 +57,33 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
         } else {
             showNotification(remoteMessage);
         }
+    }
+
+    @Override
+    public void onNewToken(String newToken) {
+        super.onNewToken(newToken);
+
+        SubscribeToPushInteractor localInteractor = subscribeToPushInteractor;
+        Disposable subscribe = authorizeInteractor
+                .restoreAuthorization()
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(authorization -> {
+                    if (authorization.isSuccess()){
+                        return subscribeToPushInteractor.savePushToken(newToken).toFlowable();
+                    } else {
+                        return Flowable.error(new NotAuthorizedException(authorization.getError()));
+                    }
+                })
+                .retry((integer, throwable) -> throwable instanceof IOException)
+                .ignoreElements()
+                .subscribe(
+                        () -> {},
+                        error -> {
+                            //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
+                            localInteractor.enablePush(false);
+                        }
+                );
+
     }
 
     private void showNotification(RemoteMessage remoteMessage) {

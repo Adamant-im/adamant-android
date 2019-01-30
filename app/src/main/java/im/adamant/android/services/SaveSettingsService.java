@@ -2,7 +2,6 @@ package im.adamant.android.services;
 
 import android.content.Intent;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -60,7 +59,9 @@ public class SaveSettingsService extends CompatService {
     }
 
     private void savePushSettings(boolean enable, String address) {
-        subscribeToPushInteractor.savePushConfig(enable, address);
+        subscribeToPushInteractor.enablePush(enable);
+        subscribeToPushInteractor.changePushAddress(address);
+
         CompositeDisposable localSubscriptions = subscriptions;
 
         FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
