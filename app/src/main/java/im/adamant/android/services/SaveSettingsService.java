@@ -56,8 +56,7 @@ public class SaveSettingsService extends CompatService {
     }
 
     private void savePushSettings(boolean enable) {
-        subscribeToPushInteractor.savePushConfig(enable);
-        subscribeToPushInteractor.changePushAddress(address);
+        subscribeToPushInteractor.enablePush(enable);
 
         CompositeDisposable localSubscriptions = subscriptions;
 

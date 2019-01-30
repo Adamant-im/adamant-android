@@ -134,19 +134,17 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void switchPushOption(boolean value) {
-        enablePushNotifications.setChecked(value);
-    }
-
-    @Override
-    public void enablePushOption(boolean value) {
+    public void setEnablePushOption(boolean value) {
         enablePushNotifications.setEnabled(value);
         if (!value){
             enablePushNotifications.setChecked(false);
         }
-        addressPushService.setEnabled(value);
     }
 
+    @Override
+    public void switchPushOption(boolean value) {
+        enablePushNotifications.setChecked(value);
+    }
 
     @Override
     public void callSaveSettingsService() {

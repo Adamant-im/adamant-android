@@ -58,7 +58,7 @@
 
     <string name="fragment_create_chat_title">Создать чат</string>
     <string name="fragment_create_chat_attention">Вы можете добавить адрес получателя через изображение из галереи или сканирование QR-кода:</string>
-    <string name="fragment_create_chat_show_my_qr">Показать мой QR-код</string>
+    <string name="fragment_create_chat_show_my_qr">Показать мой QR</string>
 
     <string name="fragment_login_title">Вход</string>
 
