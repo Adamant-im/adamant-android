@@ -391,10 +391,9 @@ public abstract class AppModule {
     @Provides
     public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
             Settings settings,
-            AdamantApiWrapper api,
             MessageFactoryProvider messageFactoryProvider
     ) {
-        return new SubscribeToPushInteractor(settings, api, messageFactoryProvider);
+        return new SubscribeToPushInteractor(settings, messageFactoryProvider);
     }
 
     @Singleton

@@ -17,11 +17,9 @@ public class SubscribeToPushInteractor {
 
     public SubscribeToPushInteractor(
             Settings settings,
-            AdamantApiWrapper api,
             MessageFactoryProvider messageFactoryProvider
     ) {
         this.settings = settings;
-        this.api = api;
         this.messageFactoryProvider = messageFactoryProvider;
     }
 
