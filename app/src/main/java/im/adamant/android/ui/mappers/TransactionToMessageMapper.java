@@ -5,13 +5,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
-import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
@@ -19,7 +18,9 @@ import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import io.reactivex.Flowable;
 import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class TransactionToMessageMapper implements Function<Transaction, AbstractMessage> {
     private Encryptor encryptor;
@@ -72,6 +73,61 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
 
 
         return message;
+    }
+
+    public Flowable<AbstractMessage> applyAsync(Transaction transaction) {
+
+        if (!api.isAuthorized()){
+            return Flowable.error(new NotAuthorizedException("You are not authorized."));
+        }
+
+        String ownAddress = api.getAccount().getAddress();
+        String ownSecretKey = api.getKeyPair().getSecretKeyString().toLowerCase();
+
+        boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
+        String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
+
+        TransactionMessage transactionMessage = getTransactionMessage(transaction);
+        if (transactionMessage == null){return Flowable.error(new Exception("Empty transaction"));}
+
+        TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();
+        String encryptedMessage = chatAsset.getChat().getMessage();
+        String encryptedNonce = chatAsset.getChat().getOwnMessage();
+        String senderPublicKey = transaction.getSenderPublicKey();
+
+        return Flowable
+                .just(iRecipient)
+                .flatMap((isRecipient) -> {
+                    if (isRecipient) {
+                        return Flowable.just(senderPublicKey);
+                    } else {
+                        return publicKeyStorage.getPublicKeyFlowable(transaction.getRecipientId());
+                    }
+                })
+                .flatMap(companionPublicKey -> Flowable.just(
+                        encryptor.decryptMessage(
+                                encryptedMessage,
+                                encryptedNonce,
+                                companionPublicKey,
+                                ownSecretKey
+                        )
+                ))
+                .observeOn(Schedulers.computation())
+                .flatMap(decryptedMessage -> {
+                    MessageFactory messageFactory = factoryProvider.getFactoryByType(
+                            detectMessageType(transaction, decryptedMessage)
+                    );
+                    MessageBuilder messageBuilder = messageFactory.getMessageBuilder();
+
+                    return Flowable.just(messageBuilder.build(
+                            transaction,
+                            decryptedMessage,
+                            !iRecipient,
+                            transaction.getUnixTimestamp(),
+                            companionId,
+                            "" //Detect by transaction
+                    ));
+                });
     }
 
     private String decryptMessage(Transaction transaction, boolean iRecipient, String ownSecretKey) {

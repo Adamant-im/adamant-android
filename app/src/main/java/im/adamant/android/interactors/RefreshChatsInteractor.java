@@ -176,7 +176,7 @@ public class RefreshChatsInteractor {
                                     currentMessageHeight = transaction.getHeight();
                                 }
                             })
-                            .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)))
+                            .flatMap(transaction -> messageMapper.applyAsync(transaction))
                             .concatWith(Flowable.defer(() -> {
                                 boolean noRepeat = countMessageItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
                                 if (noRepeat) {
