@@ -29,6 +29,7 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
@@ -122,7 +123,11 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
 
     @OnClick(R.id.fragment_create_chat_btn_by_camera_qr)
     public void scanQrCodeClick() {
-        createChatPresenter.onClickScanQrCodeButton();
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Intent intent = new Intent(activity, ScanQrCodeScreen.class);
+            startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+        }
     }
 
     @OnClick(R.id.fragment_create_chat_btn_by_stored_qr)
@@ -160,7 +165,6 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         FragmentActivity activity = getActivity();
         if (activity != null) {
             String qrCode = qrCodeHelper.parseActivityResult(activity, requestCode, resultCode, data);
@@ -171,5 +175,7 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
                 dismiss();
             }
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

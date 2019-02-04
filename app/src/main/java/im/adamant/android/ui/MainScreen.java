@@ -153,17 +153,17 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        FragmentManager fragManager = this.getSupportFragmentManager();
-        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-
-        Fragment currentFragment = fragManager.getFragments().get(count>0?count-1:count);
-        if (currentFragment != null) {
-            currentFragment.onActivityResult(requestCode, resultCode, data);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        FragmentManager fragManager = this.getSupportFragmentManager();
+//        int count = this.getSupportFragmentManager().getBackStackEntryCount();
+//
+//        Fragment currentFragment = fragManager.getFragments().get(count>0?count-1:count);
+//        if (currentFragment != null) {
+//            currentFragment.onActivityResult(requestCode, resultCode, data);
+//        }
+//    }
 
     private Navigator navigator = new Navigator() {
         @Override

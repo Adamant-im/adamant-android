@@ -12,6 +12,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         shimmer:duration="800">
 
         <LinearLayout
@@ -36,7 +39,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:visibility="gone"
         android:id="@+id/activity_chats_rv_chats"
-        android:background="@color/background"
+        android:background="@color/primaryDarkVariant"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
