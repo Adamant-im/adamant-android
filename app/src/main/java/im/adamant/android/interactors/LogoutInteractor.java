@@ -19,6 +19,7 @@ public class LogoutInteractor {
     private RefreshChatsInteractor refreshChatsInteractor;
 
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
+    private Flowable eventBus = publisher.toFlowable(BackpressureStrategy.LATEST);
     private Disposable logoutDisposable;
 
     public LogoutInteractor(
@@ -35,33 +36,45 @@ public class LogoutInteractor {
         this.refreshChatsInteractor = refreshChatsInteractor;
     }
 
-    public Flowable<Irrelevant> execute() {
-        if (logoutDisposable == null) {
-            logoutDisposable = subscribeToPushInteractor
-                    .deleteCurrentToken()
-                    .doOnComplete(() -> {
-                        refreshChatsInteractor.cleanUp();
-                        chatsStorage.cleanUp();
-                        api.logout();
-                        settings.setAccountKeypair("");
-                        settings.setKeyPairMustBeStored(false);
-                    })
-                    .timeout(30, TimeUnit.SECONDS)
-                    .subscribe(
-                            () -> {
-                                publisher.onNext(Irrelevant.INSTANCE);
-                                logoutDisposable.dispose();
-                                logoutDisposable = null;
-                            },
-                            (error) -> {
-                                publisher.onError(error);
-                                logoutDisposable.dispose();
-                                logoutDisposable = null;
-                            }
-                    );
-        }
-
-        return publisher.toFlowable(BackpressureStrategy.LATEST);
+    public Flowable<Irrelevant> getEventBus() {
+        return eventBus;
     }
 
+
+    public void execute() {
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
+
+        logoutDisposable = subscribeToPushInteractor
+                .deleteCurrentToken()
+                .timeout(30, TimeUnit.SECONDS)
+                .subscribe(
+                        () -> {
+                            refreshChatsInteractor.cleanUp();
+                            chatsStorage.cleanUp();
+                            api.logout();
+                            settings.setAccountKeypair("");
+                            settings.setKeyPairMustBeStored(false);
+
+                            publisher.onNext(Irrelevant.INSTANCE);
+                            logoutDisposable.dispose();
+                            logoutDisposable = null;
+                        },
+                        (error) -> {
+                            publisher.onError(error);
+                            logoutDisposable.dispose();
+                            logoutDisposable = null;
+                        }
+                );
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+
+        if (logoutDisposable != null){
+            logoutDisposable.dispose();
+        }
+        super.finalize();
+    }
 }

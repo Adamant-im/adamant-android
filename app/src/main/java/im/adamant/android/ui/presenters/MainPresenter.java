@@ -16,6 +16,7 @@ import ru.terrakok.cicerone.Router;
 public class MainPresenter extends BasePresenter<MainView> {
     private Router router;
     private LogoutInteractor logoutInteractor;
+    private Disposable logoutDisposable;
 
     private String currentWindowCode = Screens.WALLET_SCREEN;
 
@@ -64,11 +65,15 @@ public class MainPresenter extends BasePresenter<MainView> {
     }
 
     public void onClickExitButton() {
-        Disposable subscribe = logoutInteractor
-                .execute()
+
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
+
+        logoutDisposable = logoutInteractor
+                .getEventBus()
                 .subscribe(
                     (irrelevant) -> {
-                        //TODO: Подписка неактуальна на момент срабатывания
                         router.navigateTo(Screens.LOGIN_SCREEN);
                     },
                     (error) -> {
@@ -76,6 +81,14 @@ public class MainPresenter extends BasePresenter<MainView> {
                     }
                 );
 
-        subscriptions.add(subscribe);
+        logoutInteractor.execute();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
     }
 }
