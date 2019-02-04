@@ -16,7 +16,7 @@ public class BinanceTransferMessage extends AbstractMessage {
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
-        return shorteningString(comment, preferredLimit);
+        return comment;
     }
 
     public BigDecimal getAmount() {
