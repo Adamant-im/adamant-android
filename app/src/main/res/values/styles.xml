@@ -15,12 +15,12 @@
     </style>
 
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
@@ -28,18 +28,23 @@
     </style>
 
     <style name="AdamantLight.TextViewHeader">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="AdamantLight.TextViewSubHeader">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
     <style name="AdamantLight.TextViewNormal">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="AdamantLight.TextViewOverLine">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">10sp</item>
     </style>
 

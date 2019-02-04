@@ -75,13 +75,14 @@
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewNormal"
+                            style="@style/AdamantLight.TextViewSubHeader"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
                             android:text="@string/fragment_settings_language" />
 
                         <TextView
+                            style="@style/AdamantLight.TextViewSubHeader"
                             android:id="@+id/fragment_settings_btn_change_lang"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
@@ -89,15 +90,14 @@
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/secondary"
-                            android:textSize="14sp" />
+                            android:textColor="@color/secondary"/>
 
                     </TableRow>
 
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewNormal"
+                            style="@style/AdamantLight.TextViewSubHeader"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -121,7 +121,7 @@
 
                             <TextView
                                 android:id="@+id/textView9"
-                                style="@style/AdamantLight.TextViewNormal"
+                                style="@style/AdamantLight.TextViewSubHeader"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginEnd="8dp"
@@ -158,6 +158,7 @@
                     <TableRow style="@style/AdamantLight.TableRowStyle" android:id="@+id/fragment_settings_tr_show_nodes">
 
                         <TextView
+                            style="@style/AdamantLight.TextViewSubHeader"
                             android:layout_span="2"
                             android:layout_weight="1"
                             android:text="@string/fragment_settings_nodes" />
