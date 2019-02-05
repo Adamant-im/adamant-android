@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="primary">#FFFFFF</color>
-    <color name="primaryDarkVariant">#EEEEEE</color>
+    <color name="primaryDarkVariant">#f5f5f5</color>
     <color name="secondary">#2E7EED</color>
     <color name="secondaryDarkVariant">#0053ba</color>
     
     <color name="background">#FFFFFF</color>
     <color name="qr_background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>
-    <color name="error">#B00020</color>
+    <color name="error">#f0506e</color>
 
     <color name="onPrimary">#212121</color>
     <color name="onSecondary">#FFFFFF</color>
@@ -23,8 +23,8 @@
     <color name="colorSuccess">#32d296</color>
     <color name="colorWarning">#faa05a</color>
 
-    <color name="statusActive">#1E6E50</color>
+    <color name="statusActive">#32d296</color>
     <color name="statusConnected">#1562E0</color>
-    <color name="statusUnavailable">#8D182B</color>
+    <color name="statusUnavailable">#f0506e</color>
     <color name="statusConnecting">#6D6F72</color>
 </resources>
