@@ -12,9 +12,8 @@ import javax.inject.Named;
 
 import dagger.android.AndroidInjection;
 import im.adamant.android.BuildConfig;
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.dagger.AdamantBalanceUpdateServiceModule;
+import im.adamant.android.dagger.services.AdamantBalanceUpdateServiceModule;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;

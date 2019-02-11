@@ -2,12 +2,12 @@ package im.adamant.android.dagger;
 
 import android.content.Context;
 
-import im.adamant.android.AdamantApplication;
-
 import javax.inject.Singleton;
 
 import dagger.BindsInstance;
 import dagger.Component;
+import im.adamant.android.TestApplication;
+import im.adamant.android.cases.services.SaveSettingsServiceTest;
 
 @Singleton
 @Component(modules = {
@@ -18,16 +18,17 @@ import dagger.Component;
         WalletsModule.class,
         GeneralModule.class,
         MarkdownModule.class,
-        InteractorsModule.class,
+        TestInteractorsModule.class,
         AppModule.class
 })
-public interface AppComponent {
+public interface TestAppComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance
         Builder context(Context context);
-        AppComponent build();
+        TestAppComponent build();
     }
 
-    void inject(AdamantApplication app);
+    void inject(TestApplication app);
+    void inject(SaveSettingsServiceTest test);
 }

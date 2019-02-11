@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import dagger.android.AndroidInjection;
-import im.adamant.android.dagger.SaveSettingsServiceModule;
+import im.adamant.android.dagger.services.SaveSettingsServiceModule;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;

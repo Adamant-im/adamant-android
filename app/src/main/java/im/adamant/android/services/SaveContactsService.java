@@ -13,7 +13,7 @@ import javax.inject.Named;
 
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
-import im.adamant.android.dagger.SaveContactsServiceModule;
+import im.adamant.android.dagger.services.SaveContactsServiceModule;
 import im.adamant.android.helpers.NotificationHelper;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import io.reactivex.android.schedulers.AndroidSchedulers;

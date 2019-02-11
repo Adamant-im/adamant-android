@@ -12,7 +12,6 @@ import io.reactivex.Completable;
 
 public class SubscribeToPushInteractor {
     private Settings settings;
-    private AdamantApiWrapper api;
     private MessageFactoryProvider messageFactoryProvider;
 
     public SubscribeToPushInteractor(
@@ -27,9 +26,6 @@ public class SubscribeToPushInteractor {
         settings.setEnablePushNotifications(enable);
     }
 
-    public void changePushAddress(String address) {
-        settings.setAddressOfNotificationService(address);
-    }
 
     public Completable savePushToken(String currentToken) {
         String oldDeviceToken = settings.getNotificationToken();
@@ -59,10 +55,6 @@ public class SubscribeToPushInteractor {
 
     public boolean isEnabledPush() {
         return settings.isEnablePushNotifications();
-    }
-
-    public String getPushServiceAddress() {
-        return settings.getAddressOfNotificationService();
     }
 
     private Completable sendMessageForNotificationService(String token, String action) {

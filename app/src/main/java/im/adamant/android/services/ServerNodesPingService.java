@@ -21,7 +21,7 @@ import javax.inject.Named;
 import dagger.android.AndroidInjection;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.entities.ServerNode;
-import im.adamant.android.dagger.ServerNodePingServiceModule;
+import im.adamant.android.dagger.services.ServerNodePingServiceModule;
 import im.adamant.android.helpers.AlternativePingHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.rx.ObservableRxList;
