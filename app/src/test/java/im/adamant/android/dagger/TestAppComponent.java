@@ -7,7 +7,7 @@ import javax.inject.Singleton;
 import dagger.BindsInstance;
 import dagger.Component;
 import im.adamant.android.TestApplication;
-import im.adamant.android.cases.services.SaveSettingsServiceTest;
+import im.adamant.android.cases.presenters.SettingsPresenterTest;
 
 @Singleton
 @Component(modules = {
@@ -30,5 +30,5 @@ public interface TestAppComponent {
     }
 
     void inject(TestApplication app);
-    void inject(SaveSettingsServiceTest test);
+    void inject(SettingsPresenterTest test);
 }

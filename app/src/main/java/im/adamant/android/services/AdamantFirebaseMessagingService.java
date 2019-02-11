@@ -69,15 +69,16 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(authorization -> {
                     if (authorization.isSuccess()){
-                        return subscribeToPushInteractor.savePushToken(newToken).toFlowable();
+                        subscribeToPushInteractor.savePushToken(newToken);
+                        return subscribeToPushInteractor.getEventsObservable();
                     } else {
                         return Flowable.error(new NotAuthorizedException(authorization.getError()));
                     }
                 })
-                .retry((integer, throwable) -> throwable instanceof IOException)
-                .ignoreElements()
                 .subscribe(
-                        () -> {},
+                        (irrelevant) -> {
+                            //TODO: Notify user about change token
+                        },
                         error -> {
                             //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
                             localInteractor.enablePush(false);

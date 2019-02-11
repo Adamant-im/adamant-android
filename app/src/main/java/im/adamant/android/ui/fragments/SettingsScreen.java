@@ -1,9 +1,6 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -11,9 +8,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -31,14 +26,10 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import butterknife.OnItemSelected;
-import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.ui.presenters.SettingsPresenter;
-import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.ui.mvp_view.SettingsView;
-import sm.euzee.github.com.servicemanager.ServiceManager;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,7 +88,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
     @Override
     public void onPause() {
-        presenter.onClickSaveSettings();
+        presenter.onClickSaveSettings(prepareSettingsBundle());
 
         super.onPause();
     }
@@ -112,7 +103,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         super.setUserVisibleHint(isVisibleToUser);
 
         if (!isVisibleToUser && (presenter != null)){
-            presenter.onClickSaveSettings();
+            presenter.onClickSaveSettings(prepareSettingsBundle());
         }
     }
 
@@ -146,18 +137,19 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         enablePushNotifications.setChecked(value);
     }
 
-    @Override
-    public void callSaveSettingsService() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            Context context = activity.getApplicationContext();
-            Intent intent = new Intent(context, SaveSettingsService.class);
-            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
-            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
 
-            ServiceManager.runService(context, intent);
-        }
-    }
+//    @Override
+//    public void callSaveSettingsService() {
+//        Activity activity = getActivity();
+//        if (activity != null) {
+//            Context context = activity.getApplicationContext();
+//            Intent intent = new Intent(context, SaveSettingsService.class);
+//            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
+//            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
+//
+//            ServiceManager.runService(context, intent);
+//        }
+//    }
 
 
     //TODO: Refactor: method to long and dirty
@@ -201,5 +193,13 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
 
         return builder;
+    }
+
+    private Bundle prepareSettingsBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
+        bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
+
+        return bundle;
     }
 }

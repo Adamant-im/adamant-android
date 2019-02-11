@@ -40,26 +40,27 @@ public class LogoutInteractor {
         return eventBus;
     }
 
-
     public void execute() {
         if (logoutDisposable != null) {
             logoutDisposable.dispose();
         }
 
         logoutDisposable = subscribeToPushInteractor
-                .deleteCurrentToken()
+                .getEventsObservable()
                 .timeout(30, TimeUnit.SECONDS)
                 .subscribe(
-                        () -> {
-                            refreshChatsInteractor.cleanUp();
-                            chatsStorage.cleanUp();
-                            api.logout();
-                            settings.setAccountKeypair("");
-                            settings.setKeyPairMustBeStored(false);
+                        (event) -> {
+                            if ((event == SubscribeToPushInteractor.Event.UNSUBSCRIBED) || (event == SubscribeToPushInteractor.Event.IGNORED)) {
+                                refreshChatsInteractor.cleanUp();
+                                chatsStorage.cleanUp();
+                                api.logout();
+                                settings.setAccountKeypair("");
+                                settings.setKeyPairMustBeStored(false);
 
-                            publisher.onNext(Irrelevant.INSTANCE);
-                            logoutDisposable.dispose();
-                            logoutDisposable = null;
+                                publisher.onNext(Irrelevant.INSTANCE);
+                                logoutDisposable.dispose();
+                                logoutDisposable = null;
+                            }
                         },
                         (error) -> {
                             publisher.onError(error);
@@ -67,6 +68,8 @@ public class LogoutInteractor {
                             logoutDisposable = null;
                         }
                 );
+
+        subscribeToPushInteractor.deleteCurrentToken();
     }
 
     @Override

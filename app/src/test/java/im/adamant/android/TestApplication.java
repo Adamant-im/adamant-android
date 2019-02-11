@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.franmontiel.localechanger.LocaleChanger;
+import com.google.firebase.FirebaseApp;
 
 import java.util.List;
 import java.util.Locale;
@@ -19,7 +20,6 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
-import im.adamant.android.dagger.DaggerAppComponent;
 import im.adamant.android.dagger.DaggerTestAppComponent;
 import im.adamant.android.helpers.LoggerHelper;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -46,6 +46,8 @@ public class TestApplication  extends MultiDexApplication implements HasActivity
                 .context(this)
                 .build()
                 .inject(this);
+
+        FirebaseApp.initializeApp(this);
 
 //        LocaleChanger.initialize(getApplicationContext(), supportedLocales);
 

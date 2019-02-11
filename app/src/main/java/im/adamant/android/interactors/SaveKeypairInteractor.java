@@ -3,17 +3,25 @@ package im.adamant.android.interactors;
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.ObservableRxList;
-import im.adamant.android.core.entities.ServerNode;
+import im.adamant.android.rx.Irrelevant;
+import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
-import io.reactivex.Single;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.PublishSubject;
 
 public class SaveKeypairInteractor {
     private Settings settings;
     private AdamantApiWrapper api;
     private KeyStoreCipher keyStoreCipher;
+
+    private PublishSubject<Irrelevant> publisher = PublishSubject.create();
+    private Flowable<Irrelevant> flowable = publisher.toFlowable(BackpressureStrategy.LATEST);
+
+    private Disposable subscription;
 
     public SaveKeypairInteractor(
             Settings settings,
@@ -25,26 +33,38 @@ public class SaveKeypairInteractor {
         this.keyStoreCipher = keyStoreCipher;
     }
 
-    public Completable saveKeypair(boolean value) {
-        return Completable.fromAction(() -> {
-            settings.setKeyPairMustBeStored(value);
+    public Flowable<Irrelevant> getFlowable() {
+        return flowable;
+    }
 
-            if (value){
-                try {
-                    if (api.isAuthorized()){
-                        String account = keyStoreCipher.encrypt(
-                                Constants.ADAMANT_ACCOUNT_ALIAS,
-                                api.getKeyPair()
-                        );
-                        settings.setAccountKeypair(account);
+    public void saveKeypair(boolean value) {
+        subscription = Completable.fromAction(() -> {
+                    settings.setKeyPairMustBeStored(value);
+
+                    if (value){
+                        try {
+                            if (api.isAuthorized()){
+                                String account = keyStoreCipher.encrypt(
+                                        Constants.ADAMANT_ACCOUNT_ALIAS,
+                                        api.getKeyPair()
+                                );
+                                settings.setAccountKeypair(account);
+                            }
+                        } catch (Exception e) {
+                            LoggerHelper.e("SaveKeyPair", e.getMessage(), e);
+                        }
+                    } else {
+                        settings.setAccountKeypair("");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                })
+                .subscribeOn(Schedulers.computation())
+        .subscribe(
+                () -> publisher.onNext(Irrelevant.INSTANCE),
+                (error) -> {
+                    publisher.onError(error);
+                    LoggerHelper.e("SaveKeyPair", error.getMessage(), error);
                 }
-            } else {
-                settings.setAccountKeypair("");
-            }
-        }).subscribeOn(Schedulers.computation());
+        );
     }
 
     public boolean isKeyPairMustBeStored() {
@@ -52,4 +72,12 @@ public class SaveKeypairInteractor {
     }
 
 
+    @Override
+    protected void finalize() throws Throwable {
+        if (subscription != null) {
+            subscription.dispose();
+        }
+
+        super.finalize();
+    }
 }

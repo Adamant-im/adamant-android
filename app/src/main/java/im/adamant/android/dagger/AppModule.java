@@ -13,7 +13,6 @@ import im.adamant.android.dagger.activities.SplashScreenModule;
 import im.adamant.android.dagger.services.AdamantBalanceUpdateServiceModule;
 import im.adamant.android.dagger.services.AdamantFirebaseMessagingServiceModule;
 import im.adamant.android.dagger.services.SaveContactsServiceModule;
-import im.adamant.android.dagger.services.SaveSettingsServiceModule;
 import im.adamant.android.dagger.services.ServerNodePingServiceModule;
 import im.adamant.android.dagger.services.ServiceScope;
 import im.adamant.android.interactors.LogoutInteractor;
@@ -21,7 +20,6 @@ import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.SaveContactsService;
-import im.adamant.android.services.SaveSettingsService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
@@ -104,9 +102,7 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {AdamantFirebaseMessagingServiceModule.class})
     public abstract AdamantFirebaseMessagingService createAdamantFirebaseMessagingService();
 
-    @ServiceScope
-    @ContributesAndroidInjector(modules = {SaveSettingsServiceModule.class})
-    public abstract SaveSettingsService createSaveSettingsService();
+
 
 
     //--presenters

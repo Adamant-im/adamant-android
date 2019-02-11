@@ -77,6 +77,7 @@
     <string name="fragment_settings_store_keypair">Сохранить авторизацию</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления</string>
     <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>
+    <string name="fragment_settings_success_saved">Настройки успешно сохранены</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
     <string name="qrcode_was_created_in_gallery">QR-Код сохранен в галерею</string>

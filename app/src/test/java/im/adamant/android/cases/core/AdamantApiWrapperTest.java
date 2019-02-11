@@ -73,7 +73,7 @@ public class AdamantApiWrapperTest {
     private Callable<Boolean> provideAuthorizationRunnable(AdamantApiWrapper wrapper) {
         return () -> {
             wrapper
-                    .authorize(TestConstants.testPassPhrase)
+                    .authorize(TestConstants.TEST_PASS_PHRASE)
                     .blockingLast();
 
             return wrapper.isAuthorized();
@@ -94,16 +94,16 @@ public class AdamantApiWrapperTest {
         Observable<AdamantApi> adamantApiObservable = buildMockedApi();
 
         when(apiBuilder.build()).thenReturn(adamantApiObservable);
-        when(keyGenerator.getKeyPairFromPassPhrase(TestConstants.testPassPhrase))
-                .thenReturn(new KeyPair(TestConstants.testPublicKey, TestConstants.testSecretKey));
+        when(keyGenerator.getKeyPairFromPassPhrase(TestConstants.TEST_PASS_PHRASE))
+                .thenReturn(new KeyPair(TestConstants.TEST_PUBLIC_KEY, TestConstants.TEST_SECRET_KEY));
     }
 
     private Observable<AdamantApi> buildMockedApi() {
         Account account = new Account();
-        account.setAddress(TestConstants.testAddress);
-        account.setBalance(TestConstants.testBalance);
-        account.setUnconfirmedBalance(TestConstants.testBalance);
-        account.setPublicKey(TestConstants.testPublicKey);
+        account.setAddress(TestConstants.TEST_ADDRESS);
+        account.setBalance(TestConstants.TEST_BALANCE);
+        account.setUnconfirmedBalance(TestConstants.TEST_BALANCE);
+        account.setPublicKey(TestConstants.TEST_PUBLIC_KEY);
 
         Authorization authorization = new Authorization();
         authorization.setAccount(account);

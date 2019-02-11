@@ -76,6 +76,7 @@
     <string name="fragment_settings_store_keypair">Save authorization</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Subscribe to push notifications</string>
     <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>
+    <string name="fragment_settings_success_saved">Settings saved successfully</string>
 
     <string name="address_was_copied">Copied!</string>
     <string name="qrcode_was_created_in_gallery">QR-code has been saved in gallery</string>
