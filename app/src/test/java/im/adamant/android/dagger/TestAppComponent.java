@@ -11,13 +11,13 @@ import im.adamant.android.cases.presenters.SettingsPresenterTest;
 
 @Singleton
 @Component(modules = {
-        AvatarsModule.class,
-        EncryptionModule.class,
-        MessagesModule.class,
-        AdamantApiModule.class,
-        WalletsModule.class,
-        GeneralModule.class,
-        MarkdownModule.class,
+        TestAvatarsModule.class,
+        TestEncryptionModule.class,
+        TestMessagesModule.class,
+        TestAdamantApiModule.class,
+        TestWalletsModule.class,
+        TestGeneralModule.class,
+        TestMarkdownModule.class,
         TestInteractorsModule.class,
         AppModule.class
 })

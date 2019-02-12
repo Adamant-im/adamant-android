@@ -1,12 +1,17 @@
 package im.adamant.android.ui.presenters;
 
 import android.os.Bundle;
-import android.webkit.URLUtil;
 
 import com.arellomobile.mvp.InjectViewState;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import java.math.BigDecimal;
+
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.entities.Account;
+import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
@@ -24,15 +29,18 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     private Router router;
     private SaveKeypairInteractor saveKeypairInteractor;
     private SubscribeToPushInteractor subscribeToPushInteractor;
+    private AdamantApiWrapper api;
 
     public SettingsPresenter(
             Router router,
+            AdamantApiWrapper api,
             SaveKeypairInteractor saveKeypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
         this.router = router;
+        this.api = api;
         this.saveKeypairInteractor = saveKeypairInteractor;
         this.subscribeToPushInteractor = subscribeToPushInteractor;
     }
@@ -40,11 +48,12 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     @Override
     public void attachView(SettingsView view) {
         super.attachView(view);
+
         getViewState().setStoreKeyPairOption(
                 saveKeypairInteractor.isKeyPairMustBeStored()
         );
         getViewState().setEnablePushOption(
-                saveKeypairInteractor.isKeyPairMustBeStored()
+                saveKeypairInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
         );
         getViewState().switchPushOption(
                 subscribeToPushInteractor.isEnabledPush()
@@ -111,6 +120,19 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         subscriptions.add(subscribe);
 
         saveKeypairInteractor.saveKeypair(value);
+    }
+
+    private boolean isHaveMinimumBalance() {
+        boolean result = false;
+        Account account = api.getAccount();
+
+        if (api.isAuthorized() && account != null) {
+            BigDecimal balance = BalanceConvertHelper.convert(account.getBalance());
+            int compareResult = balance.compareTo(BuildConfig.ADM_MINIMUM_COST);
+            result = (compareResult >= 0);
+        }
+
+        return result;
     }
 
 }

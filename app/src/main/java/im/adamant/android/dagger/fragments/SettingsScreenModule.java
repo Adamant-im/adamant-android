@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SubscribeToPushInteractor;
 import im.adamant.android.ui.presenters.SettingsPresenter;
@@ -17,12 +18,14 @@ public class SettingsScreenModule {
     @Provides
     public static SettingsPresenter provideSettingsPresenter(
             Router router,
+            AdamantApiWrapper api,
             SaveKeypairInteractor saveKeypairInteractor,
             SubscribeToPushInteractor subscribeToPushInteractor,
             @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
     ) {
         return new SettingsPresenter(
                 router,
+                api,
                 saveKeypairInteractor,
                 subscribeToPushInteractor,
                 subscriptions

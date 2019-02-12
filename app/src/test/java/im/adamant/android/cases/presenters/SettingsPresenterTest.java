@@ -22,6 +22,8 @@ import javax.inject.Named;
 import im.adamant.android.Screens;
 import im.adamant.android.TestApplication;
 import im.adamant.android.TestConstants;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.entities.Account;
 import im.adamant.android.dagger.DaggerTestAppComponent;
 import im.adamant.android.dagger.TestAppComponent;
 import im.adamant.android.interactors.SaveKeypairInteractor;
@@ -64,6 +66,9 @@ public class SettingsPresenterTest {
     @Inject
     Router router;
 
+    @Inject
+    AdamantApiWrapper api;
+
     SettingsView view;
 
     CompositeDisposable disposable;
@@ -86,6 +91,7 @@ public class SettingsPresenterTest {
 
         presenter = new SettingsPresenter(
                 router,
+                api,
                 saveKeypairInteractor,
                 subscribeInteractor,
                 disposable
@@ -103,7 +109,7 @@ public class SettingsPresenterTest {
     }
 
     @Test
-    public void saveAllSettings() {
+    public void testSuccessSaveAllSettings() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, true);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, true);
@@ -119,7 +125,7 @@ public class SettingsPresenterTest {
     }
 
     @Test
-    public void unsubscribePushIfKeypairNotSaved() {
+    public void testUnsubscribePushIfKeypairNotSaved() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, false);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, true);
@@ -135,7 +141,7 @@ public class SettingsPresenterTest {
     }
 
     @Test
-    public void unsubscribePush() {
+    public void testUnsubscribePush() {
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, true);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, false);
@@ -150,4 +156,17 @@ public class SettingsPresenterTest {
         verify(saveKeypairInteractor).saveKeypair(true);
     }
 
+    @Test
+    public void testIfZeroBalanceSubscriptionOnNotificationsUnavailable() {
+        Account account = new Account();
+        account.setBalance(0);
+
+        when(saveKeypairInteractor.isKeyPairMustBeStored()).thenReturn(true);
+        when(api.isAuthorized()).thenReturn(true);
+        when(api.getAccount()).thenReturn(account);
+
+        presenter.attachView(view);
+
+        verify(view).setEnablePushOption(false);
+    }
 }

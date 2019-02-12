@@ -20,6 +20,7 @@ android {
         buildConfigField "int", "PING_SECONDS_DELAY", "4"
         buildConfigField "int", "UPDATE_BALANCE_SECONDS_DELAY", "30"
         buildConfigField "double", "ADM_TRANSFER_FEE", "0.5"
+        buildConfigField "java.math.BigDecimal", "ADM_MINIMUM_COST", "new java.math.BigDecimal(\"0.001\")"
 
         buildConfigField "String", "API_BASE", "\"/api/\""
         buildConfigField "String", "WELCOME_MESSAGE_ADDR", "\"U15423595369615486571\""
