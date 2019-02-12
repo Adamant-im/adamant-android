@@ -14,8 +14,6 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -81,7 +79,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
                         },
                         error -> {
                             //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
-                            localInteractor.enablePush(false);
+                            localInteractor.switchPushNotificationSubscription(false);
                         }
                 );
 

@@ -56,7 +56,7 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
                 saveKeypairInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
         );
         getViewState().switchPushOption(
-                subscribeToPushInteractor.isEnabledPush()
+                subscribeToPushInteractor.isSubscribedOnPush()
         );
     }
 
@@ -64,8 +64,8 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().setEnablePushOption(value);
     }
 
-    public void onClickSaveSettings(Bundle config){
-        if (config != null){
+    public void onClickSaveSettings(Bundle config) {
+        if (config != null) {
             boolean isSaveKeypair = config.getBoolean(IS_SAVE_KEYPAIR, false);
             boolean isSubscribeToNotifications = config.getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
 
@@ -81,8 +81,6 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     }
 
     private void savePushSettings(boolean enable) {
-        subscribeToPushInteractor.enablePush(enable);
-
         CompositeDisposable localSubscriptions = subscriptions;
 
         if (enable) {

@@ -39,11 +39,11 @@ public class SubscribeToPushInteractor {
         this.messageFactoryProvider = messageFactoryProvider;
     }
 
-    public void enablePush(boolean enable) {
+    public void switchPushNotificationSubscription(boolean enable) {
         settings.setEnablePushNotifications(enable);
     }
 
-    public boolean isEnabledPush() {
+    public boolean isSubscribedOnPush() {
         return settings.isEnablePushNotifications();
     }
 
@@ -65,6 +65,7 @@ public class SubscribeToPushInteractor {
         Disposable subscription = sendMessageForNotificationService(currentToken, AdamantPushSubscriptionMessage.ADD_ACTION)
                 .subscribe(() -> {
                             settings.setNotificationToken(currentToken);
+                            settings.setEnablePushNotifications(true);
                             subscribePublisher.onNext(Event.SUBSCRIBED);
                         },
                         (error) -> subscribePublisher.onError(error)

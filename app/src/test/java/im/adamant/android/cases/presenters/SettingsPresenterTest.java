@@ -14,12 +14,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import im.adamant.android.Screens;
 import im.adamant.android.TestApplication;
 import im.adamant.android.TestConstants;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -38,7 +34,6 @@ import ru.terrakok.cicerone.Router;
 
 import static im.adamant.android.ui.mvp_view.SettingsView.IS_RECEIVE_NOTIFICATIONS;
 import static im.adamant.android.ui.mvp_view.SettingsView.IS_SAVE_KEYPAIR;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -96,8 +91,6 @@ public class SettingsPresenterTest {
                 subscribeInteractor,
                 disposable
         );
-
-        when(subscribeInteractor.getEventsObservable()).thenReturn(Flowable.empty());
         when(saveKeypairInteractor.getFlowable()).thenReturn(Flowable.empty());
     }
 
@@ -110,6 +103,8 @@ public class SettingsPresenterTest {
 
     @Test
     public void testSuccessSaveAllSettings() {
+        when(subscribeInteractor.getEventsObservable()).thenReturn(Flowable.just(SubscribeToPushInteractor.Event.SUBSCRIBED));
+
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, true);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, true);
@@ -117,7 +112,6 @@ public class SettingsPresenterTest {
         presenter.attachView(view);
         presenter.onClickSaveSettings(bundle);
 
-        verify(subscribeInteractor).enablePush(true);
         verify(subscribeInteractor).savePushToken(TestConstants.FAKE_FCM_TOKEN);
         verify(subscribeInteractor).getEventsObservable();
         verify(saveKeypairInteractor).getFlowable();
@@ -126,6 +120,7 @@ public class SettingsPresenterTest {
 
     @Test
     public void testUnsubscribePushIfKeypairNotSaved() {
+        when(subscribeInteractor.getEventsObservable()).thenReturn(Flowable.just(SubscribeToPushInteractor.Event.UNSUBSCRIBED));
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, false);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, true);
@@ -133,7 +128,6 @@ public class SettingsPresenterTest {
         presenter.attachView(view);
         presenter.onClickSaveSettings(bundle);
 
-        verify(subscribeInteractor).enablePush(false);
         verify(subscribeInteractor).deleteCurrentToken();
         verify(subscribeInteractor).getEventsObservable();
         verify(saveKeypairInteractor).getFlowable();
@@ -142,6 +136,8 @@ public class SettingsPresenterTest {
 
     @Test
     public void testUnsubscribePush() {
+        when(subscribeInteractor.getEventsObservable()).thenReturn(Flowable.just(SubscribeToPushInteractor.Event.UNSUBSCRIBED));
+
         Bundle bundle = new Bundle();
         bundle.putBoolean(IS_SAVE_KEYPAIR, true);
         bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, false);
@@ -149,7 +145,6 @@ public class SettingsPresenterTest {
         presenter.attachView(view);
         presenter.onClickSaveSettings(bundle);
 
-        verify(subscribeInteractor).enablePush(false);
         verify(subscribeInteractor).deleteCurrentToken();
         verify(subscribeInteractor).getEventsObservable();
         verify(saveKeypairInteractor).getFlowable();
