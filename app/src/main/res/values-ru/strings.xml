@@ -50,8 +50,6 @@
 
     <string name="activity_push_subscription_title">Уведомления</string>
     <string name="activity_push_subscription_notifications_type">Тип сервиса уведомлений</string>
-    <string name="activity_push_subscription_notifications_type_fcm">FCM</string>
-    <string name="activity_push_subscription_notifications_type_local">Фоновый сервис</string>
 
     <string name="activity_currency_send_title">Отправить средства</string>
     <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>
@@ -81,7 +79,7 @@
     <string name="fragment_settings_nodes">Управление нодами</string>
     <string name="fragment_settings_store_keypair">Сохранить авторизацию</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления</string>
-    <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>
+    <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>-->
     <string name="fragment_settings_success_saved">Настройки успешно сохранены</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
@@ -106,6 +104,23 @@
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
     <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
     <string name="default_notification_message">У Вас новое сообщение</string>
+
+    <string name="fcm_notification_service_short">FCM</string>
+    <string name="fcm_notification_service_change_token_title">FCM обновил токен</string>
+    <string name="fcm_notification_service_change_token_message">FCM обновил токен. С вашего счета списано %s ADM</string>
+    <string name="fcm_notification_service_full">Firebase Messaging Service</string>
+    <!--TODO: Write decription-->
+    <string name="fcm_notification_service_description">Описание для Firebase Messaging Service</string>
+
+    <string name="local_notification_service_short">Фоновый сервис</string>
+    <string name="local_notification_service_full">Фоновый сервис</string>
+    <!--TODO: Write decription-->
+    <string name="local_notification_service_description">Описание фонового сервиса</string>
+
+    <string name="disabled_notification_service_short">Отключены</string>
+    <string name="disabled_notification_service_full">Уведомления отключены</string>
+    <!--TODO: Write decription-->
+    <string name="disabled_notification_service_description">Описание сервиса отключенных уведомлений</string>
 
 
     <!--ERRORS-->

@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.rx.Irrelevant;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -15,7 +16,7 @@ public class LogoutInteractor {
     private ChatsStorage chatsStorage;
     private Settings settings;
     private AdamantApiWrapper api;
-    private SubscribeToFcmPushInteractor subscribeToPushInteractor;
+    private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
     private RefreshChatsInteractor refreshChatsInteractor;
 
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
@@ -26,13 +27,13 @@ public class LogoutInteractor {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SubscribeToFcmPushInteractor subscribeToPushInteractor,
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
             RefreshChatsInteractor refreshChatsInteractor
     ) {
         this.chatsStorage = chatsStorage;
         this.settings = settings;
         this.api = api;
-        this.subscribeToPushInteractor = subscribeToPushInteractor;
+        this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
     }
 
@@ -44,23 +45,19 @@ public class LogoutInteractor {
         if (logoutDisposable != null) {
             logoutDisposable.dispose();
         }
-
-        logoutDisposable = subscribeToPushInteractor
-                .getEventsObservable()
-                .timeout(30, TimeUnit.SECONDS)
+        logoutDisposable = switchPushNotificationServiceInteractor
+                .resetNotificationFacade()
                 .subscribe(
-                        (event) -> {
-                            if ((event == SubscribeToFcmPushInteractor.Event.UNSUBSCRIBED) || (event == SubscribeToFcmPushInteractor.Event.IGNORED)) {
-                                refreshChatsInteractor.cleanUp();
-                                chatsStorage.cleanUp();
-                                api.logout();
-                                settings.setAccountKeypair("");
-                                settings.setKeyPairMustBeStored(false);
+                        () -> {
+                            refreshChatsInteractor.cleanUp();
+                            chatsStorage.cleanUp();
+                            api.logout();
+                            settings.setAccountKeypair("");
+                            settings.setKeyPairMustBeStored(false);
 
-                                publisher.onNext(Irrelevant.INSTANCE);
-                                logoutDisposable.dispose();
-                                logoutDisposable = null;
-                            }
+                            publisher.onNext(Irrelevant.INSTANCE);
+                            logoutDisposable.dispose();
+                            logoutDisposable = null;
                         },
                         (error) -> {
                             publisher.onError(error);
@@ -69,7 +66,7 @@ public class LogoutInteractor {
                         }
                 );
 
-        subscribeToPushInteractor.deleteCurrentToken();
+        switchPushNotificationServiceInteractor.resetNotificationFacade();
     }
 
     @Override

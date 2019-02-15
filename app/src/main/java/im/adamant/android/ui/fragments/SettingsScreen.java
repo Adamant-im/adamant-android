@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -30,6 +31,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 
@@ -55,8 +57,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
-    @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
+    @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
     @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_pb_progress) TextView progressBarView;
 
     private boolean showSaveButton = false;
 
@@ -88,32 +91,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
-    @Override
-    public void onPause() {
-//        presenter.onClickSaveSettings(prepareSettingsBundle());
-
-        super.onPause();
-    }
-
     @OnClick(R.id.fragment_settings_tr_show_nodes)
     public void onClickShowNodesList() {
         presenter.onClickShowNodesList();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-//        if (!isVisibleToUser && (presenter != null)){
-//            presenter.onClickSaveSettings(prepareSettingsBundle());
-//        }
     }
 
 
@@ -138,41 +118,40 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         presenter.onSetCheckedStoreKeypair(checked);
     }
 
-    @OnCheckedChanged(R.id.fragment_settings_sw_push_notifications)
-    public void onSwitchPushOption(CompoundButton button, boolean checked) {
-        androidx.appcompat.app.AlertDialog.Builder builder = null;
-        FragmentActivity activity = getActivity();
-
-        if (activity != null) {
-            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-
-            builder.setTitle(getString(R.string.fragment_settings_choose_language));
-            presenter.onSetCheckedPushOption(checked);
-        }
+    @OnClick(R.id.fragment_settings_tv_notification)
+    public void onClickSelectPushNotificationService() {
+        presenter.onClickShowSelectPushService();
     }
 
     @Override
     public void setEnablePushOption(boolean value) {
-        enablePushNotifications.setEnabled(value);
-        if (!value){
-            enablePushNotifications.setChecked(false);
-        }
+        pushNotificationServiceView.setEnabled(value);
     }
 
     @Override
-    public void setCheckedPushOption(boolean value) {
-        enablePushNotifications.setChecked(value);
+    public void displayCurrentNotificationFacade(PushNotificationServiceFacade facade) {
+        pushNotificationServiceView.setText(getString(facade.getShortTitleResource()));
     }
 
     @Override
-    public void showSaveSettingsButton(boolean value) {
-        showSaveButton = value;
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            activity.invalidateOptionsMenu();
-        }
+    public void startProgress() {
+        progressBarView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void stopProgress() {
+        progressBarView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(int messageResource) {
+        Toast.makeText(getActivity(), messageResource, Toast.LENGTH_LONG).show();
+    }
 
 
     //TODO: Refactor: method to long and dirty
@@ -216,13 +195,5 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
 
         return builder;
-    }
-
-    private Bundle prepareSettingsBundle() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
-        bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
-
-        return bundle;
     }
 }

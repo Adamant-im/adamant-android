@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.disposables.Disposable;
@@ -16,14 +17,14 @@ public class Settings {
     private static final String KEY_PAIR_MUST_BE_STORED = "key_pair_must_be_stored";
     private static final String NOTIFICATION_TOKEN = "notification_token";
     private static final String ADDRESS_OF_NOTIFICATION_SERVICE = "address_of_notification_service";
-    private static final String ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";
+    private static final String PUSH_NOTIFICATION_SERVICE = "push_notification_service";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
     private String accountKeypair = "";
     private boolean isKeyPairMustBeStored;
     private String notificationToken = "";
     private String addressOfNotificationService = "";
-    private boolean enablePushNotifications;
+    private SupportedPushNotificationFacadeType pushNotificationFacadeType;
 
     private SharedPreferences preferences;
 
@@ -34,7 +35,12 @@ public class Settings {
         isKeyPairMustBeStored = this.preferences.getBoolean(KEY_PAIR_MUST_BE_STORED, false);
         notificationToken = this.preferences.getString(NOTIFICATION_TOKEN, "");
         addressOfNotificationService = this.preferences.getString(ADDRESS_OF_NOTIFICATION_SERVICE, BuildConfig.DEFAULT_NOTIFICATION_SERVICE_ADDRESS);
-        enablePushNotifications = this.preferences.getBoolean(ENABLE_PUSH_NOTIFICATIONS, false);
+        pushNotificationFacadeType = SupportedPushNotificationFacadeType.valueOf(
+                this.preferences.getString(
+                        PUSH_NOTIFICATION_SERVICE,
+                        SupportedPushNotificationFacadeType.DISABLED.name()
+                )
+        );
 
         loadNodes();
     }
@@ -103,15 +109,15 @@ public class Settings {
                 .apply();
     }
 
-    public boolean isEnablePushNotifications() {
-        return enablePushNotifications;
+    public SupportedPushNotificationFacadeType getPushNotificationFacadeType() {
+        return pushNotificationFacadeType;
     }
 
-    public void setEnablePushNotifications(boolean enablePushNotifications) {
-        this.enablePushNotifications = enablePushNotifications;
+    public void setPushNotificationFacadeType(SupportedPushNotificationFacadeType type) {
+        this.pushNotificationFacadeType = type;
         this.preferences
                 .edit()
-                .putBoolean(ENABLE_PUSH_NOTIFICATIONS, enablePushNotifications)
+                .putString(PUSH_NOTIFICATION_SERVICE, type.name())
                 .apply();
     }
 

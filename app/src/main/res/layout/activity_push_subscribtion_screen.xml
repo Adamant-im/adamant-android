@@ -75,7 +75,7 @@
                             android:layout_height="24dp"
                             android:layout_weight="1"
                             android:padding="0dp"
-                            android:text="@string/activity_push_subscription_notifications_type_fcm"
+                            android:text="@string/fcm_notification_service_short"
                             android:textAlignment="textEnd"
                             android:textColor="@color/secondary" />
 

@@ -1,11 +1,15 @@
-package im.adamant.android.interactors;
+package im.adamant.android.interactors.push;
+
+import android.app.usage.UsageEvents;
+
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.R;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.Irrelevant;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantPushSubscriptionMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantPushSubscriptionMessageFactory;
@@ -16,22 +20,15 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.subjects.CompletableSubject;
 import io.reactivex.subjects.PublishSubject;
 
-public class SubscribeToFcmPushInteractor {
+public class FCMNotificationServiceFacade implements PushNotificationServiceFacade {
     private Settings settings;
     private MessageFactoryProvider messageFactoryProvider;
-    private PublishSubject<Event> subscribePublisher = PublishSubject.create();
-    private Flowable<Event> subscribeFlowable = subscribePublisher.toFlowable(BackpressureStrategy.LATEST);
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public enum Event {
-        SUBSCRIBED,
-        UNSUBSCRIBED,
-        IGNORED
-    }
-
-    public SubscribeToFcmPushInteractor(
+    public FCMNotificationServiceFacade(
             Settings settings,
             MessageFactoryProvider messageFactoryProvider
     ) {
@@ -39,56 +36,68 @@ public class SubscribeToFcmPushInteractor {
         this.messageFactoryProvider = messageFactoryProvider;
     }
 
-    public void enablePush(boolean enable) {
-        settings.setEnablePushNotifications(enable);
+    @Override
+    public int getTitleResource() {
+        return R.string.fcm_notification_service_full;
     }
 
-    public boolean isEnabledPush() {
-        return settings.isEnablePushNotifications();
+    @Override
+    public int getShortTitleResource() {
+        return R.string.fcm_notification_service_short;
     }
 
-    public Flowable<Event> getEventsObservable() {
-        return subscribeFlowable;
+    @Override
+    public int getDescriptionResource() {
+        return R.string.fcm_notification_service_description;
     }
 
-    public void savePushToken(String currentToken) {
-        String oldDeviceToken = settings.getNotificationToken();
-
-        if (!settings.isEnablePushNotifications()){
-            subscribePublisher.onNext(Event.IGNORED);
-        }
-
-        if (currentToken == null || currentToken.isEmpty() || currentToken.equalsIgnoreCase(oldDeviceToken)){
-            subscribePublisher.onNext(Event.IGNORED);
-        }
-
-        Disposable subscription = sendMessageForNotificationService(currentToken, AdamantPushSubscriptionMessage.ADD_ACTION)
-                .subscribe(() -> {
-                            settings.setNotificationToken(currentToken);
-                            subscribePublisher.onNext(Event.SUBSCRIBED);
-                        },
-                        (error) -> subscribePublisher.onError(error)
-                );
-        compositeDisposable.add(subscription);
+    @Override
+    public SupportedPushNotificationFacadeType getFacadeType() {
+        return SupportedPushNotificationFacadeType.FCM;
     }
 
-    public void deleteCurrentToken() {
+    @Override
+    public Completable subscribe() {
+        CompletableSubject completable = CompletableSubject.create();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
+            String deviceToken = instanceIdResult.getToken();
+
+            String oldDeviceToken = settings.getNotificationToken();
+
+            if (deviceToken.isEmpty() || deviceToken.equalsIgnoreCase(oldDeviceToken)){
+                 completable.onComplete();
+                 return;
+            }
+
+            Disposable subscribe = sendMessageForNotificationService(deviceToken, AdamantPushSubscriptionMessage.ADD_ACTION)
+                    .subscribe(
+                            () -> {
+                                settings.setNotificationToken(deviceToken);
+                                completable.onComplete();
+                            },
+                            completable::onError
+                    );
+
+            compositeDisposable.add(subscribe);
+
+        });
+
+        return completable;
+    }
+
+    @Override
+    public Completable unsubscribe() {
         String notificationToken = settings.getNotificationToken();
         if (notificationToken == null || notificationToken.isEmpty()) {
-            subscribePublisher.onNext(Event.IGNORED);
+            //TODO: Обязательно проверь в тестах кейс с выходом
+            return Completable.complete();
         }
 
-        Disposable subscription = sendMessageForNotificationService(notificationToken, AdamantPushSubscriptionMessage.REMOVE_ACTION)
-                .subscribe(() -> {
-                            settings.setNotificationToken("");
-                            settings.setEnablePushNotifications(false);
-                            subscribePublisher.onNext(Event.UNSUBSCRIBED);
-                        },
-                        (error) -> subscribePublisher.onError(error)
-                );
-        compositeDisposable.add(subscription);
+        return sendMessageForNotificationService(notificationToken, AdamantPushSubscriptionMessage.REMOVE_ACTION)
+                .doOnComplete(() -> {
+                    settings.setNotificationToken("");
+                });
     }
-
 
     private Completable sendMessageForNotificationService(String token, String action) {
         try {

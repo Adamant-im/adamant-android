@@ -221,6 +221,12 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                         startActivity(intent);
                     }
                     break;
+
+                    case Screens.PUSH_SUBSCRIPTION_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
+                        startActivity(intent);
+                    }
+                    break;
                 }
             } else if(command instanceof SystemMessage){
                 SystemMessage message = (SystemMessage) command;

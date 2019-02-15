@@ -19,6 +19,7 @@ import im.adamant.android.cases.presenters.SettingsPresenterTest;
         TestGeneralModule.class,
         TestMarkdownModule.class,
         TestInteractorsModule.class,
+        TestPushNotificationModule.class,
         AppModule.class
 })
 public interface TestAppComponent {

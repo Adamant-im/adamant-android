@@ -14,15 +14,23 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
+import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
+import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
+import im.adamant.android.interactors.push.FCMNotificationServiceFacade;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.SplashScreen;
 import io.reactivex.Flowable;
@@ -38,7 +46,10 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     AuthorizeInteractor authorizeInteractor;
 
     @Inject
-    SubscribeToFcmPushInteractor subscribeToPushInteractor;
+    Map<SupportedPushNotificationFacadeType, PushNotificationServiceFacade> facades;
+
+    @Inject
+    Settings settings;
 
     @Override
     public void onCreate() {
@@ -50,10 +61,14 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        if (settings.getPushNotificationFacadeType() != SupportedPushNotificationFacadeType.FCM) {
+            return;
+        }
+
         if (BaseActivity.isActivityInForeground()){
             LoggerHelper.d("FCM", "IGNORE PUSH-NOTIFICATION ID: " + remoteMessage.getMessageId());
         } else {
-            showNotification(remoteMessage);
+            showMessageNotification();
         }
     }
 
@@ -61,35 +76,74 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);
 
-        SubscribeToFcmPushInteractor localInteractor = subscribeToPushInteractor;
-        Disposable subscribe = authorizeInteractor
-                .restoreAuthorization()
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(authorization -> {
-                    if (authorization.isSuccess()){
-                        subscribeToPushInteractor.savePushToken(newToken);
-                        return subscribeToPushInteractor.getEventsObservable();
-                    } else {
-                        return Flowable.error(new NotAuthorizedException(authorization.getError()));
-                    }
-                })
-                .subscribe(
-                        (irrelevant) -> {
-                            //TODO: Notify user about change token
-                        },
-                        error -> {
-                            //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
-                            localInteractor.enablePush(false);
-                        }
-                );
+        if (settings.getPushNotificationFacadeType() != SupportedPushNotificationFacadeType.FCM) {
+            return;
+        }
 
+        FCMNotificationServiceFacade fcmFacade = (FCMNotificationServiceFacade) facades.get(SupportedPushNotificationFacadeType.FCM);
+        //TODO: disposable.dispose()
+        if (fcmFacade != null) {
+            Disposable disposable = authorizeInteractor
+                    .restoreAuthorization()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .flatMap(authorization -> {
+                        if (authorization.isSuccess()){
+                            return fcmFacade.subscribe().toFlowable();
+                        } else {
+                            return Flowable.error(new NotAuthorizedException(authorization.getError()));
+                        }
+                    })
+                    .ignoreElements()
+                    .timeout(60, TimeUnit.SECONDS)
+                    .subscribe(
+                            this::showChangeTokenNotification,
+                            error -> {
+                                //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
+                                fcmFacade.unsubscribe();
+                            }
+                    );
+        }
     }
 
-    private void showNotification(RemoteMessage remoteMessage) {
+    private void showChangeTokenNotification() {
+        String title = getString(R.string.fcm_notification_service_change_token_title);
+        String text = getString(R.string.fcm_notification_service_change_token_message);
+        text = String.format(Locale.ENGLISH, text, BuildConfig.ADM_MINIMUM_COST);
+
+        showNotification(title, text);
+    }
+
+    private void showMessageNotification() {
+        String title = getString(R.string.adamant_default_notification_channel);
+        String text = getString(R.string.default_notification_message);
+
+        showNotification(title, text);
+    }
+
+    private void showNotification(String title, String message) {
+        String channelId = buildChannel();
+
+        Intent notificationIntent = new Intent(this.getApplicationContext(), SplashScreen.class);
+
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent intent = PendingIntent.getActivity(this.getApplicationContext(), 0,
+                notificationIntent, 0);
+
+        Notification notification = NotificationHelper.buildMessageNotification(channelId, this, title, message);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        notification.contentIntent = intent;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        notificationManager.notify(NOTIFICATION_ID, notification);
+    }
+
+    private String buildChannel() {
         String channelId = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelName = getString(R.string.adamant_default_notification_channel);
-//            channelId = NotificationHelper.createNotificationChannel(ADAMANT_DEFAULT_NOTIFICATION_CHANNEL_ID, channelName, this);
 
             AudioAttributes attributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
@@ -111,24 +165,6 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
             }
         }
 
-        String title = getString(R.string.adamant_default_notification_channel);
-        String text = getString(R.string.default_notification_message);
-
-        Intent notificationIntent = new Intent(this.getApplicationContext(), SplashScreen.class);
-
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        PendingIntent intent = PendingIntent.getActivity(this.getApplicationContext(), 0,
-                notificationIntent, 0);
-
-        Notification notification = NotificationHelper.buildMessageNotification(channelId, this, title, text);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-
-        notification.contentIntent = intent;
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-//        int id = (int)(remoteMessage.getSentTime() / 1000);
-        notificationManager.notify(NOTIFICATION_ID, notification);
+        return channelId;
     }
 }

@@ -7,15 +7,19 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 import java.util.List;
 
 import im.adamant.android.core.entities.ServerNode;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 
 public interface SettingsView extends MvpView {
-    String IS_SAVE_KEYPAIR = "is_save_keypair_key";
-    String IS_RECEIVE_NOTIFICATIONS = "is_receive_notifications_key";
-
     void setCheckedStoreKeyPairOption(boolean value);
     void setEnableStoreKeyPairOption(boolean value);
     void setEnablePushOption(boolean value);
-    void setCheckedPushOption(boolean value);
+    void displayCurrentNotificationFacade(PushNotificationServiceFacade facade);
+    void startProgress();
+    void stopProgress();
 
-    void showSaveSettingsButton(boolean value);
+    @StateStrategyType(SkipStrategy.class)
+    void showMessage(String message);
+
+    @StateStrategyType(SkipStrategy.class)
+    void showMessage(int messageResource);
 }

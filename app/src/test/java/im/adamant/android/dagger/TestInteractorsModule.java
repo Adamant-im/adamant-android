@@ -14,7 +14,7 @@ import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 
 import static org.mockito.Mockito.mock;
@@ -53,8 +53,8 @@ public abstract class TestInteractorsModule {
 
     @Singleton
     @Provides
-    public static SubscribeToFcmPushInteractor provideSubscribeToPushInteractor() {
-        return mock(SubscribeToFcmPushInteractor.class);
+    public static SwitchPushNotificationServiceInteractor provideSubscribeToPushInteractor() {
+        return mock(SwitchPushNotificationServiceInteractor.class);
     }
 
     @Singleton

@@ -23,8 +23,10 @@ import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -82,11 +84,11 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static SubscribeToFcmPushInteractor provideSubscribeToPushInteractor(
+    public static SwitchPushNotificationServiceInteractor provideSubscribeToPushInteractor(
             Settings settings,
-            MessageFactoryProvider messageFactoryProvider
+            Map<SupportedPushNotificationFacadeType, PushNotificationServiceFacade> facades
     ) {
-        return new SubscribeToFcmPushInteractor(settings, messageFactoryProvider);
+        return new SwitchPushNotificationServiceInteractor(settings, facades);
     }
 
     @Singleton
@@ -145,9 +147,9 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SubscribeToFcmPushInteractor subscribeToPushInteractor,
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
             RefreshChatsInteractor refreshChatsInteractor
     ) {
-        return new LogoutInteractor(chatsStorage, settings, api, subscribeToPushInteractor, refreshChatsInteractor);
+        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor, refreshChatsInteractor);
     }
 }

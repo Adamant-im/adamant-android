@@ -13,4 +13,5 @@ public interface Screens {
     String REGISTRATION_SCREEN = "registration_screen";
     String SEND_CURRENCY_TRANSFER_SCREEN = "send_currency_transfer_screen";
     String NODES_LIST_SCREEN = "nodes_list_screen";
+    String PUSH_SUBSCRIPTION_SCREEN = "push_subscription_service_screen";
 }

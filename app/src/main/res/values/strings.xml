@@ -49,8 +49,6 @@
 
     <string name="activity_push_subscription_title">Push-notifications</string>
     <string name="activity_push_subscription_notifications_type">Push-notifications type</string>
-    <string name="activity_push_subscription_notifications_type_fcm">FCM</string>
-    <string name="activity_push_subscription_notifications_type_local">Background service</string>
 
     <string name="activity_currency_send_title">Send funds</string>
     <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>
@@ -80,7 +78,7 @@
     <string name="fragment_settings_version">Version: %s</string>
     <string name="fragment_settings_store_keypair">Save authorization</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Subscribe to push notifications</string>
-    <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>
+    <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>-->
     <string name="fragment_settings_success_saved">Settings saved successfully</string>
 
     <string name="address_was_copied">Copied!</string>
@@ -118,6 +116,24 @@
     <string name="encrypt_keypair_notification_message">Executing encrypt keypair</string>
     <string name="save_contacts_notification_message">Saving contact list</string>
     <string name="default_notification_message">You have a new message</string>
+
+    <string name="fcm_notification_service_short">FCM</string>
+    <string name="fcm_notification_service_change_token_title">FCM updated token</string>
+    <string name="fcm_notification_service_change_token_message">FCM updated token. %s ADM has been withdrawn from your account</string>
+    <string name="fcm_notification_service_full">Firebase Messaging Service</string>
+    <!--TODO: Write decription-->
+    <string name="fcm_notification_service_description">Description of Firebase Messaging Service</string>
+
+    <string name="local_notification_service_short">Local</string>
+    <string name="local_notification_service_full">Background service</string>
+    <!--TODO: Write decription-->
+    <string name="local_notification_service_description">Description of Background service</string>
+
+    <string name="disabled_notification_service_short">Disabled</string>
+    <string name="disabled_notification_service_full">Disabled service</string>
+    <!--TODO: Write decription-->
+    <string name="disabled_notification_service_description">Description of Disabled service</string>
+
 
 
     <!--HELLO-->
