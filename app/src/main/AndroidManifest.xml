@@ -81,6 +81,10 @@
             android:exported="false"
             android:theme="@style/AdamantLight.WithActionBar"
             />
+        <activity
+            android:name=".ui.PushSubscriptionScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar"/>
 
         <service
             android:name=".services.ServerNodesPingService"

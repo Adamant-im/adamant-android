@@ -2,6 +2,8 @@ package im.adamant.android.ui.fragments;
 
 
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -56,10 +58,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
     @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
 
+    private boolean showSaveButton = false;
+
     public SettingsScreen() {
         // Required empty public constructor
     }
-
 
     @Override
     public int getLayoutId() {
@@ -67,8 +70,14 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         String versionText = String.format(Locale.ENGLISH, getString(R.string.fragment_settings_version), BuildConfig.VERSION_NAME);
         versionView.setText(versionText);
@@ -88,7 +97,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
     @Override
     public void onPause() {
-        presenter.onClickSaveSettings(prepareSettingsBundle());
+//        presenter.onClickSaveSettings(prepareSettingsBundle());
 
         super.onPause();
     }
@@ -102,9 +111,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
 
-        if (!isVisibleToUser && (presenter != null)){
-            presenter.onClickSaveSettings(prepareSettingsBundle());
-        }
+//        if (!isVisibleToUser && (presenter != null)){
+//            presenter.onClickSaveSettings(prepareSettingsBundle());
+//        }
     }
 
 
@@ -115,13 +124,31 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void setStoreKeyPairOption(boolean value) {
+    public void setCheckedStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
+    }
+
+    @Override
+    public void setEnableStoreKeyPairOption(boolean value) {
+        storeKeypairView.setEnabled(value);
     }
 
     @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
     public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
-        presenter.onSwitchStoreKeypair(checked);
+        presenter.onSetCheckedStoreKeypair(checked);
+    }
+
+    @OnCheckedChanged(R.id.fragment_settings_sw_push_notifications)
+    public void onSwitchPushOption(CompoundButton button, boolean checked) {
+        androidx.appcompat.app.AlertDialog.Builder builder = null;
+        FragmentActivity activity = getActivity();
+
+        if (activity != null) {
+            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+
+            builder.setTitle(getString(R.string.fragment_settings_choose_language));
+            presenter.onSetCheckedPushOption(checked);
+        }
     }
 
     @Override
@@ -133,23 +160,19 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void switchPushOption(boolean value) {
+    public void setCheckedPushOption(boolean value) {
         enablePushNotifications.setChecked(value);
     }
 
+    @Override
+    public void showSaveSettingsButton(boolean value) {
+        showSaveButton = value;
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            activity.invalidateOptionsMenu();
+        }
+    }
 
-//    @Override
-//    public void callSaveSettingsService() {
-//        Activity activity = getActivity();
-//        if (activity != null) {
-//            Context context = activity.getApplicationContext();
-//            Intent intent = new Intent(context, SaveSettingsService.class);
-//            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
-//            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
-//
-//            ServiceManager.runService(context, intent);
-//        }
-//    }
 
 
     //TODO: Refactor: method to long and dirty

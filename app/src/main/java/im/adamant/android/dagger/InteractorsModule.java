@@ -23,7 +23,7 @@ import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
@@ -82,11 +82,11 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
+    public static SubscribeToFcmPushInteractor provideSubscribeToPushInteractor(
             Settings settings,
             MessageFactoryProvider messageFactoryProvider
     ) {
-        return new SubscribeToPushInteractor(settings, messageFactoryProvider);
+        return new SubscribeToFcmPushInteractor(settings, messageFactoryProvider);
     }
 
     @Singleton
@@ -145,7 +145,7 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SubscribeToPushInteractor subscribeToPushInteractor,
+            SubscribeToFcmPushInteractor subscribeToPushInteractor,
             RefreshChatsInteractor refreshChatsInteractor
     ) {
         return new LogoutInteractor(chatsStorage, settings, api, subscribeToPushInteractor, refreshChatsInteractor);

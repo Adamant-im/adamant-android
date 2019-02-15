@@ -131,7 +131,6 @@ dependencies {
     implementation "androidx.multidex:multidex:2.0.1"
     implementation 'com.jakewharton.rxbinding3:rxbinding-core:3.0.0-alpha2'
     implementation "com.google.firebase:firebase-messaging:17.3.4"
-    implementation "com.github.euzee:serviceManager:1.0.3"
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
     implementation "androidx.core:core:1.0.1"
     implementation "com.yarolegovich:discrete-scrollview:1.4.9"

@@ -14,12 +14,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import im.adamant.android.Screens;
 import im.adamant.android.TestApplication;
 import im.adamant.android.TestConstants;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -27,7 +23,7 @@ import im.adamant.android.core.entities.Account;
 import im.adamant.android.dagger.DaggerTestAppComponent;
 import im.adamant.android.dagger.TestAppComponent;
 import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.shadows.FirebaseInstanceIdShadow;
 import im.adamant.android.shadows.LocaleChangerShadow;
 import im.adamant.android.ui.mvp_view.SettingsView;
@@ -38,7 +34,6 @@ import ru.terrakok.cicerone.Router;
 
 import static im.adamant.android.ui.mvp_view.SettingsView.IS_RECEIVE_NOTIFICATIONS;
 import static im.adamant.android.ui.mvp_view.SettingsView.IS_SAVE_KEYPAIR;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -58,7 +53,7 @@ public class SettingsPresenterTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Inject
-    SubscribeToPushInteractor subscribeInteractor;
+    SubscribeToFcmPushInteractor subscribeInteractor;
 
     @Inject
     SaveKeypairInteractor saveKeypairInteractor;

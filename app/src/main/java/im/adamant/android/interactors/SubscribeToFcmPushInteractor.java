@@ -18,7 +18,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.subjects.PublishSubject;
 
-public class SubscribeToPushInteractor {
+public class SubscribeToFcmPushInteractor {
     private Settings settings;
     private MessageFactoryProvider messageFactoryProvider;
     private PublishSubject<Event> subscribePublisher = PublishSubject.create();
@@ -31,7 +31,7 @@ public class SubscribeToPushInteractor {
         IGNORED
     }
 
-    public SubscribeToPushInteractor(
+    public SubscribeToFcmPushInteractor(
             Settings settings,
             MessageFactoryProvider messageFactoryProvider
     ) {

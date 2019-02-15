@@ -1,7 +1,5 @@
 package im.adamant.android.dagger;
 
-import java.util.Map;
-
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,7 +14,7 @@ import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 
 import static org.mockito.Mockito.mock;
@@ -55,8 +53,8 @@ public abstract class TestInteractorsModule {
 
     @Singleton
     @Provides
-    public static SubscribeToPushInteractor provideSubscribeToPushInteractor() {
-        return mock(SubscribeToPushInteractor.class);
+    public static SubscribeToFcmPushInteractor provideSubscribeToPushInteractor() {
+        return mock(SubscribeToFcmPushInteractor.class);
     }
 
     @Singleton

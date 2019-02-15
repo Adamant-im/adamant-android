@@ -7,7 +7,7 @@ import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
@@ -20,7 +20,7 @@ public class SettingsScreenModule {
             Router router,
             AdamantApiWrapper api,
             SaveKeypairInteractor saveKeypairInteractor,
-            SubscribeToPushInteractor subscribeToPushInteractor,
+            SubscribeToFcmPushInteractor subscribeToPushInteractor,
             @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
     ) {
         return new SettingsPresenter(

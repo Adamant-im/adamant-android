@@ -47,6 +47,11 @@
 
     <string name="activity_scan_qrcode_title">Scan QR-code</string>
 
+    <string name="activity_push_subscription_title">Push-notifications</string>
+    <string name="activity_push_subscription_notifications_type">Push-notifications type</string>
+    <string name="activity_push_subscription_notifications_type_fcm">FCM</string>
+    <string name="activity_push_subscription_notifications_type_local">Background service</string>
+
     <string name="activity_currency_send_title">Send funds</string>
     <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>
     <string name="activity_currency_send_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>

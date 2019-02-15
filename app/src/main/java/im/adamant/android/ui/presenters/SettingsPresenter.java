@@ -14,7 +14,7 @@ import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -28,14 +28,14 @@ import static im.adamant.android.ui.mvp_view.SettingsView.IS_SAVE_KEYPAIR;
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
     private Router router;
     private SaveKeypairInteractor saveKeypairInteractor;
-    private SubscribeToPushInteractor subscribeToPushInteractor;
+    private SubscribeToFcmPushInteractor subscribeToPushInteractor;
     private AdamantApiWrapper api;
 
     public SettingsPresenter(
             Router router,
             AdamantApiWrapper api,
             SaveKeypairInteractor saveKeypairInteractor,
-            SubscribeToPushInteractor subscribeToPushInteractor,
+            SubscribeToFcmPushInteractor subscribeToPushInteractor,
             CompositeDisposable subscriptions
     ) {
         super(subscriptions);
@@ -49,22 +49,28 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     public void attachView(SettingsView view) {
         super.attachView(view);
 
-        getViewState().setStoreKeyPairOption(
+        getViewState().setCheckedStoreKeyPairOption(
                 saveKeypairInteractor.isKeyPairMustBeStored()
         );
         getViewState().setEnablePushOption(
                 saveKeypairInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
         );
-        getViewState().switchPushOption(
+        getViewState().setCheckedPushOption(
                 subscribeToPushInteractor.isEnabledPush()
         );
     }
 
-    public void onSwitchStoreKeypair(boolean value) {
+    public void onSetCheckedStoreKeypair(boolean value) {
         getViewState().setEnablePushOption(value);
+        getViewState().showSaveSettingsButton(true);
     }
 
-    public void onClickSaveSettings(Bundle config){
+    public void onSetCheckedPushOption(boolean value) {
+        getViewState().setEnablePushOption(value);
+        getViewState().showSaveSettingsButton(true);
+    }
+
+    public void onClickSaveSettings(Bundle config) {
         if (config != null){
             boolean isSaveKeypair = config.getBoolean(IS_SAVE_KEYPAIR, false);
             boolean isSubscribeToNotifications = config.getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
@@ -74,6 +80,7 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             saveKeyPair(isSaveKeypair);
             savePushSettings(isSubscribeToNotifications);
         }
+        getViewState().showSaveSettingsButton(false);
     }
 
     public void onClickShowNodesList() {

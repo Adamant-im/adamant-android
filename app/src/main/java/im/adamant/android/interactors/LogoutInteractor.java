@@ -15,7 +15,7 @@ public class LogoutInteractor {
     private ChatsStorage chatsStorage;
     private Settings settings;
     private AdamantApiWrapper api;
-    private SubscribeToPushInteractor subscribeToPushInteractor;
+    private SubscribeToFcmPushInteractor subscribeToPushInteractor;
     private RefreshChatsInteractor refreshChatsInteractor;
 
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
@@ -26,7 +26,7 @@ public class LogoutInteractor {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SubscribeToPushInteractor subscribeToPushInteractor,
+            SubscribeToFcmPushInteractor subscribeToPushInteractor,
             RefreshChatsInteractor refreshChatsInteractor
     ) {
         this.chatsStorage = chatsStorage;
@@ -50,7 +50,7 @@ public class LogoutInteractor {
                 .timeout(30, TimeUnit.SECONDS)
                 .subscribe(
                         (event) -> {
-                            if ((event == SubscribeToPushInteractor.Event.UNSUBSCRIBED) || (event == SubscribeToPushInteractor.Event.IGNORED)) {
+                            if ((event == SubscribeToFcmPushInteractor.Event.UNSUBSCRIBED) || (event == SubscribeToFcmPushInteractor.Event.IGNORED)) {
                                 refreshChatsInteractor.cleanUp();
                                 chatsStorage.cleanUp();
                                 api.logout();

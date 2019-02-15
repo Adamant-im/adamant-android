@@ -14,8 +14,6 @@ import androidx.core.app.NotificationManagerCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.io.IOException;
-
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjection;
@@ -24,7 +22,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SubscribeToFcmPushInteractor;
 import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.SplashScreen;
 import io.reactivex.Flowable;
@@ -40,7 +38,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     AuthorizeInteractor authorizeInteractor;
 
     @Inject
-    SubscribeToPushInteractor subscribeToPushInteractor;
+    SubscribeToFcmPushInteractor subscribeToPushInteractor;
 
     @Override
     public void onCreate() {
@@ -63,7 +61,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);
 
-        SubscribeToPushInteractor localInteractor = subscribeToPushInteractor;
+        SubscribeToFcmPushInteractor localInteractor = subscribeToPushInteractor;
         Disposable subscribe = authorizeInteractor
                 .restoreAuthorization()
                 .observeOn(AndroidSchedulers.mainThread())
