@@ -14,7 +14,9 @@ import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.rx.Irrelevant;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -57,49 +59,44 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
     }
 
     public void onSetCheckedStoreKeypair(boolean value) {
-        getViewState().startProgress();
-        getViewState().setEnableStoreKeyPairOption(false);
-        Disposable subscribe = saveKeypairInteractor.getFlowable()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        (irrelevant) -> {
-                            getViewState().setEnablePushOption(value);
-                            getViewState().stopProgress();
-                            getViewState().setEnableStoreKeyPairOption(true);
-                            getViewState().showMessage(R.string.fragment_settings_success_saved);
-                        },
-                        (error) -> {
-                            getViewState().stopProgress();
-                            getViewState().setEnableStoreKeyPairOption(true);
-                            getViewState().showMessage(error.getMessage());
-                            LoggerHelper.e("saveKeyPair", error.getMessage(), error);
-                        }
-                );
-        subscriptions.add(subscribe);
-
-        saveKeypairInteractor.saveKeypair(value);
+        if (value != saveKeypairInteractor.isKeyPairMustBeStored()){
+            getViewState().startProgress();
+            getViewState().setEnableStoreKeyPairOption(false);
+            getViewState().setEnablePushOption(false);
+            Disposable subscribe = saveKeypairInteractor.saveKeypair(value)
+                    .andThen(switchPushNotificationServiceInteractor.resetNotificationFacade(!value))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            () -> {
+                                getViewState().setEnablePushOption(value);
+                                getViewState().stopProgress();
+                                getViewState().setEnableStoreKeyPairOption(true);
+                                getViewState().showMessage(R.string.fragment_settings_success_saved);
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                            },
+                            (error) -> {
+                                getViewState().stopProgress();
+                                getViewState().setEnableStoreKeyPairOption(true);
+                                getViewState().showMessage(error.getMessage());
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                                LoggerHelper.e("saveKeyPair", error.getMessage(), error);
+                            }
+                    );
+            subscriptions.add(subscribe);
+        }
     }
 
     public void onClickShowSelectPushService() {
         router.navigateTo(Screens.PUSH_SUBSCRIPTION_SCREEN);
     }
 
-//    public void onClickSaveSettings(Bundle config) {
-//        if (config != null){
-//            boolean isSaveKeypair = config.getBoolean(IS_SAVE_KEYPAIR, false);
-//            boolean isSubscribeToNotifications = config.getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
-//
-//            if (!isSaveKeypair) {isSubscribeToNotifications = false;}
-//
-//            saveKeyPair(isSaveKeypair);
-//        }
-//        getViewState().showSaveSettingsButton(false);
-//    }
-
     public void onClickShowNodesList() {
         router.navigateTo(Screens.NODES_LIST_SCREEN);
     }
-
 
     private boolean isHaveMinimumBalance() {
         boolean result = false;

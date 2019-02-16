@@ -42,12 +42,20 @@ public class SwitchPushNotificationServiceInteractor {
         }
     }
 
-    public Completable resetNotificationFacade() {
-        return changeNotificationFacade(SupportedPushNotificationFacadeType.DISABLED);
+    public Completable resetNotificationFacade(boolean value) {
+        if (value) {
+            return changeNotificationFacade(SupportedPushNotificationFacadeType.DISABLED);
+        } else {
+            return Completable.complete();
+        }
     }
 
     public PushNotificationServiceFacade getCurrentFacade() {
         SupportedPushNotificationFacadeType pushNotificationFacadeType = settings.getPushNotificationFacadeType();
         return facades.get(pushNotificationFacadeType);
+    }
+
+    public Map<SupportedPushNotificationFacadeType, PushNotificationServiceFacade> getFacades() {
+        return facades;
     }
 }

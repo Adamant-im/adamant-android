@@ -1,4 +1,4 @@
-package im.adamant.android.ui.fragments;
+package im.adamant.android.ui.fragments.base;
 
 import android.content.Context;
 import android.os.Bundle;

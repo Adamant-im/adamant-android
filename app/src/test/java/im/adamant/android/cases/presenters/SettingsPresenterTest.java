@@ -4,10 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 import org.robolectric.RobolectricTestRunner;
@@ -34,7 +36,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -91,9 +95,6 @@ public class SettingsPresenterTest {
                 switchPushNotificationServiceInteractor,
                 disposable
         );
-
-        when(switchPushNotificationServiceInteractor.changeNotificationFacade(any())).thenReturn(Completable.complete());
-        when(saveKeypairInteractor.getFlowable()).thenReturn(Flowable.empty());
     }
 
     @After
@@ -103,51 +104,73 @@ public class SettingsPresenterTest {
         }
     }
 
-    //TODO: Need to check the key save
+    //TODO: Проверить включение отключение опции сохранение ключей
+    //TODO: Проверить Положительный и нулевой баланс
 
-//    @Test
-//    public void testSuccessSaveAllSettings() {
-//        presenter.attachView(view);
-//        presenter.onClickSaveSettings(bundle);
-//
-//        verify(subscribeInteractor).enablePush(true);
-//        verify(subscribeInteractor).savePushToken(TestConstants.FAKE_FCM_TOKEN);
-//        verify(subscribeInteractor).getEventsObservable();
-//        verify(saveKeypairInteractor).getFlowable();
-//        verify(saveKeypairInteractor).saveKeypair(true);
-//    }
-//
-//    @Test
-//    public void testUnsubscribePushIfKeypairNotSaved() {
-//        Bundle bundle = new Bundle();
-//        bundle.putBoolean(IS_SAVE_KEYPAIR, false);
-//        bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, true);
-//
-//        presenter.attachView(view);
-//        presenter.onClickSaveSettings(bundle);
-//
-//        verify(subscribeInteractor).enablePush(false);
-//        verify(subscribeInteractor).deleteCurrentToken();
-//        verify(subscribeInteractor).getEventsObservable();
-//        verify(saveKeypairInteractor).getFlowable();
-//        verify(saveKeypairInteractor).saveKeypair(false);
-//    }
-//
-//    @Test
-//    public void testUnsubscribePush() {
-//        Bundle bundle = new Bundle();
-//        bundle.putBoolean(IS_SAVE_KEYPAIR, true);
-//        bundle.putBoolean(IS_RECEIVE_NOTIFICATIONS, false);
-//
-//        presenter.attachView(view);
-//        presenter.onClickSaveSettings(bundle);
-//
-//        verify(subscribeInteractor).enablePush(false);
-//        verify(subscribeInteractor).deleteCurrentToken();
-//        verify(subscribeInteractor).getEventsObservable();
-//        verify(saveKeypairInteractor).getFlowable();
-//        verify(saveKeypairInteractor).saveKeypair(true);
-//    }
+    @Test
+    public void testAttachView() {
+        presenter.attachView(view);
+
+        //TODO: Уточни кокретные значения
+        verify(view).displayCurrentNotificationFacade(any());
+        verify(view).setEnablePushOption(anyBoolean());
+        verify(view).setCheckedStoreKeyPairOption(anyBoolean());
+
+    }
+
+    @Test
+    public void testOnSetCheckedStoreKeypairInTrueState() {
+        when(saveKeypairInteractor.isKeyPairMustBeStored()).thenReturn(false);
+        when(saveKeypairInteractor.saveKeypair(true)).thenReturn(Completable.complete());
+        when(switchPushNotificationServiceInteractor.resetNotificationFacade(false)).thenReturn(Completable.complete());
+
+        presenter.attachView(view);
+        presenter.onSetCheckedStoreKeypair(true);
+
+        ArgumentCaptor<Boolean> enablePushArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Boolean> enableStoreKeyArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(view, times(3)).setEnablePushOption(enablePushArgumentCaptor.capture());
+        verify(view, times(2)).setEnableStoreKeyPairOption(enableStoreKeyArgumentCaptor.capture());
+
+        Assert.assertEquals(false, enablePushArgumentCaptor.getAllValues().get(0));
+        Assert.assertEquals(false, enablePushArgumentCaptor.getAllValues().get(1));
+        Assert.assertEquals(true, enablePushArgumentCaptor.getAllValues().get(2));
+
+        Assert.assertEquals(false, enableStoreKeyArgumentCaptor.getAllValues().get(0));
+        Assert.assertEquals(true, enableStoreKeyArgumentCaptor.getAllValues().get(1));
+    }
+
+    @Test
+    public void testOnSetCheckedStoreKeypairInFalseState() {
+        Account account = new Account();
+        account.setBalance(1_000_000_000L);
+
+        when(saveKeypairInteractor.isKeyPairMustBeStored()).thenReturn(true);
+        when(api.isAuthorized()).thenReturn(true);
+        when(api.getAccount()).thenReturn(account);
+
+        when(saveKeypairInteractor.isKeyPairMustBeStored()).thenReturn(true);
+        when(saveKeypairInteractor.saveKeypair(false)).thenReturn(Completable.complete());
+        when(switchPushNotificationServiceInteractor.resetNotificationFacade(true)).thenReturn(Completable.complete());
+
+        presenter.attachView(view);
+        presenter.onSetCheckedStoreKeypair(false);
+
+        ArgumentCaptor<Boolean> enablePushArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
+        ArgumentCaptor<Boolean> enableStoreKeyArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
+
+        verify(view, times(3)).setEnablePushOption(enablePushArgumentCaptor.capture());
+        verify(view, times(2)).setEnableStoreKeyPairOption(enableStoreKeyArgumentCaptor.capture());
+
+        Assert.assertEquals(true, enablePushArgumentCaptor.getAllValues().get(0));
+        Assert.assertEquals(false, enablePushArgumentCaptor.getAllValues().get(1));
+        Assert.assertEquals(false, enablePushArgumentCaptor.getAllValues().get(2));
+
+        Assert.assertEquals(false, enableStoreKeyArgumentCaptor.getAllValues().get(0));
+        Assert.assertEquals(true, enableStoreKeyArgumentCaptor.getAllValues().get(1));
+    }
+
 
     @Test
     public void testIfZeroBalanceSubscriptionOnNotificationsUnavailable() {

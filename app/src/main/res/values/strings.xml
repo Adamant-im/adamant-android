@@ -50,6 +50,7 @@
     <string name="activity_push_subscription_title">Push services</string>
     <string name="activity_push_subscription_notifications_type">Push service type</string>
     <string name="activity_push_subscription_about_title">About push service types</string>
+    <string name="activity_push_subscription_select_type_title">Select service type</string>
 
     <string name="activity_currency_send_title">Send funds</string>
     <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>

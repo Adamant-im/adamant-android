@@ -51,6 +51,7 @@
     <string name="activity_push_subscription_title">Уведомления</string>
     <string name="activity_push_subscription_notifications_type">Тип сервиса уведомлений</string>
     <string name="activity_push_subscription_about_title">О типах сервисов уведомлений</string>
+    <string name="activity_push_subscription_select_type_title">Выберите тип уведомлений</string>
 
     <string name="activity_currency_send_title">Отправить средства</string>
     <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>

@@ -36,6 +36,7 @@ import im.adamant.android.R;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import im.adamant.android.ui.presenters.SendFundsPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;

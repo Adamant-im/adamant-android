@@ -18,9 +18,6 @@ public class SaveKeypairInteractor {
     private AdamantApiWrapper api;
     private KeyStoreCipher keyStoreCipher;
 
-    private PublishSubject<Irrelevant> publisher = PublishSubject.create();
-    private Flowable<Irrelevant> flowable = publisher.toFlowable(BackpressureStrategy.LATEST);
-
     private Disposable subscription;
 
     public SaveKeypairInteractor(
@@ -33,12 +30,8 @@ public class SaveKeypairInteractor {
         this.keyStoreCipher = keyStoreCipher;
     }
 
-    public Flowable<Irrelevant> getFlowable() {
-        return flowable;
-    }
-
-    public void saveKeypair(boolean value) {
-        subscription = Completable.fromAction(() -> {
+    public Completable saveKeypair(boolean value) {
+        return Completable.fromAction(() -> {
                     settings.setKeyPairMustBeStored(value);
 
                     if (value){
@@ -57,14 +50,7 @@ public class SaveKeypairInteractor {
                         settings.setAccountKeypair("");
                     }
                 })
-                .subscribeOn(Schedulers.computation())
-        .subscribe(
-                () -> publisher.onNext(Irrelevant.INSTANCE),
-                (error) -> {
-                    publisher.onError(error);
-                    LoggerHelper.e("SaveKeyPair", error.getMessage(), error);
-                }
-        );
+                .subscribeOn(Schedulers.computation());
     }
 
     public boolean isKeyPairMustBeStored() {

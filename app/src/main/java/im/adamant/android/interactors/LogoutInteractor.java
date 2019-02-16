@@ -46,7 +46,7 @@ public class LogoutInteractor {
             logoutDisposable.dispose();
         }
         logoutDisposable = switchPushNotificationServiceInteractor
-                .resetNotificationFacade()
+                .resetNotificationFacade(true)
                 .subscribe(
                         () -> {
                             refreshChatsInteractor.cleanUp();
@@ -65,8 +65,6 @@ public class LogoutInteractor {
                             logoutDisposable = null;
                         }
                 );
-
-        switchPushNotificationServiceInteractor.resetNotificationFacade();
     }
 
     @Override

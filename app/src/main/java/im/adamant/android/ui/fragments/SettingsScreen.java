@@ -33,6 +33,7 @@ import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 
@@ -151,7 +152,6 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void showMessage(int messageResource) {
         Toast.makeText(getActivity(), messageResource, Toast.LENGTH_LONG).show();
     }
-
 
     //TODO: Refactor: method to long and dirty
     private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {

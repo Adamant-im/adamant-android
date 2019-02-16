@@ -1,7 +1,6 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,17 +16,8 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.tabs.TabLayout;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
-import net.glxn.qrgen.android.QRCode;
-import net.glxn.qrgen.core.image.ImageType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -44,6 +34,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.WalletPresenter;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;

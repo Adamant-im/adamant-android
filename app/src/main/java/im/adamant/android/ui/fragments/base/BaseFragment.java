@@ -1,6 +1,5 @@
-package im.adamant.android.ui.fragments;
+package im.adamant.android.ui.fragments.base;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
-import im.adamant.android.R;
+
 /**
  * This class has been redesigned to work with the Moxy framework.
  * This is necessary because if you use the MvpAppCompatFragment class, then the syntax highlighting breaks.
