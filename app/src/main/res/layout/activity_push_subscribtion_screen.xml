@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:secondaryProgress="50"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -44,9 +44,9 @@
                 android:layout_height="match_parent">
 
                 <TableLayout
+                    android:id="@+id/tableLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
                     android:divider="?android:attr/dividerHorizontal"
                     android:paddingStart="@dimen/tablerow_default_margin_horizontal"
                     android:paddingLeft="@dimen/tablerow_default_margin_horizontal"
@@ -54,7 +54,6 @@
                     android:paddingRight="@dimen/tablerow_default_margin_horizontal"
                     android:showDividers="middle"
                     android:stretchColumns="*"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -77,10 +76,38 @@
                             android:padding="0dp"
                             android:text="@string/fcm_notification_service_short"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/secondary" />
+                            android:textColor="@drawable/selectable_text" />
 
                     </TableRow>
                 </TableLayout>
+
+                <TextView
+                    android:id="@+id/textView3"
+                    style="@style/AdamantLight.TextViewHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/activity_push_subscription_about_title"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+                <TextView
+                    android:id="@+id/textView4"
+                    style="@style/AdamantLight.TextViewNormal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="Тут будет информация по доступным сервисам"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.cardview.widget.CardView>

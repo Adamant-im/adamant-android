@@ -15,7 +15,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class PushSubscriptionScreenModule {
     @ActivityScope
     @Provides
-    public PushSubscriptionPresenter providePushSubscriptionPresenter(
+    public static PushSubscriptionPresenter providePushSubscriptionPresenter(
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
             @Named(Screens.PUSH_SUBSCRIPTION_SCREEN) CompositeDisposable subscriptions
     ){
@@ -28,7 +28,7 @@ public class PushSubscriptionScreenModule {
     @ActivityScope
     @Provides
     @Named(value = Screens.PUSH_SUBSCRIPTION_SCREEN)
-    public CompositeDisposable provideComposite() {
+    public static CompositeDisposable provideComposite() {
         return new CompositeDisposable();
     }
 }

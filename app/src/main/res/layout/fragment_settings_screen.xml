@@ -19,6 +19,7 @@
             android:layout_height="wrap_content"
             android:indeterminate="true"
             android:secondaryProgress="50"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -148,8 +149,9 @@
                                 android:layout_weight="1"
                                 android:padding="0dp"
                                 android:text="@string/fcm_notification_service_short"
+                                android:enabled="false"
                                 android:textAlignment="textEnd"
-                                android:textColor="@color/secondary"
+                                android:textColor="@drawable/selectable_text"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />

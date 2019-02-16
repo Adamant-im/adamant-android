@@ -5,6 +5,7 @@ import im.adamant.android.dagger.activities.LoginScreenModule;
 import im.adamant.android.dagger.activities.MainScreenModule;
 import im.adamant.android.dagger.activities.MessagesScreenModule;
 import im.adamant.android.dagger.activities.NodesListScreenModule;
+import im.adamant.android.dagger.activities.PushSubscriptionScreenModule;
 import im.adamant.android.dagger.activities.RegistrationScreenModule;
 import im.adamant.android.dagger.activities.ScanQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SendCurrencyTransferScreenModule;
@@ -25,6 +26,7 @@ import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
 import im.adamant.android.ui.NodesListScreen;
+import im.adamant.android.ui.PushSubscriptionScreen;
 import im.adamant.android.ui.RegistrationScreen;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.SendFundsScreen;
@@ -82,6 +84,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {NodesListScreenModule.class})
     public abstract NodesListScreen createNodesListScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {PushSubscriptionScreenModule.class})
+    public abstract PushSubscriptionScreen createPushSubscriptionScreenInjector();
 
 
     //--Services

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,9 +60,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
     @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
     @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
-    @BindView(R.id.fragment_settings_pb_progress) TextView progressBarView;
-
-    private boolean showSaveButton = false;
+    @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -140,7 +139,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Override
     public void stopProgress() {
-        progressBarView.setVisibility(View.GONE);
+        progressBarView.setVisibility(View.INVISIBLE);
     }
 
     @Override

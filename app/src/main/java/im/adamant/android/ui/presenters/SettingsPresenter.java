@@ -15,6 +15,7 @@ import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -59,6 +60,7 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         getViewState().startProgress();
         getViewState().setEnableStoreKeyPairOption(false);
         Disposable subscribe = saveKeypairInteractor.getFlowable()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         (irrelevant) -> {
                             getViewState().setEnablePushOption(value);

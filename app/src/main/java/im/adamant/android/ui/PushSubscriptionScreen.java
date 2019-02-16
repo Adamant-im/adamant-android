@@ -1,5 +1,7 @@
 package im.adamant.android.ui;
 
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -10,7 +12,9 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.annotation.Nullable;
 import butterknife.BindView;
+import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.PushSubscriptionView;
@@ -43,6 +47,15 @@ public class PushSubscriptionScreen extends BaseActivity implements PushSubscrip
     @Override
     public boolean withBackButton() {
         return true;
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
+        super.onCreate(savedInstanceState);
+
+        setTitle(getString(R.string.activity_push_subscription_title));
     }
 
     @Override
