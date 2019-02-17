@@ -11,15 +11,20 @@ import im.adamant.android.dagger.activities.ScanQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SendCurrencyTransferScreenModule;
 import im.adamant.android.dagger.activities.ShowQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SplashScreenModule;
+import im.adamant.android.dagger.receivers.BootCompletedBroadcastReceiverModule;
+import im.adamant.android.dagger.receivers.ReceiverScope;
 import im.adamant.android.dagger.services.AdamantBalanceUpdateServiceModule;
 import im.adamant.android.dagger.services.AdamantFirebaseMessagingServiceModule;
+import im.adamant.android.dagger.services.AdamantLocalMessagingServiceModule;
 import im.adamant.android.dagger.services.SaveContactsServiceModule;
 import im.adamant.android.dagger.services.ServerNodePingServiceModule;
 import im.adamant.android.dagger.services.ServiceScope;
 import im.adamant.android.interactors.LogoutInteractor;
 
+import im.adamant.android.receivers.BootCompletedBroadcast;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
+import im.adamant.android.services.AdamantLocalMessagingService;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.services.ServerNodesPingService;
 import im.adamant.android.ui.LoginScreen;
@@ -108,7 +113,16 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {AdamantFirebaseMessagingServiceModule.class})
     public abstract AdamantFirebaseMessagingService createAdamantFirebaseMessagingService();
 
+    @ServiceScope
+    @ContributesAndroidInjector(modules = {AdamantLocalMessagingServiceModule.class})
+    public abstract AdamantLocalMessagingService createAdamantLocalMessagingService();
 
+
+    //--Receivers
+
+    @ReceiverScope
+    @ContributesAndroidInjector(modules = {BootCompletedBroadcastReceiverModule.class})
+    public abstract BootCompletedBroadcast createBootCompletedBroadcastReceiver();
 
 
     //--presenters
@@ -129,5 +143,4 @@ public abstract class AppModule {
     ){
         return new MainPresenter(router, logoutInteractor, compositeDisposable);
     }
-
 }

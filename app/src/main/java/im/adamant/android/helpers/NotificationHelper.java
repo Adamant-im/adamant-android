@@ -47,11 +47,16 @@ public class NotificationHelper {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    public static String createNotificationChannel(String channelId, String channelName, Context context){
+    public static String createSilentNotificationChannel(String channelId, String channelName, Context context){
         NotificationChannel chan = new NotificationChannel(channelId,
                 channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setDescription("Silent channel");
+        chan.setSound(null,null);
+        chan.enableLights(false);
         chan.setLightColor(Color.BLUE);
+        chan.enableVibration(false);
         chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
         NotificationManager service = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (service != null) {
             service.createNotificationChannel(chan);

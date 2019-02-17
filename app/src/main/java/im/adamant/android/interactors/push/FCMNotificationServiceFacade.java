@@ -95,6 +95,7 @@ public class FCMNotificationServiceFacade implements PushNotificationServiceFaca
 
         return sendMessageForNotificationService(notificationToken, AdamantPushSubscriptionMessage.REMOVE_ACTION)
                 .doOnComplete(() -> {
+                    FirebaseInstanceId.getInstance().deleteInstanceId();
                     settings.setNotificationToken("");
                 });
     }

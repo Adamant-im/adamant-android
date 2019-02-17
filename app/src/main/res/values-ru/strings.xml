@@ -106,6 +106,7 @@
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
     <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
     <string name="default_notification_message">У Вас новое сообщение</string>
+    <string name="new_message_scanning_notification_message">Поиск новых сообщений</string>
 
     <string name="fcm_notification_service_short">FCM</string>
     <string name="fcm_notification_service_change_token_title">FCM обновил токен</string>

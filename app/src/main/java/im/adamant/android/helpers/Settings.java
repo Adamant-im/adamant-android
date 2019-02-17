@@ -18,12 +18,14 @@ public class Settings {
     private static final String NOTIFICATION_TOKEN = "notification_token";
     private static final String ADDRESS_OF_NOTIFICATION_SERVICE = "address_of_notification_service";
     private static final String PUSH_NOTIFICATION_SERVICE = "push_notification_service";
+    private static final String LAST_TRANSACTION_TIMESTAMP = "last_transaction_timestamp";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
     private String accountKeypair = "";
     private boolean isKeyPairMustBeStored;
     private String notificationToken = "";
     private String addressOfNotificationService = "";
+    private int lastTransactionTimestamp;
     private SupportedPushNotificationFacadeType pushNotificationFacadeType;
 
     private SharedPreferences preferences;
@@ -41,6 +43,7 @@ public class Settings {
                         SupportedPushNotificationFacadeType.DISABLED.name()
                 )
         );
+        lastTransactionTimestamp = this.preferences.getInt(LAST_TRANSACTION_TIMESTAMP, 0);
 
         loadNodes();
     }
@@ -118,6 +121,18 @@ public class Settings {
         this.preferences
                 .edit()
                 .putString(PUSH_NOTIFICATION_SERVICE, type.name())
+                .apply();
+    }
+
+    public int getLastTransactionTimestamp() {
+        return lastTransactionTimestamp;
+    }
+
+    public void setLastTransactionTimestamp(int lastTransactionTimestamp) {
+        this.lastTransactionTimestamp = lastTransactionTimestamp;
+        this.preferences
+                .edit()
+                .putInt(LAST_TRANSACTION_TIMESTAMP, lastTransactionTimestamp)
                 .apply();
     }
 

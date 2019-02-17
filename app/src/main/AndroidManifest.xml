@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:name=".AdamantApplication"
@@ -86,6 +87,7 @@
             android:exported="false"
             android:theme="@style/AdamantLight.WithActionBar"/>
 
+
         <service
             android:name=".services.ServerNodesPingService"
             android:exported="false" />
@@ -101,6 +103,25 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!--TODO: Write code for enable this service and receiver-->
+        <service
+            android:name=".services.AdamantLocalMessagingService"
+            android:enabled="false"
+            android:exported="false"
+            android:process=":remote"/>
+
+
+        <receiver
+            android:name=".receivers.BootCompletedBroadcast"
+            android:directBootAware="true"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

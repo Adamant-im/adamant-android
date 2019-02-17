@@ -61,13 +61,13 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
+        LoggerHelper.d("FCM", "RECEIVED PUSH-NOTIFICATION: " + remoteMessage.getMessageId());
+
         if (settings.getPushNotificationFacadeType() != SupportedPushNotificationFacadeType.FCM) {
             return;
         }
 
-        if (BaseActivity.isActivityInForeground()){
-            LoggerHelper.d("FCM", "IGNORE PUSH-NOTIFICATION ID: " + remoteMessage.getMessageId());
-        } else {
+        if (!BaseActivity.isActivityInForeground()){
             showMessageNotification();
         }
     }

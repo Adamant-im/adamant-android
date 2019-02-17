@@ -17,6 +17,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
@@ -151,5 +152,14 @@ public abstract class InteractorsModule {
             RefreshChatsInteractor refreshChatsInteractor
     ) {
         return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor, refreshChatsInteractor);
+    }
+
+    @Singleton
+    @Provides
+    public static HasNewMessagesInteractor provideHasNewMessagesInteractor(
+            Settings settings,
+            AdamantApiWrapper api
+    ) {
+        return new HasNewMessagesInteractor(api, settings);
     }
 }
