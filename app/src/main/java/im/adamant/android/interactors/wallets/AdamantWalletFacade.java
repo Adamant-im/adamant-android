@@ -102,6 +102,7 @@ public class AdamantWalletFacade implements WalletFacade {
 
                     for(Transaction<NotUsedAsset> transaction : list){
                         CurrencyTransferEntity entity = new CurrencyTransferEntity();
+                        entity.setUnixTransferDate(transaction.getUnixTimestamp());
                         entity.setPrecision(getPrecision());
                         entity.setAmount(
                                 BalanceConvertHelper.convert(
