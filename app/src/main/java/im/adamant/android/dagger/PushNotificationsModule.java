@@ -32,7 +32,6 @@ import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
 @Module
 public abstract class PushNotificationsModule {
-
     @Named("AdamantLocalMessagingService")
     @Singleton
     @Provides
@@ -119,17 +118,18 @@ public abstract class PushNotificationsModule {
         return new FCMNotificationServiceFacade(settings, messageFactoryProvider);
     }
 
-    @IntoMap
-    @SupportedPushNotificationFacadeTypeKey(SupportedPushNotificationFacadeType.LOCAL_SERVICE)
-    @Singleton
-    @Provides
-    public static PushNotificationServiceFacade provideLocalServiceFacade(
-            @Named("AdamantLocalMessagingService") LocalNotificationServiceFacade.ApplicationComponentFacade localServiceComponentFacade,
-            @Named("BootCompletedBroadcast") LocalNotificationServiceFacade.ApplicationComponentFacade bootReceiverComponentFacade,
-            LocalNotificationServiceFacade.ServicePeriodicallyRunner runner
-    ) {
-        return new LocalNotificationServiceFacade(localServiceComponentFacade, bootReceiverComponentFacade, runner);
-    }
+    //TODO: Uncomment this when Local Service will be written
+//    @IntoMap
+//    @SupportedPushNotificationFacadeTypeKey(SupportedPushNotificationFacadeType.LOCAL_SERVICE)
+//    @Singleton
+//    @Provides
+//    public static PushNotificationServiceFacade provideLocalServiceFacade(
+//            @Named("AdamantLocalMessagingService") LocalNotificationServiceFacade.ApplicationComponentFacade localServiceComponentFacade,
+//            @Named("BootCompletedBroadcast") LocalNotificationServiceFacade.ApplicationComponentFacade bootReceiverComponentFacade,
+//            LocalNotificationServiceFacade.ServicePeriodicallyRunner runner
+//    ) {
+//        return new LocalNotificationServiceFacade(localServiceComponentFacade, bootReceiverComponentFacade, runner);
+//    }
 
     @IntoMap
     @SupportedPushNotificationFacadeTypeKey(SupportedPushNotificationFacadeType.DISABLED)
