@@ -5,6 +5,8 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,12 +86,13 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
         int[] ATTRS = new int[]{android.R.attr.listDivider};
 
-        TypedArray a = chatList.getContext().obtainStyledAttributes(ATTRS);
-        Drawable divider = a.getDrawable(0);
+//        TypedArray a = chatList.getContext().obtainStyledAttributes(ATTRS);
+//        Drawable divider = a.getDrawable(0);
+        Drawable divider = ContextCompat.getDrawable(chatList.getContext(), R.drawable.line_divider);
         int avatarWidth = getResources().getDimensionPixelSize(R.dimen.list_item_avatar_size);
         int itemPadding = getResources().getDimensionPixelSize(R.dimen.list_item_chat_padding);
         InsetDrawable insetDivider = new InsetDrawable(divider, avatarWidth + (itemPadding * 2), 0, 0, 0);
-        a.recycle();
+//        a.recycle();
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(chatList.getContext(), layoutManager.getOrientation());
         itemDecoration.setDrawable(insetDivider);
