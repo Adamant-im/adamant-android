@@ -84,15 +84,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
 
-        int[] ATTRS = new int[]{android.R.attr.listDivider};
-
-//        TypedArray a = chatList.getContext().obtainStyledAttributes(ATTRS);
-//        Drawable divider = a.getDrawable(0);
         Drawable divider = ContextCompat.getDrawable(chatList.getContext(), R.drawable.line_divider);
         int avatarWidth = getResources().getDimensionPixelSize(R.dimen.list_item_avatar_size);
         int itemPadding = getResources().getDimensionPixelSize(R.dimen.list_item_chat_padding);
         InsetDrawable insetDivider = new InsetDrawable(divider, avatarWidth + (itemPadding * 2), 0, 0, 0);
-//        a.recycle();
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(chatList.getContext(), layoutManager.getOrientation());
         itemDecoration.setDrawable(insetDivider);

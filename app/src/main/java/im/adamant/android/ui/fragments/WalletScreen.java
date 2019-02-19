@@ -6,7 +6,10 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -134,11 +137,17 @@ public class WalletScreen extends BaseFragment implements WalletView {
 
         tabs.setupWithViewPager(slider);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(),
-                ((LinearLayoutManager) layoutManager).getOrientation());
+
+        Drawable divider = ContextCompat.getDrawable(lastTransactions.getContext(), R.drawable.line_divider);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(), layoutManager.getOrientation());
+
+        if (divider != null) {
+            dividerItemDecoration.setDrawable(divider);
+        }
+
         lastTransactions.addItemDecoration(dividerItemDecoration);
 
 

@@ -1,5 +1,6 @@
 package im.adamant.android.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
 
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +21,7 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
+import im.adamant.android.ui.custom_view.IgnoreLastDividerItemDecorator;
 import im.adamant.android.ui.mvp_view.NodesListView;
 import im.adamant.android.ui.presenters.NodesListPresenter;
 import io.reactivex.disposables.Disposable;
@@ -68,11 +71,11 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         nodeListView.setLayoutManager(layoutManager);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                nodeListView.getContext(),
-                layoutManager.getOrientation()
-        );
-        nodeListView.addItemDecoration(dividerItemDecoration);
+        Drawable drawable = ContextCompat.getDrawable(nodeListView.getContext(), R.drawable.line_divider);
+        if (drawable != null) {
+            IgnoreLastDividerItemDecorator dividerItemDecoration = new IgnoreLastDividerItemDecorator(drawable);
+            nodeListView.addItemDecoration(dividerItemDecoration);
+        }
 
         nodeListView.setAdapter(nodeAdapter);
 

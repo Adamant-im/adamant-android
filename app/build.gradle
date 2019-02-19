@@ -29,6 +29,9 @@ android {
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_1", "\"https://clown.adamant.im\""
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_2", "\"https://lake.adamant.im\""
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_3", "\"https://endless.adamant.im\""
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_4", "\"https://debate.adamant.im\""
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_5", "\"https://bid.adamant.im\""
+        buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"https://unusual.adamant.im\""
         buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
     }
 
