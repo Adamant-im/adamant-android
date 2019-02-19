@@ -20,6 +20,7 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -32,6 +33,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import butterknife.OnClick;
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
@@ -75,6 +77,8 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
+    private boolean isSupportedCurrency = false;
+
 
     public static SendFundsFragment newInstance(
             SupportedWalletFacadeType facadeType,
@@ -110,6 +114,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     @Override
     public void onResume() {
         super.onResume();
+
         FragmentActivity activity = getActivity();
         if (activity != null){
             DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
@@ -137,9 +142,9 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                     DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
                 }
             });
+
         }
     }
-
 
     @Override
     public void onPause() {
@@ -156,6 +161,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     @Override
     public void setFundsSendingIsSupported(boolean value) {
+        isSupportedCurrency = value;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) contentContainerView.getLayoutParams();
         if (value) {
             layoutParams.gravity = Gravity.TOP;
@@ -164,6 +170,9 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             supportedView.setVisibility(View.VISIBLE);
             notSupportedView.setVisibility(View.GONE);
             sendButtonView.setVisibility(View.VISIBLE);
+
+            show(true);
+
         } else {
             layoutParams.gravity = Gravity.CENTER;
 
@@ -171,7 +180,29 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             supportedView.setVisibility(View.GONE);
             notSupportedView.setVisibility(View.VISIBLE);
             sendButtonView.setVisibility(View.GONE);
+
+            show(false);
         }
+    }
+
+    private void show(boolean value) {
+        if (value && isSupportedCurrency) {
+            if (getUserVisibleHint() && amountView != null) {
+                amountView.requestFocus();
+                AdamantApplication.showKeyboard(Objects.requireNonNull(getActivity()), amountView, 0);
+            }
+        } else {
+            if (amountView != null) {
+                AdamantApplication.hideKeyboard(Objects.requireNonNull(getActivity()), amountView);
+            }
+        }
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        show(isVisibleToUser);
     }
 
     @Override
@@ -261,6 +292,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     public void showCommentField() {
         commentLayoutView.setVisibility(View.VISIBLE);
     }
+
 
     @Override
     public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {

@@ -2,6 +2,7 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -18,6 +19,7 @@ import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
+import im.adamant.android.ui.fragments.SendFundsFragment;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.BackTo;
@@ -33,9 +35,6 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
     @Inject
     NavigatorHolder navigatorHolder;
 
-//    @Inject
-//    Provider<SendCurrencyPresenter> presenterProvider;
-//
     @Inject
     SendCurrencyFragmentAdapter adapter;
 
@@ -66,7 +65,6 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
         }
 
         slider.setAdapter(adapter);
-
         tabs.setupWithViewPager(slider);
 
         setTitle(getString(R.string.activity_currency_send_title));

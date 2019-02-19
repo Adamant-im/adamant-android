@@ -386,6 +386,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                         intent.putExtras(bundle);
                         startActivity(intent);
                     }
+                    break;
+                    case Screens.SPLASH_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                    break;
                 }
             }
         }
