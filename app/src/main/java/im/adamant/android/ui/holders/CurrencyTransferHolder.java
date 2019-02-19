@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import com.github.curioustechizen.ago.RelativeTimeTextView;
+
 import java.util.Locale;
 
 import androidx.annotation.NonNull;
@@ -18,6 +20,7 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
     private TextView addressView;
     private TextView amountView;
     private TextView titleView;
+    private RelativeTimeTextView dateView;
 
     public CurrencyTransferHolder(@NonNull View itemView, Context context) {
         super(itemView);
@@ -27,6 +30,7 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
         addressView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_address);
         amountView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_amount);
         titleView = itemView.findViewById(R.id.list_item_wallet_transfer_tv_title);
+        dateView = itemView.findViewById(R.id.list_item_wallet_transfer_rtv_date);
     }
 
     public void bind(CurrencyTransferEntity transferEntity) {
@@ -65,5 +69,7 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
 
         amountView.setText(amountString);
         amountView.setTextColor(amountColor);
+
+        dateView.setReferenceTime(transferEntity.getUnixTransferDate());
     }
 }

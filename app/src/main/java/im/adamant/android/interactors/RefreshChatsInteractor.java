@@ -124,6 +124,9 @@ public class RefreshChatsInteractor {
 
         } else {
             publisher.onError(new NotAuthorizedException("Not authorized"));
+            if (subscription != null){
+                subscription.dispose();
+            }
         }
 
         return executeFlowable;

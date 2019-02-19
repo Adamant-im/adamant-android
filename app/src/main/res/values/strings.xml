@@ -70,6 +70,7 @@
     <string name="fragment_wallet_balance_title">Balance</string>
     <string name="fragment_wallet_free_tokens_title">Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
+    <string name="fragment_wallet_last_transactions_title">Last transactions %s</string>
     <string name="fragment_wallet_exit_title">Exit</string>
 
     <string name="fragment_settings_general_title">General</string>

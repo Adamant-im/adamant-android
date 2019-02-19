@@ -39,7 +39,6 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/activity_login_et_pass_phrase"
             android:textColor="@color/onSurface"
             android:imeOptions="actionSend"
             android:maxLines="4" />

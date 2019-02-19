@@ -14,6 +14,7 @@ public class CurrencyTransferEntity {
     private Direction direction;
     private String currencyAbbreviation;
     private String contactName;
+    private long unixTransferDate;
 
 
     public String getAddress() {
@@ -62,5 +63,13 @@ public class CurrencyTransferEntity {
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
+    }
+
+    public long getUnixTransferDate() {
+        return unixTransferDate;
+    }
+
+    public void setUnixTransferDate(long unixTransferDate) {
+        this.unixTransferDate = unixTransferDate;
     }
 }

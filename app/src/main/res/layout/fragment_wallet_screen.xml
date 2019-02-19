@@ -52,27 +52,27 @@
         app:layout_constraintHeight_percent="0.46"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator">
+        app:layout_constraintTop_toBottomOf="@+id/separator"/>
 
-        <!--<androidx.viewpager.widget.PagerTabStrip-->
-        <!--android:id="@+id/fragment_wallet_pts_tabs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="top"-->
-        <!--android:backgroundTint="@color/colorPrimaryDark"-->
-        <!--android:paddingTop="15dp"-->
-        <!--android:paddingBottom="15dp"-->
-        <!--android:textColor="@color/colorPrimaryDark" />-->
-
-    </androidx.viewpager.widget.ViewPager>
+    <TextView
+        android:id="@+id/fragment_wallet_tv_last_transactions_title"
+        style="@style/AdamantLight.TextViewHeader"
+        android:background="@color/background"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_wallet_rv_last_transactions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator2" />
+        app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_tv_last_transactions_title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

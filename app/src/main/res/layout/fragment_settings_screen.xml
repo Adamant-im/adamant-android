@@ -71,7 +71,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:divider="?android:attr/dividerHorizontal"
+                    android:divider="@drawable/line_divider"
                     android:paddingStart="@dimen/tablerow_default_margin_horizontal"
                     android:paddingLeft="@dimen/tablerow_default_margin_horizontal"
                     android:paddingEnd="@dimen/tablerow_default_margin_horizontal"

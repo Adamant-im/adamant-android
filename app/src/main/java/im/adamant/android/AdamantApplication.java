@@ -84,6 +84,13 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
         }
     }
 
+    public static void showKeyboard(Context ctx, View view, int flags) {
+        InputMethodManager imm = (InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.showSoftInput(view, flags);
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);

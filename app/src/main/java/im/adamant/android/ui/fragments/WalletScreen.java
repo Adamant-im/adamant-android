@@ -5,12 +5,16 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -19,6 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -78,6 +83,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_tab_sliding_tabs) TabLayout tabs;
     @BindView(R.id.fragment_wallet_vp_swipe_slider) ViewPager slider;
     @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
+    @BindView(R.id.fragment_wallet_tv_last_transactions_title) TextView lastTransactionsTitle;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -101,6 +107,10 @@ public class WalletScreen extends BaseFragment implements WalletView {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 CurrencyCardItem item = currencyCardAdapter.getItem(position);
                 if (item != null){
+                    String pattern = getString(R.string.fragment_wallet_last_transactions_title);
+                    pattern = String.format(Locale.ENGLISH, pattern, item.getAbbreviation());
+                    lastTransactionsTitle.setText(pattern);
+
                     presenter.onSelectCurrencyCard(item);
                 }
             }
@@ -118,11 +128,17 @@ public class WalletScreen extends BaseFragment implements WalletView {
 
         tabs.setupWithViewPager(slider);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(),
-                ((LinearLayoutManager) layoutManager).getOrientation());
+
+        Drawable divider = ContextCompat.getDrawable(lastTransactions.getContext(), R.drawable.line_divider);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(), layoutManager.getOrientation());
+
+        if (divider != null) {
+            dividerItemDecoration.setDrawable(divider);
+        }
+
         lastTransactions.addItemDecoration(dividerItemDecoration);
 
 

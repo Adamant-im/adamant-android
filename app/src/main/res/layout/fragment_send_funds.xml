@@ -47,8 +47,7 @@
                         android:drawableStart="@drawable/ic_send_address"
                         android:drawablePadding="15dp"
                         android:enabled="false"
-                        android:maxLines="1"
-                        android:textColor="@color/onSurface" />
+                        android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -70,9 +69,10 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:inputType="numberDecimal"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:maxLines="1"
-                        android:text="0"
-                        android:textColor="@color/onSurface" />
+                        android:text="0" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -95,8 +95,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:enabled="false"
-                        android:maxLines="1"
-                        android:textColor="@color/onSurface" />
+                        android:maxLines="1"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
@@ -119,8 +118,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:enabled="false"
-                        android:maxLines="1"
-                        android:textColor="@color/onSurface" />
+                        android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -154,8 +152,7 @@
                         android:id="@+id/list_item_currency_send_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
-                        android:textColor="@color/onSurface" />
+                        android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
 

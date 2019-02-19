@@ -39,7 +39,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:visibility="gone"
         android:id="@+id/activity_chats_rv_chats"
-        android:background="@color/primaryDarkVariant"
+        android:background="@color/background"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
