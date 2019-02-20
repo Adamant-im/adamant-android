@@ -57,13 +57,14 @@
     <TextView
         android:id="@+id/fragment_wallet_tv_last_transactions_title"
         style="@style/AdamantLight.TextViewHeader"
-        android:background="@color/background"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/separator2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator2" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_wallet_rv_last_transactions"
@@ -73,6 +74,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fragment_wallet_tv_last_transactions_title" />
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
