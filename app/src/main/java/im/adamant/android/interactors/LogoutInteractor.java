@@ -2,6 +2,7 @@ package im.adamant.android.interactors;
 
 import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.Settings;
@@ -47,6 +48,7 @@ public class LogoutInteractor {
         }
         logoutDisposable = switchPushNotificationServiceInteractor
                 .resetNotificationFacade(true)
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .subscribe(
                         () -> {
                             refreshChatsInteractor.cleanUp();

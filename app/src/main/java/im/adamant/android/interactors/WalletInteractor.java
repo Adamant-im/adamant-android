@@ -3,7 +3,9 @@ package im.adamant.android.interactors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.CurrencyCardItem;
@@ -45,7 +47,8 @@ public class WalletInteractor {
 
             return list;
         })
-                .subscribeOn(Schedulers.computation());
+        .subscribeOn(Schedulers.computation())
+        .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public Single<List<CurrencyTransferEntity>> getLastTransfersByCurrencyAbbr(String abbreviation) {

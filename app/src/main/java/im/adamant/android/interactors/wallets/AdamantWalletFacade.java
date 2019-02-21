@@ -127,6 +127,7 @@ public class AdamantWalletFacade implements WalletFacade {
                     }
                     return transfers;
                 })
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .first(new ArrayList<>());
 
     }

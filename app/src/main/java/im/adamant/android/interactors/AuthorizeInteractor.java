@@ -6,7 +6,9 @@ import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -54,7 +56,8 @@ public class AuthorizeInteractor {
                             String account = keyStoreCipher.encrypt(Constants.ADAMANT_ACCOUNT_ALIAS, api.getKeyPair());
                             settings.setAccountKeypair(account);
                         }
-                    });
+                    })
+                    .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }catch (Exception ex){
             ex.printStackTrace();
             return Flowable.error(ex);
@@ -82,7 +85,8 @@ public class AuthorizeInteractor {
                     }
                 })
                .subscribeOn(Schedulers.computation())
-               .flatMap(keyPair -> api.authorize(keyPair));
+               .flatMap(keyPair -> api.authorize(keyPair))
+               .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
     }
 
@@ -100,7 +104,8 @@ public class AuthorizeInteractor {
 
     public Flowable<Authorization> createNewAccount(String passPhrase) {
         return api.createNewAccount(passPhrase)
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public String getPublicKeyFromPassphrase(String passphrase) {

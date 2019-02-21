@@ -1,7 +1,9 @@
 package im.adamant.android.interactors;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionWasProcessed;
@@ -73,6 +75,7 @@ public class SendFundsInteractor {
                         message.setTransactionId(transactionWasProcessed.getTransactionId());
                         message.setProcessed(true);
                     }
-                });
+                })
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

@@ -2,6 +2,7 @@ package im.adamant.android.interactors;
 
 import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
@@ -180,6 +181,7 @@ public class RefreshChatsInteractor {
                                 }
                             })
                             .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)))
+                            .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                             .concatWith(Flowable.defer(() -> {
                                 boolean noRepeat = countMessageItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
                                 if (noRepeat) {
@@ -215,6 +217,7 @@ public class RefreshChatsInteractor {
                     }
                 })
                 .flatMap(transaction -> Flowable.just(messageMapper.apply(transaction)))
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .concatWith(Flowable.defer(() -> {
                     boolean noRepeat = countTransactionItems < AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
                     if (noRepeat){

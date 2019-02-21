@@ -16,6 +16,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
+        buildConfigField "int", "DEFAULT_OPERATION_TIMEOUT_SECONDS", "60"
         buildConfigField "int", "LOCAL_NOTIFICATION_SERVICE_CALL_MINUTES_DELAY", "5"
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"
         buildConfigField "int", "PING_SECONDS_DELAY", "4"

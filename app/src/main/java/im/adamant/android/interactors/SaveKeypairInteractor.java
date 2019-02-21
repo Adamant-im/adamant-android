@@ -1,5 +1,8 @@
 package im.adamant.android.interactors;
 
+import java.util.concurrent.TimeUnit;
+
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
@@ -50,7 +53,8 @@ public class SaveKeypairInteractor {
                         settings.setAccountKeypair("");
                     }
                 })
-                .subscribeOn(Schedulers.computation());
+                .subscribeOn(Schedulers.computation())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public boolean isKeyPairMustBeStored() {

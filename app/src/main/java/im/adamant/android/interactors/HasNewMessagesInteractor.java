@@ -1,5 +1,8 @@
 package im.adamant.android.interactors;
 
+import java.util.concurrent.TimeUnit;
+
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.LoggerHelper;
@@ -42,6 +45,7 @@ public class HasNewMessagesInteractor {
                    } else {
                        return Flowable.just(Event.NO_NEW_MESSAGES);
                    }
-                });
+                })
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS * 3, TimeUnit.SECONDS);
     }
 }

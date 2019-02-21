@@ -3,7 +3,9 @@ package im.adamant.android.interactors;
 import org.reactivestreams.Publisher;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.exceptions.NotSupportedPushNotificationFacade;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
@@ -36,7 +38,8 @@ public class SwitchPushNotificationServiceInteractor {
             return currentFacade
                     .unsubscribe()
                     .andThen(newFacade.subscribe())
-                    .doOnComplete(() -> settings.setPushNotificationFacadeType(newFacadeType));
+                    .doOnComplete(() -> settings.setPushNotificationFacadeType(newFacadeType))
+                    .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         } else {
             return Completable.error(new NotSupportedPushNotificationFacade("Not Supported facade: " + pushNotificationFacadeType));
         }
