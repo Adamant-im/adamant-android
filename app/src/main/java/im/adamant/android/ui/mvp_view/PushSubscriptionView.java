@@ -16,6 +16,7 @@ public interface PushSubscriptionView extends MvpView {
     void startProgress();
     void stopProgress();
     void showSelectServiceDialog(List<PushNotificationServiceFacade> facades, PushNotificationServiceFacade current);
+    void showFacadesDescriptions(List<PushNotificationServiceFacade> facades);
 
     @StateStrategyType(SkipStrategy.class)
     void showMessage(String message);

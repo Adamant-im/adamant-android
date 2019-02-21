@@ -19,6 +19,8 @@ import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
@@ -26,6 +28,7 @@ import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
+import im.adamant.android.ui.adapters.PushNotificationServiceAdapter;
 import im.adamant.android.ui.mvp_view.PushSubscriptionView;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
 
@@ -42,11 +45,17 @@ public class PushSubscriptionScreen extends BaseActivity implements PushSubscrip
         return presenterProvider.get();
     }
 
+    @Inject
+    PushNotificationServiceAdapter adapter;
+
     @BindView(R.id.activity_push_subscription_tv_current_service)
     TextView currentServiceView;
 
     @BindView(R.id.activity_push_subscription_pb_progress)
     ProgressBar progressBarView;
+
+    @BindView(R.id.activity_push_subscription_rv_description_services)
+    RecyclerView descriptionServicesView;
 
     @Override
     public int getLayoutId() {
@@ -65,6 +74,10 @@ public class PushSubscriptionScreen extends BaseActivity implements PushSubscrip
         super.onCreate(savedInstanceState);
 
         setTitle(getString(R.string.activity_push_subscription_title));
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        descriptionServicesView.setLayoutManager(layoutManager);
+        descriptionServicesView.setAdapter(adapter);
     }
 
     @OnClick(R.id.activity_push_subscription_tv_current_service)
@@ -130,6 +143,11 @@ public class PushSubscriptionScreen extends BaseActivity implements PushSubscrip
         builder.setNegativeButton(R.string.no, null);
 
         builder.show();
+
+    }
+
+    @Override
+    public void showFacadesDescriptions(List<PushNotificationServiceFacade> facades) {
 
     }
 

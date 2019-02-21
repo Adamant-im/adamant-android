@@ -137,7 +137,6 @@
                                 android:layout_height="wrap_content"
                                 android:maxLines="50"
                                 android:text="@string/fragment_settings_subscribe_to_push_notifications"
-                                app:layout_constraintEnd_toStartOf="@+id/fragment_settings_tv_notification"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -146,14 +145,16 @@
                                 style="@style/AdamantLight.TextViewSubHeader"
                                 android:layout_width="0dp"
                                 android:layout_height="24dp"
+                                android:layout_marginStart="8dp"
                                 android:layout_weight="1"
+                                android:enabled="false"
                                 android:padding="0dp"
                                 android:text="@string/fcm_notification_service_short"
-                                android:enabled="false"
                                 android:textAlignment="textEnd"
                                 android:textColor="@drawable/selectable_text"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toEndOf="@+id/textView9"
                                 app:layout_constraintTop_toTopOf="parent" />
 
 

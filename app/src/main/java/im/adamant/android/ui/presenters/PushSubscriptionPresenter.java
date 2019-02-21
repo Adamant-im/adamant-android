@@ -55,6 +55,9 @@ public class PushSubscriptionPresenter extends BasePresenter<PushSubscriptionVie
                                 getViewState().setEnablePushServiceTypeOption(true);
                                 getViewState().stopProgress();
                                 getViewState().showMessage(error.getMessage());
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
                             }
                     );
             subscriptions.add(subscribe);
