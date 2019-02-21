@@ -19,32 +19,5 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public class SendCurrencyTransferFragmentModule {
-    @FragmentScope
-    @Provides
-    public SendFundsPresenter provideSendCurrencyPresenter(
-            Router router,
-            Map<SupportedWalletFacadeType, WalletFacade> wallets,
-            SendFundsInteractor sendCurrencyInteractor,
-            MessageFactoryProvider messageFactoryProvider,
-            PublicKeyStorage publicKeyStorage,
-            ChatsStorage chatsStorage,
-            @Named(Screens.SEND_CURRENCY_TRANSFER_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new SendFundsPresenter(
-                router,
-                wallets,
-                sendCurrencyInteractor,
-                messageFactoryProvider,
-                publicKeyStorage,
-                chatsStorage,
-                subscriptions
-        );
-    }
 
-    @FragmentScope
-    @Provides
-    @Named(value = Screens.SEND_CURRENCY_TRANSFER_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 }

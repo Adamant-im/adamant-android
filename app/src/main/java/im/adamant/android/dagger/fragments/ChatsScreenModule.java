@@ -20,25 +20,6 @@ import ru.terrakok.cicerone.Router;
 public class ChatsScreenModule {
     @FragmentScope
     @Provides
-    public ChatsPresenter provideChatsPresenter(
-            Router router,
-            GetContactsInteractor getContactsInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
-            ChatsStorage chatsStorage,
-            @Named(Screens.CHATS_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new ChatsPresenter(router,getContactsInteractor, refreshChatsInteractor, chatsStorage, subscriptions);
-    }
-
-    @FragmentScope
-    @Provides
-    @Named(value = Screens.CHATS_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
-
-    @FragmentScope
-    @Provides
     public ChatsAdapter provideAdapter(
             ChatsScreen chatsScreen,
             @Named(Screens.CHATS_SCREEN) CompositeDisposable compositeDisposable,

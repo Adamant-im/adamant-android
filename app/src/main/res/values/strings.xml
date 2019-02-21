@@ -125,7 +125,6 @@
     <string name="fcm_notification_service_change_token_title">FCM updated token</string>
     <string name="fcm_notification_service_change_token_message">FCM updated token. %s ADM has been withdrawn from your account</string>
     <string name="fcm_notification_service_full">Firebase Messaging Service</string>
-    <!--TODO: Write decription-->
     <string name="fcm_notification_service_description">Notifications of new messages are sent by the ADAMANT Notification Service (Transport to your device is the Firebase Messaging Service).
              Notifications come almost instantly, but you need to register the device in the service. It is safe and maintains a high level of security. The cost of subscription, unsubscribe and token change (FCM can replace it at any time, but this rarely happens) is 0.001 ADM.</string>
 
@@ -136,7 +135,6 @@
 
     <string name="disabled_notification_service_short">Disabled</string>
     <string name="disabled_notification_service_full">Disabled service</string>
-    <!--TODO: Write decription-->
     <string name="disabled_notification_service_description">Notifications is disabled</string>
 
 

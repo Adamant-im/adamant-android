@@ -14,28 +14,5 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public class SettingsScreenModule {
-    @FragmentScope
-    @Provides
-    public static SettingsPresenter provideSettingsPresenter(
-            Router router,
-            AdamantApiWrapper api,
-            SaveKeypairInteractor saveKeypairInteractor,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
-    ) {
-        return new SettingsPresenter(
-                router,
-                api,
-                saveKeypairInteractor,
-                switchPushNotificationServiceInteractor,
-                subscriptions
-        );
-    }
 
-    @FragmentScope
-    @Provides
-    @Named(Screens.SETTINGS_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 }

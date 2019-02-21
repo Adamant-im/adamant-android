@@ -11,19 +11,5 @@ import io.reactivex.disposables.CompositeDisposable;
 
 @Module
 public class ShowQrCodeScreenModule {
-    @ActivityScope
-    @Provides
-    public static ShowQrCodePresenter providePresenter(
-            QrCodeHelper qrCodeHelper,
-            @Named(Screens.SHOW_QRCODE_SCREEN) CompositeDisposable subscriptions
-    ) {
-        return new ShowQrCodePresenter(qrCodeHelper, subscriptions);
-    }
 
-    @ActivityScope
-    @Provides
-    @Named(value = Screens.SHOW_QRCODE_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 }

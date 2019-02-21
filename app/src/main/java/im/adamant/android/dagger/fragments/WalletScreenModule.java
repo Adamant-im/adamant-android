@@ -15,15 +15,7 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public class WalletScreenModule {
-    @FragmentScope
-    @Provides
-    public WalletPresenter provideWalletPresenter(
-            Router router,
-            WalletInteractor walletInteractor,
-            @Named(value = Screens.WALLET_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new WalletPresenter(router, walletInteractor, subscriptions);
-    }
+
 
     @FragmentScope
     @Provides
@@ -31,14 +23,6 @@ public class WalletScreenModule {
     public QrCodeHelper provideQrCodeParser() {
         return new QrCodeHelper();
     }
-
-    @FragmentScope
-    @Provides
-    @Named(value = Screens.WALLET_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
-
 
     @FragmentScope
     @Provides

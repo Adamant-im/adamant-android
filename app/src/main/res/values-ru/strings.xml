@@ -113,7 +113,6 @@
     <string name="fcm_notification_service_change_token_title">FCM обновил токен</string>
     <string name="fcm_notification_service_change_token_message">FCM обновил токен. С вашего счета списано %s ADM</string>
     <string name="fcm_notification_service_full">Firebase Messaging Service</string>
-    <!--TODO: Write decription-->
     <string name="fcm_notification_service_description">
         Уведомления о новых сообщениях присылаются сервисом ADAMANT Notification Service (Транспортом до вашего устройства является сервис Firebase Messaging Service).
         Уведомляения приходят практически мгновенно, но необходима регистрация устройства в сервисе. Это безопасно и сохраняет высокий уровень секретности. Стоимость подписки, отписки и смены токена (FCM может заменить его в любой момент, но это происходит редко) составляет 0.001 ADM.
@@ -126,7 +125,6 @@
 
     <string name="disabled_notification_service_short">Отключены</string>
     <string name="disabled_notification_service_full">Уведомления отключены</string>
-    <!--TODO: Write decription-->
     <string name="disabled_notification_service_description">Не присылать никаких уведомлений</string>
 
 

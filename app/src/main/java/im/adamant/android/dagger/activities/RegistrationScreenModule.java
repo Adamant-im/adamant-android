@@ -38,21 +38,4 @@ public class RegistrationScreenModule {
     public static PassphraseAvatarTransformation provideAvatarTransforamtion() {
         return new PassphraseAvatarTransformation();
     }
-
-    @ActivityScope
-    @Provides
-    public static RegistrationPresenter providePresenter(
-            Router router,
-            AuthorizeInteractor authorizeInteractor,
-            @Named(Screens.REGISTRATION_SCREEN) CompositeDisposable subscriptions
-    ) {
-        return new RegistrationPresenter(router, authorizeInteractor, subscriptions);
-    }
-
-    @ActivityScope
-    @Provides
-    @Named(value = Screens.REGISTRATION_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 }

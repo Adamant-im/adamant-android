@@ -20,35 +20,6 @@ import ru.terrakok.cicerone.Router;
 public class MessagesScreenModule {
     @ActivityScope
     @Provides
-    public MessagesPresenter provideMessagesPresenter(
-            Router router,
-            RefreshChatsInteractor refreshChatsInteractor,
-            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
-            MessageFactoryProvider messageFactoryProvider,
-            AdamantApiWrapper api,
-            ChatsStorage chatsStorage,
-            @Named(Screens.MESSAGES_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new MessagesPresenter(
-                router,
-                refreshChatsInteractor,
-                chatUpdatePublicKeyInteraactor,
-                messageFactoryProvider,
-                chatsStorage,
-                api,
-                subscriptions
-        );
-    }
-
-    @ActivityScope
-    @Provides
-    @Named(value = Screens.MESSAGES_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
-
-    @ActivityScope
-    @Provides
     public MessagesAdapter provideAdapter(MessageFactoryProvider messageFactoryProvider){
         return new MessagesAdapter(messageFactoryProvider,null);
     }

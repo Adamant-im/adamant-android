@@ -16,7 +16,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.entities.Separator;
 
 public class ChatsStorage {
-    //TODO: So far, the manipulation of the chat lists is entrusted to this interactor, but perhaps over time it's worth changing
     //TODO: Multithreaded access to properties can cause problems in the future
     private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
