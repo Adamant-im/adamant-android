@@ -74,6 +74,8 @@ public class SettingsPresenterTest {
 
     SettingsPresenter presenter;
 
+    //TODO: No need Robolectric now
+
     @Before
     public void setUp() {
         Context systemContext = RuntimeEnvironment.systemContext;

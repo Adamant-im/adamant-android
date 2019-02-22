@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.exceptions.NotSupportedPushNotificationFacade;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;

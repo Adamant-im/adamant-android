@@ -116,10 +116,6 @@ public class FCMNotificationServiceFacade implements PushNotificationServiceFaca
 
             return messageProcessor
                     .sendMessage(message)
-                    .retryWhen((throwable) -> throwable
-                            .filter((error) -> error instanceof IOException)
-                            .delay(BuildConfig.UPDATE_BALANCE_SECONDS_DELAY, TimeUnit.SECONDS)
-                    )
                     .ignoreElement();
 
         } catch (Exception e) {

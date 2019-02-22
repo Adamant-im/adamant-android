@@ -165,7 +165,7 @@ public class Settings {
         return defaults;
     }
 
-    private void loadNodes(){
+    private void loadNodes() {
         Set<String> nodeUrls = preferences.getStringSet(NODES_KEY, getDefaultNodes());
 
         if (nodeUrls.size() == 0){
