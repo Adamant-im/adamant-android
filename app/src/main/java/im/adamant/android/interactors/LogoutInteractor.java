@@ -46,6 +46,7 @@ public class LogoutInteractor {
         if (logoutDisposable != null) {
             logoutDisposable.dispose();
         }
+
         logoutDisposable = switchPushNotificationServiceInteractor
                 .resetNotificationFacade(true)
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
@@ -58,13 +59,12 @@ public class LogoutInteractor {
                             settings.setKeyPairMustBeStored(false);
 
                             publisher.onNext(Irrelevant.INSTANCE);
-                            logoutDisposable.dispose();
-                            logoutDisposable = null;
+                            //TODO: Проблемы со сбросом.После этого не войти
+
                         },
                         (error) -> {
                             publisher.onError(error);
-                            logoutDisposable.dispose();
-                            logoutDisposable = null;
+
                         }
                 );
     }
@@ -74,6 +74,7 @@ public class LogoutInteractor {
 
         if (logoutDisposable != null){
             logoutDisposable.dispose();
+            logoutDisposable = null;
         }
         super.finalize();
     }
