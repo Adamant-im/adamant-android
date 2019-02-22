@@ -18,6 +18,7 @@ import im.adamant.android.ui.mvp_view.PushSubscriptionView;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -40,7 +41,7 @@ public class PushSubscriptionPresenterTest {
         view = mock(PushSubscriptionView.class);
         interactor = mock(SwitchPushNotificationServiceInteractor.class);
         compositeDisposable = new CompositeDisposable();
-        presenter = new PushSubscriptionPresenter(interactor, compositeDisposable);
+        presenter = new PushSubscriptionPresenter(interactor, compositeDisposable, Schedulers.trampoline());
         facades.put(SupportedPushNotificationFacadeType.FCM, fcmFacade);
         facades.put(SupportedPushNotificationFacadeType.DISABLED, disabledFacade);
     }

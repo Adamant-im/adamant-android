@@ -7,4 +7,5 @@ public interface Constants {
     String KVS_CONTACT_LIST = "contact_list";
     String ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID = "adamant_system_notification";
     String ADAMANT_DEFAULT_NOTIFICATION_CHANNEL_ID = "adamant_default_notification";
+    String UI_SCHEDULER = "ui_scheduler";
 }

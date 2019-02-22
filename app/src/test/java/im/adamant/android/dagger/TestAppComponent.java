@@ -9,7 +9,6 @@ import dagger.Component;
 import im.adamant.android.TestApplication;
 import im.adamant.android.cases.interactors.FCMNotificationServiceFacadeTest;
 import im.adamant.android.cases.presenters.SettingsPresenterTest;
-import im.adamant.android.interactors.push.FCMNotificationServiceFacade;
 
 @Singleton
 @Component(modules = {
@@ -23,7 +22,7 @@ import im.adamant.android.interactors.push.FCMNotificationServiceFacade;
         TestInteractorsModule.class,
         TestPushNotificationModule.class,
         TestPresenterModule.class,
-        AppModule.class
+        TestAppModule.class
 })
 public interface TestAppComponent {
     @Component.Builder

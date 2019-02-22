@@ -123,24 +123,4 @@ public abstract class AppModule {
     @ReceiverScope
     @ContributesAndroidInjector(modules = {BootCompletedBroadcastReceiverModule.class})
     public abstract BootCompletedBroadcast createBootCompletedBroadcastReceiver();
-
-
-    //--presenters
-
-    @Singleton
-    @Provides
-    @Named("main")
-    public static CompositeDisposable provideMainComposite() {
-        return new CompositeDisposable();
-    }
-
-    @Singleton
-    @Provides
-    public static MainPresenter provideMainPresenter(
-            Router router,
-            LogoutInteractor logoutInteractor,
-            @Named("main") CompositeDisposable compositeDisposable
-    ){
-        return new MainPresenter(router, logoutInteractor, compositeDisposable);
-    }
 }

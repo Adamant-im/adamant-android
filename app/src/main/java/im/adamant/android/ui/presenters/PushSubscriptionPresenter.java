@@ -9,6 +9,7 @@ import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.PushSubscriptionView;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -16,9 +17,15 @@ import io.reactivex.disposables.Disposable;
 @InjectViewState
 public class PushSubscriptionPresenter extends BasePresenter<PushSubscriptionView> {
     private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
+    private Scheduler observeScheduler;
 
-    public PushSubscriptionPresenter(SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor, CompositeDisposable subscriptions) {
+    public PushSubscriptionPresenter(
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            CompositeDisposable subscriptions,
+            Scheduler observeScheduler
+    ) {
         super(subscriptions);
+        this.observeScheduler = observeScheduler;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
     }
 
@@ -44,7 +51,7 @@ public class PushSubscriptionPresenter extends BasePresenter<PushSubscriptionVie
             Disposable subscribe = switchPushNotificationServiceInteractor
                     .changeNotificationFacade(facade.getFacadeType())
                     .doOnError((error) -> LoggerHelper.e("SWITCH NOTIFICATION SERVICE", error.getMessage(), error))
-                    .observeOn(AndroidSchedulers.mainThread())
+                    .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
                                 getViewState().setEnablePushServiceTypeOption(true);

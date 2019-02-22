@@ -121,6 +121,7 @@ public class SendFundsPresenter extends BasePresenter<SendFundsView> {
     }
 
     public void onClickConfirmSend() {
+        getViewState().unlockSendButton();
         Disposable subscribe = sendCurrencyInteractor
                 .sendCurrency(companionId, comment, currentAmount, facadeType)
                 .subscribe(

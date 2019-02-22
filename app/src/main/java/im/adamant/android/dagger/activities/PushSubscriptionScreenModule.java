@@ -19,8 +19,6 @@ import im.adamant.android.ui.adapters.PushNotificationServiceAdapter;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 
-
-//TODO: Create Presenters module
 @Module
 public class PushSubscriptionScreenModule {
     @ActivityScope

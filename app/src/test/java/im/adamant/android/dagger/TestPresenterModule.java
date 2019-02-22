@@ -6,9 +6,11 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import im.adamant.android.ui.presenters.LoginPresenter;
+import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.presenters.NodesListPresenter;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
@@ -18,6 +20,7 @@ import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
 import im.adamant.android.ui.presenters.WalletPresenter;
 import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 import static org.mockito.Mockito.mock;
 
@@ -135,13 +138,6 @@ public abstract class TestPresenterModule {
 
     @Singleton
     @Provides
-    public static SendFundsPresenter provideSendCurrencyPresenter(
-    ){
-        return mock(SendFundsPresenter.class);
-    }
-
-    @Singleton
-    @Provides
     @Named(value = Screens.SEND_CURRENCY_TRANSFER_SCREEN)
     public static CompositeDisposable provideSendCurrencyTransferComposite() {
         return new CompositeDisposable();
@@ -172,5 +168,18 @@ public abstract class TestPresenterModule {
     @Named(value = Screens.WALLET_SCREEN)
     public static CompositeDisposable provideWalletComposite() {
         return new CompositeDisposable();
+    }
+
+    @Singleton
+    @Provides
+    @Named("main")
+    public static CompositeDisposable provideMainComposite() {
+        return new CompositeDisposable();
+    }
+
+    @Singleton
+    @Provides
+    public static MainPresenter provideMainPresenter(){
+        return mock(MainPresenter.class);
     }
 }

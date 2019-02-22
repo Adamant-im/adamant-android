@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.Constants;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.ChatsStorage;
@@ -15,6 +16,7 @@ import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
@@ -28,6 +30,7 @@ import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import im.adamant.android.ui.presenters.LoginPresenter;
+import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.presenters.NodesListPresenter;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
@@ -36,6 +39,7 @@ import im.adamant.android.ui.presenters.SendFundsPresenter;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
 import im.adamant.android.ui.presenters.WalletPresenter;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
@@ -93,11 +97,13 @@ public abstract class PresentersModule {
     @Provides
     public static PushSubscriptionPresenter providePushSubscriptionPresenter(
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            @Named(Screens.PUSH_SUBSCRIPTION_SCREEN) CompositeDisposable subscriptions
+            @Named(Screens.PUSH_SUBSCRIPTION_SCREEN) CompositeDisposable subscriptions,
+            @Named(Constants.UI_SCHEDULER) Scheduler observableScheduler
     ){
         return new PushSubscriptionPresenter(
                 switchPushNotificationServiceInteractor,
-                subscriptions
+                subscriptions,
+                observableScheduler
         );
     }
 
@@ -206,35 +212,6 @@ public abstract class PresentersModule {
 
     @Singleton
     @Provides
-    public static SendFundsPresenter provideSendCurrencyPresenter(
-            Router router,
-            Map<SupportedWalletFacadeType, WalletFacade> wallets,
-            SendFundsInteractor sendCurrencyInteractor,
-            MessageFactoryProvider messageFactoryProvider,
-            PublicKeyStorage publicKeyStorage,
-            ChatsStorage chatsStorage,
-            @Named(Screens.SEND_CURRENCY_TRANSFER_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new SendFundsPresenter(
-                router,
-                wallets,
-                sendCurrencyInteractor,
-                messageFactoryProvider,
-                publicKeyStorage,
-                chatsStorage,
-                subscriptions
-        );
-    }
-
-    @Singleton
-    @Provides
-    @Named(value = Screens.SEND_CURRENCY_TRANSFER_SCREEN)
-    public static CompositeDisposable provideSendCurrencyTransferComposite() {
-        return new CompositeDisposable();
-    }
-
-    @Singleton
-    @Provides
     public static SettingsPresenter provideSettingsPresenter(
             Router router,
             AdamantApiWrapper api,
@@ -273,5 +250,22 @@ public abstract class PresentersModule {
     @Named(value = Screens.WALLET_SCREEN)
     public static CompositeDisposable provideWalletComposite() {
         return new CompositeDisposable();
+    }
+
+    @Singleton
+    @Provides
+    @Named("main")
+    public static CompositeDisposable provideMainComposite() {
+        return new CompositeDisposable();
+    }
+
+    @Singleton
+    @Provides
+    public static MainPresenter provideMainPresenter(
+            Router router,
+            LogoutInteractor logoutInteractor,
+            @Named("main") CompositeDisposable compositeDisposable
+    ){
+        return new MainPresenter(router, logoutInteractor, compositeDisposable);
     }
 }

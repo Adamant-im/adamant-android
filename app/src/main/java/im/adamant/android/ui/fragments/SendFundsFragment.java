@@ -31,6 +31,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
@@ -39,6 +40,7 @@ import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
+import im.adamant.android.ui.fragments.dialogs.ConfirmationSendFundsDialog;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import im.adamant.android.ui.presenters.SendFundsPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -79,6 +81,8 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
     private boolean isSupportedCurrency = false;
+
+    private AlertDialog alert;
 
 
     public static SendFundsFragment newInstance(
@@ -150,6 +154,10 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     @Override
     public void onPause() {
         super.onPause();
+
+        if (alert != null){
+            alert.dismiss();
+        }
 
         subscriptions.dispose();
         subscriptions.clear();
@@ -297,20 +305,14 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     @Override
     public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {
-        Activity activity = getActivity();
+        FragmentActivity activity = getActivity();
+        LoggerHelper.d("Transaction", "call call call");
         if (activity != null){
             String pattern = getString(R.string.activity_currency_send_dialog_funds_message);
             String message = String.format(Locale.ENGLISH, pattern, amount, currencyAbbr, address);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder
-                    .setTitle(R.string.activity_currency_send_dialog_funds_title)
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        presenter.onClickConfirmSend();
-                    })
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .show();
+            ConfirmationSendFundsDialog fragment = ConfirmationSendFundsDialog.provide(presenter, message);
+            fragment.show(activity.getSupportFragmentManager(), "transferConfirmation");
         }
     }
 

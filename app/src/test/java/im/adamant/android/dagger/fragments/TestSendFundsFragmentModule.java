@@ -17,7 +17,20 @@ import im.adamant.android.ui.presenters.SendFundsPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
-@Module
-public class SendCurrencyTransferFragmentModule {
+import static org.mockito.Mockito.mock;
 
+@Module
+public class TestSendFundsFragmentModule {
+    @FragmentScope
+    @Provides
+    public static SendFundsPresenter provideSendFundsPresenter() {
+        return mock(SendFundsPresenter.class);
+    }
+
+    @FragmentScope
+    @Provides
+    @Named(value = Screens.SEND_CURRENCY_TRANSFER_SCREEN)
+    public static CompositeDisposable provideSendCurrencyTransferComposite() {
+        return new CompositeDisposable();
+    }
 }
