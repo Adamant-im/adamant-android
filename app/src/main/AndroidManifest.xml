@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AdamantLight"
+        android:usesCleartextTraffic="true"
         >
         <activity android:name=".ui.SplashScreen"
             android:theme="@style/AdamantLight.Launcher">

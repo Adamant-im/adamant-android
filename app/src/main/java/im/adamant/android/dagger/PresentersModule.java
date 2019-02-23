@@ -147,22 +147,6 @@ public abstract class PresentersModule {
         return new CompositeDisposable();
     }
 
-    @Singleton
-    @Provides
-    @Named(value = Screens.LOGIN_SCREEN)
-    public static CompositeDisposable provideLoginComposite() {
-        return new CompositeDisposable();
-    }
-
-    @Singleton
-    @Provides
-    public static LoginPresenter provideLoginPresenter(
-            Router router,
-            AuthorizeInteractor interactor,
-            @Named(Screens.LOGIN_SCREEN) CompositeDisposable subscriptions
-    ){
-        return new LoginPresenter(router,interactor,subscriptions);
-    }
 
     @Singleton
     @Provides
