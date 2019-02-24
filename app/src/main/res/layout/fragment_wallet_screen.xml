@@ -39,7 +39,7 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragment_wallet_vp_swipe_slider"
         android:layout_width="match_parent"
-        android:layout_height="284dp"
+        android:layout_height="@dimen/fragment_wallet_card_height"
         android:layout_gravity="bottom"
         android:clipToPadding="false"
         android:overScrollMode="never"

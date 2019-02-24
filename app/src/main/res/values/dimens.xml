@@ -37,6 +37,11 @@
     <dimen name="tablerow_default_height">20dp</dimen>
 
     <dimen name="fragment_wallet_card_padding">20dp</dimen>
+    <dimen name="fragment_wallet_card_height">284dp</dimen>
+    <dimen name="list_item_wallet_card_padding">20dp</dimen>
+    <dimen name="list_item_wallet_card_subtitle_size">12sp</dimen>
+    <dimen name="list_item_wallet_card_content_size">14sp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
