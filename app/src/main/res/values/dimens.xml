@@ -25,6 +25,8 @@
 
     <dimen name="activity_show_qr_code_size_of_qr_code">150dp</dimen>
 
+    <dimen name="list_item_welcome_card_image_size">200dp</dimen>
+
     <dimen name="list_item_message_padding">16dp</dimen>
     <dimen name="list_item_message_avatar_margin">8dp</dimen>
     <dimen name="list_item_message_processed">10dp</dimen>

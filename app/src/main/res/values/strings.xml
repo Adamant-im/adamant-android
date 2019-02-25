@@ -146,6 +146,26 @@
     <string name="hello_message_baunty_name">ADAMANT Bounty</string>
     <string name="hello_message_baunty"><p>Welcome to ADAMANT, the most secure and anonymous messenger. Remember, your security and anonymity is up to you also. Do not follow links you receive, otherwise your IP can be compromised. Do not trust browser extensions. Better to share your ADM address personally, but not using other messengers. Keep your secret passphrase secure. Set a password on your device or logout before leaving.</p><p>Learn more about security and anonymity at <a href="https://adamant.im/staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>All the transactions within the blockchain do need to have their minimal fees. This is necessary to support the network infrastructure. To start messengning now, <b>get free tokens</b> — go to Wallet tab and click Free ADM tokens. Then click Start new chat on Chats tab and put your interlocutor\'s address. To copy your address, click on ADAMANT address on Wallet tab.</p><p>Do not reply to this message, it is a system account. If you still have any questions, contact account U15677078342684640219.</p></string>
 
+    <!--WELCOME CARDS-->
+    <string name="welcome_card_1">Welcome to ADAMANT, the genuine <b>blockchain</b> messenger.</string>
+    <string name="welcome_card_2">
+        ADAMANT is <b>anonymity</b> and <b>security</b> of your messaging as well as in-chat cryptocurrency transferring tool.<br/><br/>
+        <a href="https://medium.com/adamant-im/adamant-security-features-e7cc836ff52c">Why are other messengers not secure?</a>
+    </string>
+    <string name="welcome_card_3">
+        ADAMANT infrastructure doesn\'t belong to anyone and is <b>decentralized</b>.<br/><br/>
+        It is maintained by messages paid in ADM tokens. New accounts may receive free tokens for testing purposes.
+    </string>
+    <string name="welcome_card_4">
+        Create an account in a single click <b>without any requirements</b> (no email/phone/anything) and invite your friends.<br/><br/>
+        Share your ADAMANT addresses <b>in-person</b> for true security.
+    </string>
+    <string name="welcome_card_5">
+        The project\'s source code is <a href="https://github.com/Adamant-im/">completely open</a>. The app is in development and we constantly add new features.<br/><br/>
+        If you are a developer — join our team.
+    </string>
+
+
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/free-adm-tokens/?wallet=</string>
 
