@@ -1,5 +1,6 @@
 package im.adamant.android.ui.holders;
 
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,5 +24,6 @@ public class WelcomeCardHolder extends RecyclerView.ViewHolder {
     public void bind(WelcomeCard welcomeCard) {
         imageView.setImageResource(welcomeCard.getImageResource());
         textView.setText(welcomeCard.getText());
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 }

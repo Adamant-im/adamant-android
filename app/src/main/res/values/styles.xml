@@ -75,6 +75,13 @@
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
+    <style name="AdamantLight.FlatTextButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
+        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
+        <item name="android:textColor">@drawable/flat_button_selector_text</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
     <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
 
     </style>

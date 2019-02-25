@@ -20,12 +20,13 @@
     <dimen name="list_item_chat_placeholder_date_height">18dp</dimen>
 
     <dimen name="activity_messages_new_message_height">42dp</dimen>
-    <dimen name="activity_login_max_form_width">600dp</dimen>
-    <dimen name="activity_login_title_text_size">30sp</dimen>
+
+    <dimen name="activity_login_slider_height">450dp</dimen>
 
     <dimen name="activity_show_qr_code_size_of_qr_code">150dp</dimen>
 
     <dimen name="list_item_welcome_card_image_size">200dp</dimen>
+    <dimen name="list_item_welcome_card_max_text_width">350dp</dimen>
 
     <dimen name="list_item_message_padding">16dp</dimen>
     <dimen name="list_item_message_avatar_margin">8dp</dimen>
