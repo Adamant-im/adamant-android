@@ -46,7 +46,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_generate_new_passphrase"
                 style="@style/AdamantLight.FlatTextButton"
-                android:layout_width="@dimen/main_button_width"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="18dp"
