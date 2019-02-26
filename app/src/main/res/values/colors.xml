@@ -4,7 +4,8 @@
     <color name="primaryDarkVariant">#f5f5f5</color>
     <color name="secondary">#2E7EED</color>
     <color name="secondaryDarkVariant">#0053ba</color>
-    
+    <color name="secondaryLightVariant">#BBDEFB</color>
+
     <color name="background">#FFFFFF</color>
     <color name="qr_background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>

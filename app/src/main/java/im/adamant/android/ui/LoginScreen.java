@@ -6,6 +6,9 @@ import android.widget.Toast;
 
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
+import java.util.concurrent.TimeUnit;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import dagger.android.AndroidInjector;
@@ -23,6 +26,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.ui.transformations.DotPagerIndicatorDecoration;
+import im.adamant.android.ui.transformations.SimpleDotIndicatorDecoration;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
@@ -44,9 +51,9 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @Inject
     AuthorizeInteractor authorizeInteractor;
 
-    private BottomLoginFragment loginFragment;
-
     @BindView(R.id.activity_login_vp_welcome_cards) DiscreteScrollView welcomeCardsSliderView;
+
+    private BottomLoginFragment loginFragment;
 
     //--Activity
     @Override
@@ -76,6 +83,13 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         welcomeCardsSliderView.setAdapter(adapter);
         welcomeCardsSliderView.setOffscreenItems(1);
         welcomeCardsSliderView.setOverScrollEnabled(true);
+        welcomeCardsSliderView.addItemDecoration(
+                new SimpleDotIndicatorDecoration(
+                        ContextCompat.getColor(this, R.color.secondaryDarkVariant),
+                        ContextCompat.getColor(this, R.color.secondaryLightVariant),
+                        20
+                )
+        );
     }
 
     @OnClick(R.id.activity_login_btn_login)
