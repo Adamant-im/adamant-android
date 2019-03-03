@@ -94,10 +94,6 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
     @Override
     public int compareTo(@NonNull AbstractMessage message) {
         long dateDiff = timestamp - message.timestamp;
