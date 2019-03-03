@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import java.math.BigDecimal;
 
 import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
@@ -34,7 +35,7 @@ public class EthereumTransferMessageBuilder implements MessageBuilder<EthereumTr
 
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());
-            message.setProcessed(true);
+            message.setStatus(AbstractMessage.Status.DELIVERED);
             message.setTransactionId(transaction.getId());
         }
 

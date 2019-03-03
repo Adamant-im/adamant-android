@@ -1,6 +1,7 @@
 package im.adamant.android.ui.messages_support.builders;
 
 import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
@@ -25,7 +26,7 @@ public class AdamantBasicMessageBuilder implements MessageBuilder<AdamantBasicMe
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());
 
-            message.setProcessed(true);
+            message.setStatus(AbstractMessage.Status.DELIVERED);
             message.setTransactionId(transaction.getId());
         }
 

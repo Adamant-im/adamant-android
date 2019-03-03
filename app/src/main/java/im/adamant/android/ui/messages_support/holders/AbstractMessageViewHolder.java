@@ -130,15 +130,25 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     protected void emptyView() {
-        processedView.setImageResource(R.drawable.ic_not_processed);
+        processedView.setImageResource(R.drawable.ic_sending);
         timeView.setText("00:00");
     }
 
     protected void displayProcessedStatus(ImageView processedView, AbstractMessage message){
-        if (message.isProcessed()){
-            processedView.setImageResource(R.drawable.ic_processed);
-        } else {
-            processedView.setImageResource(R.drawable.ic_not_processed);
+        if (message.getStatus() == null) { return; }
+        switch (message.getStatus()) {
+            case DELIVERED: {
+                processedView.setImageResource(R.drawable.ic_delivered);
+            }
+            break;
+            case SENDING_AND_VALIDATION: {
+                processedView.setImageResource(R.drawable.ic_sending);
+            }
+            break;
+            case INVALIDATED:
+            case NOT_SENDED: {
+                processedView.setImageResource(R.drawable.ic_not_sended);
+            }
         }
     }
 

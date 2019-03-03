@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.BinanceTransferMessage;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 
@@ -35,7 +36,7 @@ public class BinanceTransferMessageBuilder implements MessageBuilder<BinanceTran
 
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());
-            message.setProcessed(true);
+            message.setStatus(AbstractMessage.Status.DELIVERED);
             message.setTransactionId(transaction.getId());
         }
 

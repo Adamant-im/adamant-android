@@ -76,6 +76,15 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
                         api.processTransaction(new ProcessTransaction(transaction))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.computation())
-                ));
+                ))
+                .doAfterSuccess(transactionWasProcessed -> {
+                    if (transactionWasProcessed.isSuccess()){
+                        message.setTransactionId(transactionWasProcessed.getTransactionId());
+                        message.setStatus(AbstractMessage.Status.DELIVERED);
+                    }
+                })
+                .doOnError(throwable -> {
+                    message.setStatus(AbstractMessage.Status.NOT_SENDED);
+                });
     }
 }
