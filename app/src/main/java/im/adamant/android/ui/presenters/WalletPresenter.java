@@ -21,6 +21,7 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     private Router router;
     private WalletInteractor walletInteractor;
     private Disposable lastTransfersSubscription;
+    private Disposable walletCardsSubscription;
     private CurrencyCardItem currencyCardItem;
 
     public WalletPresenter(
@@ -37,7 +38,11 @@ public class WalletPresenter extends BasePresenter<WalletView> {
     public void attachView(WalletView view) {
         super.attachView(view);
 
-        Disposable subscribe = walletInteractor
+        if (walletCardsSubscription != null) {
+            walletCardsSubscription.dispose();
+        }
+
+        walletCardsSubscription = walletInteractor
                 .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
@@ -45,8 +50,6 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
-
-        subscriptions.add(subscribe);
 
     }
 
@@ -86,6 +89,11 @@ public class WalletPresenter extends BasePresenter<WalletView> {
         if (lastTransfersSubscription != null){
             lastTransfersSubscription.dispose();
             lastTransfersSubscription = null;
+        }
+
+        if (walletCardsSubscription != null){
+            walletCardsSubscription.dispose();
+            walletCardsSubscription = null;
         }
     }
 
