@@ -36,6 +36,7 @@
             android:name=".ui.MessagesScreen"
             android:theme="@style/AdamantLight.WithActionBar"
             android:launchMode="singleTop"
+            android:windowSoftInputMode="stateUnchanged|adjustResize"
             android:exported="true">
 
             <!--
