@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import im.adamant.android.ui.transformations.DotPagerIndicatorDecoration;
 import im.adamant.android.ui.transformations.SimpleDotIndicatorDecoration;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
