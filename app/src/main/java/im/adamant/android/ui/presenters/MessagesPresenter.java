@@ -14,6 +14,7 @@ import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
@@ -159,7 +160,9 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         try {
             AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageListContentType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(message, messageFactory);
+
             chatsStorage.addMessageToChat(messageEntity);
+            getViewState().showChatMessages(messages);
 
             MessageProcessor<AdamantBasicMessage> messageProcessor = messageFactory.getMessageProcessor();
 
@@ -167,17 +170,12 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     .sendMessage(messageEntity)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
-                                if (transaction.isSuccess()){
-                                    messageEntity.setProcessed(true);
-                                    messageEntity.setTransactionId(transaction.getTransactionId());
-                                }
-
-                                getViewState().messageWasSended(messageEntity);
-                            }),
-                            (error) -> {
-                                router.showSystemMessage(error.getMessage());
-                                error.printStackTrace();
-                            }
+                            getViewState().messageWasSended(messageEntity);
+                        }),
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                            error.printStackTrace();
+                        }
                     );
 
             subscriptions.add(subscription);

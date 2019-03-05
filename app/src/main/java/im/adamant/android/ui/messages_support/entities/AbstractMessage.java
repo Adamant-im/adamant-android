@@ -12,10 +12,18 @@ import java.util.Objects;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
 public abstract class AbstractMessage implements MessageListContent, Serializable, Comparable<AbstractMessage> {
+
+    public enum Status {
+        DELIVERED,
+        SENDING_AND_VALIDATION,
+        NOT_SENDED,
+        INVALIDATED
+    }
+
     private SupportedMessageListContentType supportedType = SupportedMessageListContentType.UNDEFINED;
     private boolean iSay;
     private long timestamp;
-    private boolean processed;
+    private Status status = Status.SENDING_AND_VALIDATION;
     private String transactionId;
     private String companionId;
     private String ownerPublicKey;
@@ -37,12 +45,12 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
         this.timestamp = timestamp;
     }
 
-    public boolean isProcessed() {
-        return processed;
+    public Status getStatus() {
+        return status;
     }
 
-    public void setProcessed(boolean processed) {
-        this.processed = processed;
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     public boolean isiSay() {
@@ -92,10 +100,6 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
             date = new Date(timestamp);
         }
         return date;
-    }
-
-    public void setDate(Date date) {
-        this.date = date;
     }
 
     @Override

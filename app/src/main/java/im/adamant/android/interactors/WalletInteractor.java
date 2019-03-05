@@ -22,7 +22,7 @@ public class WalletInteractor {
     }
 
     public Flowable<List<CurrencyCardItem>> getCurrencyItemCards() {
-        return Flowable.fromCallable(() -> {
+        return Flowable.defer(() -> {
             List<CurrencyCardItem> list = new ArrayList<>();
 
             for (SupportedWalletFacadeType currencyType : SupportedWalletFacadeType.values()){
@@ -45,7 +45,7 @@ public class WalletInteractor {
 
             }
 
-            return list;
+            return Flowable.just(list);
         })
         .subscribeOn(Schedulers.computation())
         .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);

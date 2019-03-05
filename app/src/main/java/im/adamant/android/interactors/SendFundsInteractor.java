@@ -11,6 +11,7 @@ import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -70,12 +71,6 @@ public class SendFundsInteractor {
         MessageProcessor<AdamantTransferMessage> messageProcessor = factory.getMessageProcessor();
         return messageProcessor
                 .sendMessage(message)
-                .doAfterSuccess(transactionWasProcessed -> {
-                    if (transactionWasProcessed.isSuccess()){
-                        message.setTransactionId(transactionWasProcessed.getTransactionId());
-                        message.setProcessed(true);
-                    }
-                })
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

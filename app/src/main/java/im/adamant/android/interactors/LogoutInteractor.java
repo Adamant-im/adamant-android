@@ -59,8 +59,6 @@ public class LogoutInteractor {
                             settings.setKeyPairMustBeStored(false);
 
                             publisher.onNext(Irrelevant.INSTANCE);
-                            //TODO: Проблемы со сбросом.После этого не войти
-
                         },
                         (error) -> {
                             publisher.onError(error);
