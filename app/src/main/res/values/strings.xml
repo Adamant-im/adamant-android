@@ -25,6 +25,9 @@
     <string name="activity_nodes_list_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="activity_nodes_list_node_status">Node %s, Ping: %.0f ms</string>
 
+    <string name="activity_pincode_enter_pincode">Enter pincode</string>
+    <string name="activity_pincode_enter_new_pincode">Enter new pincode</string>
+
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Start new chat</string>
 
@@ -112,6 +115,8 @@
     <string name="invalid_count_words_in_passphrase">Wrong count of words in passphrase. Need 12, current count: %d. Necessary: %d</string>
     <string name="invalid_checksum_in_passphrase">Invalid checksum</string>
     <string name="not_a_number">This value must be a number.</string>
+    <string name="empty_pincode">PIN-code can not be empty</string>
+    <string name="wrong_pincode">Wrong PIN-code</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

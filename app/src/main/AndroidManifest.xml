@@ -64,7 +64,8 @@
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
         <activity
-            android:name=".ui.PinCodeScreen" />
+            android:name=".ui.PinCodeScreen"
+            android:exported="false"/>
         <activity
             android:name=".ui.RegistrationScreen"
             android:exported="false"
