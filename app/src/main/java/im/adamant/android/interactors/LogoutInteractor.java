@@ -6,7 +6,6 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.rx.Irrelevant;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -55,7 +54,7 @@ public class LogoutInteractor {
                             refreshChatsInteractor.cleanUp();
                             chatsStorage.cleanUp();
                             api.logout();
-                            settings.setAccountKeypair("");
+                            settings.setAccountPassphrase("");
                             settings.setKeyPairMustBeStored(false);
 
                             publisher.onNext(Irrelevant.INSTANCE);

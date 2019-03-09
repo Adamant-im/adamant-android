@@ -126,7 +126,6 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
                 .textChanges(passPhraseView)
                 .filter(charSequence -> charSequence.length() > 0)
                 .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
                 .doOnNext(loginPresenter::onInputPassphrase)
                 .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
                 .retry()

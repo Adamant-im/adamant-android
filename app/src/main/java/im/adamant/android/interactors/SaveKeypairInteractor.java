@@ -8,13 +8,9 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.Irrelevant;
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.PublishSubject;
 
 public class SaveKeypairInteractor {
     private Settings settings;
@@ -42,15 +38,15 @@ public class SaveKeypairInteractor {
                             if (api.isAuthorized()){
                                 String account = keyStoreCipher.encrypt(
                                         Constants.ADAMANT_ACCOUNT_ALIAS,
-                                        api.getKeyPair()
+                                        api.getPassPhrase()
                                 );
-                                settings.setAccountKeypair(account);
+                                settings.setAccountPassphrase(account);
                             }
                         } catch (Exception e) {
                             LoggerHelper.e("SaveKeyPair", e.getMessage(), e);
                         }
                     } else {
-                        settings.setAccountKeypair("");
+                        settings.setAccountPassphrase("");
                     }
                 })
                 .subscribeOn(Schedulers.computation())

@@ -41,6 +41,7 @@ public class AdamantApiWrapper {
     private AdamantApi api;
     private KeyPair keyPair;
     private Account account;
+    private CharSequence passPhrase;
     private AdamantKeyGenerator keyGenerator;
     private AdamantApiBuilder apiBuilder;
 
@@ -57,7 +58,8 @@ public class AdamantApiWrapper {
         buildApi();
     }
 
-    public Flowable<Authorization> authorize(String passPhrase) {
+    public Flowable<Authorization> authorize(CharSequence passPhrase) {
+        this.passPhrase = passPhrase;
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         return authorize(tempKeyPair);
@@ -155,7 +157,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<Authorization> createNewAccount(String passPhrase) {
+    public Flowable<Authorization> createNewAccount(CharSequence passPhrase) {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         NewAccount newAccount = new NewAccount();
@@ -235,6 +237,10 @@ public class AdamantApiWrapper {
 
     public KeyPair getKeyPair() {
         return keyPair;
+    }
+
+    public CharSequence getPassPhrase() {
+        return passPhrase;
     }
 
     private void buildApi() {
