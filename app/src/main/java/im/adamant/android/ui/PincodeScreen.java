@@ -3,8 +3,10 @@ package im.adamant.android.ui;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,6 +45,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
     @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
     @BindView(R.id.activity_pincode_tv_error) TextView errorView;
+    @BindView(R.id.activity_pin_code_pb_progress) ProgressBar progressView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -101,6 +104,16 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         if (mode == null){return;}
         presenter.setMode(mode);
 
+    }
+
+    @Override
+    public void startProcess() {
+        progressView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopProcess() {
+        progressView.setVisibility(View.INVISIBLE);
     }
 
     @Override

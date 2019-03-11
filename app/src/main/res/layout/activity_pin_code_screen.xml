@@ -7,6 +7,18 @@
     android:background="@color/background"
     tools:context=".ui.PincodeScreen">
 
+    <ProgressBar
+        android:id="@+id/activity_pin_code_pb_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:secondaryProgress="50"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/activity_pincode_iv_profile_image"
         android:layout_width="84dp"

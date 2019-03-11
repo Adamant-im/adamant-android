@@ -17,16 +17,11 @@ import io.reactivex.schedulers.Schedulers;
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.VERIFY;
-    private int counter;
     private boolean ignoreInput = false;
 
     public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
         super(subscriptions);
         this.pinCodeInteractor = pinCodeInteractor;
-    }
-
-    public PincodePresenter(CompositeDisposable subscriptions) {
-        super(subscriptions);
     }
 
     public void setMode(PinCodeView.MODE mode) {
@@ -49,10 +44,9 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void onInputPincodeWasCompleted(String pinCode) {
         if (ignoreInput){ return; }
-        counter++;
-        LoggerHelper.e("COUNTER", Integer.toString(counter));
+
         //TODO: Validation
-        ignoreInput = true;
+        startProcess();
         switch (mode){
             case CREATE: {
                 Disposable subscription = pinCodeInteractor
@@ -60,11 +54,11 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .subscribeOn(Schedulers.computation())
                         .subscribe(
                                 () -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     getViewState().close();
                                 },
                                 error -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     getViewState().showError(R.string.encryption_error);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
@@ -78,7 +72,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (authorization) -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     if (authorization.isSuccess()) {
                                         getViewState().goToMain();
                                     } else {
@@ -86,7 +80,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     }
                                 },
                                 error -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
@@ -102,11 +96,11 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 () -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     getViewState().close();
                                 },
                                 error -> {
-                                    ignoreInput = false;
+                                    stopProcess();
                                     getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
@@ -115,5 +109,15 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
         }
+    }
+
+    private void startProcess() {
+        ignoreInput = true;
+        getViewState().startProcess();
+    }
+
+    private void stopProcess() {
+        ignoreInput = false;
+        getViewState().startProcess();
     }
 }
