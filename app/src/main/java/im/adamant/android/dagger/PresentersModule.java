@@ -19,6 +19,7 @@ import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
@@ -33,6 +34,7 @@ import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.presenters.NodesListPresenter;
+import im.adamant.android.ui.presenters.PincodePresenter;
 import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
 import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.presenters.SendFundsPresenter;
@@ -199,14 +201,14 @@ public abstract class PresentersModule {
     public static SettingsPresenter provideSettingsPresenter(
             Router router,
             AdamantApiWrapper api,
-            SaveKeypairInteractor saveKeypairInteractor,
+            SecurityInteractor securityInteractor,
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
             @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
     ) {
         return new SettingsPresenter(
                 router,
                 api,
-                saveKeypairInteractor,
+                securityInteractor,
                 switchPushNotificationServiceInteractor,
                 subscriptions
         );
@@ -251,5 +253,21 @@ public abstract class PresentersModule {
             @Named("main") CompositeDisposable compositeDisposable
     ){
         return new MainPresenter(router, logoutInteractor, compositeDisposable);
+    }
+
+    @Singleton
+    @Provides
+    public static PincodePresenter providePincodePresenter(
+            SecurityInteractor securityInteractor,
+            @Named(Screens.PINCODE_SCREEN) CompositeDisposable subscriptions
+    ) {
+        return new PincodePresenter(securityInteractor, subscriptions);
+    }
+
+    @Singleton
+    @Provides
+    @Named(Screens.PINCODE_SCREEN)
+    public static CompositeDisposable providePincodeComposite() {
+        return new CompositeDisposable();
     }
 }

@@ -14,6 +14,10 @@
         <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>+
     </style>
 
+    <style name="AdamantLight.PincodeTheme" parent="AdamantLight">
+        <item name="colorAccent">@color/background</item>
+    </style>
+
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>

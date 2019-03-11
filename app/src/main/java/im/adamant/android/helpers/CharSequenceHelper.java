@@ -1,5 +1,7 @@
 package im.adamant.android.helpers;
 
+import java.util.stream.IntStream;
+
 public class CharSequenceHelper {
 
     //TODO: Need create protect and unprotect functions
@@ -28,6 +30,20 @@ public class CharSequenceHelper {
         }
 
         return charSequence.subSequence(leftPosition, rightPosition + 1);
+    }
+
+    //This method implements the sequence integration functionality for the API starting with version 19.
+    public static CharSequence concat(CharSequence sequence1, CharSequence sequence2) {
+        StringBuffer buffer = new StringBuffer();
+        for(int i = 0; i < sequence1.length(); i++) {
+            buffer.append(sequence1.charAt(i));
+        }
+
+        for(int i = 0; i < sequence2.length(); i++) {
+            buffer.append(sequence2.charAt(i));
+        }
+
+        return buffer;
     }
 
     private static boolean isLetterCharacter(char character) {

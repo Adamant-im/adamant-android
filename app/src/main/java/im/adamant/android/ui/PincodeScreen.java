@@ -26,9 +26,7 @@ import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
 import io.reactivex.Flowable;
 
-public class PinCodeScreen extends BaseActivity implements PinCodeView {
-    public static final String ARG_MODE = "mode";
-
+public class PincodeScreen extends BaseActivity implements PinCodeView {
     @Inject
     Provider<PincodePresenter> presenterProvider;
 
@@ -46,6 +44,9 @@ public class PinCodeScreen extends BaseActivity implements PinCodeView {
     @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
     @BindView(R.id.activity_pincode_tv_suggestion)
     TextView suggestionView;
+
+    @BindView(R.id.activity_pincode_tv_error)
+    TextView errorView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -78,8 +79,6 @@ public class PinCodeScreen extends BaseActivity implements PinCodeView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -93,7 +92,7 @@ public class PinCodeScreen extends BaseActivity implements PinCodeView {
         //pinLockView.setCustomKeySet(new int[]{2, 3, 1, 5, 9, 6, 7, 0, 8, 4});
         //pinLockView.enableLayoutShuffling();
 
-        pinLockView.setPinLength(4);
+        pinLockView.setPinLength(10);
 
         indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
 
@@ -103,7 +102,7 @@ public class PinCodeScreen extends BaseActivity implements PinCodeView {
         Bundle extras = intent.getExtras();
 
         if (extras == null){return;}
-        MODE mode = (MODE) extras.getSerializable(ARG_MODE);
+        MODE mode = (MODE) extras.getSerializable(PinCodeView.ARG_MODE);
 
         if (mode == null){return;}
         presenter.setMode(mode);
@@ -116,15 +115,22 @@ public class PinCodeScreen extends BaseActivity implements PinCodeView {
     }
 
     @Override
-    public void close(Bundle bundle) {
-        Intent intent = new Intent();
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
+    public void goToMain() {
+        Intent intent = new Intent(this.getApplicationContext(), MainScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        startActivity(intent);
+
+        finish();
+    }
+
+    @Override
+    public void close() {
         finish();
     }
 
     @Override
     public void showError(int resourceId) {
-
+        errorView.setText(getString(resourceId));
     }
 }

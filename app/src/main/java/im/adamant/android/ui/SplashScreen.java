@@ -3,34 +3,31 @@ package im.adamant.android.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.franmontiel.localechanger.LocaleChanger;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import butterknife.BindView;
 import dagger.android.AndroidInjection;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.interactors.AuthorizeInteractor;
-import io.reactivex.android.schedulers.AndroidSchedulers;
+import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-
-import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class SplashScreen extends AppCompatActivity {
-
-    @Inject
-    AuthorizeInteractor authorizeInteractor;
 
     @Inject
     Settings settings;
@@ -38,6 +35,9 @@ public class SplashScreen extends AppCompatActivity {
     @Named(Screens.SPLASH_SCREEN)
     @Inject
     CompositeDisposable subscriptions;
+
+    @Inject
+    KeyStoreCipher cipher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,78 +47,36 @@ public class SplashScreen extends AppCompatActivity {
         Context applicationContext = getApplicationContext();
         WeakReference<SplashScreen> thisReference = new WeakReference<>(this);
 
-        if (!settings.isKeyPairMustBeStored()){
-            goToScreen(LoginScreen.class, applicationContext, thisReference);
+        if (settings.isKeyPairMustBeStored()){
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.VERIFY);
+            goToScreen(PincodeScreen.class, applicationContext, thisReference, bundle);
+        } else {
+            goToScreen(LoginScreen.class, applicationContext, thisReference, null);
             return;
         }
 
         setContentView(R.layout.activity_splash_screen);
-        //TODO: Проверь что при перевороте экрана авторизация возобновляется
-        if (authorizeInteractor.isAuthorized()){
-            goToScreen(MainScreen.class, applicationContext, thisReference);
-        } else {
-            Disposable subscribe = authorizeInteractor
-                    .restoreAuthorization()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(authorization -> {
-                        SplashScreen splashScreen = thisReference.get();
-                        Context activityContext = applicationContext;
-                        if (splashScreen != null){
-                            activityContext = splashScreen;
-                        }
-
-                        if (authorization.isSuccess()){
-                            goToScreen(MainScreen.class, applicationContext, thisReference);
-                        } else {
-                            Toast.makeText(activityContext, R.string.account_not_found, Toast.LENGTH_LONG).show();
-                            goToScreen(LoginScreen.class, applicationContext, thisReference);
-                        }
-                    })
-                    .doOnError(error -> {
-                        if (error instanceof IOException){
-                            SplashScreen splashScreen = thisReference.get();
-                            Context activityContext = applicationContext;
-                            if (splashScreen != null){
-                                activityContext = splashScreen;
-                            }
-
-                            Toast.makeText(activityContext, R.string.authorization_error, Toast.LENGTH_LONG).show();
-                        } else {
-                            goToScreen(LoginScreen.class, applicationContext, thisReference);
-                        }
-
-                    })
-                    .retry((integer, throwable) -> throwable instanceof IOException)
-                    .onErrorReturn((throwable) -> {
-                        Authorization authorization = new Authorization();
-                        authorization.setSuccess(false);
-
-                        return authorization;
-                    })
-                    .subscribe(authorization -> {
-                        if (!authorization.isSuccess()){
-                            goToScreen(LoginScreen.class, applicationContext, thisReference);
-                        }
-                    });
-
-            subscriptions.add(subscribe);
-        }
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-
-        if (subscriptions != null) {
-            subscriptions.clear();
-            subscriptions.dispose();
-        }
     }
 
-    private static void goToScreen(Class target, Context context, WeakReference<SplashScreen> splashScreenWeakReference) {
+    private static void goToScreen(
+            Class target,
+            Context context,
+            WeakReference<SplashScreen> splashScreenWeakReference,
+            Bundle bundle
+    ) {
         Intent intent = new Intent(context, target);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (bundle != null) {
+            intent.putExtras(bundle);
+        }
+
         context.startActivity(intent);
 
         SplashScreen splashScreen = splashScreenWeakReference.get();

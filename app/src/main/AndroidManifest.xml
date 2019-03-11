@@ -22,7 +22,7 @@
         android:usesCleartextTraffic="true"
         >
         <activity android:name=".ui.SplashScreen"
-            android:theme="@style/AdamantLight.Launcher">
+            android:theme="@style/AdamantLight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,7 +64,8 @@
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
         <activity
-            android:name=".ui.PinCodeScreen"
+            android:name=".ui.PincodeScreen"
+            android:theme="@style/AdamantLight.PincodeTheme"
             android:exported="false"/>
         <activity
             android:name=".ui.RegistrationScreen"

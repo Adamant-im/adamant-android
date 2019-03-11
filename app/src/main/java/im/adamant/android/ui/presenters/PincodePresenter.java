@@ -4,22 +4,21 @@ import android.os.Bundle;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import javax.inject.Inject;
-
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.PincodeInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
-    private PincodeInteractor pinCodeInteractor;
+    private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.VERIFY;
 
-    public PincodePresenter(PincodeInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
+    public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
         super(subscriptions);
         this.pinCodeInteractor = pinCodeInteractor;
     }
@@ -43,17 +42,16 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(String pinCode) {
-        PinCodeView viewState = getViewState();
         switch (mode){
             case CREATE: {
                 Disposable subscription = pinCodeInteractor
-                        .createPincode(pinCode)
+                        .savePassphrase(pinCode)
                         .subscribeOn(Schedulers.computation())
                         .subscribe(
                                 () -> {
                                     Bundle bundle = new Bundle();
                                     bundle.putBoolean(PinCodeView.ARG_CREATED, true);
-                                    viewState.close(bundle);
+                                    getViewState().close();
                                 },
                                 error -> LoggerHelper.e("PINCODE", error.getMessage(), error)
                         );
@@ -62,17 +60,17 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             break;
             case VERIFY: {
                 Disposable subscription = pinCodeInteractor
-                        .verifyPincode(pinCode)
-                        .subscribeOn(Schedulers.computation())
+                        .restoreAuthorizationByPincode(pinCode)
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                (verified) -> {
-                                    if (verified) {
+                                (authorization) -> {
+                                    if (authorization.isSuccess()) {
                                         Bundle bundle = new Bundle();
                                         bundle.putBoolean(PinCodeView.ARG_VERIFIED, true);
-                                        viewState.close(bundle);
+                                        getViewState().goToMain();
                                     } else {
                                         //TODO: Обработка ошибок
-                                        viewState.showError(R.string.wrong_pincode);
+                                        getViewState().showError(R.string.wrong_pincode);
                                     }
                                 },
                                 error -> LoggerHelper.e("PINCODE", error.getMessage(), error)

@@ -3,6 +3,7 @@ package im.adamant.android.dagger;
 import android.content.Context;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.LazySodiumAndroid;
 import com.goterl.lazycode.lazysodium.SodiumAndroid;
@@ -23,10 +24,17 @@ import io.github.novacrypto.bip39.wordlists.English;
 
 @Module
 public abstract class EncryptionModule {
+
     @Singleton
     @Provides
-    public static KeyStoreCipher provideKeyStoreCipher(Gson gson, Context context) {
-        return new KeyStoreCipher(gson, context);
+    public static JsonParser provideJsonParser() {
+        return new JsonParser();
+    }
+
+    @Singleton
+    @Provides
+    public static KeyStoreCipher provideKeyStoreCipher(LazySodium sodium, JsonParser parser, Context context) {
+        return new KeyStoreCipher(sodium, parser, context);
     }
 
     @Singleton

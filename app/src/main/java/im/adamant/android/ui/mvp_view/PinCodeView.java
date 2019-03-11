@@ -9,6 +9,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 public interface PinCodeView extends MvpView {
     String ARG_VERIFIED = "verified";
     String ARG_CREATED = "created";
+    String ARG_MODE = "mode";
 
     enum MODE {
         VERIFY,
@@ -18,7 +19,10 @@ public interface PinCodeView extends MvpView {
     void setSuggestion(int resourceId);
 
     @StateStrategyType(SkipStrategy.class)
-    void close(Bundle bundle);
+    void goToMain();
+
+    @StateStrategyType(SkipStrategy.class)
+    void close();
 
     @StateStrategyType(SkipStrategy.class)
     void showError(int resourceId);

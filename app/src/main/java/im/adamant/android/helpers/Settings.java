@@ -22,6 +22,8 @@ public class Settings {
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
     private String accountPassphrase = "";
+    private String accountPincode = "";
+    private String accountSign = "";
     private boolean isKeyPairMustBeStored;
     private String notificationToken = "";
     private String addressOfNotificationService = "";

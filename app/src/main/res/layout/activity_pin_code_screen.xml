@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    tools:context=".ui.PinCodeScreen">
+    tools:context=".ui.PincodeScreen">
 
     <ImageView
         android:id="@+id/activity_pincode_iv_profile_image"

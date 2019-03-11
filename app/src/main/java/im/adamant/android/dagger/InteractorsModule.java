@@ -1,5 +1,7 @@
 package im.adamant.android.dagger;
 
+import com.google.gson.Gson;
+
 import java.util.Map;
 
 import javax.inject.Singleton;
@@ -22,6 +24,7 @@ import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
@@ -161,5 +164,16 @@ public abstract class InteractorsModule {
             AdamantApiWrapper api
     ) {
         return new HasNewMessagesInteractor(api, settings);
+    }
+
+    @Singleton
+    @Provides
+    public static SecurityInteractor provideSecurityInteractor(
+            Settings settings,
+            AdamantApiWrapper api,
+            KeyStoreCipher keyStoreCipher,
+            Gson gson
+    ) {
+        return new SecurityInteractor(gson, settings, api, keyStoreCipher);
     }
 }
