@@ -39,14 +39,10 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.activity_pincode_plv_keyboard)
-    PinLockView pinLockView;
+    @BindView(R.id.activity_pincode_plv_keyboard) PinLockView pinLockView;
     @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
-    @BindView(R.id.activity_pincode_tv_suggestion)
-    TextView suggestionView;
-
-    @BindView(R.id.activity_pincode_tv_error)
-    TextView errorView;
+    @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
+    @BindView(R.id.activity_pincode_tv_error) TextView errorView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -63,7 +59,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
         @Override
         public void onPinChange(int pinLength, String intermediatePin) {
-            LoggerHelper.d("typing", "typing");
+            errorView.setText("");
         }
     };
 
@@ -88,9 +84,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         pinLockView.attachIndicatorDots(indicatorDots);
         pinLockView.setPinLockListener(mPinLockListener);
 
-
-        //pinLockView.setCustomKeySet(new int[]{2, 3, 1, 5, 9, 6, 7, 0, 8, 4});
-        //pinLockView.enableLayoutShuffling();
+        pinLockView.enableLayoutShuffling();
 
         pinLockView.setPinLength(10);
 

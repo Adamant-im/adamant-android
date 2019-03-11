@@ -2,12 +2,14 @@ package im.adamant.android.interactors;
 
 import com.google.gson.Gson;
 
+import java.security.InvalidKeyException;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.KeyStoreCipher;
+import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.core.exceptions.WrongPincodeException;
 import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.LoggerHelper;
@@ -77,6 +79,12 @@ public class SecurityInteractor {
                 .flatMap((combinedPassphrase) -> {
                     CharSequence decryptedPassphrase = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, combinedPassphrase.getEncryptedPassphrase());
                     return Single.just(decryptedPassphrase);
+                })
+                .doOnError((throwable) -> {
+                    boolean isCriticalError = (throwable instanceof EncryptionException);
+                    if (isCriticalError) {
+                        clearSettings();
+                    }
                 })
                 .subscribeOn(Schedulers.computation())
                 .flatMap(passphrase -> api.authorize(passphrase).singleOrError())

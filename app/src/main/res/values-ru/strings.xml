@@ -144,6 +144,7 @@
     <string name="invalid_count_words_in_passphrase">Парольная фраза состоит из 12 слов. Уже введено %d, осталось %d</string>
     <string name="invalid_checksum_in_passphrase">Некорректная контрольная сумма</string>
     <string name="not_a_number">Это значение должно быть числом</string>
+    <string name="encryption_error">Ошибка при шифровании</string>
     <string name="empty_pincode">Пин-код не может быть пустым!</string>
     <string name="wrong_pincode">Пин-код не верен</string>
 

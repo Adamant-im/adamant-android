@@ -17,6 +17,8 @@ import io.reactivex.schedulers.Schedulers;
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.VERIFY;
+    private int counter;
+    private boolean ignoreInput = false;
 
     public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
         super(subscriptions);
@@ -38,10 +40,19 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
             }
             break;
+            case DROP: {
+                getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
+            }
+            break;
         }
     }
 
     public void onInputPincodeWasCompleted(String pinCode) {
+        if (ignoreInput){ return; }
+        counter++;
+        LoggerHelper.e("COUNTER", Integer.toString(counter));
+        //TODO: Validation
+        ignoreInput = true;
         switch (mode){
             case CREATE: {
                 Disposable subscription = pinCodeInteractor
@@ -49,11 +60,14 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .subscribeOn(Schedulers.computation())
                         .subscribe(
                                 () -> {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putBoolean(PinCodeView.ARG_CREATED, true);
+                                    ignoreInput = false;
                                     getViewState().close();
                                 },
-                                error -> LoggerHelper.e("PINCODE", error.getMessage(), error)
+                                error -> {
+                                    ignoreInput = false;
+                                    getViewState().showError(R.string.encryption_error);
+                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                }
                         );
                 subscriptions.add(subscription);
             }
@@ -64,16 +78,38 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (authorization) -> {
+                                    ignoreInput = false;
                                     if (authorization.isSuccess()) {
-                                        Bundle bundle = new Bundle();
-                                        bundle.putBoolean(PinCodeView.ARG_VERIFIED, true);
                                         getViewState().goToMain();
                                     } else {
-                                        //TODO: Обработка ошибок
-                                        getViewState().showError(R.string.wrong_pincode);
+                                        getViewState().showError(R.string.account_not_found);
                                     }
                                 },
-                                error -> LoggerHelper.e("PINCODE", error.getMessage(), error)
+                                error -> {
+                                    ignoreInput = false;
+                                    getViewState().showError(R.string.wrong_pincode);
+                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                }
+                        );
+                subscriptions.add(subscription);
+            }
+            break;
+            case DROP: {
+                Disposable subscription = pinCodeInteractor
+                        .validatePincode(pinCode)
+                        .ignoreElement()
+                        .andThen(pinCodeInteractor.dropPassphrase())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                () -> {
+                                    ignoreInput = false;
+                                    getViewState().close();
+                                },
+                                error -> {
+                                    ignoreInput = false;
+                                    getViewState().showError(R.string.wrong_pincode);
+                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                }
                         );
                 subscriptions.add(subscription);
             }

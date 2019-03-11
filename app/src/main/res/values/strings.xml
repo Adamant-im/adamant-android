@@ -116,6 +116,7 @@
     <string name="invalid_checksum_in_passphrase">Invalid checksum</string>
     <string name="not_a_number">This value must be a number.</string>
     <string name="empty_pincode">PIN-code can not be empty</string>
+    <string name="encryption_error">Encryption error</string>
     <string name="wrong_pincode">Wrong PIN-code</string>
 
     <!--NOTIFICATIONS-->

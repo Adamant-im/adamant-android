@@ -13,7 +13,8 @@ public interface PinCodeView extends MvpView {
 
     enum MODE {
         VERIFY,
-        CREATE
+        CREATE,
+        DROP
     }
 
     void setSuggestion(int resourceId);

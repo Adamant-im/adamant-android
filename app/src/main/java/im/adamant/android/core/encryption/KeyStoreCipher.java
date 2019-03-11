@@ -99,14 +99,18 @@ public class KeyStoreCipher {
     public String encrypt(String alias, CharSequence data) throws Exception {
         if (data == null) {throw new EncryptionException("Data for encryption is null");}
 
-        byte[] bytes = data.toString().getBytes();
+        try {
+            byte[] bytes = data.toString().getBytes();
 
-        if(bytes.length > MAX_BLOCK_SIZE){
-            return LARGE_DATA_TYPE + encryptLargeBlock(alias, data);
-        } else {
-            return SMALL_DATA_TYPE + encryptSmallBlock(alias, bytes);
+            if(bytes.length > MAX_BLOCK_SIZE){
+                return LARGE_DATA_TYPE + encryptLargeBlock(alias, data);
+            } else {
+                return SMALL_DATA_TYPE + encryptSmallBlock(alias, bytes);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EncryptionException(ex.getMessage());
         }
-
     }
 
     private String encryptSmallBlock(String alias, byte[] bytes) throws Exception {
@@ -160,7 +164,7 @@ public class KeyStoreCipher {
         return blocks.toString();
     }
 
-    public CharSequence decrypt(String alias, String object) {
+    public CharSequence decrypt(String alias, String object) throws Exception {
         String dataSizeType = object.substring(0, 2);
         String data = object.substring(2);
         try {
@@ -172,8 +176,9 @@ public class KeyStoreCipher {
                     return decryptLargeBlock(alias, data);
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EncryptionException(ex.getMessage());
         }
 
         return "";
