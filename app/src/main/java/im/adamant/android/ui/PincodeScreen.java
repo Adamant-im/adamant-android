@@ -2,6 +2,8 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -19,6 +21,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
@@ -104,6 +107,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         if (mode == null){return;}
         presenter.setMode(mode);
 
+        progressView.getIndeterminateDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.secondary), PorterDuff.Mode.MULTIPLY);
     }
 
     @Override

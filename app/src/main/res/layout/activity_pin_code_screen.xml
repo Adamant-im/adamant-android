@@ -12,6 +12,8 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="0dp"
         android:indeterminate="true"
         android:secondaryProgress="50"
         android:visibility="invisible"
@@ -23,9 +25,10 @@
         android:id="@+id/activity_pincode_iv_profile_image"
         android:layout_width="84dp"
         android:layout_height="84dp"
+        android:layout_below="@+id/activity_pin_code_pb_progress"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="104dp"
-        app:srcCompat="@drawable/ic_welcome_card1"/>
+        android:layout_marginTop="78dp"
+        app:srcCompat="@drawable/ic_welcome_card1" />
 
     <TextView
         android:id="@+id/activity_pincode_tv_suggestion"

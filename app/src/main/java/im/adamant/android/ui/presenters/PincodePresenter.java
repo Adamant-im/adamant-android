@@ -118,6 +118,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     private void stopProcess() {
         ignoreInput = false;
-        getViewState().startProcess();
+        getViewState().stopProcess();
     }
 }
