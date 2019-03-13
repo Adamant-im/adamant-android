@@ -91,6 +91,11 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case DROP: {
                 Disposable subscription = pinCodeInteractor
                         .validatePincode(pinCode)
+                        .doOnError((error) -> {
+                            stopProcess();
+                            getViewState().showError(R.string.wrong_pincode);
+                            LoggerHelper.e("PINCODE", error.getMessage(), error);
+                        })
                         .ignoreElement()
                         .andThen(pinCodeInteractor.dropPassphrase())
                         .observeOn(AndroidSchedulers.mainThread())

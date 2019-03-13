@@ -39,7 +39,7 @@ public class SecurityInteractor {
 
             try {
                 if (api.isAuthorized()){
-                    KeyStoreCipher.SecureHash secureHash = keyStoreCipher.secureHash(pincode);
+                    String secureHash = keyStoreCipher.secureHash(pincode);
                     CharSequence passphrase = api.getPassPhrase();
 
                     String encryptedPassphrase = keyStoreCipher.encrypt(
@@ -98,17 +98,11 @@ public class SecurityInteractor {
             CharSequence decryptedPincode = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, encryptedCombinedPassphrase);
             CombinedPassphrase combinedPassphrase = gson.fromJson(decryptedPincode.toString(), CombinedPassphrase.class);
 
-            if (combinedPassphrase.getSecureHash() == null || combinedPassphrase.getSecureHash().getSalt() == null) {
-                return Single.error(new WrongPincodeException("Not found saved salt."));
-            }
-
-            if (combinedPassphrase.getSecureHash().getHash() == null) {
+            if (combinedPassphrase.getSecureHash() == null) {
                 return Single.error(new WrongPincodeException("Not found saved hash."));
             }
 
-            KeyStoreCipher.SecureHash enteredHash = keyStoreCipher.secureHash(pincode, combinedPassphrase.getSecureHash().getSalt());
-
-            if (combinedPassphrase.getSecureHash().equals(enteredHash)) {
+            if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), pincode.toString())) {
                 return Single.just(combinedPassphrase);
             } else {
                 return Single.error(new WrongPincodeException("Wrong pincode"));
@@ -128,9 +122,9 @@ public class SecurityInteractor {
 
     static class CombinedPassphrase {
         private String encryptedPassphrase;
-        private KeyStoreCipher.SecureHash secureHash;
+        private String secureHash;
 
-        public CombinedPassphrase(String encryptedPassphrase, KeyStoreCipher.SecureHash secureHash) {
+        public CombinedPassphrase(String encryptedPassphrase, String secureHash) {
             this.encryptedPassphrase = encryptedPassphrase;
             this.secureHash = secureHash;
         }
@@ -139,7 +133,7 @@ public class SecurityInteractor {
             return encryptedPassphrase;
         }
 
-        public KeyStoreCipher.SecureHash getSecureHash() {
+        public String getSecureHash() {
             return secureHash;
         }
     }

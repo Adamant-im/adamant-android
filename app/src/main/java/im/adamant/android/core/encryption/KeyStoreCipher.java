@@ -13,6 +13,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.goterl.lazycode.lazysodium.LazySodium;
 import com.goterl.lazycode.lazysodium.Sodium;
+import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
 import com.goterl.lazycode.lazysodium.interfaces.PwHash;
 
 import java.io.ByteArrayOutputStream;
@@ -279,34 +280,44 @@ public class KeyStoreCipher {
         return false;
     }
 
-    public SecureHash secureHash(CharSequence data) {
-        byte[] salt = sodium.randomBytesBuf(PwHash.SALTBYTES);
+//    public SecureHash secureHash(CharSequence data) {
+//        byte[] salt = sodium.randomBytesBuf(PwHash.SALTBYTES);
+//
+//        return secureHash(data, LazySodium.toHex(salt));
+//    }
 
-        return secureHash(data, LazySodium.toHex(salt));
-    }
-
-    public SecureHash secureHash(CharSequence data, String saltString ) {
-        byte[] salt = LazySodium.toBin(saltString);
+    public String secureHash(CharSequence data) throws EncryptionException {
+//        byte[] salt = sodium.randomBytesBuf(PwHash.SALTBYTES);
 
         // Can also use any number from PwHash.BYTES_MIN to PwHash.BYTES_MAX instead of "SECURE_HASH_LEN".
         // But be aware that your device may run out of memory the larger the value you supply.
-        byte[] outputHash = sodium.randomBytesBuf(SECURE_HASH_LEN);
-        int outputHashLen = outputHash.length;
+//        byte[] outputHash = sodium.randomBytesBuf(SECURE_HASH_LEN);
+//        int outputHashLen = outputHash.length;
 
-        byte[] dataBytes = data.toString().getBytes();
-        int passwordLen = dataBytes.length;
+//        byte[] dataBytes = data.toString().getBytes();
+//        int passwordLen = dataBytes.length;
 
-        sodium.getSodium().crypto_pwhash(outputHash,
-                outputHashLen,
-                dataBytes,
-                passwordLen,
-                salt,
-                PwHash.OPSLIMIT_SENSITIVE,
-                PwHash.MEMLIMIT_MODERATE,
-                PwHash.Alg.getDefault().getValue());
+//        sodium.getSodium().crypto_pwhash(outputHash,
+//                outputHashLen,
+//                dataBytes,
+//                passwordLen,
+//                salt,
+//                PwHash.OPSLIMIT_SENSITIVE,
+//                PwHash.MEMLIMIT_MODERATE,
+//                PwHash.Alg.getDefault().getValue());
+
+        try {
+            return sodium.cryptoPwHashStr(data.toString(), PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
+        } catch (SodiumException e) {
+            e.printStackTrace();
+            throw new EncryptionException("Hash not created");
+        }
 
 
-        return new SecureHash(LazySodium.toHex(salt), LazySodium.toHex(outputHash));
+    }
+
+    public boolean verifyHash(String hash, String data) {
+        return sodium.cryptoPwHashStrVerify(hash, data);
     }
 
 
@@ -351,35 +362,35 @@ public class KeyStoreCipher {
         generator.initialize(builder.build());
     }
 
-    public static class SecureHash {
-        private String salt;
-        private String hash;
-
-        public SecureHash(String salt, String hash) {
-            this.salt = salt;
-            this.hash = hash;
-        }
-
-        public String getSalt() {
-            return salt;
-        }
-
-        public String getHash() {
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            SecureHash that = (SecureHash) o;
-            return Objects.equals(salt, that.salt) &&
-                    Objects.equals(hash, that.hash);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(salt, hash);
-        }
-    }
+//    public static class SecureHash {
+//        private String salt;
+//        private String hash;
+//
+//        public SecureHash(String salt, String hash) {
+//            this.salt = salt;
+//            this.hash = hash;
+//        }
+//
+//        public String getSalt() {
+//            return salt;
+//        }
+//
+//        public String getHash() {
+//            return hash;
+//        }
+//
+//        @Override
+//        public boolean equals(Object o) {
+//            if (this == o) return true;
+//            if (o == null || getClass() != o.getClass()) return false;
+//            SecureHash that = (SecureHash) o;
+//            return Objects.equals(salt, that.salt) &&
+//                    Objects.equals(hash, that.hash);
+//        }
+//
+//        @Override
+//        public int hashCode() {
+//            return Objects.hash(salt, hash);
+//        }
+//    }
 }
