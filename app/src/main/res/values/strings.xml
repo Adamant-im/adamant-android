@@ -11,7 +11,7 @@
     <string name="activity_login_btn_enter">Login now</string>
     <string name="activity_login_btn_enter_in_net">Login in net</string>
     <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
-    <string name="activity_login_btn_new_account"><u>Or create new anonymous address</u></string>
+    <string name="activity_login_btn_new_account">Or create new anonymous address</string>
 
     <string name="activity_registration_tv_title">Creating new address</string>
     <string name="activity_registration_btn_refresh_passphrase">Generate other passphrases</string>

@@ -1,9 +1,11 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.google.android.material.button.MaterialButton;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import java.util.concurrent.TimeUnit;
@@ -51,6 +53,7 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     AuthorizeInteractor authorizeInteractor;
 
     @BindView(R.id.activity_login_vp_welcome_cards) DiscreteScrollView welcomeCardsSliderView;
+    @BindView(R.id.activity_login_btn_generate_new_passphrase) MaterialButton creteNewButtonView;
 
     private BottomLoginFragment loginFragment;
 
@@ -89,6 +92,8 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
                         20
                 )
         );
+
+        creteNewButtonView.setPaintFlags(creteNewButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     @OnClick(R.id.activity_login_btn_login)
