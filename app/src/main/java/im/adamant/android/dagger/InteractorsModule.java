@@ -23,7 +23,6 @@ import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
@@ -74,16 +73,6 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage
     ) {
         return new AccountInteractor(api, settings, chatsStorage);
-    }
-
-    @Singleton
-    @Provides
-    public static SaveKeypairInteractor provideKeypairInteractor(
-            Settings settings,
-            KeyStoreCipher keyStoreCipher,
-            AdamantApiWrapper apiWrapper
-    ) {
-        return new SaveKeypairInteractor(settings, apiWrapper, keyStoreCipher);
     }
 
     @Singleton

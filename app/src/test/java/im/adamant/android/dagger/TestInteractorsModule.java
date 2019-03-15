@@ -12,7 +12,7 @@ import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
@@ -48,8 +48,8 @@ public abstract class TestInteractorsModule {
 
     @Singleton
     @Provides
-    public static SaveKeypairInteractor provideKeypairInteractor() {
-        return mock(SaveKeypairInteractor.class);
+    public static SecurityInteractor provideKeypairInteractor() {
+        return mock(SecurityInteractor.class);
     }
 
     @Singleton

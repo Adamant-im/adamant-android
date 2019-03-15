@@ -8,20 +8,15 @@ import com.arellomobile.mvp.InjectViewState;
 import java.math.BigDecimal;
 
 import im.adamant.android.BuildConfig;
-import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.SaveKeypairInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
