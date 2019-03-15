@@ -18,6 +18,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.VERIFY;
     private boolean ignoreInput = false;
+    private Disposable currentOperation;
 
     public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
         super(subscriptions);
@@ -43,13 +44,21 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(String pinCode) {
-        if (ignoreInput){ return; }
+        if (ignoreInput) { return; }
 
         //TODO: Validation
+        //TODO: Валидация решит проблему с ошибкой java.lang.StringIndexOutOfBoundsException: length=0; index=2
+
+        if (!validate(pinCode)) { return; }
+
+        if (currentOperation != null) {
+            currentOperation.dispose();
+        }
+
         startProcess();
         switch (mode){
             case CREATE: {
-                Disposable subscription = pinCodeInteractor
+                currentOperation = pinCodeInteractor
                         .savePassphrase(pinCode)
                         .subscribeOn(Schedulers.computation())
                         .subscribe(
@@ -63,11 +72,10 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
-                subscriptions.add(subscription);
             }
             break;
             case VERIFY: {
-                Disposable subscription = pinCodeInteractor
+                currentOperation = pinCodeInteractor
                         .restoreAuthorizationByPincode(pinCode)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -85,22 +93,16 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
-                subscriptions.add(subscription);
             }
             break;
             case DROP: {
-                Disposable subscription = pinCodeInteractor
-                        .validatePincode(pinCode)
-                        .doOnError((error) -> {
-                            stopProcess();
-                            getViewState().showError(R.string.wrong_pincode);
-                            LoggerHelper.e("PINCODE", error.getMessage(), error);
-                        })
-                        .ignoreElement()
-                        .andThen(pinCodeInteractor.dropPassphrase())
+                currentOperation = pinCodeInteractor
+                        .dropPassphrase(pinCode)
+                        .doOnError((throwable -> {LoggerHelper.e("PINCODE", "after ignore UNSUCESS");}))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
-                                () -> {
+                                (value) -> {
+                                    LoggerHelper.e("PINCODE", "SUCCESS SUBSCRIBE");
                                     stopProcess();
                                     getViewState().close();
                                 },
@@ -110,7 +112,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
-                subscriptions.add(subscription);
             }
             break;
         }
@@ -125,4 +126,37 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
         ignoreInput = false;
         getViewState().stopProcess();
     }
+
+    private boolean validate(CharSequence pincode) {
+        if (pincode.length() != PinCodeView.PINCODE_LENGTH) {
+            getViewState().showError(R.string.wrong_pincode_length);
+            return false;
+        }
+
+        boolean isSame = true;
+        char previousChar = pincode.charAt(0);
+        for (int i = 1; i < pincode.length(); i++) {
+            if (previousChar != pincode.charAt(i)) {
+                isSame = false;
+                break;
+            }
+        }
+
+        if (isSame) {
+            getViewState().showError(R.string.wrong_pincode_one_symbol);
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (currentOperation != null) {
+            currentOperation.dispose();
+            currentOperation = null;
+        }
+        super.onDestroy();
+    }
+
 }

@@ -7,8 +7,7 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 public interface PinCodeView extends MvpView {
-    String ARG_VERIFIED = "verified";
-    String ARG_CREATED = "created";
+    int PINCODE_LENGTH = 10;
     String ARG_MODE = "mode";
 
     enum MODE {

@@ -64,9 +64,14 @@ public class SecurityInteractor {
         .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-
-    public Completable dropPassphrase() {
-        return Completable.fromAction(this::clearSettings);
+    //TODO: проблема в том что действие выполняется в UI потоке
+    public Single<CombinedPassphrase> dropPassphrase(CharSequence pincode) {
+        return validatePincode(pincode)
+                .doAfterSuccess((combinedPassphrase -> {LoggerHelper.d("DROPPASS", "Validation successs");}))
+                .doOnError((throwable -> {LoggerHelper.e("DROPPASS", "Validation UNSUCCESS");}))
+                .doAfterSuccess((combinedPassphrase) -> clearSettings())
+                .subscribeOn(Schedulers.computation())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public boolean isKeyPairMustBeStored() {
@@ -92,22 +97,22 @@ public class SecurityInteractor {
     }
 
     // 3. Проверка пинкода
-    public Single<CombinedPassphrase> validatePincode(CharSequence pincode) {
-        return Single.defer(() -> {
-            String encryptedCombinedPassphrase = settings.getAccountPassphrase();
-            CharSequence decryptedPincode = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, encryptedCombinedPassphrase);
-            CombinedPassphrase combinedPassphrase = gson.fromJson(decryptedPincode.toString(), CombinedPassphrase.class);
+    private Single<CombinedPassphrase> validatePincode(CharSequence pincode) {
+        return Single.fromCallable(() -> {
+                    String encryptedCombinedPassphrase = settings.getAccountPassphrase();
+                    CharSequence decryptedPincode = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, encryptedCombinedPassphrase);
+                    CombinedPassphrase combinedPassphrase = gson.fromJson(decryptedPincode.toString(), CombinedPassphrase.class);
 
-            if (combinedPassphrase.getSecureHash() == null) {
-                return Single.error(new WrongPincodeException("Not found saved hash."));
-            }
+                    if (combinedPassphrase.getSecureHash() == null) {
+                        throw new WrongPincodeException("Not found saved hash.");
+                    }
 
-            if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), pincode.toString())) {
-                return Single.just(combinedPassphrase);
-            } else {
-                return Single.error(new WrongPincodeException("Wrong pincode"));
-            }
-        });
+                    if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), pincode.toString())) {
+                        return combinedPassphrase;
+                    } else {
+                        throw new WrongPincodeException("Wrong pincode");
+                    }
+                });
     }
 
     public boolean isAuthorized() {
@@ -120,7 +125,7 @@ public class SecurityInteractor {
         settings.setAccountPassphrase("");
     }
 
-    static class CombinedPassphrase {
+    public static class CombinedPassphrase {
         private String encryptedPassphrase;
         private String secureHash;
 

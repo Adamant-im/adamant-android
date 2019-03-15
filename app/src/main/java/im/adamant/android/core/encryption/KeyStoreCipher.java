@@ -110,7 +110,7 @@ public class KeyStoreCipher {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new EncryptionException(ex.getMessage());
+            throw new EncryptionException(ex.getMessage(), ex);
         }
     }
 
@@ -179,7 +179,7 @@ public class KeyStoreCipher {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new EncryptionException(ex.getMessage());
+            throw new EncryptionException(ex.getMessage(), ex);
         }
 
         return "";
@@ -228,25 +228,19 @@ public class KeyStoreCipher {
         return builder.toString();
     }
 
-    private KeyPair getKeyPair(String alias) throws NoSuchAlgorithmException , NoSuchProviderException, InvalidAlgorithmParameterException {
+    private KeyPair getKeyPair(String alias) throws Exception {
 
         PrivateKey privateKey = null;
         PublicKey publicKey = null;
 
         if (androidKeyStore != null){
-            try {
-                privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
-                Certificate certificate = androidKeyStore.getCertificate(alias);
+            privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
+            Certificate certificate = androidKeyStore.getCertificate(alias);
 
-                if (certificate != null){
-                    publicKey = certificate
-                            .getPublicKey();
-                }
-
-            } catch (UnrecoverableKeyException | KeyStoreException ex) {
-                ex.printStackTrace();
+            if (certificate != null){
+                publicKey = certificate
+                        .getPublicKey();
             }
-
         }
 
         if (privateKey != null && publicKey != null){
@@ -256,56 +250,8 @@ public class KeyStoreCipher {
         }
     }
 
-    public boolean validateSign(String alias, CharSequence data, CharSequence pinCodeHash, CharSequence signForVerify) {
-        if (data == null || pinCodeHash == null){return false;}
-        CharSequence baseForSign = CharSequenceHelper.concat(pinCodeHash, data);
-        byte[] jsonBytes = baseForSign.toString().getBytes();
-
-        Signature sig = null;
-        try {
-            alias = KEY_ALIAS_PREFIX + alias;
-
-            KeyPair securityKeyPair = getKeyPair(alias);
-
-            sig = Signature.getInstance("SHA1WithRSA");
-
-            sig.initVerify(securityKeyPair.getPublic());
-            sig.update(jsonBytes);
-
-            return sig.verify(signForVerify.toString().getBytes());
-        } catch (NoSuchAlgorithmException | SignatureException | InvalidKeyException | InvalidAlgorithmParameterException | NoSuchProviderException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-//    public SecureHash secureHash(CharSequence data) {
-//        byte[] salt = sodium.randomBytesBuf(PwHash.SALTBYTES);
-//
-//        return secureHash(data, LazySodium.toHex(salt));
-//    }
 
     public String secureHash(CharSequence data) throws EncryptionException {
-//        byte[] salt = sodium.randomBytesBuf(PwHash.SALTBYTES);
-
-        // Can also use any number from PwHash.BYTES_MIN to PwHash.BYTES_MAX instead of "SECURE_HASH_LEN".
-        // But be aware that your device may run out of memory the larger the value you supply.
-//        byte[] outputHash = sodium.randomBytesBuf(SECURE_HASH_LEN);
-//        int outputHashLen = outputHash.length;
-
-//        byte[] dataBytes = data.toString().getBytes();
-//        int passwordLen = dataBytes.length;
-
-//        sodium.getSodium().crypto_pwhash(outputHash,
-//                outputHashLen,
-//                dataBytes,
-//                passwordLen,
-//                salt,
-//                PwHash.OPSLIMIT_SENSITIVE,
-//                PwHash.MEMLIMIT_MODERATE,
-//                PwHash.Alg.getDefault().getValue());
-
         try {
             return sodium.cryptoPwHashStr(data.toString(), PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
         } catch (SodiumException e) {
@@ -361,36 +307,4 @@ public class KeyStoreCipher {
 
         generator.initialize(builder.build());
     }
-
-//    public static class SecureHash {
-//        private String salt;
-//        private String hash;
-//
-//        public SecureHash(String salt, String hash) {
-//            this.salt = salt;
-//            this.hash = hash;
-//        }
-//
-//        public String getSalt() {
-//            return salt;
-//        }
-//
-//        public String getHash() {
-//            return hash;
-//        }
-//
-//        @Override
-//        public boolean equals(Object o) {
-//            if (this == o) return true;
-//            if (o == null || getClass() != o.getClass()) return false;
-//            SecureHash that = (SecureHash) o;
-//            return Objects.equals(salt, that.salt) &&
-//                    Objects.equals(hash, that.hash);
-//        }
-//
-//        @Override
-//        public int hashCode() {
-//            return Objects.hash(salt, hash);
-//        }
-//    }
 }

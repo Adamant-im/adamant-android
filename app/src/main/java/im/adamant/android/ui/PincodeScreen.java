@@ -60,7 +60,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
         @Override
         public void onEmpty() {
-            Toast.makeText(getApplicationContext(), R.string.empty_pincode, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), R.string.empty_pincode, Toast.LENGTH_LONG).show();
         }
 
         @Override
@@ -92,7 +92,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
         pinLockView.enableLayoutShuffling();
 
-        pinLockView.setPinLength(10);
+        pinLockView.setPinLength(PinCodeView.PINCODE_LENGTH);
 
         indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
 

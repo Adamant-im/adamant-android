@@ -118,6 +118,8 @@
     <string name="empty_pincode">PIN-code can not be empty</string>
     <string name="encryption_error">Encryption error</string>
     <string name="wrong_pincode">Wrong PIN-code</string>
+    <string name="wrong_pincode_length">Wrong PIN-code length (expected: %s)</string>
+    <string name="wrong_pincode_one_symbol">For pin-code can not use a sequence of one digit</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

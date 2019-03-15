@@ -10,6 +10,7 @@ import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 
 public interface SettingsView extends MvpView {
+    @StateStrategyType(SkipStrategy.class)
     void setCheckedStoreKeyPairOption(boolean value);
     void setEnableStoreKeyPairOption(boolean value);
     void setEnablePushOption(boolean value);
