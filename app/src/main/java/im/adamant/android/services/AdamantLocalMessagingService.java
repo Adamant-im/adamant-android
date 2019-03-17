@@ -1,6 +1,5 @@
 package im.adamant.android.services;
 
-import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -12,7 +11,6 @@ import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.SystemClock;
 
 import java.lang.ref.WeakReference;
 
@@ -26,8 +24,8 @@ import im.adamant.android.R;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
-import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.HasNewMessagesInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.push.LocalNotificationServiceFacade;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
@@ -49,7 +47,7 @@ public class AdamantLocalMessagingService extends Service {
     HasNewMessagesInteractor hasNewMessagesInteractor;
 
     @Inject
-    AuthorizeInteractor authorizeInteractor;
+    SecurityInteractor securityInteractor;
 
     @Inject
     LocalNotificationServiceFacade.ServicePeriodicallyRunner runner;
@@ -115,8 +113,9 @@ public class AdamantLocalMessagingService extends Service {
         }
 
         WeakReference<AdamantLocalMessagingService> serviceWeakReference = new WeakReference<>(this);
-        listenerSubscription = authorizeInteractor
-                .restoreAuthorization()
+        listenerSubscription = securityInteractor
+                .restoreAuthorizationWithoutPincode()
+                .toFlowable()
                 .flatMap(authorization -> {
                     if (authorization.isSuccess()) {
                         return hasNewMessagesInteractor.execute();

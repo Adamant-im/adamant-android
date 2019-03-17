@@ -61,31 +61,6 @@ public class AuthorizeInteractor {
         }
     }
 
-    public Flowable<Authorization> restoreAuthorization() {
-
-            //Not transform this code in lambda (Application crashed if unchecked exception)
-           return Flowable.fromCallable(new Callable<CharSequence>() {
-                    @Override
-                    public CharSequence call() throws Exception {
-                        String account = settings.getAccountPassphrase();
-                        if (account == null || account.isEmpty()){
-                            throw new Exception("Account not stored!");
-                        }
-
-                        CharSequence passphrase = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
-
-                        if (passphrase == null || passphrase.length() == 0) {
-                            throw new Exception("Account not decrypted!");
-                        }
-
-                        return passphrase;
-                    }
-                })
-               .subscribeOn(Schedulers.computation())
-               .flatMap(passphrase -> api.authorize(passphrase))
-               .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-
-    }
 
     public CharSequence generatePassPhrase() {
         return keyGenerator.generateNewPassphrase();

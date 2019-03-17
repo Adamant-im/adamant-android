@@ -24,16 +24,18 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.NotificationHelper;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.interactors.AuthorizeInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.push.FCMNotificationServiceFacade;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.BaseActivity;
 import im.adamant.android.ui.SplashScreen;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
@@ -43,7 +45,7 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
     private static final int NOTIFICATION_ID = 123445;
 
     @Inject
-    AuthorizeInteractor authorizeInteractor;
+    SecurityInteractor securityInteractor;
 
     @Inject
     Map<SupportedPushNotificationFacadeType, PushNotificationServiceFacade> facades;
@@ -83,18 +85,18 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
         FCMNotificationServiceFacade fcmFacade = (FCMNotificationServiceFacade) facades.get(SupportedPushNotificationFacadeType.FCM);
         //TODO: disposable.dispose()
         if (fcmFacade != null) {
-            Disposable disposable = authorizeInteractor
-                    .restoreAuthorization()
+            Disposable disposable = securityInteractor
+                    .restoreAuthorizationWithoutPincode()
                     .observeOn(AndroidSchedulers.mainThread())
                     .flatMap(authorization -> {
                         if (authorization.isSuccess()){
-                            return fcmFacade.subscribe().toFlowable();
+                            return fcmFacade.subscribe().toSingleDefault(new Authorization());
                         } else {
-                            return Flowable.error(new NotAuthorizedException(authorization.getError()));
+                            return Single.error(new NotAuthorizedException(authorization.getError()));
                         }
                     })
-                    .ignoreElements()
-                    .timeout(60, TimeUnit.SECONDS)
+                    .ignoreElement()
+                    .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                     .subscribe(
                             this::showChangeTokenNotification,
                             error -> {

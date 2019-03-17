@@ -96,17 +96,27 @@ public class SecurityInteractor {
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
+    public Single<Authorization> restoreAuthorizationWithoutPincode() {
+        return getCombinedPassphrase()
+                .flatMap((combinedPassphrase) -> {
+                    CharSequence decryptedPassphrase = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, combinedPassphrase.getEncryptedPassphrase());
+                    return Single.just(decryptedPassphrase);
+                })
+                .doOnError((throwable) -> {
+                    boolean isCriticalError = (throwable instanceof EncryptionException);
+                    if (isCriticalError) {
+                        clearSettings();
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .flatMap(passphrase -> api.authorize(passphrase).singleOrError())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
     // 3. Проверка пинкода
     private Single<CombinedPassphrase> validatePincode(CharSequence pincode) {
-        return Single.fromCallable(() -> {
-                    String encryptedCombinedPassphrase = settings.getAccountPassphrase();
-                    CharSequence decryptedPincode = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, encryptedCombinedPassphrase);
-                    CombinedPassphrase combinedPassphrase = gson.fromJson(decryptedPincode.toString(), CombinedPassphrase.class);
-
-                    if (combinedPassphrase.getSecureHash() == null) {
-                        throw new WrongPincodeException("Not found saved hash.");
-                    }
-
+        return getCombinedPassphrase()
+                .map((combinedPassphrase) -> {
                     if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), pincode.toString())) {
                         return combinedPassphrase;
                     } else {
@@ -123,6 +133,20 @@ public class SecurityInteractor {
     private void clearSettings() {
         settings.setKeyPairMustBeStored(false);
         settings.setAccountPassphrase("");
+    }
+
+    private Single<CombinedPassphrase> getCombinedPassphrase() {
+        return Single.fromCallable(() -> {
+            String encryptedCombinedPassphrase = settings.getAccountPassphrase();
+            CharSequence decryptedPincode = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, encryptedCombinedPassphrase);
+            CombinedPassphrase combinedPassphrase = gson.fromJson(decryptedPincode.toString(), CombinedPassphrase.class);
+
+            if (combinedPassphrase.getSecureHash() == null) {
+                throw new WrongPincodeException("Not found saved hash.");
+            }
+
+            return combinedPassphrase;
+        });
     }
 
     public static class CombinedPassphrase {
