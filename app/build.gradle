@@ -16,6 +16,8 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
+        buildConfigField "int", "MAX_WRONG_PINCODE_ATTEMTS", "3"
+        buildConfigField "int", "WRONG_PINCODE_WAIT_MILISECONDS", "30000"
         buildConfigField "int", "DEFAULT_OPERATION_TIMEOUT_SECONDS", "60"
         buildConfigField "int", "LOCAL_NOTIFICATION_SERVICE_CALL_MINUTES_DELAY", "5"
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"
@@ -140,6 +142,7 @@ dependencies {
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
     implementation "androidx.core:core:1.0.1"
     implementation "com.yarolegovich:discrete-scrollview:1.4.9"
+    implementation 'com.github.Adilhusen:circle-progress-ad-android-:1.0'
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

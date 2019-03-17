@@ -2,6 +2,7 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
@@ -17,6 +18,8 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
     private String pincodeForConfirmation;
     private boolean ignoreInput = false;
+    private int attemptsCount = 0;
+    private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
 
     public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
@@ -44,9 +47,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void onInputPincodeWasCompleted(String pinCode) {
         if (ignoreInput) { return; }
-
-        //TODO: Validation
-        //TODO: Валидация решит проблему с ошибкой java.lang.StringIndexOutOfBoundsException: length=0; index=2
 
         if (!validate(pinCode)) { return; }
 
@@ -91,6 +91,19 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
             case ACCESS_TO_APP: {
+                attemptsCount++;
+
+                if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
+                    if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
+                        attemptsCount = 0;
+                    } else {
+                        getViewState().showError(R.string.pincode_exceeding_the_number_of_attempts);
+                        return;
+                    }
+                }
+
+                lastAttemptTimestamp = System.currentTimeMillis();
+
                 startProcess();
                 currentOperation = pinCodeInteractor
                         .restoreAuthorizationByPincode(pinCode)

@@ -122,6 +122,8 @@
     <string name="wrong_pincode_length">Wrong PIN-code length (expected: %s)</string>
     <string name="wrong_pincode_one_symbol">For pin-code can not use a sequence of one digit</string>
     <string name="pincode_unconfirmed">PIN codes do not match, try again</string>
+    <string name="pincode_exceeding_the_number_of_attempts">Exceeding the number of attempts to enter a pin code. Try in 30 sec.</string>
+
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

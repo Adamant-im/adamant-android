@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -114,6 +116,11 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     @Override
     public void startProcess() {
         progressView.setVisibility(View.VISIBLE);
+//        Animation outAnimation = AnimationUtils.makeOutAnimation(this, false);
+//        pinLockView.setAnimation(outAnimation);
+//        indicatorDots.setAnimation(outAnimation);
+//        pinLockView.setVisibility(View.GONE);
+//        indicatorDots.setVisibility(View.GONE);
     }
 
     @Override
