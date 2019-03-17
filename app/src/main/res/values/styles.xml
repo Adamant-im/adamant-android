@@ -15,7 +15,7 @@
     </style>
 
     <style name="AdamantLight.PincodeTheme" parent="AdamantLight">
-        <item name="colorAccent">@color/background</item>
+        <item name="colorAccent">@color/primaryDarkVariant</item>
     </style>
 
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
