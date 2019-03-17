@@ -42,11 +42,15 @@ public class SplashScreen extends AppCompatActivity {
         Context applicationContext = getApplicationContext();
         WeakReference<SplashScreen> thisReference = new WeakReference<>(this);
 
-        if (settings.isKeyPairMustBeStored()){
+        if (settings.isKeyPairMustBeStored() && !settings.getAccountPassphrase().isEmpty()) {
             Bundle bundle = new Bundle();
             bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.ACCESS_TO_APP);
             goToScreen(PincodeScreen.class, applicationContext, thisReference, bundle);
         } else {
+            // Resetting the settings is necessary to switch from the version without pincode support,
+            // otherwise the "Save authorization" checkbox in the settings window will be incorrect.
+            settings.setKeyPairMustBeStored(false);
+            settings.setAccountPassphrase("");
             goToScreen(LoginScreen.class, applicationContext, thisReference, null);
             return;
         }

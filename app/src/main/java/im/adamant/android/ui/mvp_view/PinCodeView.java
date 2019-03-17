@@ -23,6 +23,7 @@ public interface PinCodeView extends MvpView {
     void setSuggestion(int resourceId);
 
     void dropPincodeText();
+    void shuffleKeyboard();
 
     @StateStrategyType(SkipStrategy.class)
     void goToMain();

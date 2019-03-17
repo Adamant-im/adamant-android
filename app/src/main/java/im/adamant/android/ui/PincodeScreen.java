@@ -139,6 +139,11 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     }
 
     @Override
+    public void shuffleKeyboard() {
+        pinLockView.enableLayoutShuffling();
+    }
+
+    @Override
     public void goToMain() {
         Intent intent = new Intent(this.getApplicationContext(), MainScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

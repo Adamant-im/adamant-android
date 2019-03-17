@@ -67,7 +67,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                     startProcess();
                     currentOperation = pinCodeInteractor
                             .savePassphrase(pinCode)
-                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     () -> {
                                         stopProcess();
@@ -98,6 +98,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         attemptsCount = 0;
                     } else {
                         getViewState().showError(R.string.pincode_exceeding_the_number_of_attempts);
+                        getViewState().shuffleKeyboard();
                         return;
                     }
                 }
