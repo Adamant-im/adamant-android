@@ -27,6 +27,7 @@
 
     <string name="activity_pincode_enter_pincode">Enter pincode</string>
     <string name="activity_pincode_enter_new_pincode">Enter new pincode</string>
+    <string name="activity_pincode_confirm">Confirm pincode</string>
 
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Start new chat</string>
@@ -120,6 +121,7 @@
     <string name="wrong_pincode">Wrong PIN-code</string>
     <string name="wrong_pincode_length">Wrong PIN-code length (expected: %s)</string>
     <string name="wrong_pincode_one_symbol">For pin-code can not use a sequence of one digit</string>
+    <string name="pincode_unconfirmed">PIN codes do not match, try again</string>
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>

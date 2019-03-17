@@ -28,6 +28,7 @@
 
     <string name="activity_pincode_enter_pincode">Введите пин-код</string>
     <string name="activity_pincode_enter_new_pincode">Введите новый пин-код</string>
+    <string name="activity_pincode_confirm">Подтвердите пин-код</string>
 
     <string name="activity_show_qr_code_title">QR-код</string>
     <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>
@@ -149,6 +150,7 @@
     <string name="wrong_pincode">Пин-код не верен</string>
     <string name="wrong_pincode_length">Неверная длинна пин-кода (ожидалось: %s символов)</string>
     <string name="wrong_pincode_one_symbol">Для пин-кода нельзя использовать последовательность из одной цифры</string>
+    <string name="pincode_unconfirmed">Пин-коды не совпадают, попробуйте снова</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>

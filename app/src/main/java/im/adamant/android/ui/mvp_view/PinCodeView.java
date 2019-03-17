@@ -11,8 +11,9 @@ public interface PinCodeView extends MvpView {
     String ARG_MODE = "mode";
 
     enum MODE {
-        VERIFY,
+        ACCESS_TO_APP,
         CREATE,
+        CONFIRM,
         DROP
     }
 
@@ -20,6 +21,8 @@ public interface PinCodeView extends MvpView {
     void stopProcess();
 
     void setSuggestion(int resourceId);
+
+    void dropPincodeText();
 
     @StateStrategyType(SkipStrategy.class)
     void goToMain();

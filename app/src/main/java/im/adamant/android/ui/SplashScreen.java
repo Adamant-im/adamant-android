@@ -3,8 +3,6 @@ package im.adamant.android.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,13 +14,10 @@ import java.lang.ref.WeakReference;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.BindView;
 import dagger.android.AndroidInjection;
-import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.core.encryption.KeyStoreCipher;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.disposables.CompositeDisposable;
@@ -49,7 +44,7 @@ public class SplashScreen extends AppCompatActivity {
 
         if (settings.isKeyPairMustBeStored()){
             Bundle bundle = new Bundle();
-            bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.VERIFY);
+            bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.ACCESS_TO_APP);
             goToScreen(PincodeScreen.class, applicationContext, thisReference, bundle);
         } else {
             goToScreen(LoginScreen.class, applicationContext, thisReference, null);

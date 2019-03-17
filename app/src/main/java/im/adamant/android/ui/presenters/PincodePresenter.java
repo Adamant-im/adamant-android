@@ -1,7 +1,5 @@
 package im.adamant.android.ui.presenters;
 
-import android.os.Bundle;
-
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.R;
@@ -16,7 +14,8 @@ import io.reactivex.schedulers.Schedulers;
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
-    private PinCodeView.MODE mode = PinCodeView.MODE.VERIFY;
+    private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
+    private String pincodeForConfirmation;
     private boolean ignoreInput = false;
     private Disposable currentOperation;
 
@@ -32,7 +31,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_new_pincode);
             }
             break;
-            case VERIFY: {
+            case ACCESS_TO_APP: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
             }
             break;
@@ -55,26 +54,44 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             currentOperation.dispose();
         }
 
-        startProcess();
         switch (mode){
             case CREATE: {
-                currentOperation = pinCodeInteractor
-                        .savePassphrase(pinCode)
-                        .subscribeOn(Schedulers.computation())
-                        .subscribe(
-                                () -> {
-                                    stopProcess();
-                                    getViewState().close();
-                                },
-                                error -> {
-                                    stopProcess();
-                                    getViewState().showError(R.string.encryption_error);
-                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
-                                }
-                        );
+                mode = PinCodeView.MODE.CONFIRM;
+                pincodeForConfirmation = pinCode;
+                getViewState().setSuggestion(R.string.activity_pincode_confirm);
+                getViewState().dropPincodeText();
             }
             break;
-            case VERIFY: {
+            case CONFIRM: {
+                if (pinCode.equalsIgnoreCase(pincodeForConfirmation)){
+                    startProcess();
+                    currentOperation = pinCodeInteractor
+                            .savePassphrase(pinCode)
+                            .subscribeOn(Schedulers.computation())
+                            .subscribe(
+                                    () -> {
+                                        stopProcess();
+                                        getViewState().close();
+                                    },
+                                    error -> {
+                                        stopProcess();
+                                        getViewState().showError(R.string.encryption_error);
+                                        LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                    }
+                            );
+                } else {
+                    getViewState().showError(R.string.pincode_unconfirmed);
+                    getViewState().setSuggestion(R.string.activity_pincode_enter_new_pincode);
+                    mode = PinCodeView.MODE.CREATE;
+                }
+
+                getViewState().dropPincodeText();
+                pincodeForConfirmation = null;
+
+            }
+            break;
+            case ACCESS_TO_APP: {
+                startProcess();
                 currentOperation = pinCodeInteractor
                         .restoreAuthorizationByPincode(pinCode)
                         .observeOn(AndroidSchedulers.mainThread())
@@ -96,6 +113,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
             case DROP: {
+                startProcess();
                 currentOperation = pinCodeInteractor
                         .dropPassphrase(pinCode)
                         .doOnError((throwable -> {LoggerHelper.e("PINCODE", "after ignore UNSUCESS");}))
@@ -133,6 +151,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             return false;
         }
 
+        //---
         boolean isSame = true;
         char previousChar = pincode.charAt(0);
         for (int i = 1; i < pincode.length(); i++) {
