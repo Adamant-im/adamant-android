@@ -101,8 +101,8 @@ public class Encryptor {
         return state;
     }
 
-    public String decryptState(TransactionState encryptedState, String mySecretKey) throws InvalidValueForKeyValueStorage {
-        String payloadString = "";
+    public JsonElement decryptState(TransactionState encryptedState, String mySecretKey) throws InvalidValueForKeyValueStorage {
+        JsonElement jsonNode = null;
 
         JsonParser parser = new JsonParser();
         JsonObject encryptedStateValue = parser.parse(encryptedState.getValue()).getAsJsonObject();
@@ -141,24 +141,17 @@ public class Encryptor {
 
             String payloadDecryptedString = decryptedMessage.substring(from, to + 1);
 
+            //TODO: You need to handle json in KvsHelper, otherwise there is a leak of responsibility between the encrypt method and decrypt.
             JsonElement jsonElement = parser.parse(payloadDecryptedString);
 
             if (jsonElement == null){throw new InvalidValueForKeyValueStorage();}
 
-            JsonObject payloadObject = jsonElement.getAsJsonObject();
-
-            JsonElement payload = payloadObject.get("payload");
-            if (payload == null){
-                throw new InvalidValueForKeyValueStorage();
-            }
-
-            payloadString = payload.toString();
-
+            jsonNode = jsonElement;
         }catch (Exception ex){
             ex.printStackTrace();
         }
 
-        return payloadString;
+        return jsonNode;
     }
 
     public String createTransactionSignature(Transaction transaction, KeyPair keyPair) {

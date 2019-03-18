@@ -1,6 +1,7 @@
 package im.adamant.android.helpers;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
@@ -82,10 +83,20 @@ public class KvsHelper {
         String decryptedStateString = "";
         if (encrypted){
             KeyPair keyPair = api.getKeyPair();
-            decryptedStateString = encryptor.decryptState(state, keyPair.getSecretKeyString());
+            JsonElement jsonElement = encryptor.decryptState(state, keyPair.getSecretKeyString());
+            JsonObject payloadObject = jsonElement.getAsJsonObject();
+
+            JsonElement payload = payloadObject.get("payload");
+            if (payload == null){
+                throw new InvalidValueForKeyValueStorage();
+            }
+
+            decryptedStateString = payload.toString();
         } else {
             decryptedStateString = state.getValue();
         }
+
+
 
         return gson.fromJson(decryptedStateString, type);
 
