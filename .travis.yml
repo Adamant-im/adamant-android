@@ -12,7 +12,8 @@ cache:
 env:
   global:
   - ANDROID_API=28
-  - EMULATOR_API=19
+  - EMULATOR_API=25
+  - ANDROID_ABI=armeabi-v7a
   - ANDROID_BUILD_TOOLS=28.0.3
   - ADB_INSTALL_TIMEOUT=5
   - secure: fQDdh7kT/rat1IXYz0MBUHPKTCh5tQgg6irf/X91SRha4kP014O55kk649FqZIYKfdf2dC+5efpmF93RtevSv1500EKC2kHS8ZMEvx8NjDM6TdizjmdkpSM1Z18KXSgW1C33TXNcG6adxKWGsFtgBScbaqW1gZ+8crS07wWZRjg5OZf4FFGkgMmToRwJcUom+HuHs2d37JlfLZDf2Ak/SfEisxMHlghYlqMNUQXJPzcxDU5rgc4cGCl4O+sF93v/Umx9IVdEAC7sfBUfks3TqVdiBQ6cB2y5kZ/kU5lfy8e38KcauC3o3e2/LYh6Z9Uz9bzP+bV+a3j2odbNVSdz7amdBx4bA+30QpVsSkGFczwGzQLd5T+xR+MuCO56m5RUYjvSYMsbJs28+zaqfJUtrZH89t86wxpwLD7v1sg8dRObac8MGplGigEeLNSGGCyxYmw5yp46360+Z9EkvK9b45y41GJC4eh29WbX8NIm7/Zx1HVlue+y7D2hn8uYYySoLo8qqYEjBjIzo/X0xnGqbshBRAaIKDW2+Bz8gmC2kaRQgjxy7+Uj6ZK91MFFLcDAH8PmIjoDxan1Zzr1V0ZnmkXEBxXjjzg6cav2AzDvF5iLvi59lbrHWde7UqnZWVwhz30d5mrb+6AsVXu68Ql12VSCUn0tE5aR9i5os4vS3c4=
@@ -23,12 +24,13 @@ android:
   - platform-tools
   - build-tools-$ANDROID_BUILD_TOOLS
   - android-$ANDROID_API
-  - android-$EMULATOR_API_LEVEL
+  - android-$EMULATOR_API
   - extra-google-m2repository
   - extra-android-m2repository
   - addon-google_apis-google-19
-  - sys-img-armeabi-v7a-addon-google_apis-google-$ANDROID_API_LEVEL
-  - sys-img-armeabi-v7a-addon-google_apis-google-$EMULATOR_API_LEVEL
+  - sys-img-$ANDROID_ABI-android-$ANDROID_API
+  - sys-img-$ANDROID_ABI-android-$EMULATOR_API
+  - sys-img-$ANDROID_ABI-google_apis-$EMULATOR_API
   licenses:
   - android-sdk-preview-license-.+
   - android-sdk-license-.+
@@ -41,6 +43,10 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv -in files.zip.enc -out files.zip -d
   - unzip -o files.zip
   - mv google-services.json app/google-services.json
+  - echo no | android create avd --force -n test -t android-EMULATOR_API --abi google_apis/$ANDROID_ABI
+  - emulator -avd test -no-skin -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
 script:
   - "./gradlew clean :app:generateReleaseSources :app:assembleRelease connectedCheck -PdisablePreDex --stacktrace"
 before_deploy:

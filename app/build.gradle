@@ -54,6 +54,7 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            multiDexKeepProguard file('proguard-multidex-rules.pro')
         }
     }
 
@@ -152,8 +153,10 @@ dependencies {
     testAnnotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     testImplementation "junit:junit:4.12"
+    testImplementation "androidx.test:core:1.1.0"
     testImplementation "org.mockito:mockito-core:2.19.1"
-    testImplementation 'org.robolectric:robolectric:4.1'
+    testImplementation "org.robolectric:robolectric:4.1"
+    androidTestImplementation "androidx.test:core:1.1.0"
     androidTestImplementation "androidx.test:runner:1.1.1"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.1.1"
 
