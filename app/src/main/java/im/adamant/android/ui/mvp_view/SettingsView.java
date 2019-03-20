@@ -19,6 +19,9 @@ public interface SettingsView extends MvpView {
     void stopProgress();
 
     @StateStrategyType(SkipStrategy.class)
+    void showTEENotSupportedDialog();
+
+    @StateStrategyType(SkipStrategy.class)
     void showMessage(String message);
 
     @StateStrategyType(SkipStrategy.class)

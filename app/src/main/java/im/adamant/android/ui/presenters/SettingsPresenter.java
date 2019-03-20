@@ -57,8 +57,18 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
         );
     }
 
-    public void onSetCheckedStoreKeypair(boolean value) {
+    public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
         if (value != securityInteractor.isKeyPairMustBeStored()) {
+
+            if (value && !isUserConfirmed) {
+                boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
+
+                if (!hardwareSecuredDevice) {
+                    getViewState().showTEENotSupportedDialog();
+                    return;
+                }
+            }
+
             Bundle bundle = new Bundle();
             bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
             router.navigateTo(Screens.PINCODE_SCREEN, bundle);

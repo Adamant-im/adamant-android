@@ -115,7 +115,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
     public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
-        presenter.onSetCheckedStoreKeypair(checked);
+        presenter.onSetCheckedStoreKeypair(checked, false);
     }
 
     @OnClick(R.id.fragment_settings_tv_notification)
@@ -141,6 +141,25 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void stopProgress() {
         progressBarView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showTEENotSupportedDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = null;
+        FragmentActivity activity = getActivity();
+
+        if (activity != null) {
+            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+            builder.setTitle(R.string.warning);
+            builder.setMessage(R.string.tee_not_supported);
+            builder.setNegativeButton(R.string.no, (d, w) -> {
+                storeKeypairView.setChecked(false);
+                d.dismiss();
+            });
+            builder.setPositiveButton(R.string.yes, (d, w) -> presenter.onSetCheckedStoreKeypair(true, true));
+
+            builder.show();
+        }
     }
 
     @Override

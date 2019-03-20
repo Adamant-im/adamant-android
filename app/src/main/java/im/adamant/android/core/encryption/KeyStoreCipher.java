@@ -23,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -44,6 +45,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
+import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
@@ -54,8 +56,10 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.helpers.CharSequenceHelper;
+import im.adamant.android.helpers.LoggerHelper;
 
 import static java.lang.Math.floor;
 
@@ -95,6 +99,22 @@ public class KeyStoreCipher {
 
             androidKeyStore = instance;
         }
+    }
+
+    public KeyInfo provideKeyInfo(String alias) {
+        KeyInfo keyInfo = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alias = KEY_ALIAS_PREFIX + alias;
+
+            try {
+                KeyPair keyPair = getKeyPair(alias);
+                KeyFactory factory = KeyFactory.getInstance(keyPair.getPrivate().getAlgorithm(), PROVIDER);
+                keyInfo = factory.getKeySpec(keyPair.getPrivate(), KeyInfo.class);
+            } catch (Exception ex) {
+                LoggerHelper.e("KeyStoreCipher", ex.getMessage(), ex);
+            }
+        }
+        return keyInfo;
     }
 
     public String encrypt(String alias, CharSequence data) throws Exception {

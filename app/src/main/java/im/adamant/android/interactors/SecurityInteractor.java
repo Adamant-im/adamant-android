@@ -1,5 +1,8 @@
 package im.adamant.android.interactors;
 
+import android.os.Build;
+import android.security.keystore.KeyInfo;
+
 import com.google.gson.Gson;
 
 import java.security.InvalidKeyException;
@@ -127,6 +130,17 @@ public class SecurityInteractor {
 
     public boolean isAuthorized() {
         return api.isAuthorized();
+    }
+
+    public boolean isHardwareSecuredDevice() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            KeyInfo keyInfo = keyStoreCipher.provideKeyInfo(Constants.ADAMANT_ACCOUNT_ALIAS);
+            if (keyInfo == null) { return false; }
+
+            return keyInfo.isInsideSecureHardware();
+        }
+
+        return false;
     }
 
 
