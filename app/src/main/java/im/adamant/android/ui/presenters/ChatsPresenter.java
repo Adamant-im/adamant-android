@@ -47,6 +47,10 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
 
         final CompositeDisposable finalSubscription = subscriptions;
 
+        if (syncSubscription != null){
+            syncSubscription.dispose();
+        }
+
         syncSubscription = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -70,7 +74,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                         }
                 );
 
-        finalSubscription.add(syncSubscription);
     }
 
     @Override
