@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
@@ -23,6 +24,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
@@ -50,7 +52,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
     @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
     @BindView(R.id.activity_pincode_tv_error) TextView errorView;
-    @BindView(R.id.activity_pin_code_pb_progress) ProgressBar progressView;
+    @BindView(R.id.activity_pin_code_pb_progress) ArcProgressLoader progressView;
+    @BindView(R.id.activity_pin_code_cl_keypadLayout) ConstraintLayout keypadView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -108,23 +111,21 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
         if (mode == null){return;}
         presenter.setMode(mode);
-
-        progressView.getIndeterminateDrawable().setColorFilter(
-                ContextCompat.getColor(this, R.color.secondary), PorterDuff.Mode.MULTIPLY);
     }
 
     @Override
     public void startProcess() {
         progressView.setVisibility(View.VISIBLE);
-//        Animation outAnimation = AnimationUtils.makeOutAnimation(this, false);
-//        pinLockView.setAnimation(outAnimation);
-//        indicatorDots.setAnimation(outAnimation);
-//        pinLockView.setVisibility(View.GONE);
-//        indicatorDots.setVisibility(View.GONE);
+        Animation outAnimation = AnimationUtils.makeOutAnimation(this, false);
+        keypadView.setAnimation(outAnimation);
+        keypadView.setVisibility(View.GONE);
     }
 
     @Override
     public void stopProcess() {
+        Animation outAnimation = AnimationUtils.makeInAnimation(this, false);
+        keypadView.setAnimation(outAnimation);
+        keypadView.setVisibility(View.VISIBLE);
         progressView.setVisibility(View.INVISIBLE);
     }
 

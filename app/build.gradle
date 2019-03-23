@@ -125,7 +125,7 @@ dependencies {
     implementation "com.google.dagger:dagger:$daggerVersion"
     implementation "com.google.dagger:dagger-android:$daggerVersion"
     implementation "com.google.dagger:dagger-android-support:$daggerVersion"
-    implementation 'com.google.android.material:material:1.0.0'
+    implementation "com.google.android.material:material:1.0.0"
     implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
     implementation "com.facebook.shimmer:shimmer:0.1.0@aar"

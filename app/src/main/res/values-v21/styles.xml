@@ -3,7 +3,6 @@
 
     <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="backgroundTint">@color/secondary</item>-->
         <item name="android:backgroundTint">@drawable/primary_button_selector_background</item>
         <item name="android:textColor">@drawable/primary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
@@ -16,7 +15,6 @@
     <style name="AdamantLight.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:elevation">0dp</item>
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="backgroundTint">@color/background</item>
@@ -27,11 +25,18 @@
     <style name="AdamantLight.FlatIconButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:elevation">0dp</item>
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="strokeColor">@color/strokeDark</item>
+    </style>
+
+    <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/onBackground</item>
+        <!--TODO: It is necessary to set this value for all texts, but will it be correct?-->
+        <!--<item name="android:letterSpacing">0.15</item> -->
     </style>
 
 </resources>

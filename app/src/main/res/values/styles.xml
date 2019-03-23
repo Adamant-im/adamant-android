@@ -21,6 +21,7 @@
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/onBackground</item>
     </style>
 
     <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">

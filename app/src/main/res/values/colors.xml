@@ -9,7 +9,7 @@
     <color name="background">#FFFFFF</color>
     <color name="qr_background">#FAFAFA</color>
     <color name="surface">#FFFFFF</color>
-    <color name="error">#f0506e</color>
+    <color name="error">#F44336</color>
 
     <color name="onPrimary">#212121</color>
     <color name="onSecondary">#FFFFFF</color>
