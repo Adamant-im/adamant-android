@@ -28,6 +28,7 @@
                 android:secondaryProgress="50"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,25 +48,56 @@
                 <!--app:layout_constraintStart_toStartOf="parent"-->
                 <!--app:layout_constraintTop_toBottomOf="@+id/activity_pin_code_pb_progress"/>-->
 
-            <ImageView
-                android:id="@+id/activity_pincode_iv_profile_image"
-                android:layout_width="84dp"
-                android:layout_height="84dp"
-                android:layout_below="@+id/activity_pin_code_pb_progress"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="24dp"
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/activity_pincode_rv_logoLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_pin_code_pb_progress"
-                app:srcCompat="@drawable/ic_welcome_card1" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_pin_code_pb_progress">
+
+                <ImageView
+                    android:id="@+id/activity_pincode_iv_profile_image"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_centerHorizontal="true"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_welcome_card1" />
+
+                <com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader
+                    android:id="@+id/progressBar"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:arcprogress_arcColorsArray="@array/progressbar_colors"
+                    app:arcprogress_arcRadius="42dp"
+                    app:arcprogress_arcWidth="3dp"
+                    app:arcprogress_incrementalAngle="7.0"
+                    app:arcprogress_maxArcAngle="220.0"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
             <TextView
                 android:id="@+id/activity_pincode_tv_suggestion"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/activity_pincode_iv_profile_image"
                 android:layout_centerHorizontal="true"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif-thin"
                 android:gravity="center"
                 android:maxLines="1"
@@ -74,7 +106,7 @@
                 android:textSize="34sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/activity_pincode_iv_profile_image" />
+                app:layout_constraintTop_toBottomOf="@+id/activity_pincode_rv_logoLayout" />
 
             <com.andrognito.pinlockview.IndicatorDots
                 android:id="@+id/activity_pincode_id_indicator_dots"

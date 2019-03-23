@@ -142,7 +142,7 @@ dependencies {
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
     implementation "androidx.core:core:1.0.1"
     implementation "com.yarolegovich:discrete-scrollview:1.4.9"
-    implementation 'com.github.Adilhusen:circle-progress-ad-android-:1.0'
+    implementation "com.agrawalsuneet.androidlibs:loaderspack:1.2.3"
 
     annotationProcessor "com.arello-mobile:moxy-compiler:$moxyVersion"
     annotationProcessor "com.jakewharton:butterknife-compiler:$butterKnifeVersion"

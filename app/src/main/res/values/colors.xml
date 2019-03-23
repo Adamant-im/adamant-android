@@ -28,4 +28,9 @@
     <color name="statusConnected">#1562E0</color>
     <color name="statusUnavailable">#f0506e</color>
     <color name="statusConnecting">#6D6F72</color>
+
+    <array name="progressbar_colors">
+        <item>@color/secondary</item>
+        <item>@color/secondaryDarkVariant</item>
+    </array>
 </resources>
