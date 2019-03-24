@@ -19,7 +19,7 @@
             android:layout_height="wrap_content">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/activity_pincode_rv_logoLayout"
+                android:id="@+id/activity_pincode_cl_logoLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -68,7 +68,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/activity_pincode_rv_logoLayout">
+                app:layout_constraintTop_toBottomOf="@id/activity_pincode_cl_logoLayout">
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_suggestion"
@@ -134,7 +134,6 @@
                     android:layout_marginBottom="12dp"
                     app:keypadButtonSize="72dp"
                     app:keypadDeleteButtonDrawable="@drawable/ic_backspace"
-                    app:keypadButtonBackgroundDrawable="@drawable/pincode_button"
                     app:keypadShowDeleteButton="true"
                     app:keypadTextColor="@color/onBackground"
                     app:keypadTextSize="18dp"

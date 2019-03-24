@@ -17,7 +17,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
     private String pincodeForConfirmation;
-    private boolean ignoreInput = false;
     private int attemptsCount = 0;
     private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
@@ -46,8 +45,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(String pinCode) {
-        if (ignoreInput) { return; }
-
         if (!validate(pinCode)) { return; }
 
         if (currentOperation != null) {
@@ -64,17 +61,17 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             break;
             case CONFIRM: {
                 if (pinCode.equalsIgnoreCase(pincodeForConfirmation)){
-                    startProcess();
+                    getViewState().startProcess();
                     currentOperation = pinCodeInteractor
                             .savePassphrase(pinCode)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     () -> {
-                                        stopProcess();
+                                        getViewState().stopProcess(true);
                                         getViewState().close();
                                     },
                                     error -> {
-                                        stopProcess();
+                                        getViewState().stopProcess(false);
                                         getViewState().showError(R.string.encryption_error);
                                         LoggerHelper.e("PINCODE", error.getMessage(), error);
                                     }
@@ -105,13 +102,13 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
                 lastAttemptTimestamp = System.currentTimeMillis();
 
-                startProcess();
+                getViewState().startProcess();
                 currentOperation = pinCodeInteractor
                         .restoreAuthorizationByPincode(pinCode)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (authorization) -> {
-                                    stopProcess();
+                                    getViewState().stopProcess(true);
                                     if (authorization.isSuccess()) {
                                         getViewState().goToMain();
                                     } else {
@@ -119,7 +116,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     }
                                 },
                                 error -> {
-                                    stopProcess();
+                                    getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
@@ -127,7 +124,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
             case DROP: {
-                startProcess();
+                getViewState().startProcess();
                 currentOperation = pinCodeInteractor
                         .dropPassphrase(pinCode)
                         .doOnError((throwable -> {LoggerHelper.e("PINCODE", "after ignore UNSUCESS");}))
@@ -135,11 +132,11 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         .subscribe(
                                 (value) -> {
                                     LoggerHelper.e("PINCODE", "SUCCESS SUBSCRIBE");
-                                    stopProcess();
+                                    getViewState().stopProcess(true);
                                     getViewState().close();
                                 },
                                 error -> {
-                                    stopProcess();
+                                    getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
@@ -147,16 +144,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
         }
-    }
-
-    private void startProcess() {
-        ignoreInput = true;
-        getViewState().startProcess();
-    }
-
-    private void stopProcess() {
-        ignoreInput = false;
-        getViewState().stopProcess();
     }
 
     private boolean validate(CharSequence pincode) {

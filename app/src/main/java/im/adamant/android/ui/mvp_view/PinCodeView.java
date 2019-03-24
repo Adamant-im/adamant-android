@@ -17,8 +17,11 @@ public interface PinCodeView extends MvpView {
         DROP
     }
 
+    @StateStrategyType(SkipStrategy.class)
     void startProcess();
-    void stopProcess();
+
+    @StateStrategyType(SkipStrategy.class)
+    void stopProcess(boolean success);
 
     void setSuggestion(int resourceId);
 

@@ -1,18 +1,15 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.andrognito.pinlockview.IndicatorDots;
@@ -25,15 +22,11 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
-import io.reactivex.Flowable;
 
 public class PincodeScreen extends BaseActivity implements PinCodeView {
     @Inject
@@ -53,7 +46,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
     @BindView(R.id.activity_pincode_tv_error) TextView errorView;
     @BindView(R.id.activity_pin_code_pb_progress) ArcProgressLoader progressView;
-    @BindView(R.id.activity_pin_code_cl_keypadLayout) ConstraintLayout keypadView;
+    @BindView(R.id.activity_pin_code_cl_keypadLayout) ConstraintLayout keypadLayoutView;
+    @BindView(R.id.activity_pincode_cl_logoLayout) ConstraintLayout logoLayoutView;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -64,9 +58,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         }
 
         @Override
-        public void onEmpty() {
-//            Toast.makeText(getApplicationContext(), R.string.empty_pincode, Toast.LENGTH_LONG).show();
-        }
+        public void onEmpty() {}
 
         @Override
         public void onPinChange(int pinLength, String intermediatePin) {
@@ -117,15 +109,17 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     public void startProcess() {
         progressView.setVisibility(View.VISIBLE);
         Animation outAnimation = AnimationUtils.makeOutAnimation(this, false);
-        keypadView.setAnimation(outAnimation);
-        keypadView.setVisibility(View.GONE);
+        keypadLayoutView.setAnimation(outAnimation);
+        keypadLayoutView.setVisibility(View.GONE);
     }
 
     @Override
-    public void stopProcess() {
-        Animation outAnimation = AnimationUtils.makeInAnimation(this, false);
-        keypadView.setAnimation(outAnimation);
-        keypadView.setVisibility(View.VISIBLE);
+    public void stopProcess(boolean success) {
+        if (!success) {
+            Animation outAnimation = AnimationUtils.makeInAnimation(this, false);
+            keypadLayoutView.setAnimation(outAnimation);
+            keypadLayoutView.setVisibility(View.VISIBLE);
+        }
         progressView.setVisibility(View.INVISIBLE);
     }
 
