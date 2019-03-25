@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.andrognito.pinlockview.IndicatorDots;
+import com.andrognito.pinlockview.ItemSpaceDecoration;
+import com.andrognito.pinlockview.LTRGridLayoutManager;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -22,11 +24,15 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.ui.adapters.KeyPinAdapter;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
+
+import static android.view.View.OVER_SCROLL_NEVER;
 
 public class PincodeScreen extends BaseActivity implements PinCodeView {
     @Inject
@@ -41,8 +47,10 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.activity_pincode_plv_keyboard) PinLockView pinLockView;
-    @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
+//    @BindView(R.id.activity_pincode_plv_keyboard) PinLockView pinLockView;
+    @BindView(R.id.activity_pincode_plv_keyboard)
+RecyclerView pinLockView;
+//    @BindView(R.id.activity_pincode_id_indicator_dots) IndicatorDots indicatorDots;
     @BindView(R.id.activity_pincode_tv_suggestion) TextView suggestionView;
     @BindView(R.id.activity_pincode_tv_error) TextView errorView;
     @BindView(R.id.activity_pin_code_pb_progress) ArcProgressLoader progressView;
@@ -84,14 +92,20 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        pinLockView.attachIndicatorDots(indicatorDots);
-        pinLockView.setPinLockListener(mPinLockListener);
+//        pinLockView.attachIndicatorDots(indicatorDots);
+//        pinLockView.setPinLockListener(mPinLockListener);
+//
+//        pinLockView.enableLayoutShuffling();
+//
+//        pinLockView.setPinLength(PinCodeView.PINCODE_LENGTH);
 
-        pinLockView.enableLayoutShuffling();
+//        indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
 
-        pinLockView.setPinLength(PinCodeView.PINCODE_LENGTH);
-
-        indicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
+        pinLockView.setLayoutManager(new LTRGridLayoutManager(this, 3));
+        KeyPinAdapter keyPinAdapter = new KeyPinAdapter();
+        pinLockView.setAdapter(keyPinAdapter);
+        pinLockView.addItemDecoration(new ItemSpaceDecoration(20, 20, 3, false));
+        pinLockView.setOverScrollMode(OVER_SCROLL_NEVER);
 
         Intent intent = getIntent();
 
@@ -103,6 +117,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
         if (mode == null){return;}
         presenter.setMode(mode);
+
     }
 
     @Override
@@ -130,12 +145,12 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
 
     @Override
     public void dropPincodeText() {
-        pinLockView.resetPinLockView();
+//        pinLockView.resetPinLockView();
     }
 
     @Override
     public void shuffleKeyboard() {
-        pinLockView.enableLayoutShuffling();
+//        pinLockView.enableLayoutShuffling();
     }
 
     @Override

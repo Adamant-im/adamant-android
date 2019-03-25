@@ -53,6 +53,14 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="AdamantLight.PincodeButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
+        <!--<item name="backgroundTint">@color/secondary</item>-->
+        <item name="android:textColor">@drawable/secondary_button_selector_text</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:background">@color/background</item>
+    </style>
+
     <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <!--<item name="backgroundTint">@color/secondary</item>-->

@@ -88,27 +88,27 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <com.andrognito.pinlockview.IndicatorDots
-                    android:id="@+id/activity_pincode_id_indicator_dots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="28dp"
-                    android:layout_marginEnd="8dp"
-                    app:dotDiameter="8dp"
-                    app:dotFilledBackground="@drawable/pincode_dot"
-                    app:dotSpacing="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />
+                <!--<com.andrognito.pinlockview.IndicatorDots-->
+                    <!--android:id="@+id/activity_pincode_id_indicator_dots"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginStart="8dp"-->
+                    <!--android:layout_marginTop="28dp"-->
+                    <!--android:layout_marginEnd="8dp"-->
+                    <!--app:dotDiameter="8dp"-->
+                    <!--app:dotFilledBackground="@drawable/pincode_dot"-->
+                    <!--app:dotSpacing="8dp"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintHorizontal_bias="0.498"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />-->
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_error"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/activity_pincode_id_indicator_dots"
+
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="20dp"
@@ -121,26 +121,38 @@
                     android:textSize="12sp"
                     android:lineHeight="16sp"
                     android:letterSpacing="0.4"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_id_indicator_dots" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
-                <com.andrognito.pinlockview.PinLockView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/activity_pincode_plv_keyboard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="12dp"
                     android:layout_marginBottom="12dp"
-                    app:keypadButtonSize="72dp"
-                    app:keypadDeleteButtonDrawable="@drawable/ic_backspace"
-                    app:keypadShowDeleteButton="true"
-                    app:keypadTextColor="@color/onBackground"
-                    app:keypadTextSize="18dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error" />
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error"/>
+
+                <!--<com.andrognito.pinlockview.PinLockView-->
+                    <!--android:id="@+id/activity_pincode_plv_keyboard"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerHorizontal="true"-->
+                    <!--android:layout_marginTop="12dp"-->
+                    <!--android:layout_marginBottom="12dp"-->
+                    <!--app:keypadButtonSize="72dp"-->
+                    <!--app:keypadDeleteButtonDrawable="@drawable/ic_backspace"-->
+                    <!--app:keypadShowDeleteButton="true"-->
+                    <!--app:keypadTextColor="@color/onBackground"-->
+                    <!--app:keypadTextSize="18dp"-->
+                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                    <!--app:layout_constraintEnd_toEndOf="parent"-->
+                    <!--app:layout_constraintStart_toStartOf="parent"-->
+                    <!--app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error" />-->
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
