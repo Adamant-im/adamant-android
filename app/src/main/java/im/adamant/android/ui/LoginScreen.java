@@ -96,6 +96,12 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         creteNewButtonView.setPaintFlags(creteNewButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
+    @OnClick(R.id.activity_login_ib_node_list)
+    public void showNodesList() {
+        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+        startActivity(intent);
+    }
+
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();

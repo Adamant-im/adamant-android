@@ -45,7 +45,6 @@ public class AdamantApiWrapper {
     private AdamantKeyGenerator keyGenerator;
     private AdamantApiBuilder apiBuilder;
 
-    private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
 
     private volatile int serverTimeDelta;
@@ -241,6 +240,18 @@ public class AdamantApiWrapper {
 
     public CharSequence getPassPhrase() {
         return passPhrase;
+    }
+
+    public void buildApibyIndex(int index) {
+        if (wrapperBuildSubscription != null){
+            wrapperBuildSubscription.dispose();
+        }
+
+        wrapperBuildSubscription = apiBuilder.build(index)
+                .doOnNext(buildedApi -> api = buildedApi)
+                .doOnError(Throwable::printStackTrace)
+                .retry(1000)
+                .subscribe();
     }
 
     private void buildApi() {

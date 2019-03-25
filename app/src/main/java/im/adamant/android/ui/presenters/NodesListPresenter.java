@@ -31,4 +31,8 @@ public class NodesListPresenter extends BasePresenter<NodesListView> {
     public void onClickDeleteNode(ServerNode serverNode){
         serverNodeInteractor.deleteNode(serverNode);
     }
+
+    public void onClickSwitchNode(int index) {
+        serverNodeInteractor.switchNode(index);
+    }
 }

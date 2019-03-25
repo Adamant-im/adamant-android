@@ -12,7 +12,6 @@ import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
@@ -20,6 +19,7 @@ import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.custom_view.IgnoreLastDividerItemDecorator;
 import im.adamant.android.ui.mvp_view.NodesListView;
@@ -48,7 +48,8 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @BindView(R.id.fragment_settings_et_new_node_address)
     EditText newNodeAddressView;
 
-    Disposable adapterDisposable;
+    Disposable deleteItemDisposable;
+    Disposable switchItemDisposable;
 
     @Override
     public int getLayoutId() {
@@ -89,7 +90,7 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @Override
     protected void onResume() {
         super.onResume();
-        adapterDisposable = nodeAdapter
+        deleteItemDisposable = nodeAdapter
                 .getRemoveObservable()
                 .subscribe(serverNode -> {
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
@@ -103,6 +104,13 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
                                 .show();
                 });
 
+        switchItemDisposable = nodeAdapter
+                .getSwitchObservable()
+                .subscribe(
+                        index -> presenter.onClickSwitchNode(index),
+                        error -> LoggerHelper.e("SwitchNode", error.getMessage(), error)
+                );
+
         nodeAdapter.startListenChanges();
     }
 
@@ -110,8 +118,11 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     protected void onPause() {
         nodeAdapter.stopListenChanges();
 
-        if (adapterDisposable != null){
-            adapterDisposable.dispose();
+        if (deleteItemDisposable != null){
+            deleteItemDisposable.dispose();
+        }
+        if (switchItemDisposable != null){
+            switchItemDisposable.dispose();
         }
         super.onPause();
     }

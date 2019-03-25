@@ -20,6 +20,10 @@ public class AdamantApiBuilder {
     }
 
     public Observable<AdamantApi> build() {
+        return build(randomServerSelect());
+    }
+
+    public Observable<AdamantApi> build(int index) {
         return Observable.fromCallable(() -> {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
@@ -33,7 +37,7 @@ public class AdamantApiBuilder {
                 currentServerNode.setStatus(ServerNode.Status.CONNECTING);
             }
 
-            currentServerNode = serverSelect();
+            currentServerNode = nodes.get(index);
             currentServerNode.setStatus(ServerNode.Status.CONNECTED);
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -47,10 +51,10 @@ public class AdamantApiBuilder {
         });
     }
 
-    private ServerNode serverSelect() {
+    private int randomServerSelect() {
         int index =  (int) Math.round(Math.floor(Math.random() * nodes.size()));
         if (index >= nodes.size()){index = nodes.size() - 1;}
 
-        return nodes.get(index);
+        return index;
     }
 }

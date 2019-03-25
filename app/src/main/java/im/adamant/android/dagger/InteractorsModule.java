@@ -94,8 +94,8 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static ServerNodeInteractor provideServerNodeInteractor(Settings settings) {
-        return new ServerNodeInteractor(settings);
+    public static ServerNodeInteractor provideServerNodeInteractor(AdamantApiWrapper api, Settings settings) {
+        return new ServerNodeInteractor(api, settings);
     }
 
     @Singleton
