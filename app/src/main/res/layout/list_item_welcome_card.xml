@@ -10,7 +10,7 @@
         android:layout_width="@dimen/list_item_welcome_card_image_size"
         android:layout_height="@dimen/list_item_welcome_card_image_size"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
