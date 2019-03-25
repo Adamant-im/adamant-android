@@ -58,8 +58,6 @@
         <!--<item name="backgroundTint">@color/secondary</item>-->
         <item name="android:textColor">@drawable/primary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
-        <item name="cornerRadius">@dimen/main_button_height</item>
-        <item name="android:lineSpacingExtra">16sp</item>
     </style>
 
     <style name="AdamantLight.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
