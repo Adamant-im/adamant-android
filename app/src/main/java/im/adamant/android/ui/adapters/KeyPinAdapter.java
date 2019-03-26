@@ -11,9 +11,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
+import im.adamant.android.ui.holders.KeyPinDigitHolder;
 import im.adamant.android.ui.holders.KeyPinHolder;
+import im.adamant.android.ui.holders.KeyPinIconHolder;
 
 public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements KeyPinHolder.HolderClickListener {
+    public static final int DIGIT_HOLDER_TYPE = 0;
+    public static final int ICON_HOLDER_TYPE = 1;
+
     private int keyLength = 10;
     private List<KeyPinEntry> keys = new ArrayList<>();
     private PincodeListener listener = null;
@@ -23,12 +28,29 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         initKeys();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        KeyPinEntry entry = keys.get(position);
+        if (entry.getType() == KeyEntryType.DIGIT) {
+            return DIGIT_HOLDER_TYPE;
+        } else {
+            return ICON_HOLDER_TYPE;
+        }
+    }
+
     @NonNull
     @Override
     public KeyPinHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_pincode_key, parent, false);
-        return new KeyPinHolder(v, this);
+        if (viewType == DIGIT_HOLDER_TYPE) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_pincode_digit_key, parent, false);
+            return new KeyPinDigitHolder(v, this);
+        } else {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_pincode_icon_key, parent, false);
+            return new KeyPinIconHolder(v, this);
+        }
+
     }
 
     @Override
@@ -79,7 +101,7 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
         for (int i = 0; i < digits.size(); i++) {
             if (i == 9) {
-                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_delete);
+                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_reset_pin_code);
                 keys.add(dropEntry);
 
                 KeyPinEntry entry = new KeyPinEntry(digits.get(i), KeyEntryType.DIGIT);
@@ -134,9 +156,9 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
     }
 
 
-
     public interface PincodeListener {
         void onComplete(CharSequence pincode);
         void onDropPin();
     }
+
 }

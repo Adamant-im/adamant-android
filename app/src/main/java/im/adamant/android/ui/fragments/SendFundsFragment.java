@@ -6,7 +6,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +30,7 @@ import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -114,6 +117,19 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                 presenter.setCompanionIdAndFacadeType(companionId, type);
             }
         }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+
+        FragmentActivity activity = getActivity();
+        if (activity != null){
+            Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.ic_send_address);
+            recipientAddressView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+        }
+
+        return v;
     }
 
     @Override
@@ -317,7 +333,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     private Drawable getIcon(Context context, int resourceId) {
-        Drawable drawable = ContextCompat.getDrawable(context, resourceId);
+        Drawable drawable = AppCompatResources.getDrawable(context, resourceId);
         if (drawable == null) {return null;}
         int h = drawable.getIntrinsicHeight();
         int w = drawable.getIntrinsicWidth();

@@ -7,7 +7,8 @@
     <color name="secondaryLightVariant">#BBDEFB</color>
 
     <color name="background">#FFFFFF</color>
-    <color name="qr_background">#FAFAFA</color>
+    <color name="alternate_background">#FAFAFA</color>
+    <color name="alternate_background_19">#AAFAFAFA</color>
     <color name="surface">#FFFFFF</color>
     <color name="error">#F44336</color>
 

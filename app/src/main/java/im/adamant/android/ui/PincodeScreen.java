@@ -104,7 +104,7 @@ RecyclerView pinLockView;
         pinLockView.setLayoutManager(new LTRGridLayoutManager(this, 3));
         KeyPinAdapter keyPinAdapter = new KeyPinAdapter();
         pinLockView.setAdapter(keyPinAdapter);
-        pinLockView.addItemDecoration(new ItemSpaceDecoration(20, 20, 3, false));
+        pinLockView.addItemDecoration(new ItemSpaceDecoration(10, 0, 3, false));
         pinLockView.setOverScrollMode(OVER_SCROLL_NEVER);
 
         Intent intent = getIntent();

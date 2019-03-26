@@ -1,11 +1,9 @@
 package im.adamant.android.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -28,7 +26,6 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
-import io.reactivex.Flowable;
 
 public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";
@@ -68,7 +65,7 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {
-                final int backgroundColor = ContextCompat.getColor(this, R.color.qr_background);
+                final int backgroundColor = ContextCompat.getColor(this, R.color.alternate_background);
                 final int onColor = ContextCompat.getColor(this, R.color.onPrimary);
                 qrCodeView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override

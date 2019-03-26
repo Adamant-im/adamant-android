@@ -44,7 +44,6 @@
                         android:id="@+id/list_item_currency_send_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_send_address"
                         android:drawablePadding="15dp"
                         android:enabled="false"
                         android:maxLines="1" />
