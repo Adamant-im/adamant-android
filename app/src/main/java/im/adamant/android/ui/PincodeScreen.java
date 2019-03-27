@@ -29,6 +29,7 @@ import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.adapters.KeyPinAdapter;
+import im.adamant.android.ui.custom_view.PinIndicatorLayout;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
 
@@ -56,6 +57,8 @@ RecyclerView pinLockView;
     @BindView(R.id.activity_pin_code_pb_progress) ArcProgressLoader progressView;
     @BindView(R.id.activity_pin_code_cl_keypadLayout) ConstraintLayout keypadLayoutView;
     @BindView(R.id.activity_pincode_cl_logoLayout) ConstraintLayout logoLayoutView;
+    @BindView(R.id.pincodeFieldLayout)
+    PinIndicatorLayout indicator;
 
     private PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -103,6 +106,7 @@ RecyclerView pinLockView;
 
         pinLockView.setLayoutManager(new LTRGridLayoutManager(this, 3));
         KeyPinAdapter keyPinAdapter = new KeyPinAdapter();
+        keyPinAdapter.setIndicator(indicator);
         pinLockView.setAdapter(keyPinAdapter);
         pinLockView.addItemDecoration(new ItemSpaceDecoration(10, 0, 3, false));
         pinLockView.setOverScrollMode(OVER_SCROLL_NEVER);

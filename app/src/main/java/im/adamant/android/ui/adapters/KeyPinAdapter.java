@@ -11,6 +11,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
+import im.adamant.android.ui.custom_view.PinIndicatorLayout;
 import im.adamant.android.ui.holders.KeyPinDigitHolder;
 import im.adamant.android.ui.holders.KeyPinHolder;
 import im.adamant.android.ui.holders.KeyPinIconHolder;
@@ -23,6 +24,7 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
     private List<KeyPinEntry> keys = new ArrayList<>();
     private PincodeListener listener = null;
     private StringBuilder pcd = new StringBuilder();
+    private PinIndicatorLayout indicator;
 
     public KeyPinAdapter() {
         initKeys();
@@ -68,8 +70,9 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         notifyDataSetChanged();
     }
 
-    public void setKeyLength(int length) {
-        this.keyLength = length;
+    public void setIndicator(PinIndicatorLayout indicator) {
+        this.indicator = indicator;
+        keyLength = indicator.getLength();
     }
 
     public void setPincodeListener(PincodeListener listener) {
@@ -118,7 +121,33 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
     @Override
     public void click(KeyPinEntry key) {
-
+        switch (key.getType()) {
+            case DIGIT: {
+                if (pcd.length() < keyLength) {
+                    pcd.append(key.getDigit());
+                    indicator.setSymbol(pcd.length() - 1);
+                } else {
+                    if (listener != null) {
+                        listener.onComplete(pcd);
+                    }
+                }
+            }
+            break;
+            case BACKSPACE: {
+                if (pcd.length() > 0) {
+                    indicator.removeSymbol(pcd.length() - 1);
+                    pcd.delete(pcd.length() - 1, pcd.length());
+                }
+            }
+            break;
+            case DROP: {
+                indicator.clear();
+                pcd.delete(0, pcd.length());
+                if (listener != null) {
+                    listener.onDropPin();
+                }
+            }
+        }
     }
 
     public enum KeyEntryType {

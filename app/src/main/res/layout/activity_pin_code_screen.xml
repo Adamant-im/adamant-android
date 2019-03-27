@@ -104,6 +104,23 @@
                     <!--app:layout_constraintStart_toStartOf="parent"-->
                     <!--app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />-->
 
+                <im.adamant.android.ui.custom_view.PinIndicatorLayout
+                    android:id="@+id/pincodeFieldLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="23dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:active_color="@color/secondaryDarkVariant"
+                    app:inactive_color="@color/secondaryLightVariant"
+                    app:dot_diameter="12dp"
+                    app:padding_size="10dp"
+                    app:pincode_length="10"
+                    app:animation_delay="300"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />
+
                 <TextView
                     android:id="@+id/activity_pincode_tv_error"
                     android:layout_width="0dp"
@@ -111,19 +128,19 @@
 
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="sans-serif-thin"
                     android:gravity="center"
+                    android:letterSpacing="0.4"
+                    android:lineHeight="16sp"
                     android:maxLines="3"
                     android:textAlignment="center"
                     android:textColor="@color/error"
                     android:textSize="12sp"
-                    android:lineHeight="16sp"
-                    android:letterSpacing="0.4"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/pincodeFieldLayout" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/activity_pincode_plv_keyboard"

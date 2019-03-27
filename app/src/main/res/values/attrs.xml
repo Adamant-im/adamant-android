@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PinIndicatorLayout">
+        <attr name="inactive_color" format="color"/>
+        <attr name="active_color" format="color"/>
+        <attr name="animation_delay" format="integer"/>
+        <attr name="pincode_length" format="integer"/>
+        <attr name="dot_diameter" format="dimension"/>
+        <attr name="padding_size" format="dimension"/>
+    </declare-styleable>
+</resources>
