@@ -1,0 +1,1 @@
+git log --pretty=oneline --abbrev-commit --after="$1" --before="$2" > changelog-"$1"--"$2".log
