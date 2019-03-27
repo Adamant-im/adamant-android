@@ -1,5 +1,6 @@
 package im.adamant.android.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +18,8 @@ import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -157,4 +160,17 @@ public class PincodeScreen extends BaseActivity implements PinCodeView {
     public void showError(int resourceId) {
         errorView.setText(getString(resourceId));
     }
+
+    @Override
+    public void showRepeatableError(int resourceId, int secondsLeft) {
+        String errorPattern = getString(resourceId);
+        String formattedError = String.format(Locale.ENGLISH, errorPattern, secondsLeft);
+        errorView.setText(formattedError);
+    }
+
+    @Override
+    public void clearError() {
+        errorView.setText("");
+    }
+
 }

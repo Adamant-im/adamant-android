@@ -151,7 +151,7 @@
     <string name="wrong_pincode_length">Неверная длинна пин-кода (ожидалось: %s символов)</string>
     <string name="wrong_pincode_one_symbol">Для пин-кода нельзя использовать последовательность из одной цифры</string>
     <string name="pincode_unconfirmed">Пин-коды не совпадают, попробуйте снова</string>
-    <string name="pincode_exceeding_the_number_of_attempts">Превышение количества попыток ввода пин-кода. Попробуйте через 30 секунд</string>
+    <string name="pincode_exceeding_the_number_of_attempts">Превышение количества попыток ввода пин-кода. Осталось %d секунд</string>
     <string name="tee_not_supported">Мы не сумели подтвердить что ваше устройство использует Trusted Environment Execution, сохранение авторизации может быть не безопасным.
         Некоторые устройства эмулируют TEE, посредством файлов доступных при наличии root доступа. Продолжить?</string>
 
