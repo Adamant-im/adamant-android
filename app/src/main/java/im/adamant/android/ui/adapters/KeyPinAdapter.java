@@ -146,6 +146,7 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
                     if ((pcd.length() == keyLength) && (listener != null)) {
                         listener.onCompletePin(pcd);
+                        reset();
                     }
                 }
             }

@@ -127,11 +127,6 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     }
 
     @Override
-    public void dropPincodeText() {
-        keyPinAdapter.reset();
-    }
-
-    @Override
     public void shuffleKeyboard() {
         keyPinAdapter.shuffle();
     }

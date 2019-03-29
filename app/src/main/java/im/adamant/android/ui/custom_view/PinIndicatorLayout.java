@@ -72,8 +72,9 @@ public class PinIndicatorLayout extends View {
 
     public void clear() {
         for (int index = 0; index < length; index++) {
+            fillAnimators[index].cancel();
+
             if (radiuses[index] != 0) {
-                fillAnimators[index].cancel();
                 deleteAnimators[index].start();
             }
         }

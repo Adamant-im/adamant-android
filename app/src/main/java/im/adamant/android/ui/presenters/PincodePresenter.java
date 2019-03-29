@@ -51,7 +51,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void onInputPincodeWasCompleted(CharSequence pinCode) {
         if (!validate(pinCode)) {
-            getViewState().dropPincodeText();
             return;
         }
 
@@ -64,7 +63,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 mode = PinCodeView.MODE.CONFIRM;
                 pincodeForConfirmation = pinCode;
                 getViewState().setSuggestion(R.string.activity_pincode_confirm);
-                getViewState().dropPincodeText();
             }
             break;
             case CONFIRM: {
@@ -90,7 +88,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                     mode = PinCodeView.MODE.CREATE;
                 }
 
-                getViewState().dropPincodeText();
                 pincodeForConfirmation = null;
 
             }
@@ -118,7 +115,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 error -> {
                                     getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
-                                    getViewState().dropPincodeText();
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
@@ -139,7 +135,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 error -> {
                                     getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
-                                    getViewState().dropPincodeText();
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
@@ -155,7 +150,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 return false;
             } else {
                 lastAttemptTimestamp = System.currentTimeMillis();
-                getViewState().dropPincodeText();
                 getViewState().shuffleKeyboard();
 
                 if (timerErrorDisposable != null) {
