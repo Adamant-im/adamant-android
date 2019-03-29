@@ -26,6 +26,13 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
     private StringBuilder pcd = new StringBuilder();
     private PinIndicatorLayout indicator;
 
+    private KeyMode mode = KeyMode.WITH_DROP;
+
+    public enum KeyMode {
+        WITH_DROP,
+        WITHOUT_DROP
+    }
+
     public KeyPinAdapter() {
         initKeys();
     }
@@ -70,6 +77,16 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         notifyDataSetChanged();
     }
 
+    public void reset() {
+        indicator.clear();
+        pcd.delete(0, pcd.length());
+    }
+
+    public void setMode(KeyMode mode) {
+        this.mode = mode;
+        shuffle();
+    }
+
     public void setIndicator(PinIndicatorLayout indicator) {
         this.indicator = indicator;
         keyLength = indicator.getLength();
@@ -104,13 +121,13 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
         for (int i = 0; i < digits.size(); i++) {
             if (i == 9) {
-                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_reset_pin_code);
+                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_reset_pin_code, (mode == KeyMode.WITH_DROP));
                 keys.add(dropEntry);
 
                 KeyPinEntry entry = new KeyPinEntry(digits.get(i), KeyEntryType.DIGIT);
                 keys.add(entry);
 
-                KeyPinEntry backspaceEntry = new KeyPinEntry(KeyEntryType.BACKSPACE, R.drawable.ic_backspace);
+                KeyPinEntry backspaceEntry = new KeyPinEntry(KeyEntryType.BACKSPACE, R.drawable.ic_backspace, true);
                 keys.add(backspaceEntry);
             } else {
                 KeyPinEntry entry = new KeyPinEntry(digits.get(i), KeyEntryType.DIGIT);
@@ -124,11 +141,11 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         switch (key.getType()) {
             case DIGIT: {
                 if (pcd.length() < keyLength) {
+                    indicator.setSymbol(pcd.length());
                     pcd.append(key.getDigit());
-                    indicator.setSymbol(pcd.length() - 1);
-                } else {
-                    if (listener != null) {
-                        listener.onComplete(pcd);
+
+                    if ((pcd.length() == keyLength) && (listener != null)) {
+                        listener.onCompletePin(pcd);
                     }
                 }
             }
@@ -160,15 +177,17 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         private String digit;
         private int icon;
         private KeyEntryType type;
+        private boolean isVisible = true;
 
         public KeyPinEntry(String digit, KeyEntryType type) {
             this.digit = digit;
             this.type = type;
         }
 
-        public KeyPinEntry(KeyEntryType type, int icon) {
+        public KeyPinEntry(KeyEntryType type, int icon, boolean isVisible) {
             this.icon = icon;
             this.type = type;
+            this.isVisible = isVisible;
         }
 
         public String getDigit() {
@@ -182,11 +201,15 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         public KeyEntryType getType() {
             return type;
         }
+
+        public boolean isVisible() {
+            return isVisible;
+        }
     }
 
 
     public interface PincodeListener {
-        void onComplete(CharSequence pincode);
+        void onCompletePin(CharSequence pincode);
         void onDropPin();
     }
 

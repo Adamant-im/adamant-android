@@ -4,19 +4,19 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
+import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor pinCodeInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
-    private String pincodeForConfirmation;
+    private CharSequence pincodeForConfirmation;
     private int attemptsCount = 0;
     private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
@@ -44,7 +44,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
         }
     }
 
-    public void onInputPincodeWasCompleted(String pinCode) {
+    public void onInputPincodeWasCompleted(CharSequence pinCode) {
         if (!validate(pinCode)) { return; }
 
         if (currentOperation != null) {
@@ -60,7 +60,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
             case CONFIRM: {
-                if (pinCode.equalsIgnoreCase(pincodeForConfirmation)){
+                if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)){
                     getViewState().startProcess();
                     currentOperation = pinCodeInteractor
                             .savePassphrase(pinCode)

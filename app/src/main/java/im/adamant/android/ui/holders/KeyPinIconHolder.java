@@ -25,6 +25,11 @@ public class KeyPinIconHolder extends KeyPinHolder {
 
     public void bind(KeyPinAdapter.KeyPinEntry key) {
         if(key.getType() != KeyPinAdapter.KeyEntryType.DIGIT) {
+            if (key.isVisible()) {
+                button.setVisibility(View.VISIBLE);
+            } else {
+                button.setVisibility(View.GONE);
+            }
             button.setImageDrawable(AppCompatResources.getDrawable(context, key.getIcon()));
         }
 

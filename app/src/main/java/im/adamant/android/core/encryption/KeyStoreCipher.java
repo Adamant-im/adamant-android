@@ -186,9 +186,10 @@ public class KeyStoreCipher {
     }
 
     public CharSequence decrypt(String alias, String object) throws Exception {
-        String dataSizeType = object.substring(0, 2);
-        String data = object.substring(2);
         try {
+            String dataSizeType = object.substring(0, 2);
+            String data = object.substring(2);
+
             switch (dataSizeType) {
                 case SMALL_DATA_TYPE: {
                     return decryptSmallBlock(alias, data);

@@ -88,35 +88,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <!--<com.andrognito.pinlockview.IndicatorDots-->
-                    <!--android:id="@+id/activity_pincode_id_indicator_dots"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:layout_marginTop="28dp"-->
-                    <!--android:layout_marginEnd="8dp"-->
-                    <!--app:dotDiameter="8dp"-->
-                    <!--app:dotFilledBackground="@drawable/pincode_dot"-->
-                    <!--app:dotSpacing="8dp"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintHorizontal_bias="0.498"-->
-                    <!--app:layout_constraintStart_toStartOf="parent"-->
-                    <!--app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />-->
-
                 <im.adamant.android.ui.custom_view.PinIndicatorLayout
-                    android:id="@+id/pincodeFieldLayout"
+                    android:id="@+id/activity_pincode_pil_indicator_dots"
                     android:layout_width="match_parent"
-                    android:layout_height="23dp"
+                    android:layout_height="48dp"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     app:active_color="@color/secondaryDarkVariant"
-                    app:inactive_color="@color/secondaryLightVariant"
-                    app:dot_diameter="12dp"
-                    app:padding_size="10dp"
+                    app:inactive_color="@color/secondary"
+                    app:animation_delay="400"
+                    app:dot_diameter="8dp"
+                    app:padding_size="8dp"
                     app:pincode_length="10"
-                    app:animation_delay="300"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />
@@ -128,7 +112,6 @@
 
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:fontFamily="sans-serif-thin"
                     android:gravity="center"
@@ -140,7 +123,7 @@
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/pincodeFieldLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_pil_indicator_dots" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/activity_pincode_plv_keyboard"
@@ -153,27 +136,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error"/>
-
-                <!--<com.andrognito.pinlockview.PinLockView-->
-                    <!--android:id="@+id/activity_pincode_plv_keyboard"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_centerHorizontal="true"-->
-                    <!--android:layout_marginTop="12dp"-->
-                    <!--android:layout_marginBottom="12dp"-->
-                    <!--app:keypadButtonSize="72dp"-->
-                    <!--app:keypadDeleteButtonDrawable="@drawable/ic_backspace"-->
-                    <!--app:keypadShowDeleteButton="true"-->
-                    <!--app:keypadTextColor="@color/onBackground"-->
-                    <!--app:keypadTextSize="18dp"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintStart_toStartOf="parent"-->
-                    <!--app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error" />-->
-
             </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

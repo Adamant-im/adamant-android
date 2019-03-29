@@ -46,6 +46,17 @@ public class CharSequenceHelper {
         return buffer;
     }
 
+    public static boolean equalsCaseSensitive(CharSequence sequence1, CharSequence sequence2) {
+        boolean equals = true;
+        if (sequence1.length() != sequence2.length()) { return false; }
+
+        for (int i = 0; i < sequence1.length(); i++) {
+            equals &= (sequence1.charAt(i) == sequence2.charAt(i));
+        }
+
+        return equals;
+    }
+
     private static boolean isLetterCharacter(char character) {
         boolean isSpace = (character == ' ');
         boolean isTab = (character == '\t');
