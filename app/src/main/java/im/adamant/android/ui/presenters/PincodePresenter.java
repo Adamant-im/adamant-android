@@ -2,12 +2,16 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -20,6 +24,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private int attemptsCount = 0;
     private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
+    private Disposable timerErrorDisposable;
 
     public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
         super(subscriptions);
@@ -45,7 +50,10 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(CharSequence pinCode) {
-        if (!validate(pinCode)) { return; }
+        if (!validate(pinCode)) {
+            getViewState().dropPincodeText();
+            return;
+        }
 
         if (currentOperation != null) {
             currentOperation.dispose();
@@ -90,15 +98,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case ACCESS_TO_APP: {
                 attemptsCount++;
 
-                if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-                    if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
-                        attemptsCount = 0;
-                    } else {
-                        getViewState().showError(R.string.pincode_exceeding_the_number_of_attempts);
-                        getViewState().shuffleKeyboard();
-                        return;
-                    }
-                }
+                if (waitTimeOut()) { return; }
 
                 lastAttemptTimestamp = System.currentTimeMillis();
 
@@ -118,6 +118,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 error -> {
                                     getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
+                                    getViewState().dropPincodeText();
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
@@ -138,12 +139,48 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 error -> {
                                     getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
+                                    getViewState().dropPincodeText();
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
             }
             break;
         }
+    }
+
+    private boolean waitTimeOut() {
+        if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
+            if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
+                attemptsCount = 0;
+                return false;
+            } else {
+                lastAttemptTimestamp = System.currentTimeMillis();
+                getViewState().dropPincodeText();
+                getViewState().shuffleKeyboard();
+
+                if (timerErrorDisposable != null) {
+                    timerErrorDisposable.dispose();
+                }
+
+                int waitSeconds = BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS / 1000;
+
+                timerErrorDisposable = Observable
+                        .interval(1, TimeUnit.SECONDS)
+                        .take(waitSeconds)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(
+                                (second) -> {
+                                    LoggerHelper.e("INTERVAL", Long.toString(second));
+                                    getViewState().showRepeatableError(R.string.pincode_exceeding_the_number_of_attempts, waitSeconds - second.intValue());
+                                },
+                                (error) -> LoggerHelper.e("PINCODE", error.getMessage()),
+                                () -> getViewState().clearError()
+                        );
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean validate(CharSequence pincode) {

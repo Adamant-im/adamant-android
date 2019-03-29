@@ -1,5 +1,6 @@
 package im.adamant.android.ui.mvp_view;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import com.arellomobile.mvp.MvpView;
@@ -36,4 +37,9 @@ public interface PinCodeView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showError(int resourceId);
+
+    @StateStrategyType(SkipStrategy.class)
+    void showRepeatableError(int resourceId, int secondsLeft);
+
+    void clearError();
 }
