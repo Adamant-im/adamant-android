@@ -26,12 +26,6 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
     private StringBuilder pcd = new StringBuilder();
     private PinIndicatorLayout indicator;
 
-    private KeyMode mode = KeyMode.WITH_DROP;
-
-    public enum KeyMode {
-        WITH_DROP,
-        WITHOUT_DROP
-    }
 
     public KeyPinAdapter() {
         initKeys();
@@ -82,10 +76,6 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         pcd.delete(0, pcd.length());
     }
 
-    public void setMode(KeyMode mode) {
-        this.mode = mode;
-        shuffle();
-    }
 
     public void setIndicator(PinIndicatorLayout indicator) {
         this.indicator = indicator;
@@ -121,7 +111,8 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
         for (int i = 0; i < digits.size(); i++) {
             if (i == 9) {
-                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_reset_pin_code, (mode == KeyMode.WITH_DROP));
+                //TODO: It is not possible to add a pincode reset button, since Unsubscribe from push notifications is not possible.
+                KeyPinEntry dropEntry = new KeyPinEntry(KeyEntryType.DROP, R.drawable.ic_reset_pin_code, false);
                 keys.add(dropEntry);
 
                 KeyPinEntry entry = new KeyPinEntry(digits.get(i), KeyEntryType.DIGIT);

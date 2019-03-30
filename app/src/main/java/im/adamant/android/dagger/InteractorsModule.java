@@ -161,8 +161,9 @@ public abstract class InteractorsModule {
             Settings settings,
             AdamantApiWrapper api,
             KeyStoreCipher keyStoreCipher,
-            Gson gson
+            Gson gson,
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
     ) {
-        return new SecurityInteractor(gson, settings, api, keyStoreCipher);
+        return new SecurityInteractor(gson, settings, api, keyStoreCipher, pushNotificationServiceInteractor);
     }
 }

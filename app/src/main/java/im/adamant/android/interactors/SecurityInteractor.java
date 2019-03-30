@@ -26,13 +26,21 @@ public class SecurityInteractor {
     private Settings settings;
     private AdamantApiWrapper api;
     private KeyStoreCipher keyStoreCipher;
+    private SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor;
     private Gson gson;
 
-    public SecurityInteractor(Gson gson, Settings settings, AdamantApiWrapper api, KeyStoreCipher keyStoreCipher) {
+    public SecurityInteractor(
+            Gson gson,
+            Settings settings,
+            AdamantApiWrapper api,
+            KeyStoreCipher keyStoreCipher,
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
+    ) {
         this.settings = settings;
         this.api = api;
         this.keyStoreCipher = keyStoreCipher;
         this.gson = gson;
+        this.pushNotificationServiceInteractor = pushNotificationServiceInteractor;
     }
 
     // 1. Сохранение пасфразы и пинкода они не разрывны.
@@ -67,11 +75,12 @@ public class SecurityInteractor {
         .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-    //TODO: проблема в том что действие выполняется в UI потоке
     public Single<CombinedPassphrase> dropPassphrase(CharSequence pincode) {
         return validatePincode(pincode)
-                .doAfterSuccess((combinedPassphrase -> {LoggerHelper.d("DROPPASS", "Validation successs");}))
-                .doOnError((throwable -> {LoggerHelper.e("DROPPASS", "Validation UNSUCCESS");}))
+                .flatMap(combinedPassphrase -> pushNotificationServiceInteractor
+                        .resetNotificationFacade(true)
+                        .toSingleDefault(combinedPassphrase)
+                )
                 .doAfterSuccess((combinedPassphrase) -> clearSettings())
                 .subscribeOn(Schedulers.computation())
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);

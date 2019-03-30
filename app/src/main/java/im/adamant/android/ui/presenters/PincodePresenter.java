@@ -124,7 +124,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 getViewState().startProcess();
                 currentOperation = pinCodeInteractor
                         .dropPassphrase(pinCode)
-                        .doOnError((throwable -> {LoggerHelper.e("PINCODE", "after ignore UNSUCESS");}))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (value) -> {

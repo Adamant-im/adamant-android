@@ -95,12 +95,6 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
         if (mode == null){return;}
         presenter.setMode(mode);
 
-        if (mode == MODE.ACCESS_TO_APP) {
-            keyPinAdapter.setMode(KeyPinAdapter.KeyMode.WITH_DROP);
-        } else {
-            keyPinAdapter.setMode(KeyPinAdapter.KeyMode.WITHOUT_DROP);
-        }
-
     }
 
     @Override
