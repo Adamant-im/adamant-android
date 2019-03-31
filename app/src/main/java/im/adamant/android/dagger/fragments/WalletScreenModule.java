@@ -15,8 +15,6 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public class WalletScreenModule {
-
-
     @FragmentScope
     @Provides
     @Named(value = Screens.WALLET_SCREEN)
@@ -34,5 +32,14 @@ public class WalletScreenModule {
     @Provides
     public CurrencyTransfersAdapter provideCurrencyTransferAdapter() {
         return new CurrencyTransfersAdapter();
+    }
+
+    @FragmentScope
+    @Provides
+    public static WalletPresenter provideWalletPresenter(
+            Router router,
+            WalletInteractor walletInteractor
+    ){
+        return new WalletPresenter(router, walletInteractor);
     }
 }

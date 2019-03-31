@@ -18,4 +18,14 @@ public class NodesListScreenModule {
     public ServerNodeAdapter provideAdapter(Settings settings){
         return new ServerNodeAdapter(settings.getNodes());
     }
+
+    @ActivityScope
+    @Provides
+    public static NodesListPresenter provideNodesListPresenter(
+            ServerNodeInteractor serverNodeInteractor
+    ) {
+        return new NodesListPresenter(
+                serverNodeInteractor
+        );
+    }
 }

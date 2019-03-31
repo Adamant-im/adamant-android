@@ -38,4 +38,13 @@ public class RegistrationScreenModule {
     public static PassphraseAvatarTransformation provideAvatarTransforamtion() {
         return new PassphraseAvatarTransformation();
     }
+
+    @ActivityScope
+    @Provides
+    public static RegistrationPresenter provideRegistrationPresenter(
+            Router router,
+            AuthorizeInteractor authorizeInteractor
+    ) {
+        return new RegistrationPresenter(router, authorizeInteractor);
+    }
 }

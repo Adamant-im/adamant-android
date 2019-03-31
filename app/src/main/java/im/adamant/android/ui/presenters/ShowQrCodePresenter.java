@@ -28,8 +28,7 @@ public class ShowQrCodePresenter extends BasePresenter<ShowQrCodeView> {
 
     private QRCode qrCode;
 
-    public ShowQrCodePresenter(QrCodeHelper qrCodeHelper, CompositeDisposable subscriptions) {
-        super(subscriptions);
+    public ShowQrCodePresenter(QrCodeHelper qrCodeHelper) {
         this.qrCodeHelper = qrCodeHelper;
     }
 

@@ -13,6 +13,7 @@ import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 
@@ -32,10 +33,8 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             AdamantAddressExtractor adamantAddressExtractor,
-            ChatsStorage chatsStorage,
-            CompositeDisposable subscriptions
+            ChatsStorage chatsStorage
     ) {
-        super(subscriptions);
         this.router = router;
         this.chatsStorage = chatsStorage;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;

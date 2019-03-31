@@ -15,6 +15,7 @@ import im.adamant.android.dagger.fragments.CreateChatScreenModule;
 import im.adamant.android.dagger.fragments.FragmentScope;
 import im.adamant.android.dagger.fragments.SettingsScreenModule;
 import im.adamant.android.dagger.fragments.WalletScreenModule;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
@@ -23,6 +24,9 @@ import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.holders.FragmentClassHolder;
+import im.adamant.android.ui.presenters.MainPresenter;
+import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 @Module
 public abstract class MainScreenModule {
@@ -60,6 +64,13 @@ public abstract class MainScreenModule {
         return new FragmentsAdapter(mainScreen, holders);
     }
 
-
+    @ActivityScope
+    @Provides
+    public static MainPresenter provideMainPresenter(
+            Router router,
+            LogoutInteractor logoutInteractor
+    ){
+        return new MainPresenter(router, logoutInteractor);
+    }
 
 }

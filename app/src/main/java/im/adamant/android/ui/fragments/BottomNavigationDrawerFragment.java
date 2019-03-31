@@ -32,7 +32,6 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
     @Inject
     AdamantApiWrapper api;
 
-    @Inject
     MainPresenter mainPresenter;
 
     @Inject
@@ -57,6 +56,10 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
     public void onAttach(Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+    }
+
+    public void setMainPresenter(MainPresenter mainPresenter) {
+        this.mainPresenter = mainPresenter;
     }
 
     //TODO: Think about whether there is a presenter and a refactor code

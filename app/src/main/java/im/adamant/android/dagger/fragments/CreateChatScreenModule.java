@@ -20,12 +20,28 @@ import ru.terrakok.cicerone.Router;
 
 @Module
 public class CreateChatScreenModule {
-
-
     @FragmentScope
     @Provides
     @Named(value = Screens.CREATE_CHAT_SCREEN)
     public QrCodeHelper provideQrCodeParser() {
         return new QrCodeHelper();
+    }
+
+    @FragmentScope
+    @Provides
+    public static CreateChatPresenter provideCreateChatPresenter(
+            Router router,
+            Map<SupportedWalletFacadeType, WalletFacade> wallets,
+            AdamantAddressExtractor adamantAddressExtractor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
+            ChatsStorage chatsStorage
+    ){
+        return new CreateChatPresenter(
+                router,
+                wallets,
+                chatUpdatePublicKeyInteraactor,
+                adamantAddressExtractor,
+                chatsStorage
+        );
     }
 }

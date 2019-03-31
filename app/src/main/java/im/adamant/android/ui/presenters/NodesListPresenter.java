@@ -7,6 +7,7 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.ServerNodeInteractor;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.NodesListView;
 import io.reactivex.disposables.CompositeDisposable;
 
@@ -14,8 +15,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class NodesListPresenter extends BasePresenter<NodesListView> {
     private ServerNodeInteractor serverNodeInteractor;
 
-    public NodesListPresenter(ServerNodeInteractor serverNodeInteractor, CompositeDisposable subscriptions) {
-        super(subscriptions);
+    public NodesListPresenter(ServerNodeInteractor serverNodeInteractor) {
         this.serverNodeInteractor = serverNodeInteractor;
     }
 

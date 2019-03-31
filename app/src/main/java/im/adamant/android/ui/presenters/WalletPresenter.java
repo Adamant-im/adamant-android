@@ -26,10 +26,8 @@ public class WalletPresenter extends BasePresenter<WalletView> {
 
     public WalletPresenter(
             Router router,
-            WalletInteractor walletInteractor,
-            CompositeDisposable subscription
+            WalletInteractor walletInteractor
     ) {
-        super(subscription);
         this.walletInteractor = walletInteractor;
         this.router = router;
     }

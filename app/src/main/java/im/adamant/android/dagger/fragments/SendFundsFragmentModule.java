@@ -28,8 +28,7 @@ public class SendFundsFragmentModule {
             SendFundsInteractor sendCurrencyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
-            ChatsStorage chatsStorage,
-            @Named(Screens.SEND_CURRENCY_TRANSFER_SCREEN) CompositeDisposable subscriptions
+            ChatsStorage chatsStorage
     ){
         return new SendFundsPresenter(
                 router,
@@ -37,8 +36,7 @@ public class SendFundsFragmentModule {
                 sendCurrencyInteractor,
                 messageFactoryProvider,
                 publicKeyStorage,
-                chatsStorage,
-                subscriptions
+                chatsStorage
         );
     }
 

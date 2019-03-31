@@ -12,4 +12,11 @@ import io.reactivex.disposables.CompositeDisposable;
 @Module
 public class ShowQrCodeScreenModule {
 
+    @ActivityScope
+    @Provides
+    public static ShowQrCodePresenter provideShowQrCodePresenter(
+            QrCodeHelper qrCodeHelper
+    ) {
+        return new ShowQrCodePresenter(qrCodeHelper);
+    }
 }

@@ -7,6 +7,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.MainView;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -22,10 +23,8 @@ public class MainPresenter extends BasePresenter<MainView> {
 
     public MainPresenter(
             Router router,
-            LogoutInteractor logoutInteractor,
-            CompositeDisposable compositeDisposable
+            LogoutInteractor logoutInteractor
     ) {
-        super(compositeDisposable);
         this.router = router;
         this.logoutInteractor = logoutInteractor;
     }

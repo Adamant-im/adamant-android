@@ -12,6 +12,7 @@ import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -51,10 +52,8 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
-            AdamantApiWrapper api,
-            CompositeDisposable subscriptions
+            AdamantApiWrapper api
     ) {
-        super(subscriptions);
         this.router = router;
         this.refreshChatsInteractor = refreshChatsInteractor;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;

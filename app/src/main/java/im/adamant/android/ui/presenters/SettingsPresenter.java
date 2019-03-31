@@ -30,10 +30,8 @@ public class SettingsPresenter extends  BasePresenter<SettingsView> {
             Router router,
             AdamantApiWrapper api,
             SecurityInteractor securityInteractor,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            CompositeDisposable subscriptions
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
-        super(subscriptions);
         this.router = router;
         this.api = api;
         this.securityInteractor = securityInteractor;

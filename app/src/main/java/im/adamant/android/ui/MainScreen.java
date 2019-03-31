@@ -63,16 +63,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-//    @Named("main")
-//    @Inject
-//    FragmentsAdapter mainAdapterReference;
 
     @BindView(R.id.main_screen_content) FrameLayout content;
-//    @BindView(R.id.main_screen_navigation)
-//    BottomNavigationView navigation;
-
-//    @BindView(R.id.fab)
-//    FloatingActionButton fab;
 
     @BindView(R.id.bottom_appbar)
     BottomAppBar appBar;
@@ -145,6 +137,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
             case android.R.id.home: {
                 FragmentManager supportFragmentManager = getSupportFragmentManager();
                 BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
+                bottomNavDrawerFragment.setMainPresenter(presenter);
                 bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
 
                 return true;
@@ -153,17 +146,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return false;
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        FragmentManager fragManager = this.getSupportFragmentManager();
-//        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-//
-//        Fragment currentFragment = fragManager.getFragments().get(count>0?count-1:count);
-//        if (currentFragment != null) {
-//            currentFragment.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
 
     private Navigator navigator = new Navigator() {
         @Override

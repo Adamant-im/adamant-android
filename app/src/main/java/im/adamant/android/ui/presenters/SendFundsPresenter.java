@@ -44,10 +44,8 @@ public class SendFundsPresenter extends BasePresenter<SendFundsView> {
             SendFundsInteractor sendCurrencyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
-            ChatsStorage chatsStorage,
-            CompositeDisposable subscriptions
+            ChatsStorage chatsStorage
     ) {
-        super(subscriptions);
         this.router = router;
         this.wallets = wallets;
         this.sendCurrencyInteractor = sendCurrencyInteractor;

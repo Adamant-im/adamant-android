@@ -13,7 +13,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
-import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @Module
@@ -22,5 +21,25 @@ public class MessagesScreenModule {
     @Provides
     public MessagesAdapter provideAdapter(MessageFactoryProvider messageFactoryProvider){
         return new MessagesAdapter(messageFactoryProvider,null);
+    }
+
+    @ActivityScope
+    @Provides
+    public static MessagesPresenter provideMessagesPresenter(
+            Router router,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
+            MessageFactoryProvider messageFactoryProvider,
+            AdamantApiWrapper api,
+            ChatsStorage chatsStorage
+    ) {
+        return new MessagesPresenter(
+                router,
+                refreshChatsInteractor,
+                chatUpdatePublicKeyInteraactor,
+                messageFactoryProvider,
+                chatsStorage,
+                api
+        );
     }
 }

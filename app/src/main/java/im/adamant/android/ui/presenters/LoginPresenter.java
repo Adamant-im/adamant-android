@@ -8,6 +8,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.LoginView;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -21,10 +22,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     public LoginPresenter(
             Router router,
-            AuthorizeInteractor authorizeInteractor,
-            CompositeDisposable subscriptions
+            AuthorizeInteractor authorizeInteractor
     ) {
-        super(subscriptions);
         this.router = router;
         this.authorizeInteractor = authorizeInteractor;
     }

@@ -22,9 +22,19 @@ public class ChatsScreenModule {
     @Provides
     public ChatsAdapter provideAdapter(
             ChatsScreen chatsScreen,
-            @Named(Screens.CHATS_SCREEN) CompositeDisposable compositeDisposable,
             Avatar avatar
     ){
-        return new ChatsAdapter(null, chatsScreen, compositeDisposable, avatar);
+        return new ChatsAdapter(null, chatsScreen, avatar);
+    }
+
+    @FragmentScope
+    @Provides
+    public static ChatsPresenter provideChatsPresenter(
+            Router router,
+            GetContactsInteractor getContactsInteractor,
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage
+    ){
+        return new ChatsPresenter(router, getContactsInteractor, refreshChatsInteractor, chatsStorage);
     }
 }

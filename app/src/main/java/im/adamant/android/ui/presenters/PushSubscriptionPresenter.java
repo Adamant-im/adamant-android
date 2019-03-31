@@ -21,10 +21,8 @@ public class PushSubscriptionPresenter extends BasePresenter<PushSubscriptionVie
 
     public PushSubscriptionPresenter(
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            CompositeDisposable subscriptions,
             Scheduler observeScheduler
     ) {
-        super(subscriptions);
         this.observeScheduler = observeScheduler;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
     }

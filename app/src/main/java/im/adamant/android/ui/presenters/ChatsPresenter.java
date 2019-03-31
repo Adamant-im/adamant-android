@@ -8,6 +8,7 @@ import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
 
@@ -25,16 +26,14 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
 
-    private Disposable syncSubscription;
+    private RxTaskManager taskManager;
 
     public ChatsPresenter(
             Router router,
             GetContactsInteractor getContactsInteractor,
             RefreshChatsInteractor refreshChatsInteractor,
-            ChatsStorage chatsStorage,
-            CompositeDisposable subscriptions
+            ChatsStorage chatsStorage
     ) {
-        super(subscriptions);
         this.router = router;
         this.getContactsInteractor = getContactsInteractor;
         this.refreshChatsInteractor = refreshChatsInteractor;
@@ -42,21 +41,15 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     }
 
     @Override
-    public void attachView(ChatsView view) {
-        super.attachView(view);
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
 
-        final CompositeDisposable finalSubscription = subscriptions;
-
-        if (syncSubscription != null){
-            syncSubscription.dispose();
-        }
-
-        syncSubscription = refreshChatsInteractor
+        Disposable disposable = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         (irrelevant) -> {
-                            finalSubscription.add(
+                            subscriptions.add(
                                     getContactsInteractor
                                             .execute()
                                             .subscribe()
@@ -74,15 +67,7 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                         }
                 );
 
-    }
-
-    @Override
-    public void detachView(ChatsView view) {
-        super.detachView(view);
-
-        if (syncSubscription != null){
-            syncSubscription.dispose();
-        }
+        subscriptions.add(disposable);
     }
 
     public void onChatWasSelected(Chat chat){

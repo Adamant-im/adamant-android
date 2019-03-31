@@ -26,8 +26,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private Disposable currentOperation;
     private Disposable timerErrorDisposable;
 
-    public PincodePresenter(SecurityInteractor pinCodeInteractor, CompositeDisposable subscriptions) {
-        super(subscriptions);
+    public PincodePresenter(SecurityInteractor pinCodeInteractor) {
         this.pinCodeInteractor = pinCodeInteractor;
     }
 
