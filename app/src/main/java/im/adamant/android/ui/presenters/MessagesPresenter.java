@@ -6,6 +6,7 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
@@ -167,6 +168,9 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
             Disposable subscription = messageProcessor
                     .sendMessage(messageEntity)
+                    .doAfterSuccess(transactionWasProcessed ->  {
+                        LoggerHelper.d("TEST", "NEW");
+                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
                             getViewState().messageWasSended(messageEntity);

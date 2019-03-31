@@ -50,9 +50,9 @@ public class AdamantBasicMessageProcessor extends AbstractMessageProcessor<Adama
         Account account = api.getAccount();
 
         return Single
-                .defer(() -> {
+                .fromCallable(() -> {
                     if (recipientPublicKey == null || recipientPublicKey.isEmpty()) {
-                        return Single.error(new NotFoundPublicKey("Recipient public key not found"));
+                        throw new NotFoundPublicKey("Recipient public key not found");
                     }
 
                     TransactionMessage transactionMessage = encryptor.encryptMessage(
@@ -62,9 +62,9 @@ public class AdamantBasicMessageProcessor extends AbstractMessageProcessor<Adama
                     );
 
                     if (transactionMessage == null) {
-                        return Single.error(new EncryptionException("Error when encrypting message"));
+                        throw new EncryptionException("Error when encrypting message");
                     } else {
-                        return Single.just(transactionMessage);
+                        return transactionMessage;
                     }
                 })
                 .flatMap((transactionMessage -> Single.fromCallable(

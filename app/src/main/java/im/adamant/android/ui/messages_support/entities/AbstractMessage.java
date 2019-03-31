@@ -27,6 +27,7 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
     private String transactionId;
     private String companionId;
     private String ownerPublicKey;
+    private String error;
 
     private Date date;
 
@@ -75,6 +76,14 @@ public abstract class AbstractMessage implements MessageListContent, Serializabl
 
     public void setCompanionId(String companionId) {
         this.companionId = companionId;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 
     @Override

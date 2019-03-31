@@ -11,6 +11,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.exceptions.NotEnoughAdamantBalanceException;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionWasProcessed;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import io.reactivex.Single;
@@ -30,7 +31,7 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
 
     @Override
     public Single<TransactionWasProcessed> sendMessage(T message) {
-
+        //TODO: Rewrite the error handling so that any error is displayed under the message.
         if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
         KeyPair keyPair = api.getKeyPair();
@@ -45,46 +46,56 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
             );
         }
 
-        return Single
-                .fromCallable(() -> publicKeyStorage.getPublicKey(message.getCompanionId()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.computation())
-                .flatMap((publicKey) -> this.buildTransactionMessage(message, publicKey))
-                .flatMap((unnormalizedTransactionMessage -> Single.fromPublisher(
-                        api.getNormalizedTransaction(unnormalizedTransactionMessage)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.computation())
-                )))
-                .flatMap((transactionWasNormalized -> {
-                    if (transactionWasNormalized.isSuccess()) {
-                        Transaction transaction = transactionWasNormalized.getTransaction();
-                        transaction.setSenderId(account.getAddress());
+        LoggerHelper.d("TEST", "TEST");
 
-                        transaction.setSignature(
-                                encryptor.createTransactionSignature(
-                                        transaction,
-                                        keyPair
-                                )
-                        );
+        Single<TransactionWasProcessed> result = null;
+        try {
+            result = Single
+                    .fromCallable(() -> publicKeyStorage.getPublicKey(message.getCompanionId()))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.computation())
+                    .flatMap((publicKey) -> this.buildTransactionMessage(message, publicKey))
+                    .flatMap((unnormalizedTransactionMessage -> Single.fromPublisher(
+                            api.getNormalizedTransaction(unnormalizedTransactionMessage)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(Schedulers.computation())
+                    )))
+                    .flatMap((transactionWasNormalized -> {
+                        if (transactionWasNormalized.isSuccess()) {
+                            Transaction transaction = transactionWasNormalized.getTransaction();
+                            transaction.setSenderId(account.getAddress());
 
-                        return Single.just(transaction);
-                    } else {
-                        return Single.error(new Exception(transactionWasNormalized.getError()));
-                    }
-                }))
-                .flatMap(transaction -> Single.fromPublisher(
-                        api.processTransaction(new ProcessTransaction(transaction))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.computation())
-                ))
-                .doAfterSuccess(transactionWasProcessed -> {
-                    if (transactionWasProcessed.isSuccess()){
-                        message.setTransactionId(transactionWasProcessed.getTransactionId());
-                        message.setStatus(AbstractMessage.Status.DELIVERED);
-                    }
-                })
-                .doOnError(throwable -> {
-                    message.setStatus(AbstractMessage.Status.NOT_SENDED);
-                });
+                            transaction.setSignature(
+                                    encryptor.createTransactionSignature(
+                                            transaction,
+                                            keyPair
+                                    )
+                            );
+
+                            return Single.just(transaction);
+                        } else {
+                            return Single.error(new Exception(transactionWasNormalized.getError()));
+                        }
+                    }))
+                    .flatMap(transaction -> Single.fromPublisher(
+                            api.processTransaction(new ProcessTransaction(transaction))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(Schedulers.computation())
+                    ))
+                    .doAfterSuccess(transactionWasProcessed -> {
+                        if (transactionWasProcessed.isSuccess()) {
+                            message.setTransactionId(transactionWasProcessed.getTransactionId());
+                            message.setStatus(AbstractMessage.Status.DELIVERED);
+                        }
+                    })
+                    .doOnError(throwable -> {
+                        message.setStatus(AbstractMessage.Status.NOT_SENDED);
+                        message.setError(throwable.getMessage());
+                    });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return result;
     }
 }
