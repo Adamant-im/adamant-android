@@ -10,6 +10,7 @@
     <ImageButton
         android:id="@+id/list_item_pincode_icon_button"
         android:background="@android:color/transparent"
+        android:tint="@color/on_click_pincode_icon_key"
         android:layout_width="48dp"
         android:layout_height="48dp" />
 
