@@ -4,6 +4,7 @@ public class TransactionWasProcessed {
     private int nodeTimestamp;
     private boolean success;
     private String transactionId;
+    private String error;
 
     public boolean isSuccess() {
         return success;
@@ -27,5 +28,13 @@ public class TransactionWasProcessed {
 
     public void setNodeTimestamp(int nodeTimestamp) {
         this.nodeTimestamp = nodeTimestamp;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }
