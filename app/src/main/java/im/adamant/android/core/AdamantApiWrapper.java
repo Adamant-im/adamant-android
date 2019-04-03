@@ -42,25 +42,26 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdamantApiWrapper {
     private AdamantApi api;
-    private ObservableRxList<ServerNode> nodes;
     private KeyPair keyPair;
     private Account account;
+    private CharSequence passPhrase;
     private AdamantKeyGenerator keyGenerator;
+    private AdamantApiBuilder apiBuilder;
 
-    private ServerNode currentServerNode;
     private Disposable wrapperBuildSubscription;
 
     private volatile int serverTimeDelta;
     private int errorsCount;
 
-    public AdamantApiWrapper(ObservableRxList<ServerNode> nodes, AdamantKeyGenerator keyGenerator) {
-        this.nodes = nodes;
+    public AdamantApiWrapper(AdamantApiBuilder apiBuilder, AdamantKeyGenerator keyGenerator) {
+        this.apiBuilder = apiBuilder;
         this.keyGenerator = keyGenerator;
 
         buildApi();
     }
 
-    public Flowable<Authorization> authorize(String passPhrase) {
+    public Flowable<Authorization> authorize(CharSequence passPhrase) {
+        this.passPhrase = passPhrase;
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         return authorize(tempKeyPair);
@@ -181,7 +182,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<Authorization> createNewAccount(String passPhrase) {
+    public Flowable<Authorization> createNewAccount(CharSequence passPhrase) {
         KeyPair tempKeyPair = keyGenerator.getKeyPairFromPassPhrase(passPhrase);
 
         NewAccount newAccount = new NewAccount();
@@ -228,6 +229,23 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
+    public Flowable<TransactionList<NotUsedAsset>> getAdamantTransactions(int type, int fromHeight, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+        return api.getAdamantTransactions(account.getAddress(), type, fromHeight, order)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionWasProcessed> sendAdmTransferTransaction(ProcessTransaction transaction) {
+        return api.sendAdmTransferTransaction(transaction)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
     public boolean isAuthorized() {
         return account != null && keyPair != null;
     }
@@ -246,54 +264,34 @@ public class AdamantApiWrapper {
         return keyPair;
     }
 
+    public CharSequence getPassPhrase() {
+        return passPhrase;
+    }
+
+    public void buildApibyIndex(int index) {
+        if (wrapperBuildSubscription != null){
+            wrapperBuildSubscription.dispose();
+        }
+
+        wrapperBuildSubscription = apiBuilder.build(index)
+                .doOnNext(buildedApi -> api = buildedApi)
+                .doOnError(Throwable::printStackTrace)
+                .retry(1000)
+                .subscribe();
+    }
+
     private void buildApi() {
 
         if (wrapperBuildSubscription != null){
             wrapperBuildSubscription.dispose();
         }
 
-        wrapperBuildSubscription = Observable.fromCallable(() -> {
-                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-
-                    if (BuildConfig.DEBUG){
-                        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                        httpClient.addInterceptor(logging);
-                    }
-
-                    if (currentServerNode != null){
-                        currentServerNode.setStatus(ServerNode.Status.CONNECTING);
-                    }
-
-                    currentServerNode = serverSelect();
-                    currentServerNode.setStatus(ServerNode.Status.CONNECTED);
-
-                    //TODO: Final static element
-                    Gson gson = new GsonBuilder()
-                    .registerTypeAdapterFactory(new AdamantTransactonTypeAdapterFactory())
-                    .create();
-
-                    Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
-                        .addConverterFactory(GsonConverterFactory.create(gson))
-                        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                        .client(httpClient.build())
-                        .build();
-
-                    return  retrofit.create(AdamantApi.class);
-                })
+        wrapperBuildSubscription = apiBuilder.build()
                 .doOnNext(buildedApi -> api = buildedApi)
                 .doOnError(Throwable::printStackTrace)
                 .retry(1000)
                 .subscribe();
 
-    }
-
-    private ServerNode serverSelect() {
-        int index =  (int) Math.round(Math.floor(Math.random() * nodes.size()));
-        if (index >= nodes.size()){index = nodes.size() - 1;}
-
-        return nodes.get(index);
     }
 
     private void checkNodeError(Throwable e){

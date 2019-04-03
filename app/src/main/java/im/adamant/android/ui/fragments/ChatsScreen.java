@@ -1,8 +1,14 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +29,7 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import im.adamant.android.R;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.entities.Chat;
@@ -74,9 +81,18 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
+
+        Drawable divider = ContextCompat.getDrawable(chatList.getContext(), R.drawable.line_divider);
+        int avatarWidth = getResources().getDimensionPixelSize(R.dimen.list_item_avatar_size);
+        int itemPadding = getResources().getDimensionPixelSize(R.dimen.list_item_chat_padding);
+        InsetDrawable insetDivider = new InsetDrawable(divider, avatarWidth + (itemPadding * 2), 0, 0, 0);
+
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(chatList.getContext(), layoutManager.getOrientation());
+        itemDecoration.setDrawable(insetDivider);
+        chatList.addItemDecoration(itemDecoration);
 
         adapter.setListener(this);
 

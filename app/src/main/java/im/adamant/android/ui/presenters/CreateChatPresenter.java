@@ -3,12 +3,17 @@ package im.adamant.android.ui.presenters;
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.List;
+import java.util.Map;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.AdamantAddressProcessor;
-import im.adamant.android.interactors.SendMessageInteractor;
+import im.adamant.android.markdown.AdamantAddressEntity;
+import im.adamant.android.markdown.AdamantAddressExtractor;
 import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 
@@ -18,26 +23,27 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     private Router router;
-    private SendMessageInteractor interactor;
+    private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private ChatsStorage chatsStorage;
-    private AdamantAddressProcessor addressProcessor;
+    private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
+    private AdamantAddressExtractor adamantAddressExtractor;
 
     public CreateChatPresenter(
             Router router,
-            SendMessageInteractor interactor,
-            AdamantAddressProcessor addressProcessor,
-            ChatsStorage chatsStorage,
-            CompositeDisposable subscriptions
+            Map<SupportedWalletFacadeType, WalletFacade> wallets,
+            ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
+            AdamantAddressExtractor adamantAddressExtractor,
+            ChatsStorage chatsStorage
     ) {
-        super(subscriptions);
         this.router = router;
-        this.interactor = interactor;
         this.chatsStorage = chatsStorage;
-        this.addressProcessor = addressProcessor;
+        this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
+        this.adamantAddressExtractor = adamantAddressExtractor;
+        this.wallets = wallets;
     }
 
     public void onInputAddress(String addressPart) {
-        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressPart);
+        List<AdamantAddressEntity> addresses = adamantAddressExtractor.extractAdamantAddresses(addressPart);
 
         if (addresses.size() == 0){
             getViewState().showError(R.string.wrong_address);
@@ -45,7 +51,7 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
             return;
         }
 
-        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
+        AdamantAddressEntity addressEntity = addresses.get(0);
 
         if (!validate(addressEntity.getAddress())){
             getViewState().showError(R.string.wrong_address);
@@ -56,20 +62,20 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
     }
 
     public void onClickCreateNewChat(String addressUriString) {
-        List<AdamantAddressProcessor.AdamantAddressEntity> addresses = addressProcessor.extractAdamantAddresses(addressUriString);
+        List<AdamantAddressEntity> addresses = adamantAddressExtractor.extractAdamantAddresses(addressUriString);
 
         if (addresses.size() == 0){
             getViewState().showError(R.string.wrong_address);
             return;
         }
 
-        AdamantAddressProcessor.AdamantAddressEntity addressEntity = addresses.get(0);
+        AdamantAddressEntity addressEntity = addresses.get(0);
 
         if (validate(addressEntity.getAddress())){
             Chat chat = new Chat();
             chat.setCompanionId(addressEntity.getAddress());
             chat.setTitle(addressEntity.getLabel());
-
+            chatUpdatePublicKeyInteractor.execute(chat);
             chatsStorage.addNewChat(chat);
             router.navigateTo(Screens.MESSAGES_SCREEN, addressEntity.getAddress());
 
@@ -80,6 +86,14 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
 
     public void onClickScanQrCodeButton() {
         router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
+    }
+
+    public void onClickShowMyQrCodeButton() {
+        WalletFacade facade = wallets.get(SupportedWalletFacadeType.ADM);
+        if (facade != null) {
+            String address = facade.getAddress();
+            getViewState().showQrCode(address);
+        }
     }
 
     private boolean validate(String address) {

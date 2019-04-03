@@ -11,13 +11,23 @@
     <string name="activity_login_btn_enter">Login now</string>
     <string name="activity_login_btn_enter_in_net">Login in net</string>
     <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
-    <string name="activity_login_btn_new_account">Create new</string>
+    <string name="activity_login_btn_new_account">Or create new anonymous address</string>
 
     <string name="activity_registration_tv_title">Creating new address</string>
-    <string name="activity_registration_btn_refresh_passphrase">Generate passphrase and avatar</string>
+    <string name="activity_registration_btn_refresh_passphrase">Generate other passphrases</string>
     <string name="activity_registration_tv_generate_passphrase">Generate passphrase</string>
     <string name="activity_registration_btn_save_qr">Save passphrase as qr-code</string>
-    <string name="activity_registration_btn_create_address">Create address</string>
+    <string name="activity_registration_btn_create_address">Login</string>
+
+    <string name="activity_nodes_list_title">Nodes</string>
+    <string name="activity_nodes_list_new_node_placeholder">New node\'s address</string>
+    <string name="activity_nodes_list_add_new_node">Add new node</string>
+    <string name="activity_nodes_list_dialog_delete_node">Are you sure you want to delete this node from list?</string>
+    <string name="activity_nodes_list_node_status">Node %s, Ping: %.0f ms</string>
+
+    <string name="activity_pincode_enter_pincode">Enter pin-code</string>
+    <string name="activity_pincode_enter_new_pincode">Enter new pin-code</string>
+    <string name="activity_pincode_confirm">Confirm pin-code</string>
 
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Start new chat</string>
@@ -41,34 +51,42 @@
 
     <string name="activity_scan_qrcode_title">Scan QR-code</string>
 
+    <string name="activity_push_subscription_title">Push services</string>
+    <string name="activity_push_subscription_notifications_type">Push service type</string>
+    <string name="activity_push_subscription_about_title">About push service types</string>
+    <string name="activity_push_subscription_select_type_title">Select service type</string>
+
+    <string name="activity_currency_send_title">Send funds</string>
+    <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>
+    <string name="activity_currency_send_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
+
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
     <string name="bottom_menu_title_settings">Settings</string>
 
     <string name="fragment_create_chat_title">Create chat</string>
     <string name="fragment_create_chat_attention">You can add the recipient\'s address through an image from the gallery or by scanning the QR code:</string>
+    <string name="fragment_create_chat_show_my_qr">Show my QR-code</string>
 
     <string name="fragment_login_title">Login</string>
 
     <string name="fragment_wallet_address_title">Number</string>
     <string name="fragment_wallet_balance_title">Balance</string>
     <string name="fragment_wallet_free_tokens_title">Free tokens</string>
-    <string name="fragment_wallet_create_qrcode_title">Create QR-code</string>
+    <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
+    <string name="fragment_wallet_last_transactions_title">Last transactions %s</string>
     <string name="fragment_wallet_exit_title">Exit</string>
 
     <string name="fragment_settings_general_title">General</string>
-    <string name="fragment_settings_nodes_title">Nodes</string>
+
     <string name="fragment_settings_language">Language</string>
+    <string name="fragment_settings_nodes">Nodes list</string>
     <string name="fragment_settings_choose_language">Choose language</string>
-    <string name="fragment_settings_new_node">New node\'s address</string>
-    <string name="fragment_settings_add_new_node">Add</string>
     <string name="fragment_settings_version">Version: %s</string>
-    <string name="fragment_settings_dialog_delete_node">Are you sure you want to delete this node from list?</string>
-    <string name="fragment_settings_node_status">Node %s, Ping: %.0f ms</string>
-    <string name="fragment_settings_store_keypair">Store a key pair on the device</string>
+    <string name="fragment_settings_store_keypair">Save authorization</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Subscribe to push notifications</string>
-    <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>
-    <string name="fragment_settings_push_service_address">Notification service address</string>
+    <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>-->
+    <string name="fragment_settings_success_saved">Settings saved successfully</string>
 
     <string name="address_was_copied">Copied!</string>
     <string name="qrcode_was_created_in_gallery">QR-code has been saved in gallery</string>
@@ -76,6 +94,14 @@
     <string name="dialog_logout_message">Are you sure you want to quit?</string>
     <string name="rationale_qrcode_write_permission">Application needs a write permission for save QR code in your gallery.</string>
     <string name="activity_scan_qrcode_camera_permission_view">No permission to access camera</string>
+
+    <string name="list_item_currency_send_not_supported">This currency is not supported yet</string>
+    <string name="list_item_currency_send_amount_hint">Amount for send. Max: %s %s</string>
+    <string name="list_item_currency_send_address_hint">For user \"%s\"</string>
+    <string name="list_item_currency_send_fee_hint">Fee</string>
+    <string name="list_item_currency_send_totalAmount_hint">Total amount</string>
+    <string name="list_item_currency_send_reminder_hint">Your account balance after transfer %s %s</string>
+    <string name="list_item_currency_send_comment_hint">Comment. %s/%s symbols</string>
 
     <!--ERRORS-->
     <string name="wrong_passphrase">Wrong passphrase</string>
@@ -89,6 +115,17 @@
     <string name="invalid_symbol_in_passphrase">Invalid symbol in passphrase. Available only [a-z] and space</string>
     <string name="invalid_count_words_in_passphrase">Wrong count of words in passphrase. Need 12, current count: %d. Necessary: %d</string>
     <string name="invalid_checksum_in_passphrase">Invalid checksum</string>
+    <string name="not_a_number">This value must be a number.</string>
+    <string name="empty_pincode">PIN-code can not be empty</string>
+    <string name="encryption_error">Encryption error</string>
+    <string name="wrong_pincode">Wrong PIN-code</string>
+    <string name="wrong_pincode_length">Wrong PIN-code length (expected: %s)</string>
+    <string name="wrong_pincode_one_symbol">For pin-code can not use a sequence of one digit</string>
+    <string name="pincode_unconfirmed">PIN codes do not match, try again</string>
+    <string name="pincode_exceeding_the_number_of_attempts">Exceeding the number of attempts to enter a pin code. %d seconds left.</string>
+    <string name="tee_not_supported">We were unable to confirm that your device is using Trusted Environment Execution, saving the authorization may not be secure.
+        Some devices emulate TEE using files available with root access. Continue?</string>
+
 
     <!--NOTIFICATIONS-->
     <string name="adamant_system_notification_channel">Important operation</string>
@@ -96,6 +133,24 @@
     <string name="encrypt_keypair_notification_message">Executing encrypt keypair</string>
     <string name="save_contacts_notification_message">Saving contact list</string>
     <string name="default_notification_message">You have a new message</string>
+    <string name="new_message_scanning_notification_message">Search for new messages</string>
+
+    <string name="fcm_notification_service_short">FCM</string>
+    <string name="fcm_notification_service_change_token_title">FCM updated token</string>
+    <string name="fcm_notification_service_change_token_message">FCM updated token. %s ADM has been withdrawn from your account</string>
+    <string name="fcm_notification_service_full">Firebase Messaging Service</string>
+    <string name="fcm_notification_service_description">Notifications of new messages are sent by the ADAMANT Notification Service (Transport to your device is the Firebase Messaging Service).
+             Notifications come almost instantly, but you need to register the device in the service. It is safe and maintains a high level of security. The cost of subscription, unsubscribe and token change (FCM can replace it at any time, but this rarely happens) is 0.001 ADM.</string>
+
+    <string name="local_notification_service_short">Local</string>
+    <string name="local_notification_service_full">Background service</string>
+    <!--TODO: Write decription-->
+    <string name="local_notification_service_description">Description of Background service</string>
+
+    <string name="disabled_notification_service_short">Disabled</string>
+    <string name="disabled_notification_service_full">Disabled service</string>
+    <string name="disabled_notification_service_description">Notifications is disabled</string>
+
 
 
     <!--HELLO-->
@@ -104,6 +159,26 @@
 
     <string name="hello_message_baunty_name">ADAMANT Bounty</string>
     <string name="hello_message_baunty"><p>Welcome to ADAMANT, the most secure and anonymous messenger. Remember, your security and anonymity is up to you also. Do not follow links you receive, otherwise your IP can be compromised. Do not trust browser extensions. Better to share your ADM address personally, but not using other messengers. Keep your secret passphrase secure. Set a password on your device or logout before leaving.</p><p>Learn more about security and anonymity at <a href="https://adamant.im/staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>All the transactions within the blockchain do need to have their minimal fees. This is necessary to support the network infrastructure. To start messengning now, <b>get free tokens</b> — go to Wallet tab and click Free ADM tokens. Then click Start new chat on Chats tab and put your interlocutor\'s address. To copy your address, click on ADAMANT address on Wallet tab.</p><p>Do not reply to this message, it is a system account. If you still have any questions, contact account U15677078342684640219.</p></string>
+
+    <!--WELCOME CARDS-->
+    <string name="welcome_card_1">Welcome to ADAMANT, the genuine &lt;b&gt;blockchain&lt;/b&gt; messenger.</string>
+    <string name="welcome_card_2">
+        ADAMANT is &lt;b&gt;anonymity&lt;/b&gt; and &lt;b&gt;security&lt;/b&gt; of your messaging as well as in-chat cryptocurrency transferring tool.&lt;br/&gt;&lt;br/&gt;
+        &lt;a href="https://medium.com/adamant-im/adamant-security-features-e7cc836ff52c"&gt;Why are other messengers not secure?&lt;/a&gt;
+    </string>
+    <string name="welcome_card_3">
+        ADAMANT infrastructure doesn\'t belong to anyone and is &lt;b&gt;decentralized&lt;/b&gt;.&lt;br/&gt;&lt;br/&gt;
+        It is maintained by messages paid in ADM tokens. New accounts may receive free tokens for testing purposes.
+    </string>
+    <string name="welcome_card_4">
+        Create an account in a single click &lt;b&gt;without any requirements&lt;/b&gt; (no email/phone/anything) and invite your friends.&lt;br/&gt;&lt;br/&gt;
+        Share your ADAMANT addresses &lt;b&gt;in-person&lt;/b&gt; for true security.
+    </string>
+    <string name="welcome_card_5">
+        The project\'s source code is &lt;a href="https://github.com/Adamant-im/"&gt;completely open&lt;/a&gt;. The app is in development and we constantly add new features.&lt;br/&gt;&lt;br/&gt;
+        If you are a developer — join our team.
+    </string>
+
 
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/free-adm-tokens/?wallet=</string>
@@ -124,4 +199,8 @@
     <string name="bnb_currency_abbr">BNB</string>
     <string name="copy">Copy</string>
     <string name="today">Today</string>
+    <string name="sended">Sended: </string>
+    <string name="received">Received: </string>
+    <string name="send">Send</string>
+    <string name="cancel">Cancel</string>
 </resources>

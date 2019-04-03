@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.entities.EthereumTransferMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
 import im.adamant.android.ui.messages_support.holders.EthereumTransferMessageViewHolder;
@@ -15,10 +15,10 @@ import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class EthereumTransferMessageFactory implements MessageFactory<EthereumTransferMessage> {
-    private AdamantAddressProcessor adamantAddressProcessor;
+    private AdamantMarkdownProcessor adamantAddressProcessor;
     private Avatar avatar;
 
-    public EthereumTransferMessageFactory(AdamantAddressProcessor adamantAddressProcessor, Avatar avatar) {
+    public EthereumTransferMessageFactory(AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
     }

@@ -65,4 +65,29 @@ public class EthereumWalletFacade implements WalletFacade {
     public String getAirdropLinkString() {
         return "";
     }
+
+    @Override
+    public boolean isSupportFundsSending() {
+        return false;
+    }
+
+    @Override
+    public Flowable<BigDecimal> getFee() {
+        return Flowable.just(BigDecimal.ZERO);
+    }
+
+    @Override
+    public String getCurrencyAddress(String adamantAddress, String adamantPublicKey) {
+        return "";
+    }
+
+    @Override
+    public int getIconForEditText() {
+        return 0;
+    }
+
+    @Override
+    public boolean isSupportComment() {
+        return true;
+    }
 }

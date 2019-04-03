@@ -1,22 +1,20 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.CompoundButton;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -30,26 +28,19 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import butterknife.BindView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
-import im.adamant.android.AdamantApplication;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
-import im.adamant.android.services.SaveSettingsService;
-import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.mvp_view.SettingsView;
-import io.reactivex.disposables.Disposable;
-import sm.euzee.github.com.servicemanager.ServiceManager;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class SettingsScreen extends BaseFragment implements SettingsView {
-
-    @Inject
-    ServerNodeAdapter nodeAdapter;
-
-    Disposable adapterDisposable;
 
     @Inject
     Provider<SettingsPresenter> presenterProvider;
@@ -67,17 +58,14 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
-    @BindView(R.id.fragment_settings_rv_list_of_nodes) RecyclerView nodeListView;
-    @BindView(R.id.fragment_settings_et_new_node_address) EditText newNodeAddressView;
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
-    @BindView(R.id.fragment_settings_sw_push_notifications) Switch enablePushNotifications;
-    @BindView(R.id.fragment_settings_et_push_service_address) EditText addressPushService;
-    @BindView(R.id.fragment_settings_btn_change_lang) Button changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
+    @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
 
     public SettingsScreen() {
         // Required empty public constructor
     }
-
 
     @Override
     public int getLayoutId() {
@@ -85,28 +73,17 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view =  super.onCreateView(inflater, container, savedInstanceState);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         String versionText = String.format(Locale.ENGLISH, getString(R.string.fragment_settings_version), BuildConfig.VERSION_NAME);
         versionView.setText(versionText);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        nodeListView.setLayoutManager(layoutManager);
-
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                nodeListView.getContext(),
-                layoutManager.getOrientation()
-        );
-        nodeListView.addItemDecoration(dividerItemDecoration);
-
-        nodeListView.setAdapter(nodeAdapter);
-
-        newNodeAddressView.setOnFocusChangeListener( (edittextView, isFocused) -> {
-            if (!isFocused){
-                hideKeyboard();
-            }
-        });
 
         Locale locale = LocaleChanger.getLocale();
         changeLanguageButtonView.setText(locale.getDisplayLanguage());
@@ -114,55 +91,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapterDisposable = nodeAdapter
-                .getRemoveObservable()
-                .subscribe(serverNode -> {
-                    Activity activity = getActivity();
-                    if (activity != null){
-                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-                        builder
-                                .setTitle(R.string.warning)
-                                .setMessage(R.string.fragment_settings_dialog_delete_node)
-                                .setPositiveButton(android.R.string.yes, (d,w) -> {
-                                    presenter.onClickDeleteNode(serverNode);
-                                })
-                                .setNegativeButton(android.R.string.no, (d,w) -> {})
-                                .show();
-                    }
-                });
-
-        nodeAdapter.startListenChanges();
+    @OnClick(R.id.fragment_settings_tr_show_nodes)
+    public void onClickShowNodesList() {
+        presenter.onClickShowNodesList();
     }
 
-    //TODO: Maybe unsubscribe when setUserVisibleHint == false. Think about this ;)
-    @Override
-    public void onPause() {
-        presenter.onClickSaveSettings();
-        nodeAdapter.stopListenChanges();
-
-        if (adapterDisposable != null){
-            adapterDisposable.dispose();
-        }
-
-        super.onPause();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        if (!isVisibleToUser && (presenter != null)){
-            presenter.onClickSaveSettings();
-        }
-    }
-
-    @OnClick(R.id.fragment_settings_btn_add_new_node)
-    public void onClickAddNewNode() {
-        presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
-    }
 
     @OnClick(R.id.fragment_settings_btn_change_lang)
     public void onSelectLanguage() {
@@ -171,46 +104,73 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
-    public void clearNodeTextField() {
-        newNodeAddressView.setText("");
-    }
-
-    @Override
-    public void hideKeyboard() {
-        if (getActivity() != null){
-            AdamantApplication.hideKeyboard(getActivity(), newNodeAddressView);
-        }
-    }
-
-    @Override
-    public void setStoreKeyPairOption(boolean value) {
+    public void setCheckedStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
     }
 
     @Override
+    public void setEnableStoreKeyPairOption(boolean value) {
+        storeKeypairView.setEnabled(value);
+    }
+
+    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
+        presenter.onSetCheckedStoreKeypair(checked, false);
+    }
+
+    @OnClick(R.id.fragment_settings_tv_notification)
+    public void onClickSelectPushNotificationService() {
+        presenter.onClickShowSelectPushService();
+    }
+
+    @Override
     public void setEnablePushOption(boolean value) {
-        enablePushNotifications.setChecked(value);
+        pushNotificationServiceView.setEnabled(value);
     }
 
     @Override
-    public void setAddressPushService(String address) {
-        addressPushService.setText(address);
+    public void displayCurrentNotificationFacade(PushNotificationServiceFacade facade) {
+        pushNotificationServiceView.setText(getString(facade.getShortTitleResource()));
     }
 
     @Override
-    public void callSaveSettingsService() {
-        Activity activity = getActivity();
+    public void startProgress() {
+        progressBarView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void stopProgress() {
+        progressBarView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showTEENotSupportedDialog() {
+        androidx.appcompat.app.AlertDialog.Builder builder = null;
+        FragmentActivity activity = getActivity();
+
         if (activity != null) {
-            Context context = activity.getApplicationContext();
-            Intent intent = new Intent(context, SaveSettingsService.class);
-            intent.putExtra(SaveSettingsService.IS_SAVE_KEYPAIR, storeKeypairView.isChecked());
-            intent.putExtra(SaveSettingsService.IS_RECEIVE_NOTIFICATIONS, enablePushNotifications.isChecked());
-            intent.putExtra(SaveSettingsService.NOTIFICATION_SERVICE_ADDRESS, addressPushService.getText().toString());
+            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+            builder.setTitle(R.string.warning);
+            builder.setMessage(R.string.tee_not_supported);
+            builder.setNegativeButton(R.string.no, (d, w) -> {
+                storeKeypairView.setChecked(false);
+                d.dismiss();
+            });
+            builder.setPositiveButton(R.string.yes, (d, w) -> presenter.onSetCheckedStoreKeypair(true, true));
 
-            ServiceManager.runService(context, intent);
+            builder.show();
         }
     }
 
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showMessage(int messageResource) {
+        Toast.makeText(getActivity(), messageResource, Toast.LENGTH_LONG).show();
+    }
 
     //TODO: Refactor: method to long and dirty
     private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {

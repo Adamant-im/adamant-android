@@ -4,19 +4,22 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -32,11 +35,10 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.fragments.base.BaseBottomFragment;
 import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 public class BottomLoginFragment extends BaseBottomFragment implements LoginView {
@@ -64,6 +66,26 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     @Override
     public int getLayoutId() {
         return R.layout.fragment_bottom_login;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        passPhraseView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    onClickLoginButton();
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+
+        return view;
     }
 
     @Override
@@ -104,7 +126,6 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
                 .textChanges(passPhraseView)
                 .filter(charSequence -> charSequence.length() > 0)
                 .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
                 .doOnNext(loginPresenter::onInputPassphrase)
                 .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
                 .retry()

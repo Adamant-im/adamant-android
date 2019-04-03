@@ -43,8 +43,9 @@ public class Encryptor {
         return decryptedMessage;
     }
 
-    public TransactionMessage encryptMessage(String message, String recipientPublicKey, String mySecretKey){
-        TransactionMessage chat = null;
+    //TODO: It may be better to throw exceptions so that the client can handle them in its own way.
+    public TransactionMessage encryptMessage(String message, String recipientPublicKey, String mySecretKey) {
+        TransactionMessage transactionMessage = null;
         try {
 
             byte[] nonceBytes = sodium.randomBytesBuf(NONCE_LENGTH);
@@ -54,15 +55,15 @@ public class Encryptor {
 
             String ecryptedMessage = sodium.cryptoBoxEasy(message, nonceBytes, curve25519KeyPair);
 
-            chat = new TransactionMessage();
-            chat.setMessage(ecryptedMessage.toLowerCase());
-            chat.setOwnMessage(Hex.bytesToHex(nonceBytes));
+            transactionMessage = new TransactionMessage();
+            transactionMessage.setMessage(ecryptedMessage.toLowerCase());
+            transactionMessage.setOwnMessage(Hex.bytesToHex(nonceBytes));
 
         }catch (SodiumException e){
             e.printStackTrace();
         }
 
-        return chat;
+        return transactionMessage;
     }
 
     public TransactionState encryptState(String key, String stringifiedState, String mySecretKey){

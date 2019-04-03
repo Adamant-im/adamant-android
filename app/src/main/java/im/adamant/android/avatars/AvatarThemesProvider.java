@@ -45,7 +45,7 @@ public class AvatarThemesProvider {
     }
 
     public int provideBorderColor() {
-        return Color.parseColor("#cacbd1");
+        return Color.parseColor("#eeeeee");
     }
 
     public int count() {

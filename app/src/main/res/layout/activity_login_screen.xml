@@ -1,114 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@android:color/white"
+    android:background="@drawable/tile_bg"
     tools:context=".ui.LoginScreen">
-
     <ScrollView
-        android:layout_centerVertical="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:maxWidth="@dimen/activity_login_max_form_width"
+            <com.yarolegovich.discretescrollview.DiscreteScrollView
+                android:id="@+id/activity_login_vp_welcome_cards"
+                android:layout_width="match_parent"
+                android:layout_height="385dp"
+                app:dsv_orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_login_btn_login"
+                style="@style/AdamantLight.ActiveSecondaryButton"
+                android:layout_width="@dimen/main_button_width"
+                android:layout_height="@dimen/main_button_height"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/activity_login_btn_enter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/activity_login_vp_welcome_cards" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_login_btn_generate_new_passphrase"
+                style="@style/AdamantLight.FlatTextButton"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/main_button_height"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/activity_login_btn_new_account"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:src="@mipmap/ic_launcher_foreground"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/activity_login_btn_login"
-                    style="@style/AdamantLight.ActivePrimaryButton"
-                    android:layout_width="@dimen/main_button_width"
-                    android:layout_height="@dimen/main_button_height"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/activity_login_btn_enter"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="24dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/activity_login_tv_title"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/AdamantLight.TextAppearance"
-                    android:textSize="@dimen/activity_login_title_text_size"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:minLines="2"
-                    android:text="@string/activity_login_tv_subtitle"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/black"
-                    android:typeface="normal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/activity_login_btn_generate_new_passphrase"
-                    style="@style/AdamantLight.ActiveSecondaryButton"
-                    android:layout_width="@dimen/main_button_width"
-                    android:layout_height="@dimen/main_button_height"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/activity_login_btn_new_account"
-                    app:strokeWidth="1dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_login_btn_login" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                app:layout_constraintTop_toBottomOf="@+id/activity_login_btn_login"
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
 
-</RelativeLayout>
+    <ImageButton
+        android:id="@+id/activity_login_ib_node_list"
+        style="@style/AdamantLight.ImageButton"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop"
+        android:tint="@color/secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_settings" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

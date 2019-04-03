@@ -11,6 +11,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 
@@ -123,6 +124,8 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
                     }
                 }
             }
+        } else if (transaction.getType() == Transaction.SEND) {
+            return SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE;
         }
 
         return SupportedMessageListContentType.FALLBACK;
@@ -147,6 +150,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
     }
 
     private TransactionMessage getTransactionMessage(Transaction transaction) {
+       if (transaction.getType() == Transaction.SEND) {return null;}
 
         if (transaction.getAsset() == null){ return null; }
         TransactionChatAsset chatAsset = (TransactionChatAsset) transaction.getAsset();

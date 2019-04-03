@@ -6,33 +6,28 @@ import android.text.Spanned;
 import java.util.Locale;
 
 import im.adamant.android.R;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 
 public class FallbackMessage extends AbstractMessage {
     private String fallbackMessage;
     private String fallbackType = "none";
-    private String shortedMessage;
     private transient Spanned htmlFallBackMessage;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
-
-        shortedMessage = shorteningString(fallbackMessage, preferredLimit);
-
-        if (shortedMessage == null || shortedMessage.isEmpty()){
-            shortedMessage = String.format(Locale.ENGLISH, context.getString(R.string.unsupported_message_type), fallbackType);
-            shortedMessage = shorteningString(shortedMessage, preferredLimit);
+        if (fallbackMessage == null || fallbackMessage.isEmpty()){
+            fallbackMessage = String.format(Locale.ENGLISH, context.getString(R.string.unsupported_message_type), fallbackType);
         }
 
-        return shortedMessage;
+        return fallbackMessage;
     }
 
     public String getFallbackMessage() {
         return fallbackMessage;
     }
 
-    public Spanned getHtmlFallBackMessage(AdamantAddressProcessor adamantAddressProcessor) {
+    public Spanned getHtmlFallBackMessage(AdamantMarkdownProcessor adamantAddressProcessor) {
         if (htmlFallBackMessage == null) {
             try {
                 htmlFallBackMessage = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(fallbackMessage));

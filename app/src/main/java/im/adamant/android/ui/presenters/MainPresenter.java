@@ -5,30 +5,28 @@ import com.arellomobile.mvp.MvpPresenter;
 
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.MainView;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MainPresenter extends MvpPresenter<MainView> {
+public class MainPresenter extends BasePresenter<MainView> {
     private Router router;
-    private CompositeDisposable compositeDisposable;
-    private AccountInteractor accountInteractor;
-    private RefreshChatsInteractor refreshChatsInteractor;
+    private LogoutInteractor logoutInteractor;
+    private Disposable logoutDisposable;
 
     private String currentWindowCode = Screens.WALLET_SCREEN;
 
     public MainPresenter(
             Router router,
-            AccountInteractor accountInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
-            CompositeDisposable compositeDisposable
+            LogoutInteractor logoutInteractor
     ) {
         this.router = router;
-        this.compositeDisposable = compositeDisposable;
-        this.accountInteractor = accountInteractor;
-        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.logoutInteractor = logoutInteractor;
     }
 
     @Override
@@ -50,13 +48,6 @@ public class MainPresenter extends MvpPresenter<MainView> {
         }
     }
 
-    @Override
-    public void detachView(MainView view) {
-        super.detachView(view);
-        compositeDisposable.dispose();
-        compositeDisposable.clear();
-    }
-
     public void onSelectedWalletScreen() {
         currentWindowCode = Screens.WALLET_SCREEN;
         getViewState().showWalletScreen();
@@ -73,8 +64,30 @@ public class MainPresenter extends MvpPresenter<MainView> {
     }
 
     public void onClickExitButton() {
-        accountInteractor.logout();
-        refreshChatsInteractor.cleanUp();
-        router.navigateTo(Screens.LOGIN_SCREEN);
+
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
+
+        logoutDisposable = logoutInteractor
+                .getEventBus()
+                .subscribe(
+                    (irrelevant) -> {
+                        router.navigateTo(Screens.LOGIN_SCREEN);
+                    },
+                    (error) -> {
+                        router.showSystemMessage(error.getMessage());
+                    }
+                );
+
+        logoutInteractor.execute();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
     }
 }

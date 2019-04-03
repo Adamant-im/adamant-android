@@ -1,51 +1,36 @@
 package im.adamant.android.ui;
 
-import android.Manifest;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.arellomobile.mvp.presenter.InjectPresenter;
-import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
+import com.google.android.material.button.MaterialButton;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import net.glxn.qrgen.android.QRCode;
-import net.glxn.qrgen.core.image.ImageType;
+import java.util.concurrent.TimeUnit;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
-import im.adamant.android.AdamantApplication;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
-import im.adamant.android.ui.presenters.LoginPresenter;
+import im.adamant.android.ui.adapters.WelcomeCardsAdapter;
 import im.adamant.android.ui.fragments.BottomLoginFragment;
-import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
-import im.adamant.android.ui.mvp_view.LoginView;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 
 import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.ui.transformations.SimpleDotIndicatorDecoration;
+import io.reactivex.Flowable;
+import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Command;
@@ -54,6 +39,10 @@ import ru.terrakok.cicerone.commands.SystemMessage;
 
 
 public class LoginScreen extends BaseActivity implements  HasSupportFragmentInjector {
+
+    @Inject
+    WelcomeCardsAdapter adapter;
+
     @Inject
     NavigatorHolder navigatorHolder;
 
@@ -62,6 +51,9 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
 
     @Inject
     AuthorizeInteractor authorizeInteractor;
+
+    @BindView(R.id.activity_login_vp_welcome_cards) DiscreteScrollView welcomeCardsSliderView;
+    @BindView(R.id.activity_login_btn_generate_new_passphrase) MaterialButton creteNewButtonView;
 
     private BottomLoginFragment loginFragment;
 
@@ -89,6 +81,25 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         if (loginFragment == null) {
             loginFragment = new BottomLoginFragment();
         }
+
+        welcomeCardsSliderView.setAdapter(adapter);
+        welcomeCardsSliderView.setOffscreenItems(1);
+        welcomeCardsSliderView.setOverScrollEnabled(true);
+        welcomeCardsSliderView.addItemDecoration(
+                new SimpleDotIndicatorDecoration(
+                        ContextCompat.getColor(this, R.color.secondaryDarkVariant),
+                        ContextCompat.getColor(this, R.color.secondaryLightVariant),
+                        20
+                )
+        );
+
+        creteNewButtonView.setPaintFlags(creteNewButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+    }
+
+    @OnClick(R.id.activity_login_ib_node_list)
+    public void showNodesList() {
+        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.activity_login_btn_login)

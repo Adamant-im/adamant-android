@@ -5,8 +5,10 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AuthorizeInteractor;
+import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.LoginView;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -20,10 +22,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
     public LoginPresenter(
             Router router,
-            AuthorizeInteractor authorizeInteractor,
-            CompositeDisposable subscriptions
+            AuthorizeInteractor authorizeInteractor
     ) {
-        super(subscriptions);
         this.router = router;
         this.authorizeInteractor = authorizeInteractor;
     }
@@ -37,8 +37,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         }
     }
 
-    public void onClickLoginButton(String passPhrase) {
-        passPhrase = passPhrase.trim();
+    public void onClickLoginButton(CharSequence passPhrase) {
+        passPhrase = CharSequenceHelper.trim(passPhrase);
         if (!authorizeInteractor.isValidPassphrase(passPhrase)){
             getViewState().loginError(R.string.wrong_passphrase);
             return;
@@ -46,7 +46,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
 
         getViewState().lockUI();
 
-        final String finalPassPhrase = passPhrase;
+        final CharSequence finalPassPhrase = passPhrase;
         Disposable subscription = authorizeInteractor
                 .authorize(passPhrase)
                 .subscribe(
@@ -76,8 +76,8 @@ public class LoginPresenter extends BasePresenter<LoginView> {
     }
 
 
-    public void onInputPassphrase(String passphrase){
-        passphrase = passphrase.trim();
+    public void onInputPassphrase(CharSequence passphrase){
+        passphrase = CharSequenceHelper.trim(passphrase);
         if (authorizeInteractor.isValidPassphrase(passphrase)) {
             getViewState().unlockUI();
         } else {
@@ -89,7 +89,7 @@ public class LoginPresenter extends BasePresenter<LoginView> {
         router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
     }
 
-    private void createNewAccount(String passphrase) {
+    private void createNewAccount(CharSequence passphrase) {
         Disposable subscription = authorizeInteractor
                 .createNewAccount(passphrase)
                 .subscribe(

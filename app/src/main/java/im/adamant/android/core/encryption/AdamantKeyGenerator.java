@@ -32,12 +32,12 @@ public class AdamantKeyGenerator {
         this.sodium = sodium;
     }
 
-    public KeyPair getKeyPairFromPassPhrase(String passPhrase) {
+    public KeyPair getKeyPairFromPassPhrase(CharSequence passPhrase) {
         KeyPair pair = null;
 
         try {
 
-            byte[] blankCalculatedSeed = seedCalculator.calculateSeed(passPhrase, "");
+            byte[] blankCalculatedSeed = seedCalculator.calculateSeed(passPhrase.toString(), "");
             String seedString = Hex.bytesToHex(blankCalculatedSeed);
 
             byte[] seedForHash = Hex.encodeStringToHexArray(seedString);
@@ -70,7 +70,7 @@ public class AdamantKeyGenerator {
         }
     }
 
-    public boolean isValidPassphrase(String passphrase) {
+    public boolean isValidPassphrase(CharSequence passphrase) {
         try {
             MnemonicValidator
                     .ofWordList(English.INSTANCE)
@@ -83,7 +83,7 @@ public class AdamantKeyGenerator {
         return true;
     }
 
-    public void validatePassphrase(String passphrase) throws WordNotFoundException, UnexpectedWhiteSpaceException, InvalidWordCountException, InvalidChecksumException {
+    public void validatePassphrase(CharSequence passphrase) throws WordNotFoundException, UnexpectedWhiteSpaceException, InvalidWordCountException, InvalidChecksumException {
         MnemonicValidator
                 .ofWordList(English.INSTANCE)
                 .validate(passphrase);

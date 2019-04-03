@@ -63,24 +63,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-//    @Named("main")
-//    @Inject
-//    FragmentsAdapter mainAdapterReference;
 
     @BindView(R.id.main_screen_content) FrameLayout content;
-//    @BindView(R.id.main_screen_navigation)
-//    BottomNavigationView navigation;
-
-//    @BindView(R.id.fab)
-//    FloatingActionButton fab;
 
     @BindView(R.id.bottom_appbar)
     BottomAppBar appBar;
 
     @Inject
     Avatar avatar;
-
-    Fragment currentFragment;
 
     @Override
     public int getLayoutId() {
@@ -105,24 +95,21 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Override
     public void showWalletScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new WalletScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new WalletScreen());
         transaction.commit();
     }
 
     @Override
     public void showChatsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new ChatsScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new ChatsScreen());
         transaction.commit();
     }
 
     @Override
     public void showSettingsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        currentFragment = new SettingsScreen();
-        transaction.replace(R.id.main_screen_content, currentFragment);
+        transaction.replace(R.id.main_screen_content, new SettingsScreen());
         transaction.commit();
     }
 
@@ -130,10 +117,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
-
-        FragmentManager fragManager = this.getSupportFragmentManager();
-        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-        currentFragment = fragManager.getFragments().get(count>0?count-1:count);
     }
 
     @Override
@@ -154,6 +137,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
             case android.R.id.home: {
                 FragmentManager supportFragmentManager = getSupportFragmentManager();
                 BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
+                bottomNavDrawerFragment.setMainPresenter(presenter);
                 bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
 
                 return true;
@@ -162,13 +146,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return false;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (currentFragment != null) {
-            currentFragment.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 
     private Navigator navigator = new Navigator() {
         @Override
@@ -193,12 +170,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     break;
 
                     case Screens.CREATE_CHAT_SCREEN: {
-//                        Intent intent = new Intent(getApplicationContext(), CreateChatScreen.class);
-//                        startActivity(intent);
 
                         BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
-                        currentFragment = createChatFragment;
-
                         FragmentManager supportFragmentManager = getSupportFragmentManager();
                         createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
                     }
@@ -222,6 +195,27 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     case Screens.SCAN_QRCODE_SCREEN: {
                         Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
                         startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+                    }
+                    break;
+
+                    case Screens.NODES_LIST_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+                        startActivity(intent);
+                    }
+                    break;
+
+                    case Screens.PUSH_SUBSCRIPTION_SCREEN: {
+                        Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
+                        startActivity(intent);
+                    }
+                    break;
+
+                    case Screens.PINCODE_SCREEN: {
+                        Bundle bundle = (Bundle) forward.getTransitionData();
+                        Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
+                        intent.putExtras(bundle);
+
+                        startActivity(intent);
                     }
                     break;
                 }

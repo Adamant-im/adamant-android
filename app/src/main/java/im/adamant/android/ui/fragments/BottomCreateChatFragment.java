@@ -1,13 +1,21 @@
 package im.adamant.android.ui.fragments;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.TextView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +29,9 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.ScanQrCodeScreen;
+import im.adamant.android.ui.ShowQrCodeScreen;
+import im.adamant.android.ui.fragments.base.BaseBottomFragment;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -55,6 +66,25 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        addressView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    createNewChatClick();
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        return view;
+    }
+
+    @Override
     public void showError(int resourceId) {
         addressLayoutView.setError(getString(resourceId));
     }
@@ -70,16 +100,35 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         addressLayoutView.setError("");
     }
 
+    @Override
+    public void showQrCode(String content) {
+        Activity activity = getActivity();
+        if (activity != null){
+            Bundle bundle = new Bundle();
+            bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, content);
+
+            Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
+            intent.putExtras(bundle);
+
+            startActivity(intent);
+        }
+    }
+
     @OnClick(R.id.fragment_create_chat_btn_enter)
     public void createNewChatClick() {
         createChatPresenter.onClickCreateNewChat(
                 addressView.getText().toString()
         );
+        dismiss();
     }
 
     @OnClick(R.id.fragment_create_chat_btn_by_camera_qr)
     public void scanQrCodeClick() {
-        createChatPresenter.onClickScanQrCodeButton();
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Intent intent = new Intent(activity, ScanQrCodeScreen.class);
+            startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+        }
     }
 
     @OnClick(R.id.fragment_create_chat_btn_by_stored_qr)
@@ -87,6 +136,11 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
         startActivityForResult(photoPickerIntent, Constants.IMAGE_FROM_GALLERY_SELECTED_RESULT);
+    }
+
+    @OnClick(R.id.fragment_create_chat_btn_show_my_qr)
+    public void showMyQrCodeClick() {
+        createChatPresenter.onClickShowMyQrCodeButton();
     }
 
     @Override
@@ -112,7 +166,6 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         FragmentActivity activity = getActivity();
         if (activity != null) {
             String qrCode = qrCodeHelper.parseActivityResult(activity, requestCode, resultCode, data);
@@ -120,7 +173,10 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
             if (!qrCode.isEmpty()){
                 addressView.setText(qrCode);
                 createChatPresenter.onClickCreateNewChat(qrCode);
+                dismiss();
             }
         }
+
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

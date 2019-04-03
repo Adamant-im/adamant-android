@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:padding="@dimen/pin_key_elevation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/list_item_pincode_icon_button"
+        android:background="@android:color/transparent"
+        android:layout_width="48dp"
+        android:layout_height="48dp" />
+
+</LinearLayout>

@@ -3,7 +3,9 @@ package im.adamant.android.interactors;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.exceptions.InvalidValueForKeyValueStorage;
@@ -45,6 +47,7 @@ public class GetContactsInteractor {
 
                 })
                 .onErrorReturnItem(new Transaction<>())
-                .ignoreElements();
+                .ignoreElements()
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

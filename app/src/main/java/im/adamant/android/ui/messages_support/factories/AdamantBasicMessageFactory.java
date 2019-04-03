@@ -8,7 +8,8 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
 import im.adamant.android.ui.messages_support.holders.AdamantBasicMessageViewHolder;
@@ -18,21 +19,24 @@ import im.adamant.android.ui.messages_support.processors.AdamantBasicMessageProc
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 
 public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMessage> {
-    private AdamantAddressProcessor adamantAddressProcessor;
+    private AdamantMarkdownProcessor adamantAddressProcessor;
     private Encryptor encryptor;
     private AdamantApiWrapper api;
     private Avatar avatar;
+    private PublicKeyStorage publicKeyStorage;
 
     public AdamantBasicMessageFactory(
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
+            PublicKeyStorage publicKeyStorage,
             Avatar avatar
     ) {
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
         this.encryptor = encryptor;
         this.api = api;
+        this.publicKeyStorage = publicKeyStorage;
     }
 
     @Override
@@ -49,6 +53,6 @@ public class AdamantBasicMessageFactory implements MessageFactory<AdamantBasicMe
 
     @Override
     public MessageProcessor<AdamantBasicMessage> getMessageProcessor() {
-        return new AdamantBasicMessageProcessor(encryptor, api);
+        return new AdamantBasicMessageProcessor(api, encryptor, publicKeyStorage);
     }
 }

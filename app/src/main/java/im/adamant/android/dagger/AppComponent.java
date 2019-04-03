@@ -10,7 +10,18 @@ import dagger.BindsInstance;
 import dagger.Component;
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {
+        AvatarsModule.class,
+        EncryptionModule.class,
+        MessagesModule.class,
+        AdamantApiModule.class,
+        WalletsModule.class,
+        GeneralModule.class,
+        MarkdownModule.class,
+        InteractorsModule.class,
+        PushNotificationsModule.class,
+        AppModule.class
+})
 public interface AppComponent {
     @Component.Builder
     interface Builder {

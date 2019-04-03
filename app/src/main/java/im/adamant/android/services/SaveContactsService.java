@@ -13,7 +13,7 @@ import javax.inject.Named;
 
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
-import im.adamant.android.dagger.SaveContactsServiceModule;
+import im.adamant.android.dagger.services.SaveContactsServiceModule;
 import im.adamant.android.helpers.NotificationHelper;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -49,7 +49,7 @@ public class SaveContactsService extends Service {
         String channelId = "";
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelName = getString(R.string.adamant_system_notification_channel);
-            channelId = NotificationHelper.createNotificationChannel(ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID, channelName, this);
+            channelId = NotificationHelper.createSilentNotificationChannel(ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID, channelName, this);
         }
 
         String title = getString(R.string.app_name);

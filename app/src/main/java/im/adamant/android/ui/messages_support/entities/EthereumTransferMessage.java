@@ -5,7 +5,7 @@ import android.text.Spanned;
 
 import java.math.BigDecimal;
 
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 
 public class EthereumTransferMessage extends AbstractMessage {
@@ -16,7 +16,7 @@ public class EthereumTransferMessage extends AbstractMessage {
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
-        return shorteningString(comment, preferredLimit);
+        return comment;
     }
 
     public BigDecimal getAmount() {
@@ -31,7 +31,7 @@ public class EthereumTransferMessage extends AbstractMessage {
         return comment;
     }
 
-    public Spanned getHtmlComment(AdamantAddressProcessor adamantAddressProcessor) {
+    public Spanned getHtmlComment(AdamantMarkdownProcessor adamantAddressProcessor) {
         if (htmlComment == null) {
             try {
                 htmlComment = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(comment));

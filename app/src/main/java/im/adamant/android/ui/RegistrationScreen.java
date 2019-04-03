@@ -5,10 +5,12 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.MotionEvent;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -18,7 +20,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.TedPermission;
-import com.jakewharton.rxbinding2.widget.RxTextView;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
 import net.glxn.qrgen.android.QRCode;
@@ -43,12 +45,14 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -91,7 +95,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_vp_carousel)
     DiscreteScrollView passphrasesListView;
 
-    @BindView(R.id.fragment_login_et_passphrase)
+    @BindView(R.id.activity_registration_et_passphrase)
     TextInputEditText inputPassphraseView;
 
     @BindView(R.id.activity_registration_il_layout)
@@ -132,6 +136,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         passphrasesListView.addOnItemChangedListener(((viewHolder, i) -> {
             presenter.onSelectedPassphrase(i);
         }));
+
+        inputPassphraseView.setKeyListener(null);
 
         inputPassphraseView.setOnTouchListener((v, event) -> {
             final int DRAWABLE_LEFT = 0;
@@ -256,6 +262,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
         navigatorHolder.setNavigator(navigator);
 
+        //TODO: Refactor. The user can no longer enter the text by himself, this code is not necessary.
         Observable<String> obs = RxTextView
                 .textChanges(inputPassphraseView)
                 .filter(charSequence -> charSequence.length() > 0)

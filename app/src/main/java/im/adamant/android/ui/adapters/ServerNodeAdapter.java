@@ -18,6 +18,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     private PublishSubject<Integer> removeClickSubject = PublishSubject.create();
+    private PublishSubject<Integer> switchClickSubject = PublishSubject.create();
     private ObservableRxList<ServerNode> items = new ObservableRxList<>();
     private Disposable subscription;
 
@@ -33,7 +34,7 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public ServerNodeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_servernodes, parent, false);
-        return new ServerNodeHolder(v, parent.getContext(), removeClickSubject);
+        return new ServerNodeHolder(v, parent.getContext(), removeClickSubject, switchClickSubject);
     }
 
     @Override
@@ -51,6 +52,10 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     public Observable<ServerNode> getRemoveObservable() {
         return removeClickSubject
                 .map(i -> items.get(i));
+    }
+
+    public Observable<Integer> getSwitchObservable() {
+        return switchClickSubject;
     }
 
     public void startListenChanges() {

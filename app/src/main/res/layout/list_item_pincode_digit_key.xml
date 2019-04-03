@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:padding="@dimen/pin_key_elevation"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <!--<Button-->
+        <!--android:id="@+id/list_item_pincode_key_button"-->
+        <!--android:background="@drawable/pincode_button_background"-->
+        <!--android:layout_width="48dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:text="1" />-->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/list_item_pincode_key_button"
+        android:stateListAnimator="@animator/click_on_pin_key_button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/pin_key_elevation"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="0dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="@drawable/selectable_item_pincode_background">
+
+        <TextView
+            style="@style/AdamantLight.TextViewNormal"
+            android:id="@+id/list_item_pincode_key_text"
+            android:textColor="@color/onBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:text="1"/>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

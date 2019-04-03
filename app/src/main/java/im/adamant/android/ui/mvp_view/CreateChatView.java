@@ -6,4 +6,5 @@ public interface CreateChatView extends MvpView {
     void showError(int resourceId);
     void lockUI();
     void unlockUI();
+    void showQrCode(String content);
 }

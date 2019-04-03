@@ -6,35 +6,46 @@ import java.util.HashSet;
 import java.util.Set;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.disposables.Disposable;
 
 public class Settings {
     private static final String NODES_KEY = "nodes_key";
-    private static final String ACCOUNT_KEY_PAIR = "account_key_pair";
+    private static final String ACCOUNT_PASSPHRASE = "account_passphrase";
     private static final String KEY_PAIR_MUST_BE_STORED = "key_pair_must_be_stored";
     private static final String NOTIFICATION_TOKEN = "notification_token";
     private static final String ADDRESS_OF_NOTIFICATION_SERVICE = "address_of_notification_service";
-    private static final String ENABLE_PUSH_NOTIFICATIONS = "enable_push_notifications";
+    private static final String PUSH_NOTIFICATION_SERVICE = "push_notification_service";
+    private static final String LAST_TRANSACTION_TIMESTAMP = "last_transaction_timestamp";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
-    private String accountKeypair = "";
+    private String accountPassphrase = "";
+    private String accountPincode = "";
+    private String accountSign = "";
     private boolean isKeyPairMustBeStored;
     private String notificationToken = "";
     private String addressOfNotificationService = "";
-    private boolean enablePushNotifications;
+    private int lastTransactionTimestamp;
+    private SupportedPushNotificationFacadeType pushNotificationFacadeType;
 
     private SharedPreferences preferences;
 
     public Settings(SharedPreferences preferences) {
         this.preferences = preferences;
 
-        accountKeypair = this.preferences.getString(ACCOUNT_KEY_PAIR, "");
+        accountPassphrase = this.preferences.getString(ACCOUNT_PASSPHRASE, "");
         isKeyPairMustBeStored = this.preferences.getBoolean(KEY_PAIR_MUST_BE_STORED, false);
         notificationToken = this.preferences.getString(NOTIFICATION_TOKEN, "");
         addressOfNotificationService = this.preferences.getString(ADDRESS_OF_NOTIFICATION_SERVICE, BuildConfig.DEFAULT_NOTIFICATION_SERVICE_ADDRESS);
-        enablePushNotifications = this.preferences.getBoolean(ENABLE_PUSH_NOTIFICATIONS, false);
+        pushNotificationFacadeType = SupportedPushNotificationFacadeType.valueOf(
+                this.preferences.getString(
+                        PUSH_NOTIFICATION_SERVICE,
+                        SupportedPushNotificationFacadeType.DISABLED.name()
+                )
+        );
+        lastTransactionTimestamp = this.preferences.getInt(LAST_TRANSACTION_TIMESTAMP, 0);
 
         loadNodes();
     }
@@ -55,15 +66,15 @@ public class Settings {
         return nodes;
     }
 
-    public String getAccountKeypair() {
-        return accountKeypair;
+    public String getAccountPassphrase() {
+        return accountPassphrase;
     }
 
-    public void setAccountKeypair(String accountKeypair) {
-        this.accountKeypair = accountKeypair;
+    public void setAccountPassphrase(String accountPassphrase) {
+        this.accountPassphrase = accountPassphrase;
         this.preferences
                 .edit()
-                .putString(ACCOUNT_KEY_PAIR, accountKeypair)
+                .putString(ACCOUNT_PASSPHRASE, accountPassphrase)
                 .apply();
     }
 
@@ -103,15 +114,27 @@ public class Settings {
                 .apply();
     }
 
-    public boolean isEnablePushNotifications() {
-        return enablePushNotifications;
+    public SupportedPushNotificationFacadeType getPushNotificationFacadeType() {
+        return pushNotificationFacadeType;
     }
 
-    public void setEnablePushNotifications(boolean enablePushNotifications) {
-        this.enablePushNotifications = enablePushNotifications;
+    public void setPushNotificationFacadeType(SupportedPushNotificationFacadeType type) {
+        this.pushNotificationFacadeType = type;
         this.preferences
                 .edit()
-                .putBoolean(ENABLE_PUSH_NOTIFICATIONS, enablePushNotifications)
+                .putString(PUSH_NOTIFICATION_SERVICE, type.name())
+                .apply();
+    }
+
+    public int getLastTransactionTimestamp() {
+        return lastTransactionTimestamp;
+    }
+
+    public void setLastTransactionTimestamp(int lastTransactionTimestamp) {
+        this.lastTransactionTimestamp = lastTransactionTimestamp;
+        this.preferences
+                .edit()
+                .putInt(LAST_TRANSACTION_TIMESTAMP, lastTransactionTimestamp)
                 .apply();
     }
 
@@ -130,10 +153,16 @@ public class Settings {
 
     private Set<String> getDefaultNodes() {
         Set<String> defaults = new HashSet<>();
-//        defaults.add("https://clown.adamant.im");
-//        defaults.add("https://lake.adamant.im");
-//        defaults.add("https://endless.adamant.im");
-        defaults.add("http://51.15.63.208:36666");
+        if (BuildConfig.TEST_NET) {
+            defaults.add(BuildConfig.TEST_NET_DEFAULT_NODE_1);
+        } else {
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_1);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_2);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_3);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_4);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_5);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_6);
+        }
 
         return defaults;
     }

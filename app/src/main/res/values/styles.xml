@@ -14,17 +14,43 @@
         <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>+
     </style>
 
+    <style name="AdamantLight.PincodeTheme" parent="AdamantLight">
+        <item name="colorAccent">@color/primaryDarkVariant</item>
+    </style>
+
     <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/onBackground</item>
     </style>
 
     <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
-        <item name="android:fontFamily">@font/ubuntu</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
-        <item name="android:textSize">14sp</item>
         <item name="fontWeight">300</item>
+    </style>
+
+    <style name="AdamantLight.TextViewHeader">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AdamantLight.TextViewSubHeader">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AdamantLight.TextViewNormal">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AdamantLight.TextViewOverLine">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textSize">10sp</item>
     </style>
 
     <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
@@ -32,8 +58,6 @@
         <!--<item name="backgroundTint">@color/secondary</item>-->
         <item name="android:textColor">@drawable/primary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
-        <item name="cornerRadius">@dimen/main_button_height</item>
-        <item name="android:lineSpacingExtra">16sp</item>
     </style>
 
     <style name="AdamantLight.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
@@ -41,17 +65,22 @@
         <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
-        <item name="cornerRadius">@dimen/main_button_height</item>
+        <item name="android:background">@color/background</item>
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
     <style name="AdamantLight.FlatIconButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="cornerRadius">@dimen/main_button_height</item>
         <item name="strokeColor">@color/strokeDark</item>
+    </style>
+
+    <style name="AdamantLight.FlatTextButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
+        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
+        <item name="android:textColor">@drawable/flat_button_selector_text</item>
     </style>
 
     <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
@@ -98,6 +127,9 @@
         <item name="colorPrimaryDark">@color/secondary</item>
         <item name="colorAccent">@color/secondary</item>
         <item name="android:windowTitleStyle">@style/AdamantLight.AlertDialogTitle</item>
+        <item name="materialButtonStyle">@style/AdamantLight.FlatIconButton</item>
+        <item name="buttonBarButtonStyle">@style/AdamantLight.FlatIconButton</item>
+        <item name="android:buttonBarStyle">@style/AdamantLight.FlatIconButton</item>
     </style>
 
     <style name="AdamantLight.AlertDialogTitle">

@@ -25,7 +25,7 @@ import java.util.List;
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     private List<Chat> chats = new ArrayList<>();
     private SelectItemListener listener;
-    private CompositeDisposable compositeDisposable;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Avatar avatar;
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -96,10 +96,8 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public ChatsAdapter(
             List<Chat> chats,
             SelectItemListener listener,
-            CompositeDisposable compositeDisposable,
             Avatar avatar
     ) {
-        this.compositeDisposable = compositeDisposable;
         this.avatar = avatar;
 
         if (chats != null){

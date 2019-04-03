@@ -5,7 +5,6 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.GetChatListInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
@@ -23,67 +22,50 @@ import ru.terrakok.cicerone.Router;
 public class ChatsPresenter extends BasePresenter<ChatsView> {
     private Router router;
     private GetContactsInteractor getContactsInteractor;
-    private GetChatListInteractor getChatListInteractor;
+    private RefreshChatsInteractor refreshChatsInteractor;
     private ChatsStorage chatsStorage;
 
-    private Disposable syncSubscription;
 
     public ChatsPresenter(
             Router router,
             GetContactsInteractor getContactsInteractor,
-            GetChatListInteractor getChatListInteractor,
-            ChatsStorage chatsStorage,
-            CompositeDisposable subscriptions
+            RefreshChatsInteractor refreshChatsInteractor,
+            ChatsStorage chatsStorage
     ) {
-        super(subscriptions);
         this.router = router;
         this.getContactsInteractor = getContactsInteractor;
-        this.getChatListInteractor = getChatListInteractor;
+        this.refreshChatsInteractor = refreshChatsInteractor;
         this.chatsStorage = chatsStorage;
     }
 
     @Override
-    public void attachView(ChatsView view) {
-        super.attachView(view);
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
 
-        final CompositeDisposable finalSubscription = subscriptions;
-
-        syncSubscription = getChatListInteractor
+        Disposable disposable = refreshChatsInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError((error) -> {
-                    if (error instanceof NotAuthorizedException){
-                        router.navigateTo(Screens.SPLASH_SCREEN);
-                    } else {
-                        router.showSystemMessage(error.getMessage());
-                    }
-
-                    LoggerHelper.e("Chats", error.getMessage(), error);
-                })
-                .doOnComplete(
-                        () -> {
-                            finalSubscription.add(
+                .subscribe(
+                        (irrelevant) -> {
+                            subscriptions.add(
                                     getContactsInteractor
                                             .execute()
                                             .subscribe()
                             );
                             getViewState().showChats(chatsStorage.getChatList());
+                        },
+                        (error) -> {
+                            if (error instanceof NotAuthorizedException){
+                                router.navigateTo(Screens.SPLASH_SCREEN);
+                            } else {
+                                router.showSystemMessage(error.getMessage());
+                            }
+
+                            LoggerHelper.e("Chats", error.getMessage(), error);
                         }
-                )
-                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                .subscribe();
+                );
 
-        finalSubscription.add(syncSubscription);
-    }
-
-    @Override
-    public void detachView(ChatsView view) {
-        super.detachView(view);
-
-        if (syncSubscription != null){
-            syncSubscription.dispose();
-        }
+        subscriptions.add(disposable);
     }
 
     public void onChatWasSelected(Chat chat){

@@ -231,7 +231,7 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
     }
 
     public long getUnixTimestamp() {
-        //Date magic transformations, see PWA code. File: lib/formatters.js line 42. Symbolically ;)
+        //Date magic transformations, see PWA code. File: lib/formatters.js
         return (timestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 

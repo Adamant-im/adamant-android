@@ -9,9 +9,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-beta01'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "pl.allegro.tech.build:axion-release-plugin:1.9.1"
-        classpath 'com.google.gms:google-services:4.0.0'
+        classpath 'com.google.gms:google-services:4.2.0'
     }
 }
 

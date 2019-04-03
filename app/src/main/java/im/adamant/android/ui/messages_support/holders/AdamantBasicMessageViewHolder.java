@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -23,7 +23,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     public AdamantBasicMessageViewHolder(
             Context context,
             View itemView,
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Avatar avatar
     ) {
         super(context, itemView, adamantAddressProcessor, avatar);

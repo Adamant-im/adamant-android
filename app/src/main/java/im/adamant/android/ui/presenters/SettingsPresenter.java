@@ -1,61 +1,97 @@
 package im.adamant.android.ui.presenters;
 
-import android.webkit.URLUtil;
+
+import android.os.Bundle;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import im.adamant.android.core.entities.ServerNode;
-import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import java.math.BigDecimal;
+
+import im.adamant.android.BuildConfig;
+import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.core.entities.Account;
+import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.interactors.SecurityInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
+import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class SettingsPresenter extends  BasePresenter<SettingsView> {
-    private SaveKeypairInteractor saveKeypairInteractor;
-    private SubscribeToPushInteractor subscribeToPushInteractor;
-    private ServerNodeInteractor serverNodeInteractor;
+    private Router router;
+    private SecurityInteractor securityInteractor;
+    private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
+    private AdamantApiWrapper api;
 
     public SettingsPresenter(
-            SaveKeypairInteractor saveKeypairInteractor,
-            SubscribeToPushInteractor subscribeToPushInteractor,
-            ServerNodeInteractor serverNodeInteractor,
-            CompositeDisposable subscriptions
+            Router router,
+            AdamantApiWrapper api,
+            SecurityInteractor securityInteractor,
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
-        super(subscriptions);
-        this.saveKeypairInteractor = saveKeypairInteractor;
-        this.subscribeToPushInteractor = subscribeToPushInteractor;
-        this.serverNodeInteractor = serverNodeInteractor;
+        this.router = router;
+        this.api = api;
+        this.securityInteractor = securityInteractor;
+        this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
     }
 
     @Override
     public void attachView(SettingsView view) {
         super.attachView(view);
-        getViewState().setStoreKeyPairOption(
-                saveKeypairInteractor.isKeyPairMustBeStored()
+
+        getViewState().setCheckedStoreKeyPairOption(
+                securityInteractor.isKeyPairMustBeStored()
         );
+
+        //TODO: Check minimum balance must be move to FCMPushServiceFacade
         getViewState().setEnablePushOption(
-                subscribeToPushInteractor.isEnabledPush()
+                securityInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
         );
-        getViewState().setAddressPushService(
-                subscribeToPushInteractor.getPushServiceAddress()
+        getViewState().displayCurrentNotificationFacade(
+                switchPushNotificationServiceInteractor.getCurrentFacade()
         );
     }
 
-    public void onClickAddNewNode(String nodeUrl) {
-        if (URLUtil.isValidUrl(nodeUrl)){
-            serverNodeInteractor.addServerNode(nodeUrl);
-            getViewState().clearNodeTextField();
-            getViewState().hideKeyboard();
+    public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
+        if (value != securityInteractor.isKeyPairMustBeStored()) {
+
+            if (value && !isUserConfirmed) {
+                boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
+
+                if (!hardwareSecuredDevice) {
+                    getViewState().showTEENotSupportedDialog();
+                    return;
+                }
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
+            router.navigateTo(Screens.PINCODE_SCREEN, bundle);
         }
     }
 
-    public void onClickSaveSettings(){
-        getViewState().callSaveSettingsService();
+    public void onClickShowSelectPushService() {
+        router.navigateTo(Screens.PUSH_SUBSCRIPTION_SCREEN);
     }
 
-    public void onClickDeleteNode(ServerNode serverNode){
-        serverNodeInteractor.deleteNode(serverNode);
+    public void onClickShowNodesList() {
+        router.navigateTo(Screens.NODES_LIST_SCREEN);
     }
+
+    private boolean isHaveMinimumBalance() {
+        boolean result = false;
+        Account account = api.getAccount();
+
+        if (api.isAuthorized() && account != null) {
+            BigDecimal balance = BalanceConvertHelper.convert(account.getBalance());
+            int compareResult = balance.compareTo(BuildConfig.ADM_MINIMUM_COST);
+            result = (compareResult >= 0);
+        }
+
+        return result;
+    }
+
 }

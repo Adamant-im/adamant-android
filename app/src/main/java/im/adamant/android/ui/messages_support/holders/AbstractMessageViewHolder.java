@@ -14,7 +14,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.transition.TransitionManager;
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -31,6 +31,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
     protected ImageView processedView;
     protected TextView timeView;
+    protected TextView errorView;
     protected View avatarBlockView;
     protected View messageBlockView;
     protected ImageView avatarView;
@@ -40,13 +41,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected ConstraintSet constraintSet = new ConstraintSet();
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    protected AdamantAddressProcessor adamantAddressProcessor;
+    protected AdamantMarkdownProcessor adamantAddressProcessor;
     protected Avatar avatar;
 
     public AbstractMessageViewHolder(
             Context context,
             View itemView,
-            AdamantAddressProcessor adamantAddressProcessor,
+            AdamantMarkdownProcessor adamantAddressProcessor,
             Avatar avatar
     ) {
         super(context, itemView);
@@ -66,6 +67,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
         avatarView = itemView.findViewById(R.id.list_item_message_avatar);
         timeView = itemView.findViewById(R.id.list_item_message_time);
+        errorView = itemView.findViewById(R.id.list_item_message_error_text);
         contentBlock = itemView.findViewById(R.id.list_item_message_content);
     }
 
@@ -94,6 +96,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
+        errorView.setText(abstractMessage.getError());
 
         if (abstractMessage.isiSay()){
             iToldLayoutModification();
@@ -113,6 +116,12 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
         constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
 
+        constraintSet.clear(errorView.getId(), ConstraintSet.START);
+        constraintSet.clear(errorView.getId(), ConstraintSet.END);
+
+        constraintSet.connect(errorView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+        constraintSet.connect(errorView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
+
         constraintSet.applyTo(constraintLayout);
     }
 
@@ -126,19 +135,35 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
         constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
 
+        constraintSet.clear(errorView.getId(), ConstraintSet.START);
+        constraintSet.clear(errorView.getId(), ConstraintSet.END);
+
+        constraintSet.connect(errorView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
+        constraintSet.connect(errorView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
         constraintSet.applyTo(constraintLayout);
     }
 
     protected void emptyView() {
-        processedView.setImageResource(R.drawable.ic_not_processed);
+        processedView.setImageResource(R.drawable.ic_sending);
         timeView.setText("00:00");
     }
 
     protected void displayProcessedStatus(ImageView processedView, AbstractMessage message){
-        if (message.isProcessed()){
-            processedView.setImageResource(R.drawable.ic_processed);
-        } else {
-            processedView.setImageResource(R.drawable.ic_not_processed);
+        if (message.getStatus() == null) { return; }
+        switch (message.getStatus()) {
+            case DELIVERED: {
+                processedView.setImageResource(R.drawable.ic_delivered);
+            }
+            break;
+            case SENDING_AND_VALIDATION: {
+                processedView.setImageResource(R.drawable.ic_sending);
+            }
+            break;
+            case INVALIDATED:
+            case NOT_SENDED: {
+                processedView.setImageResource(R.drawable.ic_not_sended);
+            }
         }
     }
 

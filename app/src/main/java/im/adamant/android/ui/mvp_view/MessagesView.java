@@ -1,5 +1,7 @@
 package im.adamant.android.ui.mvp_view;
 
+import android.graphics.Bitmap;
+
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
@@ -15,6 +17,7 @@ public interface MessagesView extends MvpView {
     void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);
     void showMessageCost(String cost);
+    void showAvatarInTitle(String publicKey);
 
     @StateStrategyType(SkipStrategy.class)
     void showRenameDialog(String currentName);

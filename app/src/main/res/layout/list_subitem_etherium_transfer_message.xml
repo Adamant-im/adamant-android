@@ -34,7 +34,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_item_message_text"
-        app:srcCompat="@drawable/ic_not_processed" />
+        app:srcCompat="@drawable/ic_sending" />
 
     <TextView
         android:id="@+id/list_item_message_amount"

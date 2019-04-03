@@ -3,7 +3,7 @@ package im.adamant.android.ui.messages_support.entities;
 import android.content.Context;
 import android.text.Spanned;
 
-import im.adamant.android.helpers.AdamantAddressProcessor;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.HtmlHelper;
 
 public class AdamantBasicMessage extends AbstractMessage {
@@ -12,14 +12,14 @@ public class AdamantBasicMessage extends AbstractMessage {
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {
-       return shorteningString(text, preferredLimit);
+       return text;
     }
 
     public String getText() {
         return text;
     }
 
-    public Spanned getHtmlText(AdamantAddressProcessor adamantAddressProcessor){
+    public Spanned getHtmlText(AdamantMarkdownProcessor adamantAddressProcessor){
         if (htmlText == null){
             try {
                 htmlText = HtmlHelper.fromHtml(adamantAddressProcessor.getHtmlString(text));

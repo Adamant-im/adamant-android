@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/primaryDarkVariant"
+    android:background="@drawable/tile_bg"
     android:layout_height="match_parent">
 
 
@@ -16,25 +16,23 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/activity_messages_cl_new_message_block"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:id="@+id/activity_messages_cl_empty_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/activity_messages_cl_new_message_block"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="100dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -45,7 +43,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayout"
+        android:id="@+id/activity_messages_cl_new_message_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
@@ -58,7 +56,6 @@
             android:id="@+id/activity_messages_tv_cost_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="5dp"
@@ -66,7 +63,7 @@
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/activity_messages_tv_cost"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/activity_messages_et_new_msg_text"
             app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />
 
         <EditText
@@ -80,7 +77,7 @@
             android:maxLines="5"
             android:textSize="14sp"
             app:layout_constraintEnd_toStartOf="@+id/activity_messages_btn_send"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/activity_messages_btn_currency_transfer"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
@@ -107,6 +104,17 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/activity_messages_et_new_msg_text"
             app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />
+
+        <ImageButton
+            android:id="@+id/activity_messages_btn_currency_transfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_wallet" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

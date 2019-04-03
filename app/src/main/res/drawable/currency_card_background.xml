@@ -12,8 +12,8 @@
             android:pivotY="30%">
             <shape
                 android:shape="rectangle">
-                <solid android:color="@color/disabled"/>
-                <stroke android:width="1dp" android:color="@color/strokeDark"/>
+                <solid android:color="#f5f5f5"/>
+                <stroke android:width="1dp" android:color="#dddddd"/>
             </shape>
         </rotate>
     </item>
