@@ -1,5 +1,7 @@
 package im.adamant.android.core;
 
+import com.google.gson.Gson;
+
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.rx.ObservableRxList;
@@ -14,9 +16,11 @@ public class AdamantApiBuilder {
 
     private ObservableRxList<ServerNode> nodes;
     private ServerNode currentServerNode;
+    private Gson gson;
 
-    public AdamantApiBuilder(ObservableRxList<ServerNode> nodes) {
+    public AdamantApiBuilder(ObservableRxList<ServerNode> nodes, Gson gson) {
         this.nodes = nodes;
+        this.gson = gson;
     }
 
     public Observable<AdamantApi> build() {
@@ -42,7 +46,7 @@ public class AdamantApiBuilder {
 
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(currentServerNode.getUrl() + BuildConfig.API_BASE)
-                    .addConverterFactory(GsonConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .client(httpClient.build())
                     .build();

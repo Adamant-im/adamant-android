@@ -25,20 +25,12 @@ import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
-import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
-import im.adamant.android.rx.ObservableRxList;
-import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.HttpException;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
+
 
 public class AdamantApiWrapper {
     private AdamantApi api;

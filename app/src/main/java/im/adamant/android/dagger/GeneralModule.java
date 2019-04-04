@@ -16,6 +16,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Constants;
+import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Scheduler;
@@ -28,8 +29,10 @@ import ru.terrakok.cicerone.Router;
 public abstract class GeneralModule {
     @Singleton
     @Provides
-    public static Gson provideGson() {
-        return new Gson();
+    public static Gson provideGson(GsonBuilder builder) {
+        return builder
+                .registerTypeAdapterFactory(new AdamantTransactonTypeAdapterFactory())
+                .create();
     }
 
     @Singleton

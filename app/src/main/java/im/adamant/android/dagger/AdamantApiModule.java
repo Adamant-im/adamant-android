@@ -1,5 +1,7 @@
 package im.adamant.android.dagger;
 
+import com.google.gson.Gson;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -16,8 +18,8 @@ public abstract class AdamantApiModule {
 
     @Singleton
     @Provides
-    public static AdamantApiBuilder provideApiBuilder(Settings settings) {
-        return new AdamantApiBuilder(settings.getNodes());
+    public static AdamantApiBuilder provideApiBuilder(Settings settings, Gson gson) {
+        return new AdamantApiBuilder(settings.getNodes(), gson);
     }
 
     @Singleton

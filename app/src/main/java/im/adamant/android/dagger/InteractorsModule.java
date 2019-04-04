@@ -18,6 +18,7 @@ import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.GetChatListInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
@@ -32,6 +33,7 @@ import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
@@ -116,6 +118,17 @@ public abstract class InteractorsModule {
                 localizedChatMapper,
                 chatsStorage
         );
+    }
+
+    @Singleton
+    @Provides
+    public static GetChatListInteractor provideGetChatListInteractor(
+            AdamantApiWrapper api,
+            TransactionToMessageMapper messageMapper,
+            ChatTransactionToChatMapper chatMapper,
+            ChatsStorage chatsStorage
+    ) {
+        return new GetChatListInteractor(api, chatMapper, messageMapper, chatsStorage);
     }
 
     @Singleton

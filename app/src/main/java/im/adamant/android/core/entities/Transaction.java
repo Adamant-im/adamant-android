@@ -74,6 +74,10 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         this.confirmations = confirmations;
     }
 
+    public long getConfirmations() {
+        return confirmations;
+    }
+
     public List<String> getSignatures ()
     {
         return signatures;
@@ -222,6 +226,14 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
     public void setSignature (String signature)
     {
         this.signature = signature;
+    }
+
+    public List<Participant> getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(List<Participant> participants) {
+        this.participants = participants;
     }
 
     @Override

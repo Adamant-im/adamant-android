@@ -5,6 +5,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.GetChatListInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
@@ -22,19 +23,19 @@ import ru.terrakok.cicerone.Router;
 public class ChatsPresenter extends BasePresenter<ChatsView> {
     private Router router;
     private GetContactsInteractor getContactsInteractor;
-    private RefreshChatsInteractor refreshChatsInteractor;
+    private GetChatListInteractor getChatListInteractor;
     private ChatsStorage chatsStorage;
 
 
     public ChatsPresenter(
             Router router,
             GetContactsInteractor getContactsInteractor,
-            RefreshChatsInteractor refreshChatsInteractor,
+            GetChatListInteractor getChatListInteractor,
             ChatsStorage chatsStorage
     ) {
         this.router = router;
         this.getContactsInteractor = getContactsInteractor;
-        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.getChatListInteractor = getChatListInteractor;
         this.chatsStorage = chatsStorage;
     }
 
@@ -42,11 +43,11 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        Disposable disposable = refreshChatsInteractor
+        Disposable disposable = getChatListInteractor
                 .execute()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        (irrelevant) -> {
+                        () -> {
                             subscriptions.add(
                                     getContactsInteractor
                                             .execute()

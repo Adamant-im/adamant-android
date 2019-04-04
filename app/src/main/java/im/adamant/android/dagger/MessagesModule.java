@@ -14,6 +14,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
+import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
@@ -96,6 +97,12 @@ public abstract class MessagesModule {
     @Provides
     public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
         return new TransactionToChatMapper(api, publicKeyStorage);
+    }
+
+    @Singleton
+    @Provides
+    public static ChatTransactionToChatMapper providesChatTransactionToChatMapper(AdamantApiWrapper api) {
+        return new ChatTransactionToChatMapper(api);
     }
 
     @Singleton
