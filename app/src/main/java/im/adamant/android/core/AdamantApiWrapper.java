@@ -20,6 +20,7 @@ import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.core.responses.ChatList;
+import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
@@ -141,6 +142,28 @@ public class AdamantApiWrapper {
 
         return api
                 .getChatsByOffset(account.getAddress(), offset, order)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<MessageList> getMessages(String companionAddress, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return api
+                .getMessages(account.getAddress(), companionAddress, order)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return api
+                .getMessagesByOffset(account.getAddress(), companionAddress, offset, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))

@@ -20,6 +20,7 @@ import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.GetChatListInteractor;
 import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.GetMessagesInteractor;
 import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
@@ -129,6 +130,16 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage
     ) {
         return new GetChatListInteractor(api, chatMapper, messageMapper, chatsStorage);
+    }
+
+    @Singleton
+    @Provides
+    public static GetMessagesInteractor provideGetMessagesInteractor(
+            AdamantApiWrapper api,
+            TransactionToMessageMapper messageMapper,
+            ChatsStorage chatsStorage
+    ) {
+        return new GetMessagesInteractor(api, messageMapper, chatsStorage);
     }
 
     @Singleton

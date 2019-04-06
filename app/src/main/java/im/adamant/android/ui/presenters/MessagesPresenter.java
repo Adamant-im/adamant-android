@@ -11,6 +11,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.GetMessagesInteractor;
 import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.rx.RxTaskManager;
@@ -35,7 +36,7 @@ import ru.terrakok.cicerone.Router;
 @InjectViewState
 public class MessagesPresenter extends BasePresenter<MessagesView>{
     private Router router;
-    private RefreshChatsInteractor refreshChatsInteractor;
+    private GetMessagesInteractor messagesInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
     private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
@@ -49,14 +50,14 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public MessagesPresenter(
             Router router,
-            RefreshChatsInteractor refreshChatsInteractor,
+            GetMessagesInteractor messagesInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             AdamantApiWrapper api
     ) {
         this.router = router;
-        this.refreshChatsInteractor = refreshChatsInteractor;
+        this.messagesInteractor = messagesInteractor;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
@@ -68,27 +69,27 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void attachView(MessagesView view) {
         super.attachView(view);
 
-        syncSubscription = refreshChatsInteractor
-                .execute()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    (irrelevant) -> {
-                        if (currentMessageCount != messages.size()) {
-                            getViewState().showChatMessages(messages);
-                            currentMessageCount = messages.size();
-                        }
-                    },
-                    (error) -> {
-                        if (error instanceof NotAuthorizedException){
-                            router.navigateTo(Screens.SPLASH_SCREEN);
-                        } else {
-                            router.showSystemMessage(error.getMessage());
-                        }
-                        LoggerHelper.e("Messages", error.getMessage(), error);
-                    }
-                );
-
-        subscriptions.add(syncSubscription);
+//        syncSubscription = refreshChatsInteractor
+//                .execute()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                    (irrelevant) -> {
+//                        if (currentMessageCount != messages.size()) {
+//                            getViewState().showChatMessages(messages);
+//                            currentMessageCount = messages.size();
+//                        }
+//                    },
+//                    (error) -> {
+//                        if (error instanceof NotAuthorizedException){
+//                            router.navigateTo(Screens.SPLASH_SCREEN);
+//                        } else {
+//                            router.showSystemMessage(error.getMessage());
+//                        }
+//                        LoggerHelper.e("Messages", error.getMessage(), error);
+//                    }
+//                );
+//
+//        subscriptions.add(syncSubscription);
     }
 
     @Override
@@ -104,16 +105,29 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         currentChat = chatsStorage.findChatByCompanionId(companionId);
         if (currentChat == null){return;}
 
-        messages = chatsStorage.getMessagesByCompanionId(
-                companionId
-        );
-
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
-        getViewState()
-            .showChatMessages(
-                messages
-            );
+        Disposable subscribe = messagesInteractor
+                .execute(companionId)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                                messages = chatsStorage.getMessagesByCompanionId(
+                                        companionId
+                                );
+
+                                getViewState()
+                                        .showChatMessages(
+                                                messages
+                                        );
+                        },
+                        (error) -> {
+                            LoggerHelper.e("MESSAGES", error.getMessage(), error);
+                        }
+                );
+
+        subscriptions.add(subscribe);
+
     }
 
     public void onResume() {

@@ -10,6 +10,7 @@ import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.core.responses.ChatList;
+import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
@@ -59,6 +60,21 @@ public interface AdamantApi {
     @GET("chatrooms/{address}")
     Flowable<ChatList> getChats(
             @Path("address") String address,
+            @Query("orderBy") String order
+    );
+
+    @GET("chatrooms/{address}/{companionAddress}")
+    Flowable<MessageList> getMessagesByOffset(
+            @Path("address") String address,
+            @Path("companionAddress") String companionAddress,
+            @Query("offset") int offset,
+            @Query("orderBy") String order
+    );
+
+    @GET("chatrooms/{address}/{companionAddress}")
+    Flowable<MessageList> getMessages(
+            @Path("address") String address,
+            @Path("companionAddress") String companionAddress,
             @Query("orderBy") String order
     );
 
