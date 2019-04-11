@@ -12,6 +12,7 @@ import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
+import im.adamant.android.core.responses.ParametrizedTransactionList;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
@@ -37,17 +38,11 @@ public interface AdamantApi {
     Flowable<Authorization> authorize(@Query("publicKey") String publicKey);
 
     @GET("chats/get")
-    Flowable<TransactionList<TransactionChatAsset>> getMessageTransactions(
+    Flowable<TransactionList> getMessageTransactions(
             @Query("isIn") String address,
             @Query("fromHeight") int height,
+            @Query("offset") int offset,
             @Query("orderBy") String order
-    );
-
-    @GET("chats/get")
-    Flowable<TransactionList<TransactionChatAsset>> getMessageTransactions(
-            @Query("isIn") String address,
-            @Query("orderBy") String order,
-            @Query("offset") int offset
     );
 
     @GET("chatrooms/{address}")
@@ -94,7 +89,7 @@ public interface AdamantApi {
     Flowable<OperationComplete> sendToKeyValueStorage(@Body ProcessTransaction transaction);
 
     @GET("states/get")
-    Flowable<TransactionList<TransactionStateAsset>> getFromKeyValueStorage(
+    Flowable<ParametrizedTransactionList<TransactionStateAsset>> getFromKeyValueStorage(
             @Query("senderId") String senderId,
             @Query("key") String key,
             @Query("orderBy") String order,
@@ -102,10 +97,11 @@ public interface AdamantApi {
     );
 
     @GET("transactions")
-    Flowable<TransactionList<NotUsedAsset>> getAdamantTransactions(
+    Flowable<TransactionList> getAdamantTransactions(
             @Query("inId") String address,
             @Query("and:type") int type,
             @Query("and:fromHeight") int height,
+            @Query("offset") int offset,
             @Query("orderBy") String order
     );
 

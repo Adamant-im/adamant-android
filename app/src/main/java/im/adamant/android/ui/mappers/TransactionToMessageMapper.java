@@ -38,8 +38,7 @@ public class TransactionToMessageMapper implements Function<Transaction, Abstrac
         this.api = api;
         this.factoryProvider = factoryProvider;
     }
-
-    //TODO: Refactor this. The length of the method is too long.
+    
     @Override
     public AbstractMessage apply(Transaction transaction) throws Exception {
         AbstractMessage message = null;

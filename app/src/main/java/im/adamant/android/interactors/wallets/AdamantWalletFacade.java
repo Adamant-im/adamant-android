@@ -14,7 +14,7 @@ import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
@@ -100,7 +100,7 @@ public class AdamantWalletFacade implements WalletFacade {
                 .map(list -> {
                     List<CurrencyTransferEntity> transfers = new ArrayList<>();
 
-                    for(Transaction<NotUsedAsset> transaction : list){
+                    for(Transaction transaction : list){
                         CurrencyTransferEntity entity = new CurrencyTransferEntity();
                         entity.setUnixTransferDate(transaction.getUnixTimestamp());
                         entity.setPrecision(getPrecision());

@@ -3,12 +3,11 @@ package im.adamant.android.dagger.fragments;
 import java.util.Map;
 
 import javax.inject.Named;
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;

@@ -14,8 +14,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import im.adamant.android.helpers.ChatsStorage;
-import io.reactivex.disposables.CompositeDisposable;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import ru.terrakok.cicerone.Router;
 
 @Module

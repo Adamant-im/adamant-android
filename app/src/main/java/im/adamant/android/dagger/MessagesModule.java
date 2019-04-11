@@ -11,8 +11,11 @@ import dagger.Provides;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.interactors.chats.HistoryTransactionsSource;
+import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
+import im.adamant.android.interactors.chats.NewTransactionsSource;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
@@ -115,6 +118,23 @@ public abstract class MessagesModule {
     @Provides
     public static LocalizedChatMapper providesLocalizedChatMapper(Context ctx) {
         return new LocalizedChatMapper(ctx);
+    }
+
+    @Singleton
+    @Provides
+    public static NewTransactionsSource providesNewTransactionSource(AdamantApiWrapper api) {
+        return new NewTransactionsSource(api);
+    }
+
+    @Singleton
+    @Provides
+    public static LastTransactionInChatsSource providesLastTransactionInChatsSource(AdamantApiWrapper api) {
+        return new LastTransactionInChatsSource(api);
+    }
+    @Singleton
+    @Provides
+    public static HistoryTransactionsSource providesHistoryTransactionsSource(AdamantApiWrapper api) {
+        return new HistoryTransactionsSource(api);
     }
 
 }

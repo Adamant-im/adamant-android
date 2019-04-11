@@ -1,15 +1,10 @@
 package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
 import im.adamant.android.Screens;
-import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.mvp_view.MainView;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 

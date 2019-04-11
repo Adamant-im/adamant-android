@@ -1,14 +1,14 @@
 package im.adamant.android.core.responses;
 
+import java.util.List;
+
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
-import java.util.List;
-
-public class TransactionList {
+public class ParametrizedTransactionList<Asset extends TransactionAsset> {
     private int nodeTimestamp;
     private boolean success;
-    private List<Transaction<? super TransactionAsset>> transactions;
+    private List<Transaction<Asset>> transactions;
     private String error;
     private int count;
 
@@ -20,11 +20,11 @@ public class TransactionList {
         this.success = success;
     }
 
-    public List<Transaction<? super TransactionAsset>> getTransactions() {
+    public List<Transaction<Asset>> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction<? super TransactionAsset>> transactions) {
+    public void setTransactions(List<Transaction<Asset>> transactions) {
         this.transactions = transactions;
     }
 

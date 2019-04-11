@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.rx.Irrelevant;
 import io.reactivex.BackpressureStrategy;
@@ -17,7 +17,6 @@ public class LogoutInteractor {
     private Settings settings;
     private AdamantApiWrapper api;
     private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
-    private RefreshChatsInteractor refreshChatsInteractor;
 
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
     private Flowable eventBus = publisher.toFlowable(BackpressureStrategy.LATEST);
@@ -27,14 +26,12 @@ public class LogoutInteractor {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            RefreshChatsInteractor refreshChatsInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
         this.chatsStorage = chatsStorage;
         this.settings = settings;
         this.api = api;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
-        this.refreshChatsInteractor = refreshChatsInteractor;
     }
 
     public Flowable<Irrelevant> getEventBus() {
@@ -51,7 +48,6 @@ public class LogoutInteractor {
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .subscribe(
                         () -> {
-                            refreshChatsInteractor.cleanUp();
                             chatsStorage.cleanUp();
                             api.logout();
                             settings.setAccountPassphrase("");

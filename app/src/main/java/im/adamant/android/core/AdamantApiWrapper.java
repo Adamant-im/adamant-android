@@ -22,6 +22,7 @@ import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
+import im.adamant.android.core.responses.ParametrizedTransactionList;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
@@ -101,24 +102,12 @@ public class AdamantApiWrapper {
 
     }
 
-    public Flowable<TransactionList<TransactionChatAsset>> getTransactions(int height, String order) {
+    public Flowable<TransactionList> getMessageTransactionsByHeightAndOffset(int height, int offset, String order) {
 
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getMessageTransactions(account.getAddress(), height, order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
-    }
-
-    public Flowable<TransactionList<TransactionChatAsset>> getTransactions(String order, int offset) {
-
-        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-
-        return api
-                .getMessageTransactions(account.getAddress(), order, offset)
+                .getMessageTransactions(account.getAddress(), height, offset, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
@@ -222,7 +211,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionList<TransactionStateAsset>> getFromKeyValueStorage(
+    public Flowable<ParametrizedTransactionList<TransactionStateAsset>> getFromKeyValueStorage(
             String senderId,
             String key,
             String order,
@@ -235,18 +224,18 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionList<NotUsedAsset>> getAdamantTransactions(int type, String order) {
+    public Flowable<TransactionList> getAdamantTransactions(int type, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantTransactions(account.getAddress(), type, 1, order)
+        return api.getAdamantTransactions(account.getAddress(), type, 1, 0, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionList<NotUsedAsset>> getAdamantTransactions(int type, int fromHeight, String order) {
+    public Flowable<TransactionList> getAdamantTransactions(int type, int fromHeight, int offset, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantTransactions(account.getAddress(), type, fromHeight, order)
+        return api.getAdamantTransactions(account.getAddress(), type, fromHeight, offset, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))

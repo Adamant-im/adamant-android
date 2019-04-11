@@ -4,20 +4,15 @@ package im.adamant.android.ui.presenters;
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
-import im.adamant.android.interactors.GetMessagesInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.helpers.ChatsStorage;
-import im.adamant.android.rx.RxTaskManager;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
@@ -26,17 +21,15 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class MessagesPresenter extends BasePresenter<MessagesView>{
     private Router router;
-    private GetMessagesInteractor messagesInteractor;
+    private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
     private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
@@ -50,14 +43,14 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public MessagesPresenter(
             Router router,
-            GetMessagesInteractor messagesInteractor,
+            ChatInteractor chatInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             AdamantApiWrapper api
     ) {
         this.router = router;
-        this.messagesInteractor = messagesInteractor;
+        this.chatInteractor = chatInteractor;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
@@ -69,27 +62,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void attachView(MessagesView view) {
         super.attachView(view);
 
-//        syncSubscription = refreshChatsInteractor
-//                .execute()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(
-//                    (irrelevant) -> {
-//                        if (currentMessageCount != messages.size()) {
-//                            getViewState().showChatMessages(messages);
-//                            currentMessageCount = messages.size();
-//                        }
-//                    },
-//                    (error) -> {
-//                        if (error instanceof NotAuthorizedException){
-//                            router.navigateTo(Screens.SPLASH_SCREEN);
-//                        } else {
-//                            router.showSystemMessage(error.getMessage());
-//                        }
-//                        LoggerHelper.e("Messages", error.getMessage(), error);
-//                    }
-//                );
-//
-//        subscriptions.add(syncSubscription);
     }
 
     @Override
@@ -107,8 +79,35 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
-        Disposable subscribe = messagesInteractor
-                .execute(companionId)
+        Disposable subscribe = chatInteractor
+                .loadHistory(companionId)
+                .doOnComplete(() -> {
+                    //TODO: Refactor update subscription
+                    Disposable updateDisposable = chatInteractor
+                            .update()
+                            .subscribe(
+                                    irrelevant -> {
+                                        messages = chatsStorage.getMessagesByCompanionId(
+                                                companionId
+                                        );
+
+                                        getViewState()
+                                                .showChatMessages(
+                                                        messages
+                                                );
+                                    },
+                                    error -> {
+                                        if (error instanceof NotAuthorizedException) {
+                                            router.navigateTo(Screens.SPLASH_SCREEN);
+                                        } else {
+                                            router.showSystemMessage(error.getMessage());
+                                        }
+
+                                        LoggerHelper.e("Chats", error.getMessage(), error);
+                                    }
+                            );
+                    subscriptions.add(updateDisposable);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {

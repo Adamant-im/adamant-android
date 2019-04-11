@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.BalanceConvertHelper;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Flowable;
 

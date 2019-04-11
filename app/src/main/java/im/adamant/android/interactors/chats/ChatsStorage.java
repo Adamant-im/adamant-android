@@ -1,4 +1,4 @@
-package im.adamant.android.helpers;
+package im.adamant.android.interactors.chats;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -80,8 +80,8 @@ public class ChatsStorage {
     }
 
     public void refreshContacts(Map<String, Contact> contacts, long currentVersion) {
-        if (currentVersion > contactsVersion){
-            for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()){
+        if (currentVersion > contactsVersion) {
+            for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
                 String companionId = contactEntry.getKey();
                 Contact contact = contactEntry.getValue();
 
@@ -130,7 +130,6 @@ public class ChatsStorage {
         messagesByChats.clear();
         contactsVersion = 0;
     }
-
 
     private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
         //Получи дату сообщения и проверь что сепаратор для этого сообщения уже добавлен в специальный список

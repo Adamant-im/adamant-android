@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;

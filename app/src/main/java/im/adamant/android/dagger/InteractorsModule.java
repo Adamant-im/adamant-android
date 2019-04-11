@@ -12,32 +12,29 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
-import im.adamant.android.interactors.GetChatListInteractor;
-import im.adamant.android.interactors.GetContactsInteractor;
-import im.adamant.android.interactors.GetMessagesInteractor;
-import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.HistoryTransactionsSource;
+import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
+import im.adamant.android.interactors.chats.NewTransactionsSource;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
-import im.adamant.android.ui.mappers.LocalizedChatMapper;
-import im.adamant.android.ui.mappers.LocalizedMessageMapper;
-import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
@@ -103,54 +100,24 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static RefreshChatsInteractor provideRefreshInteractor(
-            AdamantApiWrapper api,
-            TransactionToMessageMapper messageMapper,
-            TransactionToChatMapper chatMapper,
-            LocalizedMessageMapper localizedMessageMapper,
-            LocalizedChatMapper localizedChatMapper,
-            ChatsStorage chatsStorage
+    public static ChatInteractor provideGetChatListInteractor(
+            NewTransactionsSource newTransactionsSource,
+            LastTransactionInChatsSource lastTransactionInChatsSource,
+            HistoryTransactionsSource historyTransactionsSource,
+            ChatsStorage chatsStorage,
+            ChatTransactionToChatMapper chatMapper,
+            TransactionToMessageMapper messageMapper
     ) {
-        return new RefreshChatsInteractor(
-                api,
+        return new ChatInteractor(
+                newTransactionsSource,
+                lastTransactionInChatsSource,
+                historyTransactionsSource,
+                chatsStorage,
                 chatMapper,
-                messageMapper,
-                localizedMessageMapper,
-                localizedChatMapper,
-                chatsStorage
+                messageMapper
         );
     }
 
-    @Singleton
-    @Provides
-    public static GetChatListInteractor provideGetChatListInteractor(
-            AdamantApiWrapper api,
-            TransactionToMessageMapper messageMapper,
-            ChatTransactionToChatMapper chatMapper,
-            ChatsStorage chatsStorage
-    ) {
-        return new GetChatListInteractor(api, chatMapper, messageMapper, chatsStorage);
-    }
-
-    @Singleton
-    @Provides
-    public static GetMessagesInteractor provideGetMessagesInteractor(
-            AdamantApiWrapper api,
-            TransactionToMessageMapper messageMapper,
-            ChatsStorage chatsStorage
-    ) {
-        return new GetMessagesInteractor(api, messageMapper, chatsStorage);
-    }
-
-    @Singleton
-    @Provides
-    public static GetContactsInteractor provideGetContactsInteractor(
-            ApiKvsProvider apiKvsProvider,
-            ChatsStorage chatsStorage,
-            KvsHelper kvsHelper
-    ) {
-        return new GetContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
-    }
 
     @Singleton
     @Provides
@@ -164,10 +131,9 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
-            RefreshChatsInteractor refreshChatsInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
-        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor, refreshChatsInteractor);
+        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor);
     }
 
     @Singleton

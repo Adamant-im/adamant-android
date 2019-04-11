@@ -23,8 +23,9 @@ public class HasNewMessagesInteractor {
         this.settings = settings;
     }
 
+    //TODO: Redo all of this
     public Flowable<Event> execute() {
-        return api.getTransactions(1, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
+        return api.getMessageTransactionsByHeightAndOffset(1, 0, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
                 .flatMap((transactions) -> {
                     LoggerHelper.d("HAS_NEW_MESS", "GET TRANSACTIONS");
                     if (transactions.isSuccess()) {

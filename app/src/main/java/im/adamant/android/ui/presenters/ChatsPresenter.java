@@ -2,40 +2,31 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.Screens;
-import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.GetChatListInteractor;
-import im.adamant.android.interactors.GetContactsInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
 
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class ChatsPresenter extends BasePresenter<ChatsView> {
     private Router router;
-    private GetContactsInteractor getContactsInteractor;
-    private GetChatListInteractor getChatListInteractor;
+    private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
 
 
     public ChatsPresenter(
             Router router,
-            GetContactsInteractor getContactsInteractor,
-            GetChatListInteractor getChatListInteractor,
+            ChatInteractor chatInteractor,
             ChatsStorage chatsStorage
     ) {
         this.router = router;
-        this.getContactsInteractor = getContactsInteractor;
-        this.getChatListInteractor = getChatListInteractor;
+        this.chatInteractor = chatInteractor;
         this.chatsStorage = chatsStorage;
     }
 
@@ -43,16 +34,32 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        Disposable disposable = getChatListInteractor
-                .execute()
+        Disposable disposable = chatInteractor
+                .loadChats()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+                    //TODO: Refactor update subscription
+                    Disposable updateDisposable = chatInteractor
+                            .update()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    irrelevant -> getViewState().showChats(chatsStorage.getChatList()),
+                                    error -> {
+                                        if (error instanceof NotAuthorizedException) {
+                                            router.navigateTo(Screens.SPLASH_SCREEN);
+                                        } else {
+                                            router.showSystemMessage(error.getMessage());
+                                        }
+
+                                        LoggerHelper.e("Chats", error.getMessage(), error);
+                                    }
+                            );
+                    subscriptions.add(updateDisposable);
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
-                            subscriptions.add(
-                                    getContactsInteractor
-                                            .execute()
-                                            .subscribe()
-                            );
+                            ChatsStorage lc = chatsStorage;
                             getViewState().showChats(chatsStorage.getChatList());
                         },
                         (error) -> {

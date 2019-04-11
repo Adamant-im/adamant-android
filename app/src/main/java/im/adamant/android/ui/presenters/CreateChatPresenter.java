@@ -9,15 +9,13 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.markdown.AdamantAddressEntity;
 import im.adamant.android.markdown.AdamantAddressExtractor;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
-import im.adamant.android.rx.RxTaskManager;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 
-import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState

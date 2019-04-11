@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.SendFundsInteractor;
@@ -18,7 +18,6 @@ import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import io.reactivex.Flowable;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
