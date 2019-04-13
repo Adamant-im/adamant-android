@@ -4,6 +4,7 @@ package im.adamant.android.ui.presenters;
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
@@ -21,6 +22,7 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -85,27 +87,32 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     //TODO: Refactor update subscription
                     Disposable updateDisposable = chatInteractor
                             .update()
-                            .subscribe(
-                                    irrelevant -> {
-                                        messages = chatsStorage.getMessagesByCompanionId(
-                                                companionId
+                            .doAfterSuccess(newItemsCount -> {
+                                if (newItemsCount == 0) { return; }
+                                messages = chatsStorage.getMessagesByCompanionId(
+                                        companionId
+                                );
+
+                                getViewState()
+                                        .showChatMessages(
+                                                messages
                                         );
-
-                                        getViewState()
-                                                .showChatMessages(
-                                                        messages
-                                                );
-                                    },
-                                    error -> {
-                                        if (error instanceof NotAuthorizedException) {
-                                            router.navigateTo(Screens.SPLASH_SCREEN);
-                                        } else {
-                                            router.showSystemMessage(error.getMessage());
-                                        }
-
-                                        LoggerHelper.e("Chats", error.getMessage(), error);
+                                getViewState().goToLastMessage();
+                            })
+                            .doOnError(
+                                error -> {
+                                    if (error instanceof NotAuthorizedException) {
+                                        router.navigateTo(Screens.SPLASH_SCREEN);
+                                    } else {
+                                        router.showSystemMessage(error.getMessage());
                                     }
-                            );
+
+                                    LoggerHelper.e("Chats", error.getMessage(), error);
+                                }
+                            )
+                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                            .subscribe();
+
                     subscriptions.add(updateDisposable);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -119,6 +126,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                                         .showChatMessages(
                                                 messages
                                         );
+                                getViewState().goToLastMessage();
                         },
                         (error) -> {
                             LoggerHelper.e("MESSAGES", error.getMessage(), error);

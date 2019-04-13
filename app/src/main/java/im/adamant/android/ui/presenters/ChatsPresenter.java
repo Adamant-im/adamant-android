@@ -1,7 +1,11 @@
 package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
+
+import java.util.concurrent.TimeUnit;
+
 import im.adamant.android.Screens;
+import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.chats.ChatInteractor;
@@ -42,18 +46,25 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                     Disposable updateDisposable = chatInteractor
                             .update()
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    irrelevant -> getViewState().showChats(chatsStorage.getChatList()),
-                                    error -> {
-                                        if (error instanceof NotAuthorizedException) {
-                                            router.navigateTo(Screens.SPLASH_SCREEN);
-                                        } else {
-                                            router.showSystemMessage(error.getMessage());
-                                        }
-
-                                        LoggerHelper.e("Chats", error.getMessage(), error);
+                            .doAfterSuccess(newItemsCount -> {
+                                if (newItemsCount > 0) {
+                                    getViewState().showChats(chatsStorage.getChatList());
+                                }
+                            })
+                            .doOnError(
+                                error -> {
+                                    if (error instanceof NotAuthorizedException) {
+                                        router.navigateTo(Screens.SPLASH_SCREEN);
+                                    } else {
+                                        router.showSystemMessage(error.getMessage());
                                     }
-                            );
+
+                                    LoggerHelper.e("Chats", error.getMessage(), error);
+                                }
+                            )
+                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                            .subscribe();
+
                     subscriptions.add(updateDisposable);
                 })
                 .observeOn(AndroidSchedulers.mainThread())

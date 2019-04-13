@@ -37,13 +37,11 @@ public class NewTransactionsSource {
                     }
                 })
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
-
-        //TODO: .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
     }
 
     private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(int height, int offset) {
         return api
-                .getMessageTransactionsByHeightAndOffset(height, offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
+                .getMessageTransactionsByHeightAndOffset(height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
                 .observeOn(Schedulers.computation())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {

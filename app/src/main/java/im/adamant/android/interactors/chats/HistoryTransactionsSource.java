@@ -29,9 +29,9 @@ public class HistoryTransactionsSource {
     private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(String chatId, int offset) {
         Flowable<MessageList> transactionFlowable = null;
         if (offset > 0){
-            transactionFlowable = api.getMessagesByOffset(chatId, offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
+            transactionFlowable = api.getMessagesByOffset(chatId, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
         } else {
-            transactionFlowable = api.getMessages(chatId, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
+            transactionFlowable = api.getMessages(chatId, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
         }
 
         return transactionFlowable

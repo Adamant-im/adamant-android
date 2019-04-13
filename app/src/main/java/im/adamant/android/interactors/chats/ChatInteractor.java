@@ -10,6 +10,7 @@ import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.Single;
 
 public class ChatInteractor {
     //TODO: Schedulers must be injected through Dagger for comfort unit-testing
@@ -61,14 +62,19 @@ public class ChatInteractor {
         .ignoreElements();
     }
 
-    public Flowable<Irrelevant> update() {
+    public Single<Long> update() {
        return newItemsSource
                 .execute(maxHeight)
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
                 .map(transaction -> messageMapper.apply(transaction))
                 .doOnNext(message -> chatsStorage.addMessageToChat(message))
-                .flatMap(message -> Flowable.just(Irrelevant.INSTANCE))
-                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+                .count()
+                .doAfterSuccess(count -> {
+                    if (count > 0) {
+                        chatsStorage.updateLastMessages();
+                    }
+                });
+
     }
 
     public Completable loadHistory(String chatId) {
@@ -76,6 +82,7 @@ public class ChatInteractor {
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
                 .map(transaction -> messageMapper.apply(transaction))
                 .doOnNext(message -> chatsStorage.addMessageToChat(message))
+                .doOnComplete(() -> chatsStorage.updateLastMessages())
                 .ignoreElements();
     }
 }

@@ -21,7 +21,8 @@ public class ChatsStorage {
     private List<Chat> chats = new ArrayList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
     private Calendar separatorCalendar = Calendar.getInstance();
-    private ChatsByLastMessageComparator comparator = new ChatsByLastMessageComparator();
+    private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
+    private MessageComparator messageComparator = new MessageComparator();
     private long contactsVersion = 0;
 
     public List<Chat> getChatList() {
@@ -61,7 +62,7 @@ public class ChatsStorage {
 
     public void updateLastMessages() {
         //Setting last message to chats
-        for(Chat chat : chats){
+        for(Chat chat : chats) {
             List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
             if (messages != null && messages.size() > 0){
                 for (int i = (messages.size() - 1); i >= 0; i--){
@@ -76,7 +77,11 @@ public class ChatsStorage {
             }
         }
 
-        Collections.sort(chats, comparator);
+        Collections.sort(chats, chatComparator);
+
+        for (Map.Entry<String, List<MessageListContent>> entry : messagesByChats.entrySet()){
+            Collections.sort(entry.getValue(), messageComparator);
+        }
     }
 
     public void refreshContacts(Map<String, Contact> contacts, long currentVersion) {
@@ -183,6 +188,27 @@ public class ChatsStorage {
                 return 0;
             } else {
                 return -1;
+            }
+        }
+    }
+
+    private static class MessageComparator implements Comparator<MessageListContent> {
+
+        @Override
+        public int compare(MessageListContent o1, MessageListContent o2) {
+            if (o1 == o2) {return 0;}
+
+            if (o2 == null) {return -1;}
+            if (o1 == null) {return 1;}
+
+            long diff = o2.getTimestamp() - o1.getTimestamp();
+
+            if (diff > 0) {
+                return -1;
+            } if (diff == 0) {
+                return 0;
+            } else {
+                return 1;
             }
         }
     }
