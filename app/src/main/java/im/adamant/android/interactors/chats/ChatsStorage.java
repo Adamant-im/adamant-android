@@ -23,7 +23,6 @@ public class ChatsStorage {
     private Calendar separatorCalendar = Calendar.getInstance();
     private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
     private MessageComparator messageComparator = new MessageComparator();
-    private long contactsVersion = 0;
 
     public List<Chat> getChatList() {
         return chats;
@@ -84,22 +83,22 @@ public class ChatsStorage {
         }
     }
 
-    public void refreshContacts(Map<String, Contact> contacts, long currentVersion) {
-        if (currentVersion > contactsVersion) {
-            for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
-                String companionId = contactEntry.getKey();
-                Contact contact = contactEntry.getValue();
+    public void refreshContacts(Map<String, Contact> contacts) {
+        for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
+            String companionId = contactEntry.getKey();
+            Contact contact = contactEntry.getValue();
 
-                Chat chat = new Chat();
-                chat.setCompanionId(companionId);
+            if (contact.getDisplayName() == null || contact.getDisplayName().isEmpty()) {
+                continue;
+            }
 
-                if (chats.contains(chat)) {
-                    int index = chats.indexOf(chat);
-                    Chat originalChat = chats.get(index);
-                    originalChat.setTitle(contact.getDisplayName());
-                }
+            Chat chat = new Chat();
+            chat.setCompanionId(companionId);
 
-                contactsVersion = currentVersion;
+            if (chats.contains(chat)) {
+                int index = chats.indexOf(chat);
+                Chat originalChat = chats.get(index);
+                originalChat.setTitle(contact.getDisplayName());
             }
         }
     }
@@ -133,7 +132,6 @@ public class ChatsStorage {
     public void cleanUp() {
         chats.clear();
         messagesByChats.clear();
-        contactsVersion = 0;
     }
 
     private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {

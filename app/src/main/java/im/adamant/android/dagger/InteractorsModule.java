@@ -27,6 +27,7 @@ import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ContactsSource;
 import im.adamant.android.interactors.chats.HistoryTransactionsSource;
 import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
 import im.adamant.android.interactors.chats.NewTransactionsSource;
@@ -104,6 +105,7 @@ public abstract class InteractorsModule {
             NewTransactionsSource newTransactionsSource,
             LastTransactionInChatsSource lastTransactionInChatsSource,
             HistoryTransactionsSource historyTransactionsSource,
+            ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             ChatTransactionToChatMapper chatMapper,
             TransactionToMessageMapper messageMapper
@@ -112,6 +114,7 @@ public abstract class InteractorsModule {
                 newTransactionsSource,
                 lastTransactionInChatsSource,
                 historyTransactionsSource,
+                contactsSource,
                 chatsStorage,
                 chatMapper,
                 messageMapper

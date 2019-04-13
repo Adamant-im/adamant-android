@@ -11,8 +11,11 @@ import dagger.Provides;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
+import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.interactors.chats.ContactsSource;
 import im.adamant.android.interactors.chats.HistoryTransactionsSource;
 import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
 import im.adamant.android.interactors.chats.NewTransactionsSource;
@@ -131,10 +134,17 @@ public abstract class MessagesModule {
     public static LastTransactionInChatsSource providesLastTransactionInChatsSource(AdamantApiWrapper api) {
         return new LastTransactionInChatsSource(api);
     }
+
     @Singleton
     @Provides
     public static HistoryTransactionsSource providesHistoryTransactionsSource(AdamantApiWrapper api) {
         return new HistoryTransactionsSource(api);
+    }
+
+    @Singleton
+    @Provides
+    public static ContactsSource providesContactsSource(KvsHelper kvsHelper, ApiKvsProvider kvsProvider) {
+        return new ContactsSource(kvsProvider, kvsHelper);
     }
 
 }

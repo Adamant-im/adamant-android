@@ -24,6 +24,7 @@ public class ChatInteractor {
     private NewTransactionsSource newItemsSource;
     private LastTransactionInChatsSource chatsSource;
     private HistoryTransactionsSource historySource;
+    private ContactsSource contactsSource;
     private ChatsStorage chatsStorage;
     private ChatTransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
@@ -34,6 +35,7 @@ public class ChatInteractor {
             NewTransactionsSource newItemsSource,
             LastTransactionInChatsSource chatsSource,
             HistoryTransactionsSource historySource,
+            ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             ChatTransactionToChatMapper chatMapper,
             TransactionToMessageMapper messageMapper
@@ -41,13 +43,13 @@ public class ChatInteractor {
         this.newItemsSource = newItemsSource;
         this.chatsSource = chatsSource;
         this.historySource = historySource;
+        this.contactsSource = contactsSource;
         this.chatsStorage = chatsStorage;
         this.chatMapper = chatMapper;
         this.messageMapper = messageMapper;
     }
 
     public Completable loadChats() {
-        //TODO: Load contact list here
         return chatsSource
                 .execute()
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
@@ -59,7 +61,12 @@ public class ChatInteractor {
                     return chat;
                 })
                 .doOnNext(chat -> chatsStorage.addNewChat(chat))
-        .ignoreElements();
+                .ignoreElements()
+                .andThen(contactsSource
+                        .execute()
+                        .doOnNext(contacts -> chatsStorage.refreshContacts(contacts))
+                        .ignoreElements()
+                );
     }
 
     public Single<Long> update() {
