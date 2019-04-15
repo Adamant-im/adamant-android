@@ -12,6 +12,7 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -35,7 +36,7 @@ import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
-import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
+import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 
@@ -102,15 +103,17 @@ public abstract class InteractorsModule {
     @Singleton
     @Provides
     public static ChatInteractor provideGetChatListInteractor(
+            PublicKeyStorage publicKeyStorage,
             NewTransactionsSource newTransactionsSource,
             LastTransactionInChatsSource lastTransactionInChatsSource,
             HistoryTransactionsSource historyTransactionsSource,
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
-            ChatTransactionToChatMapper chatMapper,
+            TransactionToChatMapper chatMapper,
             TransactionToMessageMapper messageMapper
     ) {
         return new ChatInteractor(
+                publicKeyStorage,
                 newTransactionsSource,
                 lastTransactionInChatsSource,
                 historyTransactionsSource,
@@ -120,7 +123,6 @@ public abstract class InteractorsModule {
                 messageMapper
         );
     }
-
 
     @Singleton
     @Provides

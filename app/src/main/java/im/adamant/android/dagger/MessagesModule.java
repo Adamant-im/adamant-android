@@ -20,10 +20,9 @@ import im.adamant.android.interactors.chats.HistoryTransactionsSource;
 import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
 import im.adamant.android.interactors.chats.NewTransactionsSource;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
-import im.adamant.android.ui.mappers.ChatTransactionToChatMapper;
+import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
-import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
@@ -101,14 +100,8 @@ public abstract class MessagesModule {
 
     @Singleton
     @Provides
-    public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
-        return new TransactionToChatMapper(api, publicKeyStorage);
-    }
-
-    @Singleton
-    @Provides
-    public static ChatTransactionToChatMapper providesChatTransactionToChatMapper(AdamantApiWrapper api) {
-        return new ChatTransactionToChatMapper(api);
+    public static TransactionToChatMapper providesChatTransactionToChatMapper(AdamantApiWrapper api) {
+        return new TransactionToChatMapper(api);
     }
 
     @Singleton
@@ -146,5 +139,4 @@ public abstract class MessagesModule {
     public static ContactsSource providesContactsSource(KvsHelper kvsHelper, ApiKvsProvider kvsProvider) {
         return new ContactsSource(kvsProvider, kvsHelper);
     }
-
 }

@@ -23,7 +23,6 @@ public class HasNewMessagesInteractor {
         this.settings = settings;
     }
 
-    //TODO: Redo all of this
     public Flowable<Event> execute() {
         return api.getMessageTransactionsByHeightAndOffset(1, 0, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
                 .flatMap((transactions) -> {
