@@ -29,18 +29,15 @@ import io.reactivex.functions.Function;
 
 public class TransactionToMessageMapper implements Function<Pair<String, Transaction<?>>, AbstractMessage> {
     private Encryptor encryptor;
-    private PublicKeyStorage publicKeyStorage;
     private AdamantApiWrapper api;
     private MessageFactoryProvider factoryProvider;
 
     public TransactionToMessageMapper(
             Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage,
             AdamantApiWrapper api,
             MessageFactoryProvider factoryProvider
     ) {
         this.encryptor = encryptor;
-        this.publicKeyStorage = publicKeyStorage;
         this.api = api;
         this.factoryProvider = factoryProvider;
     }

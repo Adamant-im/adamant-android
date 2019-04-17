@@ -91,11 +91,10 @@ public abstract class MessagesModule {
     @Provides
     public static TransactionToMessageMapper providesTransactionsToMessageMapper(
             Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage,
             AdamantApiWrapper api,
             MessageFactoryProvider factoryProvider
     ) {
-        return new TransactionToMessageMapper(encryptor, publicKeyStorage, api, factoryProvider);
+        return new TransactionToMessageMapper(encryptor, api, factoryProvider);
     }
 
     @Singleton
