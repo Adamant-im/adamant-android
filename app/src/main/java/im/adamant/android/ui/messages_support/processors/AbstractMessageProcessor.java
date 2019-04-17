@@ -46,15 +46,12 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
             );
         }
 
-        LoggerHelper.d("TEST", "TEST");
-
         Single<TransactionWasProcessed> result = null;
         try {
-            result = Single
-                    .fromCallable(() -> publicKeyStorage.getPublicKey(message.getCompanionId()))
-                    .subscribeOn(Schedulers.io())
+            result = publicKeyStorage.findPublicKey(message.getCompanionId())
+                    .singleOrError()
                     .observeOn(Schedulers.computation())
-                    .flatMap((publicKey) -> this.buildTransactionMessage(message, publicKey))
+                    .flatMap(publicKey -> buildTransactionMessage(message, publicKey))
                     .flatMap((unnormalizedTransactionMessage -> Single.fromPublisher(
                             api.getNormalizedTransaction(unnormalizedTransactionMessage)
                                     .subscribeOn(Schedulers.io())

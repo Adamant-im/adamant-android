@@ -63,12 +63,15 @@ public class SendFundsPresenter extends BasePresenter<SendFundsView> {
                 currentFacade.isSupportFundsSending()
         );
 
-        getViewState().setRecipientAddress(
-                currentFacade.getCurrencyAddress(
-                        companionId,
-                        publicKeyStorage.getPublicKey(companionId)
-                )
-        );
+        Disposable subscription = publicKeyStorage
+                .findPublicKey(companionId)
+                .map(publicKey -> currentFacade.getCurrencyAddress(companionId, publicKey))
+                .subscribe(
+                        address -> getViewState().setRecipientAddress(address),
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
+
+        subscriptions.add(subscription);
 
         if (currentFacade.isSupportComment()){
             getViewState().showCommentField();
