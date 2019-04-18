@@ -16,11 +16,11 @@ import io.reactivex.exceptions.UndeliverableException;
 
 import java.util.HashMap;
 
-public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
+public class PublicKeyStorageImpl implements PublicKeyStorage {
     private HashMap<String, String> publicKeys = new HashMap<>();
     private AdamantApiWrapper api;
 
-    public NaivePublicKeyStorageImpl(AdamantApiWrapper api) {
+    public PublicKeyStorageImpl(AdamantApiWrapper api) {
         this.api = api;
     }
 
@@ -70,6 +70,10 @@ public class NaivePublicKeyStorageImpl implements PublicKeyStorage {
             if (!pKey.isEmpty()) {
                 publicKeys.put(address, pKey);
             }
+        }
+
+        if (pKey.isEmpty()) {
+            throw new NotFoundPublicKey("Not oud public key for address: " + address);
         }
 
         return new Pair<>(pKey, transaction);
