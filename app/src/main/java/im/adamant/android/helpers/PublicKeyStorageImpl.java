@@ -10,11 +10,13 @@ import im.adamant.android.core.entities.Participant;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.exceptions.NotFoundPublicKey;
+import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.core.responses.PublicKeyResponse;
 import io.reactivex.Flowable;
 import io.reactivex.exceptions.UndeliverableException;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class PublicKeyStorageImpl implements PublicKeyStorage {
     private HashMap<String, String> publicKeys = new HashMap<>();
@@ -50,6 +52,13 @@ public class PublicKeyStorageImpl implements PublicKeyStorage {
     }
 
     @Override
+    public void savePublicKeysFromParticipant(ChatList.ChatDescription description) {
+        for (Participant participant : description.getParticipants()) {
+            publicKeys.put(participant.getAddress(), participant.getPublicKey());
+        }
+    }
+
+    @Override
     public Pair<String, Transaction<?>> combinePublicKeyWithTransaction(Transaction<?> transaction) throws Exception {
         if (api.getAccount() == null) { throw new NotAuthorizedException("Not Authorized"); }
         String ownAddress = api.getAccount().getAddress();
@@ -65,29 +74,10 @@ public class PublicKeyStorageImpl implements PublicKeyStorage {
 
         String pKey = publicKeys.get(address);
 
-        if (pKey == null) {
-            pKey = getPublicKey(address, transaction);
-            if (!pKey.isEmpty()) {
-                publicKeys.put(address, pKey);
-            }
-        }
-
-        if (pKey.isEmpty()) {
+        if (pKey == null || pKey.isEmpty()) {
             throw new NotFoundPublicKey("Not oud public key for address: " + address);
         }
 
         return new Pair<>(pKey, transaction);
-    }
-
-    private String getPublicKey(String address, Transaction<?> transaction) {
-        if (transaction.getParticipants() != null) {
-            for(Participant participant : transaction.getParticipants()) {
-                if (address.equalsIgnoreCase(participant.getAddress()) && participant.getPublicKey() != null) {
-                    return participant.getPublicKey();
-                }
-            }
-        }
-
-        return "";
     }
 }

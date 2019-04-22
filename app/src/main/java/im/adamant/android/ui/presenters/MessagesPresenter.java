@@ -87,6 +87,7 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     //TODO: Refactor update subscription
                     Disposable updateDisposable = chatInteractor
                             .update()
+                            .observeOn(AndroidSchedulers.mainThread())
                             .doAfterSuccess(newItemsCount -> {
                                 if (newItemsCount == 0) { return; }
                                 messages = chatsStorage.getMessagesByCompanionId(

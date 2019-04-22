@@ -2,14 +2,37 @@ package im.adamant.android.core.responses;
 
 import java.util.List;
 
+import im.adamant.android.core.entities.Participant;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
 public class ChatList {
+
+    public static class ChatDescription {
+        private Transaction<? super TransactionAsset> lastTransaction;
+        private List<Participant> participants;
+
+        public Transaction<? super TransactionAsset> getLastTransaction() {
+            return lastTransaction;
+        }
+
+        public void setLastTransaction(Transaction<? super TransactionAsset> lastTransaction) {
+            this.lastTransaction = lastTransaction;
+        }
+
+        public List<Participant> getParticipants() {
+            return participants;
+        }
+
+        public void setParticipants(List<Participant> participants) {
+            this.participants = participants;
+        }
+    }
+
     private boolean success;
     private int nodeTimestamp;
     private int count;
-    private List<Transaction<? super TransactionAsset>> chats;
+    private List<ChatDescription> chats;
     private String error;
 
     public boolean isSuccess() {
@@ -36,11 +59,11 @@ public class ChatList {
         this.count = count;
     }
 
-    public List<Transaction<? super TransactionAsset>> getChats() {
+    public List<ChatDescription> getChats() {
         return chats;
     }
 
-    public void setChats(List<Transaction<? super TransactionAsset>> chats) {
+    public void setChats(List<ChatDescription> chats) {
         this.chats = chats;
     }
 

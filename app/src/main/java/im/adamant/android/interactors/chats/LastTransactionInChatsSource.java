@@ -19,14 +19,14 @@ public class LastTransactionInChatsSource {
         this.api = api;
     }
 
-    public Flowable<Transaction<? super TransactionAsset>> execute() {
+    public Flowable<ChatList.ChatDescription> execute() {
         if (!api.isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return getTransactionsBatch(0);
     }
 
 
-    private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(int offset) {
+    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset) {
         Flowable<ChatList> transactionFlowable = null;
         if (offset > 0){
             transactionFlowable = api.getChatsByOffset(offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
@@ -41,7 +41,7 @@ public class LastTransactionInChatsSource {
                         int count = transactionList.getCount();
                         int newOffset = offset + AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
 
-                        Flowable<Transaction<? super TransactionAsset>> result = Flowable
+                        Flowable<ChatList.ChatDescription> result = Flowable
                                 .fromIterable(transactionList.getChats());
 
                         if (newOffset <= count) {

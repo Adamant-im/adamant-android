@@ -70,7 +70,6 @@ public class ChatsPresenter extends BasePresenter<ChatsView> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         () -> {
-                            ChatsStorage lc = chatsStorage;
                             getViewState().showChats(chatsStorage.getChatList());
                         },
                         (error) -> {

@@ -51,8 +51,9 @@ public class ChatInteractor {
     public Completable loadChats() {
         return chatsSource
                 .execute()
-                .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
-                .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
+                .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
+                .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
+                .map(description -> keyStorage.combinePublicKeyWithTransaction(description.getLastTransaction()))
                 .map(transaction -> {
                     Chat chat = chatMapper.apply(transaction);
                     AbstractMessage message = messageMapper.apply(transaction);

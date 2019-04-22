@@ -56,9 +56,6 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
 
     private String signature;
 
-    private List<Participant> participants;
-
-
 
     public T getAsset ()
     {
@@ -228,13 +225,6 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         this.signature = signature;
     }
 
-    public List<Participant> getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(List<Participant> participants) {
-        this.participants = participants;
-    }
 
     @Override
     public String toString()
