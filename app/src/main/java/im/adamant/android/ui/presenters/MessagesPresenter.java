@@ -98,7 +98,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                                         .showChatMessages(
                                                 messages
                                         );
-                                getViewState().goToLastMessage();
                             })
                             .doOnError(
                                 error -> {
