@@ -29,6 +29,7 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
@@ -37,8 +38,11 @@ import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.mvp_view.MainView;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
@@ -147,82 +151,75 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     }
 
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.MESSAGES_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MessagesScreen.ARG_CHAT, (String)forwardCommand.getTransitionData());
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.CREATE_CHAT_SCREEN: {
+
+                    BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
+                    FragmentManager supportFragmentManager = getSupportFragmentManager();
+                    createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
+                }
+                break;
+
+                case Screens.SCAN_QRCODE_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                    startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+                }
+                break;
+
+                case Screens.NODES_LIST_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.PUSH_SUBSCRIPTION_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.PINCODE_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if (command instanceof Forward) {
-                Forward forward = (Forward)command;
-                switch (forward.getScreenKey()){
-                    case Screens.MESSAGES_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MessagesScreen.ARG_CHAT, (String)forward.getTransitionData());
-                        intent.putExtras(bundle);
+        @Override
+        protected void back(Back backCommand) {
 
-                        startActivity(intent);
-                    }
-                    break;
+        }
 
-                    case Screens.CREATE_CHAT_SCREEN: {
+        @Override
+        protected void backTo(BackTo backToCommand) {
 
-                        BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
-                        FragmentManager supportFragmentManager = getSupportFragmentManager();
-                        createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
-                    }
-                    break;
+        }
 
-                    case Screens.LOGIN_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        MainScreen.this.finish();
-                    }
-                    break;
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
-                    case Screens.SPLASH_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
+        @Override
+        protected void replace(Replace command) {
 
-                    case Screens.SCAN_QRCODE_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
-                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
-                    }
-                    break;
-
-                    case Screens.NODES_LIST_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
-                        startActivity(intent);
-                    }
-                    break;
-
-                    case Screens.PUSH_SUBSCRIPTION_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
-                        startActivity(intent);
-                    }
-                    break;
-
-                    case Screens.PINCODE_SCREEN: {
-                        Bundle bundle = (Bundle) forward.getTransitionData();
-                        Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
-                        intent.putExtras(bundle);
-
-                        startActivity(intent);
-                    }
-                    break;
-                }
-            } else if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            }
         }
     };
 }

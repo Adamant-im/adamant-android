@@ -20,10 +20,14 @@ import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
 import im.adamant.android.ui.fragments.SendFundsFragment;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class SendFundsScreen extends BaseActivity implements HasSupportFragmentInjector {
@@ -89,27 +93,35 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
         navigatorHolder.removeNavigator();
     }
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+
+        }
+
+        @Override
+        protected void back(Back backCommand) {
+
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+            switch (backToCommand.getScreenKey()) {
+                case Screens.MESSAGES_SCREEN: {
+                    finish();
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if (command instanceof BackTo) {
-                BackTo backTo = (BackTo)command;
-                switch (backTo.getScreenKey()) {
-                    case Screens.MESSAGES_SCREEN: {
-                        finish();
-                    }
-                    break;
-                }
-            } else if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
         }
     };
 }

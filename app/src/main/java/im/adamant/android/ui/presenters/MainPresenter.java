@@ -68,7 +68,7 @@ public class MainPresenter extends BasePresenter<MainView> {
                 .getEventBus()
                 .subscribe(
                     (irrelevant) -> {
-                        router.navigateTo(Screens.LOGIN_SCREEN);
+                        router.navigateTo(Screens.SPLASH_SCREEN);
                     },
                     (error) -> {
                         router.showSystemMessage(error.getMessage());

@@ -28,13 +28,17 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.transformations.SimpleDotIndicatorDecoration;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
@@ -143,47 +147,55 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
         return fragmentDispatchingAndroidInjector;
     }
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.SETTINGS_SCREEN:
+                case Screens.WALLET_SCREEN:
+                case Screens.CHATS_SCREEN: {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forwardCommand.getScreenKey());
+
+                    Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+                case Screens.SCAN_QRCODE_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                    startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+                }
+                break;
+                case Screens.SPLASH_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                    startActivity(intent);
+                    finish();
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if (command instanceof Forward) {
-                Forward forward = (Forward)command;
-                switch (forward.getScreenKey()){
-                    case Screens.SETTINGS_SCREEN:
-                    case Screens.WALLET_SCREEN:
-                    case Screens.CHATS_SCREEN: {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forward.getScreenKey());
+        @Override
+        protected void back(Back backCommand) {
 
-                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
-                        intent.putExtras(bundle);
+        }
 
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
-                    case Screens.SCAN_QRCODE_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
-                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
-                    }
-                    break;
-                    case Screens.SPLASH_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
-                }
-            } else if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        @Override
+        protected void backTo(BackTo backToCommand) {
+
+        }
+
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
         }
     };
 

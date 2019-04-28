@@ -48,6 +48,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
@@ -59,8 +60,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
@@ -309,37 +313,46 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     }
 
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
-            }
-        }
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()) {
+                case Screens.WALLET_SCREEN:
+                case Screens.SETTINGS_SCREEN:
+                case Screens.CHATS_SCREEN: {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forwardCommand.getScreenKey());
 
-        private void apply(Command command){
-            if (command instanceof Forward) {
-                Forward forward = (Forward)command;
-                switch (forward.getScreenKey()) {
-                    case Screens.WALLET_SCREEN:
-                    case Screens.SETTINGS_SCREEN:
-                    case Screens.CHATS_SCREEN: {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forward.getScreenKey());
+                    Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                    intent.putExtras(bundle);
 
-                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
-                        intent.putExtras(bundle);
-
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
+                    startActivity(intent);
+                    finish();
                 }
-            } else if(command instanceof SystemMessage) {
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+                break;
             }
         }
+
+        @Override
+        protected void back(Back backCommand) {
+
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+
+        }
+
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
+        }
+
     };
 
 }
