@@ -6,6 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
@@ -38,8 +39,9 @@ public class WalletScreenModule {
     @Provides
     public static WalletPresenter provideWalletPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             WalletInteractor walletInteractor
     ){
-        return new WalletPresenter(router, walletInteractor);
+        return new WalletPresenter(router, accountInteractor, walletInteractor);
     }
 }

@@ -7,6 +7,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.SendFundsInteractor;
@@ -23,6 +24,7 @@ public class SendFundsFragmentModule {
     @Provides
     public static SendFundsPresenter provideSendFundsPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             SendFundsInteractor sendCurrencyInteractor,
             MessageFactoryProvider messageFactoryProvider,
@@ -31,6 +33,7 @@ public class SendFundsFragmentModule {
     ){
         return new SendFundsPresenter(
                 router,
+                accountInteractor,
                 wallets,
                 sendCurrencyInteractor,
                 messageFactoryProvider,

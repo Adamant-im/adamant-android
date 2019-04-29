@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -22,8 +23,7 @@ import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class SendFundsPresenter extends BasePresenter<SendFundsView> {
-    private Router router;
+public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private SendFundsInteractor sendCurrencyInteractor;
     private PublicKeyStorage publicKeyStorage;
@@ -39,13 +39,14 @@ public class SendFundsPresenter extends BasePresenter<SendFundsView> {
 
     public SendFundsPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             SendFundsInteractor sendCurrencyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
             ChatsStorage chatsStorage
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.wallets = wallets;
         this.sendCurrencyInteractor = sendCurrencyInteractor;
         this.publicKeyStorage = publicKeyStorage;

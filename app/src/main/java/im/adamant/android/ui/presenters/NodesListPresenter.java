@@ -19,7 +19,6 @@ public class NodesListPresenter extends BasePresenter<NodesListView> {
         this.serverNodeInteractor = serverNodeInteractor;
     }
 
-
     public void onClickAddNewNode(String nodeUrl) {
         if (URLUtil.isValidUrl(nodeUrl)){
             serverNodeInteractor.addServerNode(nodeUrl);

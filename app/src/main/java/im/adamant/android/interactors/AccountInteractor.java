@@ -27,6 +27,10 @@ public class AccountInteractor {
         return Flowable.fromCallable(this::getBalance);
     }
 
+    public boolean isAuthorized() {
+        return api.isAuthorized();
+    }
+
     private BigDecimal getBalance() {
         if (api.isAuthorized()){
             return BalanceConvertHelper.convert(api.getAccount().getUnconfirmedBalance());

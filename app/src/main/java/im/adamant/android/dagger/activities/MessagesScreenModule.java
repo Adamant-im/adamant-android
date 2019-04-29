@@ -1,6 +1,7 @@
 package im.adamant.android.dagger.activities;
 
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.ui.presenters.MessagesPresenter;
@@ -24,6 +25,7 @@ public class MessagesScreenModule {
     @Provides
     public static MessagesPresenter provideMessagesPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             ChatInteractor chatInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
             MessageFactoryProvider messageFactoryProvider,
@@ -32,6 +34,7 @@ public class MessagesScreenModule {
     ) {
         return new MessagesPresenter(
                 router,
+                accountInteractor,
                 chatInteractor,
                 chatUpdatePublicKeyInteraactor,
                 messageFactoryProvider,

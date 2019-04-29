@@ -3,6 +3,7 @@ package im.adamant.android.dagger.fragments;
 import java.util.Map;
 
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.markdown.AdamantAddressExtractor;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
@@ -32,11 +33,13 @@ public class CreateChatScreenModule {
             Router router,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             AdamantAddressExtractor adamantAddressExtractor,
+            AccountInteractor accountInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteraactor,
             ChatsStorage chatsStorage
     ){
         return new CreateChatPresenter(
                 router,
+                accountInteractor,
                 wallets,
                 chatUpdatePublicKeyInteraactor,
                 adamantAddressExtractor,

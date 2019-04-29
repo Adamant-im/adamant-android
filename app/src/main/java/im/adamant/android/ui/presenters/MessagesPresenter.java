@@ -9,6 +9,7 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -29,8 +30,7 @@ import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MessagesPresenter extends BasePresenter<MessagesView>{
-    private Router router;
+public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
@@ -45,13 +45,14 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public MessagesPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             ChatInteractor chatInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
             AdamantApiWrapper api
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.chatInteractor = chatInteractor;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.messageFactoryProvider = messageFactoryProvider;

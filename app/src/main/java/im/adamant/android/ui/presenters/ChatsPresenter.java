@@ -8,6 +8,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
@@ -18,18 +19,17 @@ import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class ChatsPresenter extends BasePresenter<ChatsView> {
-    private Router router;
+public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
     private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
 
-
     public ChatsPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             ChatInteractor chatInteractor,
             ChatsStorage chatsStorage
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.chatInteractor = chatInteractor;
         this.chatsStorage = chatsStorage;
     }

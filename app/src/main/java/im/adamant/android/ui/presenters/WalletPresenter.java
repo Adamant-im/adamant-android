@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.entities.CurrencyCardItem;
@@ -17,8 +18,7 @@ import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class WalletPresenter extends BasePresenter<WalletView> {
-    private Router router;
+public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
     private WalletInteractor walletInteractor;
     private Disposable lastTransfersSubscription;
     private Disposable walletCardsSubscription;
@@ -26,10 +26,11 @@ public class WalletPresenter extends BasePresenter<WalletView> {
 
     public WalletPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             WalletInteractor walletInteractor
     ) {
+        super(router, accountInteractor);
         this.walletInteractor = walletInteractor;
-        this.router = router;
     }
 
     @Override

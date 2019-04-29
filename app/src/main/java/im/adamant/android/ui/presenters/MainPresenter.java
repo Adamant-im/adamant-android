@@ -3,14 +3,14 @@ package im.adamant.android.ui.presenters;
 import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.ui.mvp_view.MainView;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MainPresenter extends BasePresenter<MainView> {
-    private Router router;
+public class MainPresenter extends ProtectedBasePresenter<MainView> {
     private LogoutInteractor logoutInteractor;
     private Disposable logoutDisposable;
 
@@ -18,9 +18,10 @@ public class MainPresenter extends BasePresenter<MainView> {
 
     public MainPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             LogoutInteractor logoutInteractor
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.logoutInteractor = logoutInteractor;
     }
 
@@ -75,7 +76,7 @@ public class MainPresenter extends BasePresenter<MainView> {
                     }
                 );
 
-        logoutInteractor.execute();
+        logoutInteractor.logout();
     }
 
     @Override

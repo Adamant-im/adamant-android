@@ -12,6 +12,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
@@ -20,19 +21,19 @@ import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class SettingsPresenter extends  BasePresenter<SettingsView> {
-    private Router router;
+public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
     private SecurityInteractor securityInteractor;
     private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
     private AdamantApiWrapper api;
 
     public SettingsPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             AdamantApiWrapper api,
             SecurityInteractor securityInteractor,
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.api = api;
         this.securityInteractor = securityInteractor;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;

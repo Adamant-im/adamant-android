@@ -7,6 +7,7 @@ import java.util.Map;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.markdown.AdamantAddressEntity;
 import im.adamant.android.markdown.AdamantAddressExtractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -19,8 +20,7 @@ import im.adamant.android.ui.mvp_view.CreateChatView;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class CreateChatPresenter extends BasePresenter<CreateChatView>{
-    private Router router;
+public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private ChatsStorage chatsStorage;
     private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
@@ -28,12 +28,13 @@ public class CreateChatPresenter extends BasePresenter<CreateChatView>{
 
     public CreateChatPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             AdamantAddressExtractor adamantAddressExtractor,
             ChatsStorage chatsStorage
     ) {
-        this.router = router;
+        super(router, accountInteractor);
         this.chatsStorage = chatsStorage;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.adamantAddressExtractor = adamantAddressExtractor;

@@ -15,6 +15,7 @@ import im.adamant.android.dagger.fragments.CreateChatScreenModule;
 import im.adamant.android.dagger.fragments.FragmentScope;
 import im.adamant.android.dagger.fragments.SettingsScreenModule;
 import im.adamant.android.dagger.fragments.WalletScreenModule;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.MainScreen;
@@ -68,9 +69,10 @@ public abstract class MainScreenModule {
     @Provides
     public static MainPresenter provideMainPresenter(
             Router router,
+            AccountInteractor accountInteractor,
             LogoutInteractor logoutInteractor
     ){
-        return new MainPresenter(router, logoutInteractor);
+        return new MainPresenter(router, accountInteractor, logoutInteractor);
     }
 
 }

@@ -1,6 +1,7 @@
 package im.adamant.android.dagger.fragments;
 
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -27,8 +28,9 @@ public class ChatsScreenModule {
     public static ChatsPresenter provideChatsPresenter(
             Router router,
             ChatInteractor chatInteractor,
+            AccountInteractor accountInteractor,
             ChatsStorage chatsStorage
     ){
-        return new ChatsPresenter(router, chatInteractor, chatsStorage);
+        return new ChatsPresenter(router, accountInteractor, chatInteractor, chatsStorage);
     }
 }

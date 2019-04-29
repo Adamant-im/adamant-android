@@ -38,7 +38,7 @@ public class LogoutInteractor {
         return eventBus;
     }
 
-    public void execute() {
+    public void logout() {
         if (logoutDisposable != null) {
             logoutDisposable.dispose();
         }

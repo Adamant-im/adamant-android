@@ -127,9 +127,10 @@ public class SecurityInteractor {
 
     // 3. Проверка пинкода
     private Single<CombinedPassphrase> validatePincode(CharSequence pincode) {
+        String localPincode = pincode.toString(); //Copying pincode to protect against modification
         return getCombinedPassphrase()
                 .map((combinedPassphrase) -> {
-                    if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), pincode.toString())) {
+                    if (keyStoreCipher.verifyHash(combinedPassphrase.getSecureHash(), localPincode)) {
                         return combinedPassphrase;
                     } else {
                         throw new WrongPincodeException("Wrong pincode");
