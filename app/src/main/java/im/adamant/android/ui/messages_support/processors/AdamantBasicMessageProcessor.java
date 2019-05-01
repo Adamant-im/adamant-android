@@ -55,17 +55,11 @@ public class AdamantBasicMessageProcessor extends AbstractMessageProcessor<Adama
                         throw new NotFoundPublicKey("Recipient public key not found");
                     }
 
-                    TransactionMessage transactionMessage = encryptor.encryptMessage(
+                    return encryptor.encryptMessage(
                             message.getText(),
                             recipientPublicKey,
                             keyPair.getSecretKeyString().toLowerCase()
                     );
-
-                    if (transactionMessage == null) {
-                        throw new EncryptionException("Error when encrypting message");
-                    } else {
-                        return transactionMessage;
-                    }
                 })
                 .flatMap((transactionMessage -> Single.fromCallable(
                         () -> {

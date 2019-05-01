@@ -84,53 +84,41 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
 
         Disposable subscribe = chatInteractor
                 .loadHistory(companionId)
+                .ignoreElements()
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> {
-                    //TODO: Refactor update subscription
-                    Disposable updateDisposable = chatInteractor
-                            .update()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doAfterSuccess(newItemsCount -> {
-                                if (newItemsCount == 0) { return; }
-                                messages = chatsStorage.getMessagesByCompanionId(
-                                        companionId
-                                );
+                    messages = chatsStorage.getMessagesByCompanionId(
+                            companionId
+                    );
 
-                                getViewState()
-                                        .showChatMessages(
-                                                messages
-                                        );
-                            })
-                            .doOnError(
-                                error -> {
-                                    if (error instanceof NotAuthorizedException) {
-                                        router.navigateTo(Screens.SPLASH_SCREEN);
-                                    } else {
-                                        router.showSystemMessage(error.getMessage());
-                                    }
+                    getViewState()
+                            .showChatMessages(
+                                    messages
+                            );
 
-                                    LoggerHelper.e("Chats", error.getMessage(), error);
-                                }
-                            )
-                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                            .subscribe();
-
-                    subscriptions.add(updateDisposable);
+                    getViewState().goToLastMessage();
                 })
+                .andThen(chatInteractor
+                        .update()
+                        .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        () -> {
-                                messages = chatsStorage.getMessagesByCompanionId(
-                                        companionId
-                                );
+                        (cnt) -> {
+                                if (cnt > 0) {
+                                    messages = chatsStorage.getMessagesByCompanionId(
+                                            companionId
+                                    );
 
-                                getViewState()
-                                        .showChatMessages(
-                                                messages
-                                        );
-                                getViewState().goToLastMessage();
+                                    getViewState()
+                                            .showChatMessages(
+                                                    messages
+                                            );
+                                }
                         },
                         (error) -> {
-                            LoggerHelper.e("MESSAGES", error.getMessage(), error);
+                            router.showSystemMessage(error.getMessage());
+                            LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
                         }
                 );
 
@@ -190,9 +178,6 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
 
             Disposable subscription = messageProcessor
                     .sendMessage(messageEntity)
-                    .doAfterSuccess(transactionWasProcessed ->  {
-                        LoggerHelper.d("TEST", "NEW");
-                    })
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
                             getViewState().messageWasSended(messageEntity);

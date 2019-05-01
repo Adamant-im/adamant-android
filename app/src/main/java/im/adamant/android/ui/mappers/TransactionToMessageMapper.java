@@ -16,6 +16,9 @@ import im.adamant.android.core.entities.Participant;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
+import im.adamant.android.core.exceptions.EncryptionException;
+import im.adamant.android.core.exceptions.MessageDecryptException;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.exceptions.NotFoundPublicKey;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -43,12 +46,12 @@ public class TransactionToMessageMapper implements Function<Pair<String, Transac
     }
     
     @Override
-    public AbstractMessage apply(Pair<String, Transaction<?>> transactionPair) throws Exception {
+    public AbstractMessage apply(Pair<String, Transaction<?>> transactionPair) throws MessageDecryptException {
         Transaction<?> transaction = transactionPair.second;
         AbstractMessage message = null;
 
         if (!api.isAuthorized()){
-            throw new Exception("You are not authorized.");
+            throw new MessageDecryptException(new NotAuthorizedException("Not Authorized"), transaction.getSenderId(), false, 0L);
         }
 
         String ownAddress = api.getAccount().getAddress();
@@ -57,27 +60,30 @@ public class TransactionToMessageMapper implements Function<Pair<String, Transac
         boolean iRecipient = ownAddress.equalsIgnoreCase(transaction.getRecipientId());
         String companionId = (iRecipient) ? transaction.getSenderId() : transaction.getRecipientId();
 
-        String decryptedMessage = decryptMessage(transaction, transactionPair.first, ownSecretKey);
+        try {
+            String decryptedMessage = decryptMessage(transaction, transactionPair.first, ownSecretKey);
 
-        MessageFactory messageFactory = factoryProvider.getFactoryByType(
-                detectMessageType(transaction, decryptedMessage)
-        );
-        MessageBuilder messageBuilder = messageFactory.getMessageBuilder();
-
-        message = messageBuilder.build(
-                transaction,
-                decryptedMessage,
-                !iRecipient,
-                transaction.getUnixTimestamp(),
-                companionId,
-                "" //Detect by transaction
+            MessageFactory messageFactory = factoryProvider.getFactoryByType(
+                    detectMessageType(transaction, decryptedMessage)
             );
+            MessageBuilder messageBuilder = messageFactory.getMessageBuilder();
 
+            message = messageBuilder.build(
+                    transaction,
+                    decryptedMessage,
+                    !iRecipient,
+                    transaction.getUnixTimestamp(),
+                    companionId,
+                    "" //Detect by transaction
+            );
+        } catch (Exception ex) {
+            throw new MessageDecryptException(ex, companionId, !iRecipient, transaction.getUnixTimestamp());
+        }
 
         return message;
     }
 
-    private String decryptMessage(Transaction<?> transaction, String pKey, String ownSecretKey) throws NotFoundPublicKey {
+    private String decryptMessage(Transaction<?> transaction, String pKey, String ownSecretKey) throws EncryptionException {
         String decryptedMessage = "";
 
         TransactionMessage transactionMessage = getTransactionMessage(transaction);

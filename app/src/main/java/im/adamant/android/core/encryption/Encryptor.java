@@ -3,7 +3,9 @@ package im.adamant.android.core.encryption;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.TransactionState;
+import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.core.exceptions.InvalidValueForKeyValueStorage;
+import im.adamant.android.helpers.LoggerHelper;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,7 +28,7 @@ public class Encryptor {
         this.sodium = sodium;
     }
 
-    public String decryptMessage(String message, String ownMessage, String senderPublicKey, String mySecretKey) {
+    public String decryptMessage(String message, String ownMessage, String senderPublicKey, String mySecretKey) throws EncryptionException {
         String decryptedMessage = "";
 
         byte[] nonceBytes = Hex.encodeStringToHexArray(ownMessage);
@@ -37,14 +39,16 @@ public class Encryptor {
 
             decryptedMessage = sodium.cryptoBoxOpenEasy(message, nonceBytes, curve25519KeyPair);
         } catch (SodiumException e) {
-            e.printStackTrace();
+            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
+            throw  new EncryptionException("Could not decrypt message");
+
         }
 
         return decryptedMessage;
     }
 
     //TODO: It may be better to throw exceptions so that the client can handle them in its own way.
-    public TransactionMessage encryptMessage(String message, String recipientPublicKey, String mySecretKey) {
+    public TransactionMessage encryptMessage(String message, String recipientPublicKey, String mySecretKey)  throws EncryptionException {
         TransactionMessage transactionMessage = null;
         try {
 
@@ -60,13 +64,14 @@ public class Encryptor {
             transactionMessage.setOwnMessage(Hex.bytesToHex(nonceBytes));
 
         }catch (SodiumException e){
-            e.printStackTrace();
+            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
+            throw  new EncryptionException("Could not encrypt message");
         }
 
         return transactionMessage;
     }
 
-    public TransactionState encryptState(String key, String stringifiedState, String mySecretKey){
+    public TransactionState encryptState(String key, String stringifiedState, String mySecretKey) throws EncryptionException {
         TransactionState state = null;
 
         byte[] nonceBytes = sodium.randomBytesBuf(NONCE_LENGTH);
@@ -95,13 +100,14 @@ public class Encryptor {
             state.setValue(json.toString());
 
         } catch (SodiumException e) {
-            e.printStackTrace();
+            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
+            throw  new EncryptionException("Could not encrypt state");
         }
 
         return state;
     }
 
-    public String decryptState(TransactionState encryptedState, String mySecretKey) throws InvalidValueForKeyValueStorage {
+    public String decryptState(TransactionState encryptedState, String mySecretKey) throws InvalidValueForKeyValueStorage, EncryptionException {
         String payloadString = "";
 
         JsonParser parser = new JsonParser();
@@ -155,7 +161,8 @@ public class Encryptor {
             payloadString = payload.toString();
 
         }catch (Exception ex){
-            ex.printStackTrace();
+            LoggerHelper.e(getClass().getSimpleName(), ex.getMessage(), ex);
+            throw  new EncryptionException("Could not decrypt state");
         }
 
         return payloadString;

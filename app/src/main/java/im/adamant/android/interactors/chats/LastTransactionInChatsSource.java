@@ -1,5 +1,7 @@
 package im.adamant.android.interactors.chats;
 
+import java.util.concurrent.TimeUnit;
+
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
@@ -53,6 +55,7 @@ public class LastTransactionInChatsSource {
                         return Flowable.error(new Exception(transactionList.getError()));
                     }
                 })
-                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error));
+                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 }

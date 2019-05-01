@@ -5,6 +5,7 @@ import java.util.Map;
 import im.adamant.android.Constants;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
+import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -25,11 +26,16 @@ public class SaveContactsInteractor {
     public Completable execute() {
         Map<String, Contact> contacts = chatsStorage.getContacts();
 
-        Transaction<TransactionStateAsset> contactListTransaction = kvsHelper.transformToTransaction(
-                Constants.KVS_CONTACT_LIST,
-                true,
-                contacts
-        );
+        Transaction<TransactionStateAsset> contactListTransaction = null;
+        try {
+            contactListTransaction = kvsHelper.transformToTransaction(
+                    Constants.KVS_CONTACT_LIST,
+                    true,
+                    contacts
+            );
+        } catch (EncryptionException e) {
+            return Completable.error(e);
+        }
 
         return apiKvsProvider.put(contactListTransaction);
     }

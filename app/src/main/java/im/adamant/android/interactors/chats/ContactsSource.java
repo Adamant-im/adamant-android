@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
+import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
@@ -46,6 +47,7 @@ public class ContactsSource {
                         return Flowable.error(ex);
                     }
                 })
-                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 }

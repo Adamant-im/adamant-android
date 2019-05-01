@@ -75,7 +75,7 @@ public class PublicKeyStorageImpl implements PublicKeyStorage {
         String pKey = publicKeys.get(address);
 
         if (pKey == null || pKey.isEmpty()) {
-            throw new NotFoundPublicKey("Not oud public key for address: " + address);
+            throw new NotFoundPublicKey("Not found public key for address: " + address);
         }
 
         return new Pair<>(pKey, transaction);

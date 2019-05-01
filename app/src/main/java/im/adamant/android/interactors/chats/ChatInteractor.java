@@ -1,11 +1,18 @@
 package im.adamant.android.interactors.chats;
 
+import android.util.Pair;
+
+import im.adamant.android.core.exceptions.MessageDecryptException;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import io.reactivex.Completable;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class ChatInteractor {
@@ -48,35 +55,47 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
-    public Completable loadChats() {
+    public Flowable<Chat> loadChats() {
         return chatsSource
                 .execute()
                 .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                 .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
-                .map(description -> keyStorage.combinePublicKeyWithTransaction(description.getLastTransaction()))
-                .map(transaction -> {
-                    Chat chat = chatMapper.apply(transaction);
-                    AbstractMessage message = messageMapper.apply(transaction);
-                    chat.setLastMessage(message);
-
-                    return chat;
-                })
-                .doOnNext(chat -> chatsStorage.addNewChat(chat))
-                .ignoreElements()
-                .andThen(contactsSource
-                        .execute()
-                        .doOnNext(contacts -> chatsStorage.refreshContacts(contacts))
-                        .ignoreElements()
+                .flatMap(description -> Flowable.fromCallable(() -> keyStorage
+                        .combinePublicKeyWithTransaction(
+                                description.getLastTransaction()
+                        ))
+                        .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
+                        .onErrorReturnItem(new Pair<>(null, null))
+                        .map(transactionPair -> {
+                            if ((transactionPair.first != null) && (transactionPair.second != null)){
+                                Chat chat = chatMapper.apply(transactionPair);
+                                AbstractMessage message = messageMapper.apply(transactionPair);
+                                chat.setLastMessage(message);
+                                chatsStorage.addNewChat(chat);
+                                return chat;
+                            } else {
+                                return new Chat();
+                            }
+                        })
                 );
     }
 
+    public Completable loadContacts() {
+        return contactsSource
+                .execute()
+                .doOnNext(contacts -> chatsStorage.refreshContacts(contacts))
+                .ignoreElements();
+    }
     public Single<Long> update() {
        return newItemsSource
                 .execute(maxHeight)
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
-                .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
-                .map(transaction -> messageMapper.apply(transaction))
-                .doOnNext(message -> chatsStorage.addMessageToChat(message))
+                .flatMap(transaction -> Flowable
+                        .fromCallable(() -> keyStorage.combinePublicKeyWithTransaction(transaction))
+                        .map(transactionPair -> messageMapper.apply(transactionPair))
+                        .doOnNext(message -> chatsStorage.addMessageToChat(message))
+                        .onErrorReturn(throwable -> new FallbackMessage())
+                )
                 .count()
                 .doAfterSuccess(count -> {
                     if (count > 0) {
@@ -86,13 +105,24 @@ public class ChatInteractor {
 
     }
 
-    public Completable loadHistory(String chatId) {
+    public Flowable<AbstractMessage> loadHistory(String chatId) {
         return historySource.execute(chatId)
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
                 .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
                 .map(transaction -> messageMapper.apply(transaction))
+                .onErrorReturn(throwable -> {
+                    FallbackMessage fallbackMessage = new FallbackMessage();
+                    fallbackMessage.setError(throwable.getMessage());
+                    fallbackMessage.setSupportedType(SupportedMessageListContentType.FALLBACK);
+                    if (throwable instanceof MessageDecryptException) {
+                        fallbackMessage.setCompanionId(((MessageDecryptException) throwable).getCompanionId());
+                        fallbackMessage.setiSay(((MessageDecryptException) throwable).isISay());
+                        fallbackMessage.setTimestamp(((MessageDecryptException) throwable).getTimestamp());
+                        fallbackMessage.setStatus(AbstractMessage.Status.INVALIDATED);
+                    }
+                    return fallbackMessage;
+                })
                 .doOnNext(message -> chatsStorage.addMessageToChat(message))
-                .doOnComplete(() -> chatsStorage.updateLastMessages())
-                .ignoreElements();
+                .doOnComplete(() -> chatsStorage.updateLastMessages());
     }
 }

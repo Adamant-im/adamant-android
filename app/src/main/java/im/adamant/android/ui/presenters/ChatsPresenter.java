@@ -41,50 +41,41 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         Disposable disposable = chatInteractor
                 .loadChats()
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> {
-                    //TODO: Refactor update subscription
-                    Disposable updateDisposable = chatInteractor
-                            .update()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doAfterSuccess(newItemsCount -> {
-                                if (newItemsCount > 0) {
-                                    getViewState().showChats(chatsStorage.getChatList());
-                                }
-                            })
-                            .doOnError(
-                                error -> {
-                                    if (error instanceof NotAuthorizedException) {
-                                        router.navigateTo(Screens.SPLASH_SCREEN);
-                                    } else {
-                                        router.showSystemMessage(error.getMessage());
-                                    }
-
-                                    LoggerHelper.e("Chats", error.getMessage(), error);
-                                }
-                            )
-                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                            .subscribe();
-
-                    subscriptions.add(updateDisposable);
+                .doOnError(throwable -> {
+                    LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                    router.showSystemMessage(throwable.getMessage());
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        () -> {
-                            getViewState().showChats(chatsStorage.getChatList());
-                        },
-                        (error) -> {
-                            if (error instanceof NotAuthorizedException){
-                                router.navigateTo(Screens.SPLASH_SCREEN);
-                            } else {
-                                router.showSystemMessage(error.getMessage());
+                .ignoreElements()
+                .doOnComplete(() -> getViewState().showChats(chatsStorage.getChatList()))
+                .andThen(chatInteractor.loadContacts())
+                .andThen(chatInteractor
+                        .update()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnError(throwable -> {
+                            LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                            router.showSystemMessage(throwable.getMessage());
+                        })
+                        .doAfterSuccess((newItemsCount) -> {
+                            if (newItemsCount > 0) {
+                                getViewState().showChats(chatsStorage.getChatList());
                             }
-
-                            LoggerHelper.e("Chats", error.getMessage(), error);
-                        }
-                );
+                        })
+                        .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                )
+                .observeOn(AndroidSchedulers.mainThread())
+                .onErrorReturnItem(1L)
+                .subscribe();
 
         subscriptions.add(disposable);
     }
+
+
+//    @Override
+//    public void attachView(ChatsView view) {
+//        super.attachView(view);
+//
+//        getViewState().showChats(chatsStorage.getChatList());
+//    }
 
     public void onChatWasSelected(Chat chat){
         router.navigateTo(Screens.MESSAGES_SCREEN, chat.getCompanionId());
