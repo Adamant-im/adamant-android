@@ -279,8 +279,6 @@ public class KeyStoreCipher {
             e.printStackTrace();
             throw new EncryptionException("Hash not created");
         }
-
-
     }
 
     public boolean verifyHash(String hash, String data) {

@@ -45,12 +45,13 @@ public class SecurityInteractor {
 
     // 1. Сохранение пасфразы и пинкода они не разрывны.
     public Completable savePassphrase(CharSequence pincode) {
+        String localPincode = pincode.toString();
         return Completable.fromAction(() -> {
             settings.setKeyPairMustBeStored(true);
 
             try {
                 if (api.isAuthorized()){
-                    String secureHash = keyStoreCipher.secureHash(pincode);
+                    String secureHash = keyStoreCipher.secureHash(localPincode);
                     CharSequence passphrase = api.getPassPhrase();
 
                     String encryptedPassphrase = keyStoreCipher.encrypt(
