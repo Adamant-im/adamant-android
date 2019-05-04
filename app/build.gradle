@@ -38,7 +38,8 @@ android {
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_5", "\"https://bid.adamant.im\""
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"https://unusual.adamant.im\""
 
-        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
+//        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
+        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"https://bid.adamant.im\""
     }
 
     buildTypes {

@@ -38,7 +38,7 @@ public class PublicKeyStorageImpl implements PublicKeyStorage {
                             publicKeys.put(address, response.getPublicKey());
                             return Flowable.just(response.getPublicKey());
                         } else  {
-                            return Flowable.error(new NotFoundPublicKey("Not oud public key for address: " + address));
+                            return Flowable.error(new NotFoundPublicKey("Not found public key for address: " + address));
                         }
                     });
         } else {

@@ -17,6 +17,7 @@ import im.adamant.android.dagger.fragments.SettingsScreenModule;
 import im.adamant.android.dagger.fragments.WalletScreenModule;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
@@ -70,9 +71,10 @@ public abstract class MainScreenModule {
     public static MainPresenter provideMainPresenter(
             Router router,
             AccountInteractor accountInteractor,
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
             LogoutInteractor logoutInteractor
     ){
-        return new MainPresenter(router, accountInteractor, logoutInteractor);
+        return new MainPresenter(router, pushNotificationServiceInteractor, accountInteractor, logoutInteractor);
     }
 
 }

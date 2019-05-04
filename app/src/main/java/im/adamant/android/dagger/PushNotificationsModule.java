@@ -10,6 +10,8 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.SystemClock;
 
+import com.google.gson.Gson;
+
 import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Singleton;
@@ -112,10 +114,11 @@ public abstract class PushNotificationsModule {
     @Singleton
     @Provides
     public static PushNotificationServiceFacade provideFcmFacade(
+            Gson gson,
             Settings settings,
             MessageFactoryProvider messageFactoryProvider
     ) {
-        return new FCMNotificationServiceFacade(settings, messageFactoryProvider);
+        return new FCMNotificationServiceFacade(gson, settings, messageFactoryProvider);
     }
 
     //TODO: Uncomment this when Local Service will be written

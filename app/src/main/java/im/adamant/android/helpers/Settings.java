@@ -19,6 +19,7 @@ public class Settings {
     private static final String ADDRESS_OF_NOTIFICATION_SERVICE = "address_of_notification_service";
     private static final String PUSH_NOTIFICATION_SERVICE = "push_notification_service";
     private static final String LAST_TRANSACTION_TIMESTAMP = "last_transaction_timestamp";
+    private static final String UNSUBSCRIBE_PUSH_NOTIFICATION_TRANSACTION = "unsubscribe_fcm_service_transaction";
 
     private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
     private String accountPassphrase = "";
@@ -27,6 +28,7 @@ public class Settings {
     private boolean isKeyPairMustBeStored;
     private String notificationToken = "";
     private String addressOfNotificationService = "";
+    private String unsubscribeFcmTransaction = "";
     private int lastTransactionTimestamp;
     private SupportedPushNotificationFacadeType pushNotificationFacadeType;
 
@@ -38,6 +40,7 @@ public class Settings {
         accountPassphrase = this.preferences.getString(ACCOUNT_PASSPHRASE, "");
         isKeyPairMustBeStored = this.preferences.getBoolean(KEY_PAIR_MUST_BE_STORED, false);
         notificationToken = this.preferences.getString(NOTIFICATION_TOKEN, "");
+        unsubscribeFcmTransaction = this.preferences.getString(UNSUBSCRIBE_PUSH_NOTIFICATION_TRANSACTION, "");
         addressOfNotificationService = this.preferences.getString(ADDRESS_OF_NOTIFICATION_SERVICE, BuildConfig.DEFAULT_NOTIFICATION_SERVICE_ADDRESS);
         pushNotificationFacadeType = SupportedPushNotificationFacadeType.valueOf(
                 this.preferences.getString(
@@ -135,6 +138,18 @@ public class Settings {
         this.preferences
                 .edit()
                 .putInt(LAST_TRANSACTION_TIMESTAMP, lastTransactionTimestamp)
+                .apply();
+    }
+
+    public String getUnsubscribeFcmTransaction() {
+        return unsubscribeFcmTransaction;
+    }
+
+    public void setUnsubscribeFcmTransaction(String unsubscribeFcmTransaction) {
+        this.unsubscribeFcmTransaction = unsubscribeFcmTransaction;
+        this.preferences
+                .edit()
+                .putString(UNSUBSCRIBE_PUSH_NOTIFICATION_TRANSACTION, unsubscribeFcmTransaction)
                 .apply();
     }
 

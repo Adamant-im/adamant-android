@@ -74,47 +74,6 @@ public class AdamantFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    @Override
-    public void onNewToken(String newToken) {
-        super.onNewToken(newToken);
-
-        if (settings.getPushNotificationFacadeType() != SupportedPushNotificationFacadeType.FCM) {
-            return;
-        }
-
-        FCMNotificationServiceFacade fcmFacade = (FCMNotificationServiceFacade) facades.get(SupportedPushNotificationFacadeType.FCM);
-        //TODO: disposable.dispose()
-        if (fcmFacade != null) {
-            Disposable disposable = securityInteractor
-                    .restoreAuthorizationWithoutPincode()
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .flatMap(authorization -> {
-                        if (authorization.isSuccess()){
-                            return fcmFacade.subscribe().toSingleDefault(new Authorization());
-                        } else {
-                            return Single.error(new NotAuthorizedException(authorization.getError()));
-                        }
-                    })
-                    .ignoreElement()
-                    .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                    .subscribe(
-                            this::showChangeTokenNotification,
-                            error -> {
-                                //If it was not possible to send data about the new token, then turn off the pushes on the client, they will not work anyway
-                                fcmFacade.unsubscribe();
-                            }
-                    );
-        }
-    }
-
-    private void showChangeTokenNotification() {
-        String title = getString(R.string.fcm_notification_service_change_token_title);
-        String text = getString(R.string.fcm_notification_service_change_token_message);
-        text = String.format(Locale.ENGLISH, text, BuildConfig.ADM_MINIMUM_COST);
-
-        showNotification(title, text);
-    }
-
     private void showMessageNotification() {
         String title = getString(R.string.adamant_default_notification_channel);
         String text = getString(R.string.default_notification_message);

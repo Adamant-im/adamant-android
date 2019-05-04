@@ -7,6 +7,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.exceptions.NotEnoughAdamantBalanceException;
 import im.adamant.android.core.requests.ProcessTransaction;
@@ -30,7 +31,7 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
     }
 
     @Override
-    public Single<TransactionWasProcessed> sendMessage(T message) {
+    public Single<Transaction<? extends TransactionAsset>> buildNormalizedTransaction(T message) {
         //TODO: Rewrite the error handling so that any error is displayed under the message.
         if (!api.isAuthorized()){return Single.error(new NotAuthorizedException("Not authorized"));}
 
@@ -46,9 +47,8 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
             );
         }
 
-        Single<TransactionWasProcessed> result = null;
         try {
-            result = publicKeyStorage.findPublicKey(message.getCompanionId())
+            return publicKeyStorage.findPublicKey(message.getCompanionId())
                     .singleOrError()
                     .observeOn(Schedulers.computation())
                     .flatMap(publicKey -> buildTransactionMessage(message, publicKey))
@@ -59,7 +59,7 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
                     )))
                     .flatMap((transactionWasNormalized -> {
                         if (transactionWasNormalized.isSuccess()) {
-                            Transaction transaction = transactionWasNormalized.getTransaction();
+                            Transaction<? extends TransactionAsset> transaction = transactionWasNormalized.getTransaction();
                             transaction.setSenderId(account.getAddress());
 
                             transaction.setSignature(
@@ -73,26 +73,40 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
                         } else {
                             return Single.error(new Exception(transactionWasNormalized.getError()));
                         }
-                    }))
-                    .flatMap(transaction -> Single.fromPublisher(
-                            api.processTransaction(new ProcessTransaction(transaction))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(Schedulers.computation())
-                    ))
-                    .doAfterSuccess(transactionWasProcessed -> {
-                        if (transactionWasProcessed.isSuccess()) {
-                            message.setTransactionId(transactionWasProcessed.getTransactionId());
-                            message.setStatus(AbstractMessage.Status.DELIVERED);
-                        }
-                    })
-                    .doOnError(throwable -> {
-                        message.setStatus(AbstractMessage.Status.NOT_SENDED);
-                        message.setError(throwable.getMessage());
-                    });
+                    }));
         } catch (Exception ex) {
             ex.printStackTrace();
+            return Single.error(ex);
         }
+    }
 
-        return result;
+    @Override
+    public Single<TransactionWasProcessed> sendMessage(T message) {
+        return buildNormalizedTransaction(message)
+            .flatMap(transaction -> Single.fromPublisher(
+                    api.processTransaction(new ProcessTransaction(transaction))
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(Schedulers.computation())
+            ))
+            .doAfterSuccess(transactionWasProcessed -> {
+                if (transactionWasProcessed.isSuccess()) {
+                    message.setTransactionId(transactionWasProcessed.getTransactionId());
+                    message.setStatus(AbstractMessage.Status.DELIVERED);
+                }
+            })
+            .doOnError(throwable -> {
+                message.setStatus(AbstractMessage.Status.NOT_SENDED);
+                message.setError(throwable.getMessage());
+            });
+    }
+
+    @Override
+    public Single<TransactionWasProcessed> sendTransaction(Single<Transaction<? extends TransactionAsset>> transactionSource) {
+        return transactionSource
+                .flatMap(transaction -> Single.fromPublisher(
+                        api.processTransaction(new ProcessTransaction(transaction))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(Schedulers.computation())
+                ));
     }
 }
