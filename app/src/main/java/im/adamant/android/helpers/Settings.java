@@ -171,11 +171,11 @@ public class Settings {
         if (BuildConfig.TEST_NET) {
             defaults.add(BuildConfig.TEST_NET_DEFAULT_NODE_1);
         } else {
-            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_1);
-            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_2);
-            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_3);
+//            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_1);
+//            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_2);
+//            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_3);
 //            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_4);
-//            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_5);
+            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_5);
 //            defaults.add(BuildConfig.PROD_NET_DEFAULT_NODE_6);
         }
 
