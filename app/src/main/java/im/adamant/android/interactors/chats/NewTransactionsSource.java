@@ -30,7 +30,10 @@ public class NewTransactionsSource {
 
         maxHeight = startHeight;
 
-        return Flowable.defer(() -> getTransactionsBatch(maxHeight, 0).concatWith(getAllAdamantTransfers(maxHeight, 0)))
+        return Flowable.defer(() ->
+                        getTransactionsBatch(maxHeight, 0)
+                        .concatWith(getAllAdamantTransfers(maxHeight, 0))
+                )
                 .doOnNext(transaction -> {
                     if (transaction.getHeight() > maxHeight) {
                         maxHeight = transaction.getHeight();

@@ -2,10 +2,13 @@ package im.adamant.android.interactors.chats;
 
 import android.util.Pair;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.mappers.LocalizedChatMapper;
+import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
@@ -30,6 +33,8 @@ public class ChatInteractor {
     private HistoryTransactionsSource historySource;
     private ContactsSource contactsSource;
     private ChatsStorage chatsStorage;
+    private LocalizedChatMapper localizedChatMapper;
+    private LocalizedMessageMapper localizedMessageMapper;
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
 
@@ -43,7 +48,9 @@ public class ChatInteractor {
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
-            TransactionToMessageMapper messageMapper
+            TransactionToMessageMapper messageMapper,
+            LocalizedChatMapper localizedChatMapper,
+            LocalizedMessageMapper localizedMessageMapper
     ) {
         this.keyStorage = keyStorage;
         this.newItemsSource = newItemsSource;
@@ -53,6 +60,8 @@ public class ChatInteractor {
         this.chatsStorage = chatsStorage;
         this.chatMapper = chatMapper;
         this.messageMapper = messageMapper;
+        this.localizedChatMapper = localizedChatMapper;
+        this.localizedMessageMapper = localizedMessageMapper;
     }
 
     public Flowable<Chat> loadChats() {
@@ -69,15 +78,36 @@ public class ChatInteractor {
                         .map(transactionPair -> {
                             if ((transactionPair.first != null) && (transactionPair.second != null)){
                                 Chat chat = chatMapper.apply(transactionPair);
-                                AbstractMessage message = messageMapper.apply(transactionPair);
-                                chat.setLastMessage(message);
-                                chatsStorage.addNewChat(chat);
-                                return chat;
-                            } else {
-                                return new Chat();
+                                chat = localizedChatMapper.apply(chat);
+
+                                if (chat != null) {
+                                    AbstractMessage message = messageMapper.apply(transactionPair);
+                                    message = localizedMessageMapper.apply(message);
+
+                                    chatsStorage.addNewChat(chat);
+
+                                    if (message != null) {
+                                        chat.setLastMessage(message);
+                                        chatsStorage.addMessageToChat(message);
+                                    }
+
+                                    return chat;
+                                }
                             }
+
+                            return new Chat();
                         })
-                );
+                )
+                .doOnComplete(() -> {
+                    Chat chat = localizedChatMapper.buildChat(BuildConfig.WELCOME_MESSAGE_ADDR);
+                    // Duplicated messages will be merged
+                    AbstractMessage abstractMessage = localizedMessageMapper.buildMessage(BuildConfig.WELCOME_MESSAGE_ADDR);
+                    chat.setLastMessage(abstractMessage);
+                    chatsStorage.addMessageToChat(abstractMessage);
+                    chatsStorage.addNewChat(chat);
+
+                    chatsStorage.updateLastMessages();
+                });
     }
 
     public Completable loadContacts() {
@@ -93,7 +123,12 @@ public class ChatInteractor {
                 .flatMap(transaction -> Flowable
                         .fromCallable(() -> keyStorage.combinePublicKeyWithTransaction(transaction))
                         .map(transactionPair -> messageMapper.apply(transactionPair))
-                        .doOnNext(message -> chatsStorage.addMessageToChat(message))
+                        .doOnNext(message -> {
+                            message = localizedMessageMapper.apply(message);
+                            if (message != null) {
+                                chatsStorage.addMessageToChat(message);
+                            }
+                        })
                         .onErrorReturn(throwable -> new FallbackMessage())
                 )
                 .count()
@@ -122,7 +157,12 @@ public class ChatInteractor {
                     }
                     return fallbackMessage;
                 })
-                .doOnNext(message -> chatsStorage.addMessageToChat(message))
+                .doOnNext(message -> {
+                    message = localizedMessageMapper.apply(message);
+                    if (message != null) {
+                        chatsStorage.addMessageToChat(message);
+                    }
+                })
                 .doOnComplete(() -> chatsStorage.updateLastMessages());
     }
 }

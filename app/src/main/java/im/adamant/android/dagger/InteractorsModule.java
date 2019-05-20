@@ -36,6 +36,8 @@ import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.ui.mappers.LocalizedChatMapper;
+import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -110,7 +112,9 @@ public abstract class InteractorsModule {
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
-            TransactionToMessageMapper messageMapper
+            TransactionToMessageMapper messageMapper,
+            LocalizedChatMapper localizedChatMapper,
+            LocalizedMessageMapper localizedMessageMapper
     ) {
         return new ChatInteractor(
                 publicKeyStorage,
@@ -120,7 +124,9 @@ public abstract class InteractorsModule {
                 contactsSource,
                 chatsStorage,
                 chatMapper,
-                messageMapper
+                messageMapper,
+                localizedChatMapper,
+                localizedMessageMapper
         );
     }
 

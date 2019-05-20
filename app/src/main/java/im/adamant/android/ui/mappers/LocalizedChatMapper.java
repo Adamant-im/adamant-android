@@ -15,22 +15,23 @@ public class LocalizedChatMapper implements Function<Chat, Chat> {
     }
 
     @Override
-    public Chat apply(Chat chat) throws Exception {
-        String chatTitle = chat.getCompanionId();
-
+    public Chat apply(Chat chat) {
         switch (chat.getCompanionId()){
             case BuildConfig.WELCOME_MESSAGE_ADDR: {
-                chatTitle = context.getString(R.string.hello_message_baunty_name);
+                chat.setTitle(context.getString(R.string.hello_message_baunty_name));
             }
             break;
             case BuildConfig.MESSAGE_CTNCR_ADDR: {
-                chatTitle = context.getString(R.string.hello_message_ico_name);
+                return null;
             }
-            break;
         }
 
-        chat.setTitle(chatTitle);
-
         return chat;
+    }
+
+    public Chat buildChat(String address) {
+        Chat chat = new Chat();
+        chat.setCompanionId(address);
+        return apply(chat);
     }
 }
