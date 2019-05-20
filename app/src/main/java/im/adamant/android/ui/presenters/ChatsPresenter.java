@@ -40,31 +40,33 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
 
         Disposable disposable = chatInteractor
                 .loadChats()
+                .ignoreElements()
+                .andThen(chatInteractor.loadContacts())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> {
                     LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
                     router.showSystemMessage(throwable.getMessage());
                 })
-                .ignoreElements()
                 .doOnComplete(() -> getViewState().showChats(chatsStorage.getChatList()))
-                .andThen(chatInteractor.loadContacts())
-                .andThen(chatInteractor
-                        .update()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doOnError(throwable -> {
-                            LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
-                            router.showSystemMessage(throwable.getMessage());
-                        })
-                        .doAfterSuccess((newItemsCount) -> {
-                            if (newItemsCount > 0) {
-                                getViewState().showChats(chatsStorage.getChatList());
-                            }
-                        })
-                        .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                )
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorReturnItem(1L)
-                .subscribe();
+                .subscribe(() -> {
+                    Disposable updatedDisposabled = chatInteractor
+                            .update()
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnError(throwable -> {
+                                LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                                router.showSystemMessage(throwable.getMessage());
+                            })
+                            .doAfterSuccess((newItemsCount) -> {
+                                if (newItemsCount > 0) {
+                                    getViewState().showChats(chatsStorage.getChatList());
+                                }
+                            })
+                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                            .onErrorReturnItem(1L)
+                            .subscribe();
+
+                    subscriptions.add(updatedDisposabled);
+                });
 
         subscriptions.add(disposable);
     }

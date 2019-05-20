@@ -87,34 +87,22 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                 .ignoreElements()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnComplete(() -> {
-                    messages = chatsStorage.getMessagesByCompanionId(
-                            companionId
-                    );
-
-                    getViewState()
-                            .showChatMessages(
-                                    messages
-                            );
-
+                    refreshMessageList(companionId);
                     getViewState().goToLastMessage();
                 })
-                .andThen(chatInteractor
-                        .update()
-                        .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                )
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        (cnt) -> {
-                                if (cnt > 0) {
-                                    messages = chatsStorage.getMessagesByCompanionId(
-                                            companionId
-                                    );
-
-                                    getViewState()
-                                            .showChatMessages(
-                                                    messages
-                                            );
-                                }
+                        () -> {
+                            Disposable updateDisposable = chatInteractor
+                                    .update()
+                                    .doAfterSuccess(cnt -> {
+                                        if (cnt > 0) {
+                                            refreshMessageList(companionId);
+                                        }
+                                    })
+                                    .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                                    .subscribe();
+                            subscriptions.add(updateDisposable);
                         },
                         (error) -> {
                             router.showSystemMessage(error.getMessage());
@@ -229,6 +217,13 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         return abstractMessage;
     }
 
+    private void refreshMessageList(String companionId) {
+        messages = chatsStorage.getMessagesByCompanionId(
+                companionId
+        );
+
+        getViewState().showChatMessages(messages);
+    }
 
     public void onClickShowRenameDialog() {
         if (currentChat != null){
