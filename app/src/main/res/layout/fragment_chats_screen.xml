@@ -6,44 +6,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmer_view_container"
+    <ProgressBar
+        android:id="@+id/fragment_chats_pb_progress"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="vertical"
+        android:indeterminate="true"
+        android:secondaryProgress="50"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        shimmer:duration="800">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <include layout="@layout/list_item_placeholder_chat" />
-
-            <include layout="@layout/list_item_placeholder_chat" />
-
-            <include layout="@layout/list_item_placeholder_chat" />
-
-            <include layout="@layout/list_item_placeholder_chat" />
-
-            <include layout="@layout/list_item_placeholder_chat" />
-
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/activity_chats_rv_chats"
+        android:id="@+id/fragment_chats_rv_chats"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:background="@color/background"
         android:scrollbars="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fragment_chats_pb_progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,6 +9,7 @@ import im.adamant.android.ui.entities.Chat;
 import java.util.List;
 
 public interface ChatsView extends MvpView {
-    @StateStrategyType(SkipStrategy.class)
+//    @StateStrategyType(SkipStrategy.class)
     void showChats(List<Chat> chats);
+    void progress(boolean value);
 }

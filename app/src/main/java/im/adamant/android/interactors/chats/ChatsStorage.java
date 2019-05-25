@@ -24,6 +24,8 @@ public class ChatsStorage {
     private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
     private MessageComparator messageComparator = new MessageComparator();
 
+    private boolean isLoaded = false;
+
     public List<Chat> getChatList() {
         return chats;
     }
@@ -129,9 +131,18 @@ public class ChatsStorage {
         return contacts;
     }
 
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
+    }
+
     public void cleanUp() {
         chats.clear();
         messagesByChats.clear();
+        isLoaded = false;
     }
 
     private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {

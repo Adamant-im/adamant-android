@@ -60,6 +60,7 @@ public class ChatInteractor {
                 .execute()
                 .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                 .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
+                .doOnComplete(() -> chatsStorage.setLoaded(true))
                 .flatMap(description -> Flowable.fromCallable(() -> keyStorage
                         .combinePublicKeyWithTransaction(
                                 description.getLastTransaction()
@@ -67,7 +68,7 @@ public class ChatInteractor {
                         .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
                         .onErrorReturnItem(new Pair<>(null, null))
                         .map(transactionPair -> {
-                            if ((transactionPair.first != null) && (transactionPair.second != null)){
+                            if ((transactionPair.first != null) && (transactionPair.second != null)) {
                                 Chat chat = chatMapper.apply(transactionPair);
                                 AbstractMessage message = messageMapper.apply(transactionPair);
                                 chat.setLastMessage(message);

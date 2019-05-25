@@ -16,6 +16,9 @@ import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.bottomappbar.BottomAppBar;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 
@@ -76,6 +79,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     Avatar avatar;
 
+    private ChatsScreen chatsScreen;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_main;
@@ -105,8 +110,9 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
     @Override
     public void showChatsScreen() {
+        if (chatsScreen == null) { chatsScreen = new ChatsScreen(); }
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new ChatsScreen());
+        transaction.replace(R.id.main_screen_content, chatsScreen);
         transaction.commit();
     }
 
@@ -149,7 +155,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         }
         return false;
     }
-
 
     private Navigator navigator = new DefaultNavigator(this) {
         @Override

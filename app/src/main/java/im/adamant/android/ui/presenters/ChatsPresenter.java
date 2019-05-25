@@ -38,6 +38,9 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
+        getViewState().progress(!chatsStorage.isLoaded());
+        getViewState().showChats(chatsStorage.getChatList());
+
         Disposable disposable = chatInteractor
                 .loadChats()
                 .ignoreElements()
@@ -47,7 +50,10 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                     LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
                     router.showSystemMessage(throwable.getMessage());
                 })
-                .doOnComplete(() -> getViewState().showChats(chatsStorage.getChatList()))
+                .doOnComplete(() -> {
+                    getViewState().progress(false);
+                    getViewState().showChats(chatsStorage.getChatList());
+                })
                 .subscribe(() -> {
                     Disposable updatedDisposabled = chatInteractor
                             .update()

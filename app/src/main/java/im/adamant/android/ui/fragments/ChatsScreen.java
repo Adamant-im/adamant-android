@@ -1,7 +1,6 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
@@ -17,10 +16,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.List;
 
@@ -55,15 +54,15 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     }
 
     //--ButterKnife
-    @BindView(R.id.activity_chats_rv_chats)
+    @BindView(R.id.fragment_chats_rv_chats)
     RecyclerView chatList;
-    @BindView(R.id.shimmer_view_container)
-    ShimmerFrameLayout shimmer;
+
+    @BindView(R.id.fragment_chats_pb_progress)
+    ProgressBar progressBar;
 
     public ChatsScreen() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -102,27 +101,17 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
-        shimmer.stopShimmerAnimation();
-        chatList.setVisibility(View.VISIBLE);
-        shimmer.setVisibility(View.GONE);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        chatList.setVisibility(View.GONE);
-        shimmer.setVisibility(View.VISIBLE);
-        shimmer.startShimmerAnimation();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        shimmer.stopShimmerAnimation();
-        chatList.setVisibility(View.VISIBLE);
-        shimmer.setVisibility(View.GONE);
+    public void progress(boolean value) {
+        if (value) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
+
 
     @Override
     public void itemWasSelected(Chat chat) {

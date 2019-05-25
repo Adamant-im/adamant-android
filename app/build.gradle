@@ -39,7 +39,6 @@ android {
         buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"https://unusual.adamant.im\""
 
         buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
-//        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"https://bid.adamant.im\""
     }
 
     buildTypes {
@@ -113,7 +112,7 @@ dependencies {
     implementation "com.google.android.material:material:1.0.0"
     implementation "androidx.vectordrawable:vectordrawable:1.0.1"
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
-    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-beta1"
     implementation "net.java.dev.jna:jna:4.5.1@aar"
     implementation "com.goterl.lazycode:lazysodium-android:2.2.0@aar"
     implementation "io.github.novacrypto:BIP39:0.1.9"
@@ -130,7 +129,6 @@ dependencies {
     implementation "com.google.android.material:material:1.0.0"
     implementation "com.jakewharton:butterknife:$butterKnifeVersion"
     implementation "com.github.curioustechizen.android-ago:library:1.4.0"
-    implementation "com.facebook.shimmer:shimmer:0.1.0@aar"
     implementation "me.dm7.barcodescanner:zxing:1.9.8"
     implementation "com.github.kenglxn.QRGen:android:2.5.0"
     implementation "gun0912.ted:tedpermission:2.2.0"
@@ -141,7 +139,7 @@ dependencies {
     implementation 'com.jakewharton.rxbinding3:rxbinding-core:3.0.0-alpha2'
     implementation "com.google.firebase:firebase-messaging:17.3.4"
     implementation "com.allattentionhere:fabulousfilter:0.0.5"
-    implementation "androidx.core:core:1.0.1"
+    implementation "androidx.core:core:1.0.2"
     implementation "com.yarolegovich:discrete-scrollview:1.4.9"
     implementation "com.agrawalsuneet.androidlibs:loaderspack:1.2.3"
 
