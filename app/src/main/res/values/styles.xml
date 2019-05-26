@@ -27,11 +27,13 @@
 
     <style name="AdamantLight.TextAppearance" parent="AdamantLight.BaseTextAppearance"/>
 
-    <style name="AdamantLight.TextViewHeader">
+    <style name="AdamantLight.BaseTextViewHeader">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="AdamantLight.TextViewHeader" parent="AdamantLight.BaseTextViewHeader" />
 
     <style name="AdamantLight.TextViewSubHeader">
         <item name="android:fontFamily">sans-serif</item>

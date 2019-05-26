@@ -11,9 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:textColor="@color/onSurface"
         android:text="@string/fragment_login_title"
-        android:textSize="24sp"
+        style="@style/AdamantLight.TextViewHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +48,6 @@
         style="@style/AdamantLight.PrimaryButton"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
-        android:enabled="false"
         android:text="@string/activity_login_btn_enter_in_net"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -64,8 +62,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="@string/activity_login_tv_login_by_qr"
-        android:textAllCaps="true"
-        android:textSize="14sp"
+        style="@style/AdamantLight.TextViewOverLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_btn_enter" />

@@ -16,4 +16,8 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:fontWeight">100</item>
     </style>
+
+    <style name="AdamantLight.TextViewHeader" parent="AdamantLight.BaseTextViewHeader">
+        <item name="android:fontWeight">500</item>
+    </style>
 </resources>
