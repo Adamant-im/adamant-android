@@ -20,7 +20,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_show_qr_code_btn_save_in_gallery"
-        style="@style/AdamantLight.ActivePrimaryButton"
+        style="@style/AdamantLight.PrimaryButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

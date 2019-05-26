@@ -13,7 +13,6 @@
         android:layout_marginEnd="5dp"
         android:gravity="start" />
 
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
@@ -24,7 +23,7 @@
             android:id="@+id/actionbarTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            style="@style/AdamantLight.TextViewSubHeader"
             android:text="@string/app_name"/>
 
         <TextView
@@ -32,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:textSize="12sp" />
+            style="@style/AdamantLight.TextViewOverLine" />
 
     </LinearLayout>
 </LinearLayout>

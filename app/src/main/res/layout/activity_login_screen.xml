@@ -27,7 +27,7 @@
             <com.yarolegovich.discretescrollview.DiscreteScrollView
                 android:id="@+id/activity_login_vp_welcome_cards"
                 android:layout_width="match_parent"
-                android:layout_height="385dp"
+                android:layout_height="400dp"
                 app:dsv_orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_login"
-                style="@style/AdamantLight.ActiveSecondaryButton"
+                style="@style/AdamantLight.PrimaryButton"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"

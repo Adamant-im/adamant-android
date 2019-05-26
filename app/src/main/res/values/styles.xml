@@ -1,7 +1,6 @@
 <resources>
-
     <!-- Base application theme. -->
-    <style name="AdamantLight" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="BaseAdamantLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
@@ -11,30 +10,26 @@
         <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
         <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
         <item name="alertDialogStyle">@style/AdamantLight.AlertDialogCustom</item>
-        <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>+
+        <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>
     </style>
+
+    <style name="AdamantLight" parent="BaseAdamantLight" />
 
     <style name="AdamantLight.PincodeTheme" parent="AdamantLight">
         <item name="colorAccent">@color/primaryDarkVariant</item>
     </style>
 
-    <style name="AdamantLight.TextAppearance" parent="@android:style/TextAppearance.Small">
+    <style name="AdamantLight.BaseTextAppearance" parent="@android:style/TextAppearance.Small">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/onBackground</item>
+        <item name="android:textColor">@color/onPrimary</item>
     </style>
 
-    <style name="AdamantLight.TextAppearance.Inverse" parent="@android:style/TextAppearance.Inverse">
-        <item name="android:fontFamily">sans-serif</item>
-    </style>
-
-    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
-        <item name="fontWeight">300</item>
-    </style>
+    <style name="AdamantLight.TextAppearance" parent="AdamantLight.BaseTextAppearance"/>
 
     <style name="AdamantLight.TextViewHeader">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
@@ -50,42 +45,70 @@
 
     <style name="AdamantLight.TextViewOverLine">
         <item name="android:fontFamily">sans-serif</item>
-        <item name="android:textSize">10sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/textMuted</item>
     </style>
 
-    <style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="backgroundTint">@color/secondary</item>-->
-        <item name="android:textColor">@drawable/primary_button_selector_text</item>
+    <style name="AdamantLight.TextViewEnlargedOverline" parent="AdamantLight.TextViewOverLine">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="AdamantLight.TextViewHeadline" parent="AdamantLight.TextViewSubHeader">
         <item name="android:textAllCaps">true</item>
     </style>
 
-    <style name="AdamantLight.ActiveSecondaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="AdamantLight.BaseButtonTextAppearance" parent="AdamantLight.TextAppearance">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.BaseButtonTextAppearance"/>
+
+    <style name="TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/textMuted</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="colorControlActivated">@color/secondary</item>
+    </style>
+
+    <style name="AdamantLight.EditTextInput" parent="AdamantLight.TextViewNormal">
+        <item name="android:textColorHint">@color/textMuted</item>
+    </style>
+
+    <!--<style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">-->
+        <!--<item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>-->
+        <!--&lt;!&ndash;<item name="backgroundTint">@color/secondary</item>&ndash;&gt;-->
+        <!--<item name="android:textColor">@drawable/primary_button_selector_text</item>-->
+        <!--<item name="android:textAllCaps">true</item>-->
+    <!--</style>-->
+
+
+    <style name="AdamantLight.BasePrimaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:background">@color/background</item>
+        <item name="backgroundTint">@color/background</item>
+        <item name="iconTint">@drawable/secondary_button_selector_text</item>
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
-    <style name="AdamantLight.FlatIconButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+    <style name="AdamantLight.PrimaryButton" parent="AdamantLight.BasePrimaryButton"/>
+
+    <style name="AdamantLight.BaseFlatIconButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <item name="android:textColor">@drawable/secondary_button_selector_text</item>
         <item name="android:textAllCaps">true</item>
-        <item name="cornerRadius">@dimen/main_button_height</item>
+        <item name="cornerRadius">@dimen/main_button_radius</item>
         <item name="strokeColor">@color/strokeDark</item>
     </style>
 
+    <style name="AdamantLight.FlatIconButton" parent="AdamantLight.BaseFlatIconButton"/>
+
     <style name="AdamantLight.FlatTextButton" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
-        <!--<item name="android:backgroundTint">@drawable/secondary_button_selector_background</item>-->
         <item name="android:textColor">@drawable/flat_button_selector_text</item>
     </style>
 
-    <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
-
-    </style>
+    <style name="AdamantLight.ImageButton" parent="@style/Widget.MaterialComponents.Button.TextButton"/>
 
     <style name="AdamantLight.BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
@@ -94,7 +117,7 @@
     <style name="AdamantLight.BaseBottomSheetDialog" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/AdamantLight.BottomSheet</item>
-        <item name="colorAccent">@color/inactiveInputOutline</item>
+        <item name="colorAccent">@color/textMuted</item>
     </style>
 
 

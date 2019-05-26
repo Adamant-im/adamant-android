@@ -115,7 +115,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_registration_btn_register"
-            style="@style/AdamantLight.ActivePrimaryButton"
+            style="@style/AdamantLight.PrimaryButton"
             android:layout_width="@dimen/main_button_width"
             android:layout_height="@dimen/main_button_height"
             android:layout_marginStart="8dp"

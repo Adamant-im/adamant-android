@@ -1,6 +1,5 @@
 package im.adamant.android.ui.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -34,7 +33,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentTransaction;
+
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.AdamantApplication;
@@ -138,7 +137,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
         FragmentActivity activity = getActivity();
         if (activity != null){
-            DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
 
             RxTextView
                     .textChanges(amountView)
@@ -160,7 +159,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                 if (focused) {
                     DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.secondary, PorterDuff.Mode.SRC_IN);
                 } else {
-                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
                 }
             });
 
@@ -302,9 +301,9 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             drawable = getIcon(activity, resourceId);
             totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
 
-            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
         }
     }
 

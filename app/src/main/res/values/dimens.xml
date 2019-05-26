@@ -1,6 +1,7 @@
 <resources>
     <dimen name="main_button_width">210dp</dimen>
     <dimen name="main_button_height">54dp</dimen>
+    <dimen name="main_button_radius">36dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_bottom_height">56dp</dimen>

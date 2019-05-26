@@ -19,7 +19,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/activity_registration_il_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/TextInputLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -36,17 +36,17 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/fragment_login_et_passphrase"
+            style="AdamantLight.EditTextInput"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/onSurface"
             android:imeOptions="actionSend"
             android:maxLines="4" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_login_btn_enter"
-        style="@style/AdamantLight.ActivePrimaryButton"
+        style="@style/AdamantLight.PrimaryButton"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
         android:enabled="false"

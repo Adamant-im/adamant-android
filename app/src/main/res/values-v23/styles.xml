@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="AdamantLight" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primaryDarkVariant</item>
-        <item name="colorAccent">@color/secondary</item>
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">true</item>
+    <style name="AdamantLight" parent="BaseAdamantLight">
         <item name="android:windowLightStatusBar">true</item>
-        <item name="android:textViewStyle">@style/AdamantLight.TextAppearance</item>
-        <!--<item name="materialButtonStyle">@style/AppTheme.ActivePrimaryButton</item>-->
-        <item name="alertDialogTheme">@style/AdamantLight.AlertDialogCustom</item>
-        <item name="alertDialogStyle">@style/AdamantLight.AlertDialogCustom</item>
-        <item name="bottomSheetDialogTheme">@style/AdamantLight.BaseBottomSheetDialog</item>+
     </style>
 </resources>

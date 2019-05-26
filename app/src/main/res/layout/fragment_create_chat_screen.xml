@@ -49,7 +49,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_create_chat_btn_enter"
-        style="@style/AdamantLight.ActivePrimaryButton"
+        style="@style/AdamantLight.PrimaryButton"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
         android:layout_marginTop="8dp"
@@ -133,7 +133,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_create_chat_btn_show_my_qr"
-        style="@style/AdamantLight.ActivePrimaryButton"
+        style="@style/AdamantLight.PrimaryButton"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
         android:layout_marginStart="8dp"
