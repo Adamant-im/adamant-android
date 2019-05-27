@@ -65,10 +65,15 @@
 
     <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.BaseButtonTextAppearance"/>
 
+    <style name="AdamantLight.TextFloatLabelAppearance" parent="TextAppearance.Design.Hint">
+        <!-- Floating label appearance here -->
+        <item name="android:textColor">@color/textMuted</item>
+    </style>
+
     <style name="TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/textMuted</item>
-        <item name="boxStrokeWidth">2dp</item>
-        <item name="colorControlActivated">@color/secondary</item>
+        <!--<item name="boxStrokeColor">@color/textMuted</item>-->
+        <!--<item name="boxStrokeWidth">2dp</item>-->
+        <!--<item name="hintTextAppearance">@style/AdamantLight.TextFloatLabelAppearance</item>-->
     </style>
 
     <style name="AdamantLight.EditTextInput" parent="AdamantLight.TextViewNormal">

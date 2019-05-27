@@ -15,30 +15,30 @@
             android:id="@+id/activity_registration_vp_carousel"
             android:layout_width="match_parent"
             android:layout_height="156dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             app:dsv_orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_registration_btn_refresh"
-            style="@style/AdamantLight.FlatIconButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/activity_registration_btn_refresh_passphrase"
-            app:icon="@drawable/ic_refresh"
-            app:iconPadding="9dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_registration_il_layout" />
+        <!--<com.google.android.material.button.MaterialButton-->
+            <!--android:id="@+id/activity_registration_btn_refresh"-->
+            <!--style="@style/AdamantLight.FlatIconButton"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:text="@string/activity_registration_btn_refresh_passphrase"-->
+            <!--app:icon="@drawable/ic_refresh"-->
+            <!--app:iconPadding="9dp"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/activity_registration_il_layout" />-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_registration_il_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/TextInputLayoutStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -71,64 +71,65 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn_refresh">
+            app:layout_constraintTop_toBottomOf="@+id/activity_registration_il_layout">
 
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_save" />
+            <!--<ImageView-->
+                <!--android:id="@+id/imageView5"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginStart="2dp"-->
+                <!--android:layout_marginTop="8dp"-->
+                <!--android:layout_marginBottom="8dp"-->
+                <!--app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--app:layout_constraintStart_toStartOf="parent"-->
+                <!--app:layout_constraintTop_toTopOf="parent"-->
+                <!--app:srcCompat="@drawable/ic_save" />-->
 
             <TextView
+                style="@style/AdamantLight.TextViewOverLine"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/activity_login_tv_new_password_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_registration_btn_save_qr"
-            style="@style/AdamantLight.FlatIconButton"
+            style="@style/AdamantLight.FlatTextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:text="@string/activity_registration_btn_save_qr"
+            android:layout_marginBottom="@dimen/bottom_fragment_bottom_padding"
             android:enabled="false"
-            app:icon="@drawable/ic_download"
+            android:text="@string/activity_registration_btn_save_qr"
             app:iconPadding="9dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout6" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/activity_registration_btn_register"
-            style="@style/AdamantLight.PrimaryButton"
-            android:layout_width="@dimen/main_button_width"
-            android:layout_height="@dimen/main_button_height"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="@dimen/bottom_fragment_bottom_padding"
-            android:enabled="false"
-            android:text="@string/activity_registration_btn_create_address"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn_save_qr" />
+        <!--<com.google.android.material.button.MaterialButton-->
+            <!--android:id="@+id/activity_registration_btn_register"-->
+            <!--style="@style/AdamantLight.PrimaryButton"-->
+            <!--android:layout_width="@dimen/main_button_width"-->
+            <!--android:layout_height="@dimen/main_button_height"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="16dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginBottom="@dimen/bottom_fragment_bottom_padding"-->
+            <!--android:enabled="false"-->
+            <!--android:text="@string/activity_registration_btn_create_address"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintHorizontal_bias="0.497"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/activity_registration_btn_save_qr" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

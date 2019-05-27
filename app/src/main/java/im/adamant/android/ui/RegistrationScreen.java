@@ -6,6 +6,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
@@ -105,8 +106,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_il_layout)
     TextInputLayout inputLayoutView;
 
-    @BindView(R.id.activity_registration_btn_register)
-    MaterialButton createAddressButton;
+//    @BindView(R.id.activity_registration_btn_register)
+//    MaterialButton createAddressButton;
 
     @BindView(R.id.activity_registration_btn_save_qr)
     MaterialButton saveQrCodeButton;
@@ -176,17 +177,19 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                 AdamantApplication.hideKeyboard(this, inputPassphraseView);
             }
         });
+
+        saveQrCodeButton.setPaintFlags(saveQrCodeButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
-    @OnClick(R.id.activity_registration_btn_refresh)
-    public void onClickGenerateButton() {
-        presenter.onClickGeneratePassphrases();
-    }
+//    @OnClick(R.id.activity_registration_btn_refresh)
+//    public void onClickGenerateButton() {
+//        presenter.onClickGeneratePassphrases();
+//    }
 
-    @OnClick(R.id.activity_registration_btn_register)
-    public void onClickRegisterButton() {
-        presenter.onClickRegisterAccount();
-    }
+//    @OnClick(R.id.activity_registration_btn_register)
+//    public void onClickRegisterButton() {
+//        presenter.onClickRegisterAccount();
+//    }
 
     @OnClick(R.id.activity_registration_btn_save_qr)
     public void onClickSaveQrCode() {
@@ -230,7 +233,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         inputLayoutView.setError("");
         inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyButton, null);
         saveQrCodeButton.setEnabled(true);
-        createAddressButton.setEnabled(true);
+//        createAddressButton.setEnabled(true);
     }
 
     @Override
@@ -247,7 +250,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void lockUI() {
         inputPassphraseView.setEnabled(false);
-        createAddressButton.setEnabled(false);
+//        createAddressButton.setEnabled(false);
         passphrasesListView.setEnabled(false);
         saveQrCodeButton.setEnabled(false);
     }
@@ -255,7 +258,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void unlockUI() {
         inputPassphraseView.setEnabled(true);
-        createAddressButton.setEnabled(true);
+//        createAddressButton.setEnabled(true);
         passphrasesListView.setEnabled(true);
         saveQrCodeButton.setEnabled(true);
     }
@@ -309,7 +312,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         inputLayoutView.setError(error);
         inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
         saveQrCodeButton.setEnabled(false);
-        createAddressButton.setEnabled(false);
+//        createAddressButton.setEnabled(false);
     }
 
 
