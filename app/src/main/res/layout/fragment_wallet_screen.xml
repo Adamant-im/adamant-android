@@ -8,10 +8,11 @@
     android:background="@drawable/tile_bg"
     tools:context=".ui.fragments.WalletScreen">
 
+    <!--TODO: If elements become more add these lines: android:layout_width="wrap_content" android:layout_gravity="center_horizontal" app:tabMode="scrollable" -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/fragment_wallet_tab_sliding_tabs"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="96dp"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

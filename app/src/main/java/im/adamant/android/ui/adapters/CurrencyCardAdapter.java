@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.reactivestreams.Publisher;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Locale;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import im.adamant.android.R;
 import im.adamant.android.ui.entities.Contact;
@@ -34,6 +36,7 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     private List<CardView> views;
     private List<CurrencyCardItem> items;
+    private List<TabViewHolder> tabViewHolders = new ArrayList<>();
     private float mBaseElevation;
     private PublishSubject<Events> publisher = PublishSubject.create();
 
@@ -48,15 +51,13 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
             //TODO: Refactor this. Loop calls every 6 seconds
             for (int i = 0; i < views.size(); i++) {
                 bind(items.get(i), views.get(i));
+                if (i < tabViewHolders.size()) {
+                    tabViewHolders.get(i).bind(items.get(i));
+                }
             }
         }
 
         notifyDataSetChanged();
-    }
-
-    public void addCardItem(CurrencyCardItem item) {
-        views.add(null);
-        items.add(item);
     }
 
     public float getBaseElevation() {
@@ -115,15 +116,45 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         views.set(position, null);
     }
 
-    @Nullable
-    @Override
-    public CharSequence getPageTitle(int position) {
-        String title = "";
-        CurrencyCardItem currencyCardItem = items.get(position);
-        if (currencyCardItem != null){
-            title = currencyCardItem.getAbbreviation();
+//    @Nullable
+//    @Override
+//    public CharSequence getPageTitle(int position) {
+//        String title = "";
+//        CurrencyCardItem currencyCardItem = items.get(position);
+//        if (currencyCardItem != null){
+//            title = currencyCardItem.getAbbreviation();
+//        }
+//        return title;
+//    }
+
+    public void setSelectedIndex(int index) {
+        int currentIndex = 0;
+        for (TabViewHolder tabViewHolder : tabViewHolders) {
+            if (currentIndex == index) {
+                tabViewHolder.setSelected(true);
+            } else {
+                tabViewHolder.setSelected(false);
+            }
+            currentIndex++;
         }
-        return title;
+    }
+
+    public View getTabCustomView(int position, LayoutInflater inflater, ViewGroup container) {
+        CurrencyCardItem item = getItem(position);
+
+        TabViewHolder tabViewHolder = null;
+        if (position < tabViewHolders.size()) {
+            tabViewHolder = tabViewHolders.get(position);
+        }
+
+        if (tabViewHolder == null) {
+            View customView = inflater.inflate(R.layout.wallet_tab_layout, container);
+            tabViewHolder = new TabViewHolder(customView);
+            tabViewHolder.bind(item);
+            tabViewHolders.add(tabViewHolder);
+        }
+
+        return tabViewHolder.getCustomView();
     }
 
     //TODO: Maybe use ViewHolder
@@ -163,4 +194,42 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         createQrView.setOnClickListener(v -> publisher.onNext(Events.CREATE_QR));
     }
 
+
+    private static class TabViewHolder {
+        private View customView;
+        private ImageView iconView;
+        private TextView balanceView;
+        private TextView currencyView;
+
+        public TabViewHolder(View customView) {
+            this.customView = customView;
+
+            this.iconView = customView.findViewById(R.id.wallet_tab_layout_icon);
+            this.balanceView = customView.findViewById(R.id.wallet_tab_layout_balance);
+            this.currencyView = customView.findViewById(R.id.wallet_tab_layout_currency);
+        }
+
+        public View getCustomView() {
+            return this.customView;
+        }
+
+        public void bind(CurrencyCardItem item) {
+            this.iconView.setImageResource(item.getBackgroundLogoResource());
+            this.balanceView.setText(item.getShortedBalance().toString()); //TODO: Убери 0 в конце
+            this.currencyView.setText(item.getAbbreviation());
+        }
+
+        public void setSelected(boolean value) {
+            Context context = currencyView.getContext();
+            if (value) {
+                this.iconView.setColorFilter(ContextCompat.getColor(context, R.color.secondary));
+                this.balanceView.setTextColor(ContextCompat.getColor(context, R.color.secondary));
+                this.currencyView.setTextColor(ContextCompat.getColor(context, R.color.secondary));
+            } else {
+                this.iconView.setColorFilter(ContextCompat.getColor(context, R.color.onPrimary));
+                this.balanceView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
+                this.currencyView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
+            }
+        }
+    }
 }

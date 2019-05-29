@@ -24,6 +24,7 @@ import com.google.android.material.tabs.TabLayout;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -36,6 +37,7 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -85,6 +87,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
     @BindView(R.id.fragment_wallet_tv_last_transactions_title) TextView lastTransactionsTitle;
 
+    private boolean isTabsNotRendered = true;
+
     public WalletScreen() {
         // Required empty public constructor
     }
@@ -117,7 +121,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
 
             @Override
             public void onPageSelected(int position) {
+                TabLayout.Tab tab = tabs.getTabAt(position);
 
+                if (tab != null) {
+                    currencyCardAdapter.setSelectedIndex(position);
+                    tab.select();
+                }
             }
 
             @Override
@@ -126,7 +135,29 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
-        tabs.setupWithViewPager(slider);
+//        tabs.setupWithViewPager(slider);
+
+        tabs.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int nextPosition = tab.getPosition();
+                int currentPosition = slider.getCurrentItem();
+
+                if (nextPosition != currentPosition) {
+                    slider.setCurrentItem(nextPosition, true);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
@@ -140,7 +171,6 @@ public class WalletScreen extends BaseFragment implements WalletView {
         }
 
         lastTransactions.addItemDecoration(dividerItemDecoration);
-
 
         setHasOptionsMenu(true);
         return view;
@@ -180,6 +210,11 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public void showCurrencyCards(List<CurrencyCardItem> currencyCardItems) {
         currencyCardAdapter.addCardItems(currencyCardItems);
+
+        if (isTabsNotRendered) {
+            renderTabs();
+            isTabsNotRendered = false;
+        }
     }
 
     @Override
@@ -213,6 +248,18 @@ public class WalletScreen extends BaseFragment implements WalletView {
 
             startActivity(intent);
         }
+    }
+
+    private void renderTabs() {
+        //Set Tabs
+        for (int i = 0; i < currencyCardAdapter.getCount(); i++) {
+            TabLayout.Tab tab = tabs.newTab();
+            View tabCustomView = currencyCardAdapter.getTabCustomView(i, getLayoutInflater(),null);
+            tab.setCustomView(tabCustomView);
+            tabs.addTab(tab);
+        }
+
+        currencyCardAdapter.setSelectedIndex(0);
     }
 
 }

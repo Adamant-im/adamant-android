@@ -1,6 +1,7 @@
 package im.adamant.android.ui.entities;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class CurrencyCardItem {
     private BigDecimal balance;
@@ -15,6 +16,10 @@ public class CurrencyCardItem {
 
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public BigDecimal getShortedBalance() {
+        return balance.setScale(3, RoundingMode.HALF_EVEN);
     }
 
     public void setBalance(BigDecimal balance) {
