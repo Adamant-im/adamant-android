@@ -12,6 +12,7 @@ import android.widget.TextView;
 import org.reactivestreams.Publisher;
 import org.w3c.dom.Text;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -196,6 +197,8 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
 
     private static class TabViewHolder {
+        private static final DecimalFormat decimalFormatter = new DecimalFormat("#.###");
+
         private View customView;
         private ImageView iconView;
         private TextView balanceView;
@@ -215,7 +218,7 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
         public void bind(CurrencyCardItem item) {
             this.iconView.setImageResource(item.getBackgroundLogoResource());
-            this.balanceView.setText(item.getShortedBalance().toString()); //TODO: Убери 0 в конце
+            this.balanceView.setText(decimalFormatter.format(item.getShortedBalance()));
             this.currencyView.setText(item.getAbbreviation());
         }
 
