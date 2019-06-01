@@ -77,4 +77,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator2" />
 
+    <com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader
+        android:id="@+id/fragment_wallet_pb_transfer_loader"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:arcprogress_arcColorsArray="@array/progressbar_colors"
+        app:arcprogress_arcRadius="24dp"
+        app:arcprogress_arcWidth="3dp"
+        app:arcprogress_incrementalAngle="7.0"
+        app:arcprogress_maxArcAngle="220.0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

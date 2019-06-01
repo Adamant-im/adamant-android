@@ -13,7 +13,6 @@ import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
@@ -53,6 +52,8 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
     }
 
     public void onSelectCurrencyCard(CurrencyCardItem cardItem){
+
+        getViewState().startTransfersLoad();
 
         if (lastTransfersSubscription != null) {
             lastTransfersSubscription.dispose();

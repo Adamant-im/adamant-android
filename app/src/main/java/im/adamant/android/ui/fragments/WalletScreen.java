@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.tabs.TabLayout;
@@ -86,6 +87,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_vp_swipe_slider) ViewPager slider;
     @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
     @BindView(R.id.fragment_wallet_tv_last_transactions_title) TextView lastTransactionsTitle;
+    @BindView(R.id.fragment_wallet_pb_transfer_loader) ArcProgressLoader transactionsLoader;
 
     private boolean isTabsNotRendered = true;
 
@@ -220,6 +222,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @Override
     public void showLastTransfers(List<CurrencyTransferEntity> currencyTransferEntities) {
         currencyTransfersAdapter.refreshItems(currencyTransferEntities);
+        transactionsLoader.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void startTransfersLoad() {
+        transactionsLoader.setVisibility(View.VISIBLE);
     }
 
     @Override
