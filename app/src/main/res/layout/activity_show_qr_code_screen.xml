@@ -18,6 +18,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/activity_show_qr_code_tv_content"
+        style="@style/AdamantLight.TextViewNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:ellipsize="none"
+        android:maxLines="10"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/activity_show_qr_code_btn_save_in_gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_show_qr_code_im_image" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_show_qr_code_btn_save_in_gallery"
         style="@style/AdamantLight.PrimaryButton"

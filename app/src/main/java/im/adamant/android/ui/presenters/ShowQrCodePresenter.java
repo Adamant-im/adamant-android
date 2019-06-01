@@ -32,12 +32,16 @@ public class ShowQrCodePresenter extends BasePresenter<ShowQrCodeView> {
         this.qrCodeHelper = qrCodeHelper;
     }
 
-    public void onBuildQrCode(String data, int sizePixel, int onColor, int backgroundColor) {
+    public void onBuildQrCode(String data, int sizePixel, int onColor, int backgroundColor, boolean isShowContent) {
         qrCode = QRCode.from(data)
                 .to(ImageType.PNG)
                 .withSize(sizePixel, sizePixel)
                 .withColor(onColor, backgroundColor);
         getViewState().showQrCode(qrCode.bitmap());
+
+        if (isShowContent) {
+            getViewState().showContent(data);
+        }
     }
 
     public void onClickSaveQrCodeInGallery(Context context) {
