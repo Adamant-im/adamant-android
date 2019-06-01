@@ -10,7 +10,7 @@
 
     <TextView
         android:id="@+id/list_item_wallet_transfer_tv_address"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextViewOverLine"
         android:layout_width="0dp"
         android:layout_height="22dp"
         android:layout_marginTop="8dp"
@@ -36,14 +36,14 @@
         android:layout_height="23dp"
         android:layout_marginEnd="8dp"
         android:text="TextView"
-        style="@style/AdamantLight.TextViewSubHeader"
+        style="@style/AdamantLight.TextViewNormal"
         app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_transfer_tv_amount"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.curioustechizen.ago.RelativeTimeTextView
         android:id="@+id/list_item_wallet_transfer_rtv_date"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextViewOverLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
