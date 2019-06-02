@@ -15,11 +15,15 @@ public interface SendFundsView extends MvpView {
     void setReminder(BigDecimal reminder, String currencyAbbr);
     void setTotalAmount(BigDecimal totalAmount, String currencyAbbr);
     void setRecipientName(String name);
+    void lockRecipientAddress();
+    void unlockRecipientAddress();
     void lockSendButton();
     void unlockSendButton();
-    void setEditTextIcons(int resourceId);
+    void setEditTextCurrencyIcons(int resourceId);
     void hideCommentField();
     void showCommentField();
+    void showRecipientAddressError(int resourceId);
+    void dropRecipientAddressError();
 
     @StateStrategyType(SkipStrategy.class)
     void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address);

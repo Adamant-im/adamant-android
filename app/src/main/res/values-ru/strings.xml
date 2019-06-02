@@ -57,9 +57,10 @@
     <string name="activity_push_subscription_about_title">О типах сервисов уведомлений</string>
     <string name="activity_push_subscription_select_type_title">Выберите тип уведомлений</string>
 
-    <string name="activity_currency_send_title">Отправить средства</string>
-    <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>
-    <string name="activity_currency_send_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
+    <string name="activity_send_funds_title">Отправить средства</string>
+    <string name="activity_send_funds_dialog_funds_title">Подтверждение перевода</string>
+    <string name="activity_send_funds_recipient_address_hint">Адрес получателя</string>
+    <string name="activity_send_funds_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
@@ -75,6 +76,7 @@
     <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
+    <string name="fragment_wallet_send_funds">Отправить %s</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 

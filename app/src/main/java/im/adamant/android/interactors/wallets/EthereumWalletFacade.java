@@ -18,7 +18,7 @@ public class EthereumWalletFacade implements WalletFacade {
 
     @Override
     public String getAddress() {
-        return "Coming soon";
+        return "0x000000000000000000000000000000000000000000";
     }
 
     @Override

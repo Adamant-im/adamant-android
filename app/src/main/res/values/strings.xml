@@ -56,9 +56,10 @@
     <string name="activity_push_subscription_about_title">About push service types</string>
     <string name="activity_push_subscription_select_type_title">Select service type</string>
 
-    <string name="activity_currency_send_title">Send funds</string>
-    <string name="activity_currency_send_dialog_funds_title">Transfer confirmation</string>
-    <string name="activity_currency_send_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
+    <string name="activity_send_funds_title">Send funds</string>
+    <string name="activity_send_funds_recipient_address_hint">Recipient address</string>
+    <string name="activity_send_funds_dialog_funds_title">Transfer confirmation</string>
+    <string name="activity_send_funds_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
@@ -74,6 +75,7 @@
     <string name="fragment_wallet_balance_title">Balance</string>
     <string name="fragment_wallet_free_tokens_title">Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
+    <string name="fragment_wallet_send_funds">Send %s</string>
     <string name="fragment_wallet_last_transactions_title">Latest %s transactions</string>
     <string name="fragment_wallet_exit_title">Exit</string>
 

@@ -2,7 +2,6 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
@@ -18,20 +17,20 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
-import im.adamant.android.ui.fragments.SendFundsFragment;
 import im.adamant.android.ui.navigators.DefaultNavigator;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
-import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class SendFundsScreen extends BaseActivity implements HasSupportFragmentInjector {
     public static final String ARG_COMPANION_ID = "companion_id";
+    public static final String ARG_WALLET_FACADE = "wallet_facade";
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -62,16 +61,21 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(ARG_COMPANION_ID)) {
                 String companionId = getIntent().getStringExtra(ARG_COMPANION_ID);
+                SupportedWalletFacadeType facadeType = (SupportedWalletFacadeType) getIntent().getSerializableExtra(ARG_WALLET_FACADE);
+
+                if (facadeType != null) {
+                    int indexByFacade = adapter.getIndexByFacade(facadeType);
+                    slider.setCurrentItem(indexByFacade);
+                }
+
                 adapter.setCompanionId(companionId);
-            }
         }
 
         slider.setAdapter(adapter);
         tabs.setupWithViewPager(slider);
 
-        setTitle(getString(R.string.activity_currency_send_title));
+        setTitle(getString(R.string.activity_send_funds_title));
     }
 
     @Override

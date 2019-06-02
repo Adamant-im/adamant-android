@@ -37,6 +37,8 @@ public class WalletInteractor {
                     item.setPrecision(wallet.getPrecision());
                     item.setBackgroundLogoResource(wallet.getBackgroundLogoResource());
                     item.setAbbreviation(currencyType.name());
+                    item.setFacadeType(currencyType);
+
                     if (wallet.isAvailableAirdropLink()){
                         item.setAirdropLinkResource(wallet.getAirdropLinkResource());
                     }

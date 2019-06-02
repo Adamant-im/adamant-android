@@ -3,36 +3,34 @@ package im.adamant.android.ui.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.reactivestreams.Publisher;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.PagerAdapter;
 import im.adamant.android.R;
-import im.adamant.android.ui.entities.Contact;
+import im.adamant.android.ui.SendFundsScreen;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
-import io.reactivex.subjects.Subject;
 
 public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     public enum Events {
         COPY,
-        CREATE_QR
+        CREATE_QR,
+        SEND_FUNDS
     }
 
     private List<CardView> views;
@@ -160,13 +158,28 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
 
     //TODO: Maybe use ViewHolder
     private void bind(CurrencyCardItem item, View view) {
-        TextView copyBtnView = view.findViewById(R.id.list_item_wallet_card_tv_copy);
-        TextView createQrView = view.findViewById(R.id.list_item_wallet_card_tv_create_qr);
+        Context ctx = view.getContext().getApplicationContext();
+
+        ImageButton copyBtnView = view.findViewById(R.id.list_item_wallet_card_ib_copy);
+        ImageButton createQrView = view.findViewById(R.id.list_item_wallet_card_ib_create_qr);
 
         TextView titleView = view.findViewById(R.id.list_item_wallet_card_tv_title);
         TextView balanceView = view.findViewById(R.id.list_item_wallet_card_tv_balance);
         TextView addressView = view.findViewById(R.id.list_item_wallet_card_tv_address);
         TextView airdropLinkView = view.findViewById(R.id.list_item_wallet_card_tv_get_free_token);
+        TextView sendFundsLinkView = view.findViewById(R.id.list_item_wallet_card_tv_send_funds);
+
+        String sendFundsLinkText = ctx.getString(R.string.fragment_wallet_send_funds);
+        sendFundsLinkText = String.format(Locale.ENGLISH, sendFundsLinkText, item.getAbbreviation());
+        sendFundsLinkView.setText(sendFundsLinkText);
+        sendFundsLinkView.setOnClickListener(v -> {
+            Intent intent = new Intent(ctx, SendFundsScreen.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(SendFundsScreen.ARG_WALLET_FACADE, item.getFacadeType());
+            intent.putExtras(bundle);
+
+            ctx.startActivity(intent);
+        });
 
         ImageView backgroundLogoView = view.findViewById(R.id.list_item_wallet_card_background_logo);
 
@@ -178,7 +191,6 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
         boolean isAirdropAvailable = item.getAirdropLinkResource() > 0 || (item.getAirdropLinkString() != null && !item.getAirdropLinkString().isEmpty());
 
         if (isAirdropAvailable){
-            Context ctx = view.getContext();
             String link = item.getAirdropLinkResource() > 0 ? ctx.getString(item.getAirdropLinkResource()) + item.getAddress() : item.getAirdropLinkString();
             airdropLinkView.setVisibility(View.VISIBLE);
             airdropLinkView.setOnClickListener(v -> {

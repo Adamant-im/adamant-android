@@ -46,6 +46,7 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:enabled="false"
+                        android:hint="@string/activity_send_funds_recipient_address_hint"
                         android:maxLines="1" />
                 </com.google.android.material.textfield.TextInputLayout>
 

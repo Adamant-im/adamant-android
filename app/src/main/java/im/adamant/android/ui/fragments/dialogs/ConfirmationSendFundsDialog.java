@@ -1,7 +1,6 @@
 package im.adamant.android.ui.fragments.dialogs;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import java.util.Objects;
@@ -30,7 +29,7 @@ public class ConfirmationSendFundsDialog extends DialogFragment {
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(Objects.requireNonNull(getActivity()));
         return builder
-                .setTitle(R.string.activity_currency_send_dialog_funds_title)
+                .setTitle(R.string.activity_send_funds_dialog_funds_title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     presenter.onClickConfirmSend();

@@ -42,6 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/fragment_wallet_card_height"
         android:layout_gravity="bottom"
+        android:layout_marginTop="20dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingStart="@dimen/fragment_wallet_card_padding"
@@ -53,7 +54,7 @@
         app:layout_constraintHeight_percent="0.46"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator"/>
+        app:layout_constraintTop_toBottomOf="@+id/separator" />
 
     <TextView
         android:id="@+id/fragment_wallet_tv_last_transactions_title"

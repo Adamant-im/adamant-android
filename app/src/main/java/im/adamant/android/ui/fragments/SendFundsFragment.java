@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,7 +113,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             SupportedWalletFacadeType type = (SupportedWalletFacadeType) arguments.getSerializable(ARG_WALLET_FACADE_TYPE);
             String companionId = arguments.getString(ARG_COMPANION_ID);
 
-            if (type != null && companionId != null) {
+            if (type != null) {
                 presenter.setCompanionIdAndFacadeType(companionId, type);
             }
         }
@@ -144,7 +145,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                     .filter(charSequence -> charSequence.length() > 0)
                     .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                     .map(charSequence -> new BigDecimal(charSequence.toString()))
-                    .doOnNext(presenter::onEnterAmount)
+                    .doOnNext(presenter::onInputAmount)
                     .doOnError(error -> {
                         if (error instanceof NumberFormatException) {
                             amountLayoutView.setError(activity.getString(R.string.not_a_number));
@@ -162,6 +163,26 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                     DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
                 }
             });
+
+            RxTextView.textChanges(recipientAddressView)
+                    .filter(charSequence -> charSequence.length() > 0)
+                    .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                    .map(CharSequence::toString)
+                    .doOnNext(address -> {
+                        Editable text = amountView.getText();
+                        if (text == null) { return; }
+
+                        try {
+                            BigDecimal amount = new BigDecimal(text.toString());
+                            presenter.onInputRecipientAddress(address, amount);
+                        }catch (Exception e) {
+                            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
+                        }
+
+                    })
+                    .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
+                    .retry()
+                    .subscribe();
 
         }
     }
@@ -278,6 +299,16 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
+    public void lockRecipientAddress() {
+        recipientAddressView.setEnabled(false);
+    }
+
+    @Override
+    public void unlockRecipientAddress() {
+        recipientAddressView.setEnabled(true);
+    }
+
+    @Override
     public void lockSendButton() {
         sendButtonView.setEnabled(false);
     }
@@ -288,7 +319,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
-    public void setEditTextIcons(int resourceId) {
+    public void setEditTextCurrencyIcons(int resourceId) {
         FragmentActivity activity = getActivity();
         if (activity != null) {
 
@@ -317,13 +348,22 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
         commentLayoutView.setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void showRecipientAddressError(int resourceId) {
+        recipientAddressLayoutView.setError(getString(resourceId));
+    }
+
+    @Override
+    public void dropRecipientAddressError() {
+        recipientAddressLayoutView.setError("");
+    }
 
     @Override
     public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {
         FragmentActivity activity = getActivity();
         LoggerHelper.d("Transaction", "call call call");
         if (activity != null){
-            String pattern = getString(R.string.activity_currency_send_dialog_funds_message);
+            String pattern = getString(R.string.activity_send_funds_dialog_funds_message);
             String message = String.format(Locale.ENGLISH, pattern, amount, currencyAbbr, address);
 
             ConfirmationSendFundsDialog fragment = ConfirmationSendFundsDialog.provide(presenter, message);

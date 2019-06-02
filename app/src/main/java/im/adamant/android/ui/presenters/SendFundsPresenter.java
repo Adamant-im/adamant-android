@@ -7,7 +7,9 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.AdamantAddressValidateHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.LoggerHelper;
@@ -16,7 +18,6 @@ import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.Chat;
-import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
@@ -28,7 +29,6 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
     private SendFundsInteractor sendCurrencyInteractor;
     private PublicKeyStorage publicKeyStorage;
     private ChatsStorage chatsStorage;
-    private MessageFactoryProvider messageFactoryProvider;
 
     private String companionId;
     private SupportedWalletFacadeType facadeType;
@@ -42,7 +42,6 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
             AccountInteractor accountInteractor,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             SendFundsInteractor sendCurrencyInteractor,
-            MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
             ChatsStorage chatsStorage
     ) {
@@ -50,7 +49,6 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         this.wallets = wallets;
         this.sendCurrencyInteractor = sendCurrencyInteractor;
         this.publicKeyStorage = publicKeyStorage;
-        this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
     }
 
@@ -64,15 +62,18 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
                 currentFacade.isSupportFundsSending()
         );
 
-        Disposable subscription = publicKeyStorage
-                .findPublicKey(companionId)
-                .map(publicKey -> currentFacade.getCurrencyAddress(companionId, publicKey))
-                .subscribe(
-                        address -> getViewState().setRecipientAddress(address),
-                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
-                );
+        if (companionId != null) {
+            Disposable subscription = publicKeyStorage
+                    .findPublicKey(companionId)
+                    .map(publicKey -> currentFacade.getCurrencyAddress(companionId, publicKey))
+                    .subscribe(
+                            address -> getViewState().setRecipientAddress(address),
+                            error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                    );
 
-        subscriptions.add(subscription);
+            subscriptions.add(subscription);
+        }
+
 
         if (currentFacade.isSupportComment()){
             getViewState().showCommentField();
@@ -82,12 +83,17 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
 
         int resourceId = currentFacade.getIconForEditText();
         if (resourceId != 0) {
-            getViewState().setEditTextIcons(resourceId);
+            getViewState().setEditTextCurrencyIcons(resourceId);
         }
 
-        Chat chat = chatsStorage.findChatByCompanionId(companionId);
-        if (chat != null) {
-            getViewState().setRecipientName(chat.getTitle());
+        if (companionId == null) {
+            getViewState().unlockRecipientAddress();
+        } else {
+            getViewState().lockRecipientAddress();
+            Chat chat = chatsStorage.findChatByCompanionId(companionId);
+            if (chat != null) {
+                getViewState().setRecipientName(chat.getTitle());
+            }
         }
 
         Disposable balanceUpdateFlowable = Flowable
@@ -104,7 +110,7 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
 
     }
 
-    public void onEnterAmount(BigDecimal amount) {
+    public void onInputAmount(BigDecimal amount) {
         if (amount != null){
             currentAmount = amount;
             Disposable subscribe = currentFacade
@@ -117,24 +123,52 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         }
     }
 
+    public void onInputRecipientAddress(String address, BigDecimal amount) {
+        if (AdamantAddressValidateHelper.validate(address)) {
+            getViewState().dropRecipientAddressError();
+            getViewState().setRecipientName(address);
+            this.companionId = address;
+
+        } else {
+            getViewState().showRecipientAddressError(R.string.wrong_address);
+            this.companionId = null;
+        }
+
+        Disposable subscribe = currentFacade
+                .getFee()
+                .subscribe(
+                        fee -> calculate(amount, currentFacade.getBalance(), fee),
+                        error -> LoggerHelper.e("amount", error.getMessage(), error)
+                );
+        subscriptions.add(subscribe);
+    }
+
     public void onClickSendButton() {
-        getViewState().showTransferConfirmationDialog(currentAmount, facadeType.name(), companionId);
+        if (companionId != null) {
+            getViewState().showTransferConfirmationDialog(currentAmount, facadeType.name(), companionId);
+        } else {
+            getViewState().showRecipientAddressError(R.string.wrong_address);
+        }
     }
 
     public void onClickConfirmSend() {
         getViewState().unlockSendButton();
-        Disposable subscribe = sendCurrencyInteractor
-                .sendCurrency(companionId, comment, currentAmount, facadeType)
-                .subscribe(
-                        transactionWasProcessed -> {
-                            router.backTo(Screens.MESSAGES_SCREEN);
-                        },
-                        error -> {
-                            router.showSystemMessage(error.getMessage());
-                        }
-                );
+        if (companionId != null) {
+            Disposable subscribe = sendCurrencyInteractor
+                    .sendCurrency(companionId, comment, currentAmount, facadeType)
+                    .subscribe(
+                            transactionWasProcessed -> {
+                                router.backTo(Screens.MESSAGES_SCREEN);
+                            },
+                            error -> {
+                                router.showSystemMessage(error.getMessage());
+                            }
+                    );
 
-        subscriptions.add(subscribe);
+            subscriptions.add(subscribe);
+        } else {
+            getViewState().showRecipientAddressError(R.string.wrong_address);
+        }
     }
 
     private void calculate(BigDecimal amount, BigDecimal balance, BigDecimal fee) {
@@ -149,7 +183,11 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         BigDecimal reminder = balance.subtract(totalAmount);
         getViewState().setReminder(reminder, facadeType.name());
 
-        boolean isSendButtonMustLocked = (reminder.compareTo(BigDecimal.ZERO) < 0) || (amount.compareTo(BigDecimal.ZERO) <= 0);
+        boolean isSendButtonMustLocked = (
+                    (reminder.compareTo(BigDecimal.ZERO) < 0) ||
+                    (amount.compareTo(BigDecimal.ZERO) <= 0) ||
+                    (companionId == null)
+        );
 
         if (isSendButtonMustLocked) {
             getViewState().lockSendButton();

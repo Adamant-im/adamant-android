@@ -7,6 +7,7 @@ import java.util.Map;
 
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.helpers.AdamantAddressValidateHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.markdown.AdamantAddressEntity;
 import im.adamant.android.markdown.AdamantAddressExtractor;
@@ -52,7 +53,7 @@ public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
 
         AdamantAddressEntity addressEntity = addresses.get(0);
 
-        if (!validate(addressEntity.getAddress())){
+        if (!AdamantAddressValidateHelper.validate(addressEntity.getAddress())){
             getViewState().showError(R.string.wrong_address);
             getViewState().lockUI();
         } else {
@@ -70,7 +71,7 @@ public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
 
         AdamantAddressEntity addressEntity = addresses.get(0);
 
-        if (validate(addressEntity.getAddress())){
+        if (AdamantAddressValidateHelper.validate(addressEntity.getAddress())){
             Chat chat = new Chat();
             chat.setCompanionId(addressEntity.getAddress());
             chat.setTitle(addressEntity.getLabel());
@@ -93,18 +94,5 @@ public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
             String address = facade.getAddress();
             getViewState().showQrCode(address);
         }
-    }
-
-    private boolean validate(String address) {
-        if (address == null) {return false;}
-        try {
-            if (!"U".equalsIgnoreCase(address.substring(0, 1))){return false;}
-            if (address.length() < 16){return false;}
-        }catch (Exception ex){
-            ex.printStackTrace();
-            return false;
-        }
-
-        return true;
     }
 }

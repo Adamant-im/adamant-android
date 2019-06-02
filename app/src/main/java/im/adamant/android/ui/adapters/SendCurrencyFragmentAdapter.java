@@ -35,6 +35,11 @@ public class SendCurrencyFragmentAdapter extends FragmentStatePagerAdapter {
         this.companionId = companionId;
     }
 
+    public int getIndexByFacade(SupportedWalletFacadeType facadeType) {
+        WalletFacade walletFacade = map.get(facadeType);
+        return items.indexOf(walletFacade);
+    }
+
     @Override
     public Fragment getItem(int position) {
         WalletFacade walletFacade = items.get(position);

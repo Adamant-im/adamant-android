@@ -27,7 +27,6 @@ public class SendFundsFragmentModule {
             AccountInteractor accountInteractor,
             Map<SupportedWalletFacadeType, WalletFacade> wallets,
             SendFundsInteractor sendCurrencyInteractor,
-            MessageFactoryProvider messageFactoryProvider,
             PublicKeyStorage publicKeyStorage,
             ChatsStorage chatsStorage
     ){
@@ -36,7 +35,6 @@ public class SendFundsFragmentModule {
                 accountInteractor,
                 wallets,
                 sendCurrencyInteractor,
-                messageFactoryProvider,
                 publicKeyStorage,
                 chatsStorage
         );

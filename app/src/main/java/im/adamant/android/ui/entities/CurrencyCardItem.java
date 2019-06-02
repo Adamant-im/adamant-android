@@ -3,6 +3,8 @@ package im.adamant.android.ui.entities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+
 public class CurrencyCardItem {
     private BigDecimal balance;
     private String address;
@@ -13,6 +15,7 @@ public class CurrencyCardItem {
     private String abbreviation;
     private int airdropLinkResource;
     private String airdropLinkString;
+    private SupportedWalletFacadeType facadeType;
 
     public BigDecimal getBalance() {
         return balance;
@@ -88,5 +91,13 @@ public class CurrencyCardItem {
 
     public void setAirdropLinkString(String airdropLinkString) {
         this.airdropLinkString = airdropLinkString;
+    }
+
+    public SupportedWalletFacadeType getFacadeType() {
+        return facadeType;
+    }
+
+    public void setFacadeType(SupportedWalletFacadeType facadeType) {
+        this.facadeType = facadeType;
     }
 }
