@@ -62,18 +62,19 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
         Intent intent = getIntent();
         if (intent != null) {
                 String companionId = getIntent().getStringExtra(ARG_COMPANION_ID);
-                SupportedWalletFacadeType facadeType = (SupportedWalletFacadeType) getIntent().getSerializableExtra(ARG_WALLET_FACADE);
-
-                if (facadeType != null) {
-                    int indexByFacade = adapter.getIndexByFacade(facadeType);
-                    slider.setCurrentItem(indexByFacade);
-                }
-
                 adapter.setCompanionId(companionId);
         }
 
         slider.setAdapter(adapter);
         tabs.setupWithViewPager(slider);
+
+        if (intent != null) {
+            SupportedWalletFacadeType facadeType = (SupportedWalletFacadeType) getIntent().getSerializableExtra(ARG_WALLET_FACADE);
+            if (facadeType != null) {
+                int indexByFacade = adapter.getIndexByFacade(facadeType);
+                slider.setCurrentItem(indexByFacade);
+            }
+        }
 
         setTitle(getString(R.string.activity_send_funds_title));
     }
