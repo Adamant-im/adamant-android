@@ -142,17 +142,9 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
             RxTextView
                     .textChanges(amountView)
-                    .filter(charSequence -> charSequence.length() > 0)
                     .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                    .map(charSequence -> new BigDecimal(charSequence.toString()))
                     .doOnNext(presenter::onInputAmount)
-                    .doOnError(error -> {
-                        if (error instanceof NumberFormatException) {
-                            amountLayoutView.setError(activity.getString(R.string.not_a_number));
-                        } else {
-                            LoggerHelper.e("ERR", error.getMessage(), error);
-                        }
-                    })
+                    .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
                     .retry()
                     .subscribe();
 
@@ -165,19 +157,13 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             });
 
             RxTextView.textChanges(recipientAddressView)
-                    .filter(charSequence -> charSequence.length() > 0)
                     .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                     .map(CharSequence::toString)
                     .doOnNext(address -> {
                         Editable text = amountView.getText();
                         if (text == null) { return; }
 
-                        try {
-                            BigDecimal amount = new BigDecimal(text.toString());
-                            presenter.onInputRecipientAddress(address, amount);
-                        }catch (Exception e) {
-                            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
-                        }
+                        presenter.onInputRecipientAddress(address, text.toString());
 
                     })
                     .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
@@ -359,9 +345,18 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
+    public void showAmountError(int resourceId) {
+        amountLayoutView.setError(getString(resourceId));
+    }
+
+    @Override
+    public void dropAmountError() {
+        amountLayoutView.setError("");
+    }
+
+    @Override
     public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {
         FragmentActivity activity = getActivity();
-        LoggerHelper.d("Transaction", "call call call");
         if (activity != null){
             String pattern = getString(R.string.activity_send_funds_dialog_funds_message);
             String message = String.format(Locale.ENGLISH, pattern, amount, currencyAbbr, address);

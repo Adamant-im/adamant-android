@@ -24,6 +24,8 @@ public interface SendFundsView extends MvpView {
     void showCommentField();
     void showRecipientAddressError(int resourceId);
     void dropRecipientAddressError();
+    void showAmountError(int resourceId);
+    void dropAmountError();
 
     @StateStrategyType(SkipStrategy.class)
     void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address);

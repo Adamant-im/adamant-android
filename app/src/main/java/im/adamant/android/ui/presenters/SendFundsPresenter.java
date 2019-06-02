@@ -110,20 +110,24 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
 
     }
 
-    public void onInputAmount(BigDecimal amount) {
-        if (amount != null){
+    public void onInputAmount(CharSequence amountString) {
+        BigDecimal amount = getAmountFromString(amountString);
+
+        if (amount != null) {
             currentAmount = amount;
             Disposable subscribe = currentFacade
                     .getFee()
                     .subscribe(
-                        fee -> calculate(amount, currentFacade.getBalance(), fee),
-                        error -> LoggerHelper.e("amount", error.getMessage(), error)
+                            fee -> calculate(currentAmount, currentFacade.getBalance(), fee),
+                            error -> LoggerHelper.e("amount", error.getMessage(), error)
                     );
             subscriptions.add(subscribe);
         }
     }
 
-    public void onInputRecipientAddress(String address, BigDecimal amount) {
+    public void onInputRecipientAddress(String address, CharSequence amountString) {
+        BigDecimal amount = getAmountFromString(amountString);
+
         if (AdamantAddressValidateHelper.validate(address)) {
             getViewState().dropRecipientAddressError();
             getViewState().setRecipientName(address);
@@ -144,11 +148,17 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
     }
 
     public void onClickSendButton() {
-        if (companionId != null) {
-            getViewState().showTransferConfirmationDialog(currentAmount, facadeType.name(), companionId);
-        } else {
+        if (companionId == null) {
             getViewState().showRecipientAddressError(R.string.wrong_address);
+            return;
         }
+
+        if (currentAmount != null && currentAmount.compareTo(BigDecimal.ZERO) != 0) {
+            getViewState().showAmountError(R.string.not_a_number);
+            return;
+        }
+
+        getViewState().showTransferConfirmationDialog(currentAmount, facadeType.name(), companionId);
     }
 
     public void onClickConfirmSend() {
@@ -194,5 +204,18 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         } else {
             getViewState().unlockSendButton();
         }
+    }
+
+    private BigDecimal getAmountFromString(CharSequence amountString) {
+        BigDecimal amount = null;
+        try {
+            amount = new BigDecimal(amountString.toString());
+            getViewState().dropAmountError();
+        } catch (Exception e) {
+            getViewState().showAmountError(R.string.not_a_number);
+            LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
+        }
+
+        return amount;
     }
 }
