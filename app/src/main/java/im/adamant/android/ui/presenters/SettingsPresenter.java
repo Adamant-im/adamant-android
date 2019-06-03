@@ -13,22 +13,27 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
     private SecurityInteractor securityInteractor;
+    private LogoutInteractor logoutInteractor;
+    private Disposable logoutDisposable;
     private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
     private AdamantApiWrapper api;
 
     public SettingsPresenter(
             Router router,
             AccountInteractor accountInteractor,
+            LogoutInteractor logoutInteractor,
             AdamantApiWrapper api,
             SecurityInteractor securityInteractor,
             SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
@@ -36,6 +41,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
         super(router, accountInteractor);
         this.api = api;
         this.securityInteractor = securityInteractor;
+        this.logoutInteractor = logoutInteractor;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
     }
 
@@ -80,6 +86,38 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
 
     public void onClickShowNodesList() {
         router.navigateTo(Screens.NODES_LIST_SCREEN);
+    }
+
+    public void onClickShowExitDialogButton() {
+        getViewState().showExitDialog();
+    }
+
+    public void onClickExitButton() {
+
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
+
+        logoutDisposable = logoutInteractor
+                .getEventBus()
+                .subscribe(
+                        (irrelevant) -> {
+                            router.navigateTo(Screens.SPLASH_SCREEN);
+                        },
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                        }
+                );
+
+        logoutInteractor.logout();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
     }
 
     private boolean isHaveMinimumBalance() {

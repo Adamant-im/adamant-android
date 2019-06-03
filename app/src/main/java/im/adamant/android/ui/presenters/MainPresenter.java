@@ -15,21 +15,17 @@ import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class MainPresenter extends ProtectedBasePresenter<MainView> {
-    private LogoutInteractor logoutInteractor;
     private SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor;
-    private Disposable logoutDisposable;
 
     private String currentWindowCode = Screens.WALLET_SCREEN;
 
     public MainPresenter(
             Router router,
             SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
-            AccountInteractor accountInteractor,
-            LogoutInteractor logoutInteractor
+            AccountInteractor accountInteractor
     ) {
         super(router, accountInteractor);
         this.pushNotificationServiceInteractor = pushNotificationServiceInteractor;
-        this.logoutInteractor = logoutInteractor;
     }
 
     @Override
@@ -81,33 +77,5 @@ public class MainPresenter extends ProtectedBasePresenter<MainView> {
     public void onSelectedSettingsScreen() {
         currentWindowCode = Screens.SETTINGS_SCREEN;
         getViewState().showSettingsScreen();
-    }
-
-    public void onClickExitButton() {
-
-        if (logoutDisposable != null) {
-            logoutDisposable.dispose();
-        }
-
-        logoutDisposable = logoutInteractor
-                .getEventBus()
-                .subscribe(
-                    (irrelevant) -> {
-                        router.navigateTo(Screens.SPLASH_SCREEN);
-                    },
-                    (error) -> {
-                        router.showSystemMessage(error.getMessage());
-                    }
-                );
-
-        logoutInteractor.logout();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (logoutDisposable != null) {
-            logoutDisposable.dispose();
-        }
     }
 }

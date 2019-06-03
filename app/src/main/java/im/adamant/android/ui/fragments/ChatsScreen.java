@@ -118,10 +118,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         presenter.onChatWasSelected(chat);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_chats_menu, menu);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        inflater.inflate(R.menu.fragment_chats_menu, menu);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

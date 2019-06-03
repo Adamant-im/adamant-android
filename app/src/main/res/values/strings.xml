@@ -77,7 +77,7 @@
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
     <string name="fragment_wallet_send_funds">Send %s</string>
     <string name="fragment_wallet_last_transactions_title">Latest %s transactions</string>
-    <string name="fragment_wallet_exit_title">Exit</string>
+
 
     <string name="fragment_settings_general_title">General</string>
 
@@ -205,4 +205,5 @@
     <string name="received">Received: </string>
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
+    <string name="exit">Exit</string>
 </resources>

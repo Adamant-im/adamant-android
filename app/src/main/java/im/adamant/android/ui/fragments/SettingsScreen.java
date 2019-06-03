@@ -1,9 +1,11 @@
 package im.adamant.android.ui.fragments;
 
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.Switch;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -103,6 +106,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         languageDialogBuilder.create().show();
     }
 
+    @OnClick(R.id.fragment_settings_tr_exit)
+    public void onClickExit() {
+        presenter.onClickShowExitDialogButton();
+    }
+
     @Override
     public void setCheckedStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
@@ -141,6 +149,22 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void stopProgress() {
         progressBarView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showExitDialog() {
+        Activity activity = getActivity();
+        if (activity != null){
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder
+                    .setTitle(R.string.dialog_logout_title)
+                    .setMessage(R.string.dialog_logout_message)
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        presenter.onClickExitButton();
+                    })
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {})
+                    .show();
+        }
     }
 
     @Override

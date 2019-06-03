@@ -41,24 +41,24 @@
         <!--app:menu="@menu/navigation" />-->
 
     <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_appbar"
+        android:id="@+id/activity_main_bottom_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:fabAlignmentMode="end"
         app:backgroundTint="@color/primary"
-        app:navigationIcon="@drawable/ic_menu"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:backgroundTint="@color/colorPrimary"-->
-            <!--android:layout_gravity="bottom|center_horizontal"-->
-            <!--android:src="@mipmap/ic_launcher_foreground"-->
-            <!--app:layout_anchor="@+id/bottom_appbar"/>-->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:backgroundTint="@color/primary"
+            android:layout_gravity="bottom|center_horizontal"
+            app:srcCompat="@drawable/ic_add_chat"
+            android:tint="@color/secondary"
+            app:layout_anchor="@+id/activity_main_bottom_appbar"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -78,7 +78,7 @@
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_send_funds">Отправить %s</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>
-    <string name="fragment_wallet_exit_title">Выход</string>
+    <string name="exit">Выход</string>
 
     <string name="fragment_settings_general_title">Общие</string>
 

@@ -100,24 +100,6 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
                     mainPresenter.onSelectedSettingsScreen();
                 }
                 break;
-                case R.id.navigation_exit: {
-                    //VERY IMPORTANT: Do not delete the lock code of the button as this will result in a memory leak and crash the application.
-                    menuItem.setEnabled(false);
-                    Activity activity = getActivity();
-                    if (activity != null){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                        builder
-                                .setTitle(R.string.dialog_logout_title)
-                                .setMessage(R.string.dialog_logout_message)
-                                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                                    mainPresenter.onClickExitButton();
-                                    menuItem.setEnabled(true);
-                                })
-                                .setNegativeButton(android.R.string.cancel, (dialog, which) -> menuItem.setEnabled(true))
-                                .show();
-                    }
-                }
-                break;
             }
 
             dismiss();

@@ -71,10 +71,9 @@ public abstract class MainScreenModule {
     public static MainPresenter provideMainPresenter(
             Router router,
             AccountInteractor accountInteractor,
-            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
-            LogoutInteractor logoutInteractor
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
     ){
-        return new MainPresenter(router, pushNotificationServiceInteractor, accountInteractor, logoutInteractor);
+        return new MainPresenter(router, pushNotificationServiceInteractor, accountInteractor);
     }
 
 }

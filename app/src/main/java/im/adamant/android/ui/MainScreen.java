@@ -3,7 +3,7 @@ package im.adamant.android.ui;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,9 +15,6 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.bottomappbar.BottomAppBar;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -43,7 +40,6 @@ import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
-import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
@@ -73,11 +69,9 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
     @BindView(R.id.main_screen_content) FrameLayout content;
 
-    @BindView(R.id.bottom_appbar)
+    @BindView(R.id.activity_main_bottom_appbar)
     BottomAppBar appBar;
 
-    @Inject
-    Avatar avatar;
 
     private ChatsScreen chatsScreen;
 
@@ -96,7 +90,27 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        setSupportActionBar(appBar);
+        appBar.replaceMenu(R.menu.navigation);
+
+        appBar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()){
+                case R.id.navigation_chats: {
+                    presenter.onSelectedChatsScreen();
+                    return true;
+                }
+                case R.id.navigation_wallet: {
+                    presenter.onSelectedWalletScreen();
+                    return true;
+                }
+                case R.id.navigation_settings: {
+                    presenter.onSelectedSettingsScreen();
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
     }
 
     //TODO: Don't recreate fragments
@@ -139,21 +153,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Override
     public AndroidInjector<Fragment> supportFragmentInjector() {
         return fragmentDispatchingAndroidInjector;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home: {
-                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
-                bottomNavDrawerFragment.setMainPresenter(presenter);
-                bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
-
-                return true;
-            }
-        }
-        return false;
     }
 
     private Navigator navigator = new DefaultNavigator(this) {
