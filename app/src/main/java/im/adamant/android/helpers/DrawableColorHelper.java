@@ -17,6 +17,26 @@ public class DrawableColorHelper {
         textView.setCompoundDrawablesRelative(newDrawablesRelative[0], newDrawablesRelative[1], newDrawablesRelative[2], newDrawablesRelative[3]);
     }
 
+    public static Drawable changeDrawable(
+        Context context,
+        int color,
+        PorterDuff.Mode mode,
+        Drawable drawable
+    ) {
+        if (drawable != null) {
+            drawable = drawable.mutate();
+            drawable.setColorFilter(
+                    new PorterDuffColorFilter(
+                            ContextCompat.getColor(context, color),
+                            mode
+                    )
+            );
+            return drawable;
+        }
+
+        return null;
+    }
+
     private static Drawable[] changeColorForDrawable(
             Context context,
             int color,
@@ -29,17 +49,7 @@ public class DrawableColorHelper {
         if (length > 0){
             for (int position = 0; position < drawables.length; position++) {
                 Drawable drawable = drawables[position];
-
-                if (drawable != null) {
-                    drawable = drawable.mutate();
-                    drawable.setColorFilter(
-                            new PorterDuffColorFilter(
-                                    ContextCompat.getColor(context, color),
-                                    mode
-                            )
-                    );
-                    newDrawables[position] = drawable;
-                }
+                newDrawables[position] = changeDrawable(context, color, mode, drawable);
 
             }
         }

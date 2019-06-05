@@ -1,9 +1,11 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -14,7 +16,8 @@ import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,11 +30,10 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.MainPresenter;
-import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
@@ -69,9 +71,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
     @BindView(R.id.main_screen_content) FrameLayout content;
 
-    @BindView(R.id.activity_main_bottom_appbar)
-    BottomAppBar appBar;
-
+    @BindView(R.id.activity_main_bnv_navigation)
+    BottomNavigationView appBar;
 
     private ChatsScreen chatsScreen;
 
@@ -90,10 +91,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        appBar.replaceMenu(R.menu.navigation);
-
-        appBar.setOnMenuItemClickListener(item -> {
-            switch (item.getItemId()){
+        appBar.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()){
                 case R.id.navigation_chats: {
                     presenter.onSelectedChatsScreen();
                     return true;
@@ -110,7 +109,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
             return false;
         });
-
     }
 
     //TODO: Don't recreate fragments
