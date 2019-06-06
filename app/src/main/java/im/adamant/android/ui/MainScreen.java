@@ -1,23 +1,17 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -30,8 +24,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.DrawableColorHelper;
-import im.adamant.android.ui.fragments.BottomCreateChatFragment;
+import im.adamant.android.helpers.AnimationUtils;
+import im.adamant.android.ui.fragments.CreateChatFragment;
 import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.fragments.ChatsScreen;
@@ -153,6 +147,29 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         return fragmentDispatchingAndroidInjector;
     }
 
+    @Override
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+        } else {
+            final CreateChatFragment createChatFragment = (CreateChatFragment)getSupportFragmentManager().findFragmentByTag(CreateChatFragment.TAG);
+            if (createChatFragment != null && createChatFragment.isVisible()) {
+                createChatFragment.dismiss(() -> {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .remove(createChatFragment)
+                            .commitAllowingStateLoss();
+
+                    getSupportFragmentManager().popBackStack();
+                });
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
+    }
+
     private Navigator navigator = new DefaultNavigator(this) {
         @Override
         protected void forward(Forward forwardCommand) {
@@ -168,10 +185,12 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 break;
 
                 case Screens.CREATE_CHAT_SCREEN: {
-
-                    BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
-                    FragmentManager supportFragmentManager = getSupportFragmentManager();
-                    createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
+                    AnimationUtils.RevealAnimationSetting revealAnimationSetting = (AnimationUtils.RevealAnimationSetting)forwardCommand.getTransitionData();
+                    CreateChatFragment createChatFragment = CreateChatFragment.newInstance(revealAnimationSetting);
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.main_screen_content, createChatFragment, CreateChatFragment.TAG)
+                            .addToBackStack(CreateChatFragment.TAG)
+                            .commit();
                 }
                 break;
 

@@ -12,7 +12,6 @@ import im.adamant.android.dagger.fragments.TestSettingsScreenModule;
 import im.adamant.android.dagger.fragments.TestWalletScreenModule;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
-import im.adamant.android.ui.fragments.BottomCreateChatFragment;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.fragments.SettingsScreen;

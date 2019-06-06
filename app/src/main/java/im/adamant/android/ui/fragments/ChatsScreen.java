@@ -11,15 +11,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -28,6 +26,7 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import im.adamant.android.R;
+import im.adamant.android.helpers.AnimationUtils;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.adapters.ChatsAdapter;
@@ -59,6 +58,9 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
     @BindView(R.id.fragment_chats_pb_progress)
     ProgressBar progressBar;
+
+    @BindView(R.id.fragment_chats_fab_add_chat)
+    FloatingActionButton addChatFab;
 
     public ChatsScreen() {
         // Required empty public constructor
@@ -95,6 +97,20 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
         adapter.setListener(this);
 
+        chatList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && addChatFab.getVisibility() == View.VISIBLE) {
+                    addChatFab.hide();
+                } else if (dy < 0 && addChatFab.getVisibility() != View.VISIBLE) {
+                    addChatFab.show();
+                }
+            }
+        });
+
+        addChatFab.setOnClickListener(v -> presenter.onClickCreateNewChatButton(buildRevealSettings()));
+
         return view;
     }
 
@@ -112,25 +128,23 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         }
     }
 
-
     @Override
     public void itemWasSelected(Chat chat) {
         presenter.onChatWasSelected(chat);
     }
 
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.fragment_chats_menu, menu);
-//    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_create_new_chat:
-                presenter.onClickCreateNewChatButton();
-                break;
+    private AnimationUtils.RevealAnimationSetting buildRevealSettings() {
+        if (getActivity() != null) {
+            View containerView = getActivity().findViewById(R.id.main_screen_content);
+            return AnimationUtils.RevealAnimationSetting.with(
+                    (int) (addChatFab.getX() + addChatFab.getWidth() / 2),
+                    (int) (addChatFab.getY() + addChatFab.getHeight() / 2),
+                    containerView.getWidth(),
+                    containerView.getHeight());
+        } else {
+            return null;
         }
 
-        return super.onOptionsItemSelected(item);
     }
+
 }

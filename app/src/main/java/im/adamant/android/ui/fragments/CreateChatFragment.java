@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.button.MaterialButton;
@@ -22,22 +24,24 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import androidx.fragment.app.FragmentActivity;
 import butterknife.BindView;
 import butterknife.OnClick;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
+import im.adamant.android.helpers.AnimationUtils;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
-import im.adamant.android.ui.fragments.base.BaseBottomFragment;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
-public class BottomCreateChatFragment extends BaseBottomFragment implements CreateChatView {
+public class CreateChatFragment extends BaseFragment implements CreateChatView, AnimationUtils.Dismissible {
+    public static final String ARG_REVEAL_SETTINGS = "ARG_REVEAL_SETTINGS";
+    public static final String TAG = "CreateChatFragment";
 
     @Inject
     QrCodeHelper qrCodeHelper;
@@ -60,6 +64,15 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
 
     private Disposable addressListener;
 
+    public static CreateChatFragment newInstance(AnimationUtils.RevealAnimationSetting animationSetting) {
+        CreateChatFragment createChatFragment = new CreateChatFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(ARG_REVEAL_SETTINGS, animationSetting);
+        createChatFragment.setArguments(bundle);
+
+        return createChatFragment;
+    }
+
     @Override
     public int getLayoutId() {
         return R.layout.fragment_create_chat_screen;
@@ -68,6 +81,13 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
+
+        assert getArguments() != null;
+        AnimationUtils.startCreateChatRevealShowAnimation(
+                getContext(),
+                view,
+                getArguments().getParcelable(ARG_REVEAL_SETTINGS),
+                () -> {});
 
         addressView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -119,7 +139,8 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
         createChatPresenter.onClickCreateNewChat(
                 addressView.getText().toString()
         );
-        dismiss();
+
+        //TODO: DISMISS!!
     }
 
     @OnClick(R.id.fragment_create_chat_btn_by_camera_qr)
@@ -173,10 +194,21 @@ public class BottomCreateChatFragment extends BaseBottomFragment implements Crea
             if (!qrCode.isEmpty()){
                 addressView.setText(qrCode);
                 createChatPresenter.onClickCreateNewChat(qrCode);
-                dismiss();
+                //TODO: DISMISS!
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void dismiss(AnimationUtils.AnimationFinishedListener listener) {
+        assert getArguments() != null;
+        AnimationUtils.startCreateChatRevealExitAnimation(
+                getContext(),
+                getView(),
+                getArguments().getParcelable(ARG_REVEAL_SETTINGS),
+                listener
+        );
     }
 }

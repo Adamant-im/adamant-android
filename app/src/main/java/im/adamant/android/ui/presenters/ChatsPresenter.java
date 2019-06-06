@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.AnimationUtils;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
@@ -89,8 +90,8 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         router.navigateTo(Screens.MESSAGES_SCREEN, chat.getCompanionId());
     }
 
-    public void onClickCreateNewChatButton() {
-        router.navigateTo(Screens.CREATE_CHAT_SCREEN);
+    public void onClickCreateNewChatButton(AnimationUtils.RevealAnimationSetting animationSetting) {
+        router.navigateTo(Screens.CREATE_CHAT_SCREEN, animationSetting);
     }
 
 }
