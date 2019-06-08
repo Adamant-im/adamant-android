@@ -1,14 +1,21 @@
 package im.adamant.android.ui.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -61,8 +68,9 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
     @BindView(R.id.fragment_create_chat_et_address) TextInputEditText addressView;
     @BindView(R.id.fragment_create_chat_il_layout) TextInputLayout addressLayoutView;
     @BindView(R.id.fragment_create_chat_btn_enter) MaterialButton startChatButtonView;
+    @BindView(R.id.fragment_create_chat_btn_show_my_qr) MaterialButton showMyQrCOde;
 
-    private Disposable addressListener;
+//    private Disposable addressListener;
 
     public static CreateChatFragment newInstance(AnimationUtils.RevealAnimationSetting animationSetting) {
         CreateChatFragment createChatFragment = new CreateChatFragment();
@@ -78,6 +86,7 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         return R.layout.fragment_create_chat_screen;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
@@ -101,12 +110,45 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
             }
         });
 
+
+        addressView.setOnTouchListener((v, event) -> {
+            final int DRAWABLE_LEFT = 0;
+            final int DRAWABLE_TOP = 1;
+            final int DRAWABLE_RIGHT = 2;
+            final int DRAWABLE_BOTTOM = 3;
+
+            if(event.getAction() == MotionEvent.ACTION_UP) {
+                Drawable drawableRight = addressView.getCompoundDrawablesRelative()[DRAWABLE_RIGHT];
+                Drawable drawableLeft = addressView.getCompoundDrawablesRelative()[DRAWABLE_LEFT];
+
+                if (drawableRight == null && drawableLeft == null) {
+                    return false;
+                }
+
+                boolean isRightClicked = (drawableRight != null) && (event.getRawX() >= (addressView.getRight() - drawableRight.getBounds().width()));
+                boolean isLeftClicked = (drawableLeft != null) && (event.getRawX() >= (addressView.getLeft() - drawableLeft.getBounds().width()));
+
+                if (isRightClicked) {
+                    scanQrCodeClick();
+                    return true;
+                }
+
+                if (isLeftClicked) {
+                    loadQrCodeClick();
+                    return true;
+                }
+            }
+            return false;
+        });
+
+        showMyQrCOde.setPaintFlags(showMyQrCOde.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         return view;
     }
 
     @Override
     public void showError(int resourceId) {
-        addressLayoutView.setError(getString(resourceId));
+        Toast.makeText(getContext(), getString(resourceId), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -117,7 +159,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
     @Override
     public void unlockUI() {
         startChatButtonView.setEnabled(true);
-        addressLayoutView.setError("");
     }
 
     @Override
@@ -143,7 +184,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         //TODO: DISMISS!!
     }
 
-    @OnClick(R.id.fragment_create_chat_btn_by_camera_qr)
     public void scanQrCodeClick() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -152,7 +192,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         }
     }
 
-    @OnClick(R.id.fragment_create_chat_btn_by_stored_qr)
     public void loadQrCodeClick() {
         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
         photoPickerIntent.setType("image/*");
@@ -164,26 +203,26 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         createChatPresenter.onClickShowMyQrCodeButton();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        addressListener = RxTextView
-                .textChanges(addressView)
-                .filter(charSequence -> charSequence.length() > 0)
-                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
-                .doOnNext(createChatPresenter::onInputAddress)
-                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
-                .retry()
-                .subscribe();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        addressListener.dispose();
-        addressListener = null;
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        addressListener = RxTextView
+//                .textChanges(addressView)
+//                .filter(charSequence -> charSequence.length() > 0)
+//                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+//                .map(CharSequence::toString)
+//                .doOnNext(createChatPresenter::onInputAddress)
+//                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
+//                .retry()
+//                .subscribe();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        addressListener.dispose();
+//        addressListener = null;
+//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

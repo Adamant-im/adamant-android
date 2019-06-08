@@ -6,6 +6,7 @@ import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -121,11 +122,11 @@ public class AnimationUtils {
     //Specific cases for our share link screen
 
     public static void startCreateChatRevealShowAnimation(Context context, View view, RevealAnimationSetting revealSettings, AnimationFinishedListener listener) {
-        startCircularRevealAnimation(context, view, revealSettings, getColor(context, R.color.secondary), getColor(context, R.color.primary), listener);
+        startCircularRevealAnimation(context, view, revealSettings, getColor(context, R.color.secondary), Color.parseColor("#80666666"), listener);
     }
 
     public static void startCreateChatRevealExitAnimation(Context context, View view, RevealAnimationSetting revealSettings, AnimationFinishedListener listener) {
-        startCircularRevealExitAnimation(context, view, revealSettings, getColor(context, R.color.primary), getColor(context, R.color.secondary), listener);
+        startCircularRevealExitAnimation(context, view, revealSettings, Color.parseColor("#80666666"), getColor(context, R.color.secondary), listener);
     }
 
     //We use this to remove the Fragment only when the animation finished
