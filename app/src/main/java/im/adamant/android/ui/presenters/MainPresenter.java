@@ -17,8 +17,6 @@ import ru.terrakok.cicerone.Router;
 public class MainPresenter extends ProtectedBasePresenter<MainView> {
     private SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor;
 
-    private String currentWindowCode = Screens.WALLET_SCREEN;
-
     public MainPresenter(
             Router router,
             SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
@@ -43,39 +41,20 @@ public class MainPresenter extends ProtectedBasePresenter<MainView> {
                     );
             subscriptions.add(pushSubscription);
         }
+
+        onSelectedWalletScreen();
     }
 
-    @Override
-    public void attachView(MainView view) {
-        super.attachView(view);
-        switch (currentWindowCode){
-            case Screens.WALLET_SCREEN: {
-                getViewState().showWalletScreen();
-            }
-            break;
-            case Screens.CHATS_SCREEN: {
-                getViewState().showChatsScreen();
-            }
-            break;
-            case Screens.SETTINGS_SCREEN: {
-                getViewState().showSettingsScreen();
-            }
-            break;
-        }
-    }
 
     public void onSelectedWalletScreen() {
-        currentWindowCode = Screens.WALLET_SCREEN;
         getViewState().showWalletScreen();
     }
 
     public void onSelectedChatsScreen() {
-        currentWindowCode = Screens.CHATS_SCREEN;
         getViewState().showChatsScreen();
     }
 
     public void onSelectedSettingsScreen() {
-        currentWindowCode = Screens.SETTINGS_SCREEN;
         getViewState().showSettingsScreen();
     }
 }
