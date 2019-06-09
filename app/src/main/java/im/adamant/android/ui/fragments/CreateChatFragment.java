@@ -2,15 +2,11 @@ package im.adamant.android.ui.fragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -24,9 +20,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.jakewharton.rxbinding3.widget.RxTextView;
-
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -36,15 +29,13 @@ import butterknife.OnClick;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.AnimationUtils;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
+import im.adamant.android.helpers.DrawableClickListener;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 public class CreateChatFragment extends BaseFragment implements CreateChatView, AnimationUtils.Dismissible {
     public static final String ARG_REVEAL_SETTINGS = "ARG_REVEAL_SETTINGS";
@@ -71,14 +62,22 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
     @BindView(R.id.fragment_create_chat_btn_show_my_qr) MaterialButton showMyQrCOde;
 
 //    private Disposable addressListener;
+    private AnimationUtils.AnimationFinishedListener animationFinishedListener;
 
-    public static CreateChatFragment newInstance(AnimationUtils.RevealAnimationSetting animationSetting) {
-        CreateChatFragment createChatFragment = new CreateChatFragment();
+    public static CreateChatFragment newInstance(
+            AnimationUtils.RevealAnimationSetting animationSetting,
+            AnimationUtils.AnimationFinishedListener listener
+    ) {
+        CreateChatFragment createChatFragment = new CreateChatFragment(listener);
         Bundle bundle = new Bundle();
         bundle.putParcelable(ARG_REVEAL_SETTINGS, animationSetting);
         createChatFragment.setArguments(bundle);
 
         return createChatFragment;
+    }
+
+    public CreateChatFragment(AnimationUtils.AnimationFinishedListener animationFinishedListener) {
+        this.animationFinishedListener = animationFinishedListener;
     }
 
     @Override
@@ -111,34 +110,16 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         });
 
 
-        addressView.setOnTouchListener((v, event) -> {
-            final int DRAWABLE_LEFT = 0;
-            final int DRAWABLE_TOP = 1;
-            final int DRAWABLE_RIGHT = 2;
-            final int DRAWABLE_BOTTOM = 3;
-
-            if(event.getAction() == MotionEvent.ACTION_UP) {
-                Drawable drawableRight = addressView.getCompoundDrawablesRelative()[DRAWABLE_RIGHT];
-                Drawable drawableLeft = addressView.getCompoundDrawablesRelative()[DRAWABLE_LEFT];
-
-                if (drawableRight == null && drawableLeft == null) {
-                    return false;
-                }
-
-                boolean isRightClicked = (drawableRight != null) && (event.getRawX() >= (addressView.getRight() - drawableRight.getBounds().width()));
-                boolean isLeftClicked = (drawableLeft != null) && (event.getRawX() >= (addressView.getLeft() - drawableLeft.getBounds().width()));
-
-                if (isRightClicked) {
-                    scanQrCodeClick();
-                    return true;
-                }
-
-                if (isLeftClicked) {
-                    loadQrCodeClick();
-                    return true;
-                }
+        addressView.setOnTouchListener(new DrawableClickListener(TextInputEditText.class) {
+            @Override
+            protected void onClickStartDrawable(View v) {
+                loadQrCodeClick();
             }
-            return false;
+
+            @Override
+            protected void onClickEndDrawable(View v) {
+                scanQrCodeClick();
+            }
         });
 
         showMyQrCOde.setPaintFlags(showMyQrCOde.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -181,7 +162,12 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
                 addressView.getText().toString()
         );
 
-        //TODO: DISMISS!!
+        dismiss();
+    }
+
+    @OnClick(R.id.fragment_create_chat_cl_faded_layout)
+    public void clickOnFadedLayout() {
+        dismiss();
     }
 
     public void scanQrCodeClick() {
@@ -233,7 +219,7 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
             if (!qrCode.isEmpty()){
                 addressView.setText(qrCode);
                 createChatPresenter.onClickCreateNewChat(qrCode);
-                //TODO: DISMISS!
+                dismiss();
             }
         }
 
@@ -241,13 +227,13 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
     }
 
     @Override
-    public void dismiss(AnimationUtils.AnimationFinishedListener listener) {
+    public void dismiss() {
         assert getArguments() != null;
         AnimationUtils.startCreateChatRevealExitAnimation(
                 getContext(),
                 getView(),
                 getArguments().getParcelable(ARG_REVEAL_SETTINGS),
-                listener
+                animationFinishedListener
         );
     }
 }

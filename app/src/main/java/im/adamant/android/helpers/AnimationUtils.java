@@ -129,9 +129,9 @@ public class AnimationUtils {
         startCircularRevealExitAnimation(context, view, revealSettings, Color.parseColor("#80666666"), getColor(context, R.color.secondary), listener);
     }
 
-    //We use this to remove the Fragment only when the animation finished
+
     public interface Dismissible {
-        void dismiss(AnimationFinishedListener listener);
+        void dismiss();
     }
 
 
