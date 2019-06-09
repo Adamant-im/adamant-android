@@ -37,13 +37,13 @@ public class SeparatorViewHolder extends AbstractMessageListContentViewHolder {
         relativeTimeTextView.setReferenceTime(separator.getTimestamp());
 
         if (relativeTimeTextView.isToday()){
-            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
-            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
-            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryDarkVariant));
+            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.secondaryLightVariant));
+            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryLightVariant));
+            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.secondaryLightVariant));
         } else {
-            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.textMuted));
-            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.textMuted));
-            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.textMuted));
+            relativeTimeTextView.setTextColor(ContextCompat.getColor(context, R.color.strokeDark));
+            leftLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.strokeDark));
+            rightLineView.setBackgroundColor(ContextCompat.getColor(context, R.color.strokeDark));
         }
     }
 

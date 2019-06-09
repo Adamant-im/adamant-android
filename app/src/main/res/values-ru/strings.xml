@@ -47,7 +47,7 @@
     <string name="activity_messages_ev_message_placeholder">Введите текст сообщения…</string>
 
     <string name="activity_messages_action_rename">Переименовать</string>
-    <string name="activity_messages_action_copy">Копировать</string>
+    <string name="activity_messages_action_copy">Копировать адрес</string>
     <string name="activity_messages_action_qrcode">Показать QR-код</string>
 
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
