@@ -97,6 +97,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                                     .update()
                                     .doAfterSuccess(cnt -> {
                                         if (cnt > 0) {
+                                            getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
                                             refreshMessageList(companionId);
                                         }
                                     })
@@ -117,6 +118,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     public void onResume() {
         if (currentChat != null) {
             getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
+            getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
         }
     }
 

@@ -12,12 +12,13 @@ import android.view.View;
 import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 import com.arellomobile.mvp.MvpDelegate;
 import com.franmontiel.localechanger.LocaleChanger;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import butterknife.ButterKnife;
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
@@ -248,6 +249,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
             // Apply the custom view
             actionBar.setCustomView(customTitleView);
+
+            Toolbar parent = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                parent = (Toolbar) customTitleView.getParent();
+                parent.setPadding(0,0,0,0);//for tab otherwise give space in tab
+                parent.setContentInsetsAbsolute(0,0);
+                parent.setTitleMargin(0,0,0,0);
+                parent.setContentInsetStartWithNavigation(0);
+            }
         }
     }
 

@@ -30,11 +30,11 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected int avatarSize;
 
     protected ImageView processedView;
-    protected TextView timeView;
+//    protected TextView timeView;
     protected TextView errorView;
-    protected View avatarBlockView;
+//    protected View avatarBlockView;
     protected View messageBlockView;
-    protected ImageView avatarView;
+//    protected ImageView avatarView;
     protected FrameLayout contentBlock;
 
     protected ConstraintLayout constraintLayout;
@@ -62,11 +62,11 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
 
-        avatarBlockView = itemView.findViewById(R.id.list_item_message_avatar_block);
+//        avatarBlockView = itemView.findViewById(R.id.list_item_message_avatar_block);
         messageBlockView = itemView.findViewById(R.id.list_item_message_card);
 
-        avatarView = itemView.findViewById(R.id.list_item_message_avatar);
-        timeView = itemView.findViewById(R.id.list_item_message_time);
+//        avatarView = itemView.findViewById(R.id.list_item_message_avatar);
+//        timeView = itemView.findViewById(R.id.list_item_message_time);
         errorView = itemView.findViewById(R.id.list_item_message_error_text);
         contentBlock = itemView.findViewById(R.id.list_item_message_content);
     }
@@ -82,20 +82,20 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
 
-        avatarView.setImageBitmap(null);
-        if (abstractMessage.getOwnerPublicKey() != null){
-            Disposable avatarSubscription = avatar
-                    .build(abstractMessage.getOwnerPublicKey(), avatarSize)
-                    .subscribe(
-                            avatar -> avatarView.setImageBitmap(avatar),
-                            error -> LoggerHelper.e("messageHolder", error.getMessage(), error)
-                    );
-            compositeDisposable.add(avatarSubscription);
-        } else {
-            avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
-        }
-
-        timeView.setText(timeFormatter.format(abstractMessage.getDate()));
+//        avatarView.setImageBitmap(null);
+//        if (abstractMessage.getOwnerPublicKey() != null){
+//            Disposable avatarSubscription = avatar
+//                    .build(abstractMessage.getOwnerPublicKey(), avatarSize)
+//                    .subscribe(
+//                            avatar -> avatarView.setImageBitmap(avatar),
+//                            error -> LoggerHelper.e("messageHolder", error.getMessage(), error)
+//                    );
+//            compositeDisposable.add(avatarSubscription);
+//        } else {
+//            avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
+//        }
+//
+//        timeView.setText(timeFormatter.format(abstractMessage.getDate()));
         errorView.setText(abstractMessage.getError());
 
         if (abstractMessage.isiSay()){
@@ -107,46 +107,58 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     private void iToldLayoutModification(){
-        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.START);
-        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
-
         constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
         constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
-
-        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
-        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
-
-        constraintSet.clear(errorView.getId(), ConstraintSet.START);
-        constraintSet.clear(errorView.getId(), ConstraintSet.END);
-
-        constraintSet.connect(errorView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
-        constraintSet.connect(errorView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
 
         constraintSet.applyTo(constraintLayout);
+
+//        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.START);
+//        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
+//        constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
+//        constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
+//
+//        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+//        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
+
+//        constraintSet.clear(errorView.getId(), ConstraintSet.START);
+//        constraintSet.clear(errorView.getId(), ConstraintSet.END);
+//
+//        constraintSet.connect(errorView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+//        constraintSet.connect(errorView.getId(), ConstraintSet.END, avatarBlockView.getId(), ConstraintSet.START, avatarMargin);
+
+//        constraintSet.applyTo(constraintLayout);
     }
 
     private void companionToldModification(){
-        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
-        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.END);
-
         constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
         constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
-
-        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
-        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
-
-        constraintSet.clear(errorView.getId(), ConstraintSet.START);
-        constraintSet.clear(errorView.getId(), ConstraintSet.END);
-
-        constraintSet.connect(errorView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
-        constraintSet.connect(errorView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
 
         constraintSet.applyTo(constraintLayout);
+
+//        constraintSet.connect(avatarBlockView.getId(), ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START, parentPadding);
+//        constraintSet.clear(avatarBlockView.getId(), ConstraintSet.END);
+
+//        constraintSet.clear(messageBlockView.getId(), ConstraintSet.START);
+//        constraintSet.clear(messageBlockView.getId(), ConstraintSet.END);
+
+//        constraintSet.connect(messageBlockView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
+//        constraintSet.connect(messageBlockView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
+//        constraintSet.clear(errorView.getId(), ConstraintSet.START);
+//        constraintSet.clear(errorView.getId(), ConstraintSet.END);
+
+//        constraintSet.connect(errorView.getId(), ConstraintSet.START, avatarBlockView.getId(), ConstraintSet.END, avatarMargin);
+//        constraintSet.connect(errorView.getId(), ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END, parentPadding);
+
+//        constraintSet.applyTo(constraintLayout);
     }
 
     protected void emptyView() {
         processedView.setImageResource(R.drawable.ic_sending);
-        timeView.setText("00:00");
+//        timeView.setText("00:00");
     }
 
     protected void displayProcessedStatus(ImageView processedView, AbstractMessage message){
