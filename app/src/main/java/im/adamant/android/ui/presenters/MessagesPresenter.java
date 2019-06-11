@@ -193,7 +193,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
             AdamantBasicMessage messageEntity = getAdamantMessage(text, messageFactory);
 
             long cost = messageFactory.getMessageProcessor().calculateMessageCostInAdamant(messageEntity);
-            getViewState().showMessageCost(BalanceConvertHelper.convert(cost).toString());
+            getViewState().showMessageCost("~" + BalanceConvertHelper.convert(cost).toString() + " ADM");
         } catch (Exception e) {
             e.printStackTrace();
         }
