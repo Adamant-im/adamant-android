@@ -1,56 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/tile_bg"
-    android:orientation="vertical"
+    android:background="@color/background"
     tools:context=".ui.fragments.SettingsScreen">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    <ProgressBar
+        android:id="@+id/fragment_settings_pb_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:secondaryProgress="50"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ProgressBar
-            android:id="@+id/fragment_settings_pb_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:secondaryProgress="50"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/fragment_settings_tv_version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="textEnd"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/fragment_settings_tv_version"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:textAlignment="center"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_settings_pb_progress" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_settings_tv_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView2"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:cardCornerRadius="@dimen/list_item_message_corner_radius"
-            app:cardElevation="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fragment_settings_tv_version">
+            android:layout_height="wrap_content">
+
+            <!--<androidx.cardview.widget.CardView-->
+            <!--android:id="@+id/cardView2"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="8dp"-->
+            <!--android:layout_marginTop="8dp"-->
+            <!--android:layout_marginEnd="8dp"-->
+            <!--android:layout_marginBottom="8dp"-->
+            <!--app:cardCornerRadius="@dimen/list_item_message_corner_radius"-->
+            <!--app:cardElevation="5dp"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toBottomOf="@+id/fragment_settings_tv_version">-->
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -93,15 +103,15 @@
                             android:text="@string/fragment_settings_language" />
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
                             android:id="@+id/fragment_settings_btn_change_lang"
+                            style="@style/AdamantLight.TextViewSubHeader"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
                             android:layout_weight="1"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
                             android:textAlignment="textEnd"
-                            android:textColor="@color/secondary"/>
+                            android:textColor="@color/secondary" />
 
                     </TableRow>
 
@@ -161,7 +171,9 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </TableRow>
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle" android:id="@+id/fragment_settings_tr_show_nodes">
+                    <TableRow
+                        android:id="@+id/fragment_settings_tr_show_nodes"
+                        style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
                             style="@style/AdamantLight.TextViewSubHeader"
@@ -170,7 +182,9 @@
                             android:text="@string/fragment_settings_nodes" />
                     </TableRow>
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle" android:id="@+id/fragment_settings_tr_exit">
+                    <TableRow
+                        android:id="@+id/fragment_settings_tr_exit"
+                        style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
                             style="@style/AdamantLight.TextViewSubHeader"
@@ -181,8 +195,10 @@
                 </TableLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.cardview.widget.CardView>
+            <!--</androidx.cardview.widget.CardView>-->
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</ScrollView>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

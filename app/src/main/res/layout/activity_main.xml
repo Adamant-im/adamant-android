@@ -10,7 +10,8 @@
     <FrameLayout
         android:id="@+id/main_screen_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        app:layout_behavior=".ui.transformations.FragmentContainerStickyBottomBehavior"/>
 
 
     <!--<im.adamant.android.ui.custom_view.NoSwipePager-->

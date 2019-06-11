@@ -159,7 +159,7 @@
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="68dp"
+                android:layout_marginBottom="16dp"
                 android:text="@string/fragment_create_chat_show_my_qr"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
