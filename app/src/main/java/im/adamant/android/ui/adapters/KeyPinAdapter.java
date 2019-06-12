@@ -44,15 +44,15 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
     @NonNull
     @Override
     public KeyPinHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == DIGIT_HOLDER_TYPE) {
+//        if (viewType == DIGIT_HOLDER_TYPE) {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.list_item_pincode_digit_key, parent, false);
             return new KeyPinDigitHolder(v, this);
-        } else {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_pincode_icon_key, parent, false);
-            return new KeyPinIconHolder(v, this);
-        }
+//        } else {
+//            View v = LayoutInflater.from(parent.getContext())
+//                    .inflate(R.layout.list_item_pincode_icon_key, parent, false);
+//            return new KeyPinIconHolder(v, this);
+//        }
 
     }
 
@@ -66,8 +66,9 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
         return keys.size();
     }
 
+    @Deprecated
     public void shuffle() {
-        initKeys();
+        initKeys(); //Shuffling has been disabled
         notifyDataSetChanged();
     }
 
@@ -107,7 +108,7 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
 
         digits.add("0");
 
-        Collections.shuffle(digits);
+//        Collections.shuffle(digits);
 
         for (int i = 0; i < digits.size(); i++) {
             if (i == 9) {

@@ -1,4 +1,4 @@
-package im.adamant.android.ui.transformations;
+package im.adamant.android.ui.custom_view;
 
 import android.content.res.Resources;
 import android.graphics.Canvas;

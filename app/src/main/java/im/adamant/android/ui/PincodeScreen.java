@@ -120,10 +120,10 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
         suggestionView.setText(resourceId);
     }
 
-    @Override
-    public void shuffleKeyboard() {
-        keyPinAdapter.shuffle();
-    }
+//    @Override
+//    public void shuffleKeyboard() {
+//        keyPinAdapter.shuffle();
+//    }
 
     @Override
     public void goToMain() {

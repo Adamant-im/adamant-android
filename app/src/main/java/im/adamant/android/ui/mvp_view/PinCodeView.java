@@ -8,7 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 public interface PinCodeView extends MvpView {
-    int PINCODE_LENGTH = 10;
     String ARG_MODE = "mode";
 
     enum MODE {
@@ -26,7 +25,7 @@ public interface PinCodeView extends MvpView {
 
     void setSuggestion(int resourceId);
 
-    void shuffleKeyboard();
+//    void shuffleKeyboard();
 
     @StateStrategyType(SkipStrategy.class)
     void goToMain();

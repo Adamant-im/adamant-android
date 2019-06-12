@@ -148,7 +148,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 return false;
             } else {
                 lastAttemptTimestamp = System.currentTimeMillis();
-                getViewState().shuffleKeyboard();
+//                getViewState().shuffleKeyboard();
 
                 if (timerErrorDisposable != null) {
                     timerErrorDisposable.dispose();
@@ -176,10 +176,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     private boolean validate(CharSequence pincode) {
-        if (pincode.length() != PinCodeView.PINCODE_LENGTH) {
-            getViewState().showError(R.string.wrong_pincode_length);
-            return false;
-        }
 
         //---
         boolean isSame = true;

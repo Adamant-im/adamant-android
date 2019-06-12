@@ -8,8 +8,6 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -29,9 +27,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.ui.navigators.DefaultNavigator;
-import im.adamant.android.ui.transformations.SimpleDotIndicatorDecoration;
-import io.reactivex.Flowable;
-import io.reactivex.disposables.CompositeDisposable;
+import im.adamant.android.ui.custom_view.SimpleDotIndicatorDecoration;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
