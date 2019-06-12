@@ -213,7 +213,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         if (activity != null){
             builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
 
-            builder.setTitle(getString(R.string.fragment_settings_choose_language));
+//            builder.setTitle(getString(R.string.fragment_settings_choose_language));
 
             CharSequence[] titles = new CharSequence[supportedLocales.size()];
 
@@ -227,21 +227,24 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 }
             }
 
-            AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
-
-            builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
-                selectedLangIndex.set(i);
-            });
-
             int finalDefaultSelected = defaultSelected;
-            builder.setPositiveButton(R.string.yes, (d, i) -> {
-                int currentSelected = selectedLangIndex.get();
-                if (finalDefaultSelected != currentSelected){
-                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
+            builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
+                if (finalDefaultSelected != i){
+                    d.dismiss();
+                    LocaleChanger.setLocale(supportedLocales.get(i));
                     activity.recreate();
                 }
             });
-            builder.setNegativeButton(R.string.no, null);
+
+//            int finalDefaultSelected = defaultSelected;
+//            builder.setPositiveButton(R.string.yes, (d, i) -> {
+//                int currentSelected = selectedLangIndex.get();
+//                if (finalDefaultSelected != currentSelected){
+//                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
+//                    activity.recreate();
+//                }
+//            });
+//            builder.setNegativeButton(R.string.no, null);
         }
 
 
