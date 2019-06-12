@@ -96,7 +96,7 @@
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -104,21 +104,20 @@
 
                         <TextView
                             android:id="@+id/fragment_settings_btn_change_lang"
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.FlatTextButton"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
                             android:layout_weight="1"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
-                            android:textAlignment="textEnd"
-                            android:textColor="@color/secondary" />
+                            android:textAlignment="textEnd" />
 
                     </TableRow>
 
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextViewNormal"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -133,7 +132,10 @@
 
                     </TableRow>
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle">
+                    <TableRow
+                        style="@style/AdamantLight.TableRowStyle"
+                        android:id="@+id/fragment_settings_tr_subscribe_to_push"
+                        android:visibility="gone">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -142,7 +144,7 @@
 
                             <TextView
                                 android:id="@+id/textView9"
-                                style="@style/AdamantLight.TextViewSubHeader"
+                                style="@style/AdamantLight.TextViewNormal"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:maxLines="50"
@@ -152,7 +154,7 @@
 
                             <TextView
                                 android:id="@+id/fragment_settings_tv_notification"
-                                style="@style/AdamantLight.TextViewSubHeader"
+                                style="@style/AdamantLight.TextViewNormal"
                                 android:layout_width="0dp"
                                 android:layout_height="24dp"
                                 android:layout_marginStart="8dp"
@@ -176,7 +178,7 @@
                         style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextViewNormal"
                             android:layout_span="2"
                             android:layout_weight="1"
                             android:text="@string/fragment_settings_nodes" />
@@ -187,7 +189,7 @@
                         style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextViewNormal"
                             android:layout_span="2"
                             android:layout_weight="1"
                             android:text="@string/exit" />

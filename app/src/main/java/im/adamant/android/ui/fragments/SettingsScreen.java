@@ -2,6 +2,7 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -65,6 +66,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
     @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
     @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
+    @BindView(R.id.fragment_settings_tr_subscribe_to_push) TableRow pushNotificationServiceLayoutView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -90,6 +92,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
         Locale locale = LocaleChanger.getLocale();
         changeLanguageButtonView.setText(locale.getDisplayLanguage());
+
+        changeLanguageButtonView.setPaintFlags(changeLanguageButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         return view;
     }
@@ -134,6 +138,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void setEnablePushOption(boolean value) {
         pushNotificationServiceView.setEnabled(value);
+        if (value) {
+            pushNotificationServiceLayoutView.setVisibility(View.VISIBLE);
+        } else {
+            pushNotificationServiceLayoutView.setVisibility(View.GONE);
+        }
     }
 
     @Override
