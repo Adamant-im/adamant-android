@@ -29,6 +29,7 @@
     <string name="activity_pincode_enter_pincode">Введите пин-код</string>
     <string name="activity_pincode_enter_new_pincode">Введите новый пин-код</string>
     <string name="activity_pincode_confirm">Подтвердите пин-код</string>
+    <string name="activity_pincode_remove_pin">Сбросить пин-код</string>
 
     <string name="activity_show_qr_code_title">QR-код</string>
     <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>

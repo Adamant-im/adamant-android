@@ -87,6 +87,12 @@ public class SecurityInteractor {
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
+    public Completable forceDropPassphrase() {
+        return pushNotificationServiceInteractor
+                .resetNotificationFacade(true)
+                .doOnComplete(this::clearSettings);
+    }
+
     public boolean isKeyPairMustBeStored() {
         return settings.isKeyPairMustBeStored();
     }

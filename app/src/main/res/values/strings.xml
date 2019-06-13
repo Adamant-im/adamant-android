@@ -28,6 +28,7 @@
     <string name="activity_pincode_enter_pincode">Enter pin-code</string>
     <string name="activity_pincode_enter_new_pincode">Enter new pin-code</string>
     <string name="activity_pincode_confirm">Confirm pin-code</string>
+    <string name="activity_pincode_remove_pin">Remove PIN</string>
 
     <string name="activity_create_chat_recipient">Recipient address</string>
     <string name="activity_create_chat_send">Start new chat</string>

@@ -2,7 +2,6 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
@@ -13,12 +12,12 @@ import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
-    private SecurityInteractor pinCodeInteractor;
+    private SecurityInteractor securityInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
     private CharSequence pincodeForConfirmation;
     private int attemptsCount = 0;
@@ -26,8 +25,8 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private Disposable currentOperation;
     private Disposable timerErrorDisposable;
 
-    public PincodePresenter(SecurityInteractor pinCodeInteractor) {
-        this.pinCodeInteractor = pinCodeInteractor;
+    public PincodePresenter(SecurityInteractor securityInteractor) {
+        this.securityInteractor = securityInteractor;
     }
 
     public void setMode(PinCodeView.MODE mode) {
@@ -35,14 +34,17 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
         switch (mode){
             case CREATE: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_new_pincode);
+                getViewState().setCancelButtonText(R.string.cancel);
             }
             break;
             case ACCESS_TO_APP: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
+                getViewState().setCancelButtonText(R.string.activity_pincode_remove_pin);
             }
             break;
             case DROP: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
+                getViewState().setCancelButtonText(R.string.cancel);
             }
             break;
         }
@@ -67,7 +69,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case CONFIRM: {
                 if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)){
                     getViewState().startProcess();
-                    currentOperation = pinCodeInteractor
+                    currentOperation = securityInteractor
                             .savePassphrase(pinCode)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
@@ -99,7 +101,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 lastAttemptTimestamp = System.currentTimeMillis();
 
                 getViewState().startProcess();
-                currentOperation = pinCodeInteractor
+                currentOperation = securityInteractor
                         .restoreAuthorizationByPincode(pinCode)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -121,7 +123,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             break;
             case DROP: {
                 getViewState().startProcess();
-                currentOperation = pinCodeInteractor
+                currentOperation = securityInteractor
                         .dropPassphrase(pinCode)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
@@ -141,6 +143,32 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
         }
     }
 
+    public void onClickCancelButton() {
+        switch (mode) {
+            case DROP:
+            case CREATE:
+            case CONFIRM:
+                getViewState().close();
+                break;
+            case ACCESS_TO_APP:
+                getViewState().startProcess();
+                Disposable pincodeReset = securityInteractor
+                        .forceDropPassphrase()
+                        .subscribe(
+                                () -> {
+                                    getViewState().stopProcess(true);
+                                    getViewState().goToSplash();
+                                },
+                                (error) -> {
+                                    getViewState().stopProcess(false);
+                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                }
+                        );
+
+                subscriptions.add(pincodeReset);
+        }
+    }
+
     private boolean waitTimeOut() {
         if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
             if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
@@ -148,7 +176,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 return false;
             } else {
                 lastAttemptTimestamp = System.currentTimeMillis();
-//                getViewState().shuffleKeyboard();
 
                 if (timerErrorDisposable != null) {
                     timerErrorDisposable.dispose();

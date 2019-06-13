@@ -37,6 +37,7 @@ public abstract class DefaultNavigator implements Navigator {
                     attachedActivity.finish();
                 }
                 break;
+
                 default:
                     forward((Forward) command);
             }

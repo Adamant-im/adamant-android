@@ -1,7 +1,7 @@
 package im.adamant.android.ui;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.button.MaterialButton;
 
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ import javax.inject.Provider;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
+import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.adapters.KeyPinAdapter;
@@ -30,6 +32,7 @@ import im.adamant.android.ui.custom_view.LTRGridLayoutManager;
 import im.adamant.android.ui.custom_view.PinIndicatorLayout;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
+
 
 import static android.view.View.OVER_SCROLL_NEVER;
 
@@ -57,6 +60,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     @BindView(R.id.activity_pin_code_cl_keypadLayout) ConstraintLayout keypadLayoutView;
     @BindView(R.id.activity_pincode_cl_logoLayout) ConstraintLayout logoLayoutView;
     @BindView(R.id.activity_pincode_pil_indicator_dots) PinIndicatorLayout indicator;
+    @BindView(R.id.activity_pin_code_btn_reset_or_cancel) MaterialButton cancelButtonView;
 
     @Override
     public int getLayoutId() {
@@ -84,6 +88,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
         pinLockView.addItemDecoration(new ItemSpaceDecoration(0, 0, 3, false));
         pinLockView.setOverScrollMode(OVER_SCROLL_NEVER);
 
+        cancelButtonView.setPaintFlags(cancelButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+
         Intent intent = getIntent();
 
         if (intent == null){return;}
@@ -103,6 +109,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
         Animation outAnimation = AnimationUtils.makeOutAnimation(this, false);
         keypadLayoutView.setAnimation(outAnimation);
         keypadLayoutView.setVisibility(View.GONE);
+        cancelButtonView.setVisibility(View.GONE);
     }
 
     @Override
@@ -111,6 +118,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
             Animation outAnimation = AnimationUtils.makeInAnimation(this, false);
             keypadLayoutView.setAnimation(outAnimation);
             keypadLayoutView.setVisibility(View.VISIBLE);
+            cancelButtonView.setVisibility(View.VISIBLE);
         }
         progressView.setVisibility(View.INVISIBLE);
     }
@@ -136,6 +144,13 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     }
 
     @Override
+    public void goToSplash() {
+        Intent intent = new Intent(this.getApplicationContext(), SplashScreen.class);
+        this.startActivity(intent);
+        this.finish();
+    }
+
+    @Override
     public void close() {
         finish();
     }
@@ -155,6 +170,11 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
 
     }
 
+    @OnClick(R.id.activity_pin_code_btn_reset_or_cancel)
+    public void onClickCancelButton() {
+        presenter.onClickCancelButton();
+    }
+
     @Override
     public void showRepeatableError(int resourceId, int secondsLeft) {
         String errorPattern = getString(resourceId);
@@ -163,8 +183,14 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     }
 
     @Override
+    public void setCancelButtonText(int resourceId) {
+        cancelButtonView.setText(resourceId);
+    }
+
+    @Override
     public void clearError() {
         errorView.setText("");
     }
+
 
 }

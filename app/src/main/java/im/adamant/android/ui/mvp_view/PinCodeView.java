@@ -31,6 +31,9 @@ public interface PinCodeView extends MvpView {
     void goToMain();
 
     @StateStrategyType(SkipStrategy.class)
+    void goToSplash();
+
+    @StateStrategyType(SkipStrategy.class)
     void close();
 
     @StateStrategyType(SkipStrategy.class)
@@ -38,6 +41,8 @@ public interface PinCodeView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showRepeatableError(int resourceId, int secondsLeft);
+
+    void setCancelButtonText(int resourceId);
 
     void clearError();
 }

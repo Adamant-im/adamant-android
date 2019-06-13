@@ -64,14 +64,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/activity_pin_code_btn_reset_or_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/activity_pincode_cl_logoLayout">
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_suggestion"
+                    style="@style/AdamantLight.TextViewHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -80,7 +80,6 @@
                     android:gravity="center"
                     android:maxLines="1"
                     android:text="@string/activity_pincode_enter_pincode"
-                    style="@style/AdamantLight.TextViewHeader"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -93,20 +92,20 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     app:active_color="@color/secondaryDarkVariant"
-                    app:inactive_color="@color/secondaryLightVariant"
                     app:animation_delay="400"
                     app:dot_diameter="8dp"
-                    app:padding_size="8dp"
-                    app:pincode_length="6"
+                    app:inactive_color="@color/secondaryLightVariant"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion" />
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_suggestion"
+                    app:padding_size="8dp"
+                    app:pincode_length="6" />
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_error"
+                    style="@style/AdamantLight.TextViewOverLine"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    style="@style/AdamantLight.TextViewOverLine"
                     android:layout_centerHorizontal="true"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
@@ -129,9 +128,22 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error"/>
+                    app:layout_constraintTop_toBottomOf="@+id/activity_pincode_tv_error" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/activity_pin_code_btn_reset_or_cancel"
+                style="@style/AdamantLight.FlatTextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="1dp"
+                android:text="@string/cancel"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
