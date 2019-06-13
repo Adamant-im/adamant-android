@@ -2,6 +2,7 @@ package im.adamant.android.ui.holders;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -30,6 +31,12 @@ public class KeyPinDigitHolder extends KeyPinHolder {
             button.setText(key.getDigit());
         } else {
             button.setIcon(ContextCompat.getDrawable(ctx, key.getIcon()));
+        }
+
+        if (key.isVisible()) {
+            button.setVisibility(View.VISIBLE);
+        } else {
+            button.setVisibility(View.GONE);
         }
 
         button.setOnClickListener(v -> {
