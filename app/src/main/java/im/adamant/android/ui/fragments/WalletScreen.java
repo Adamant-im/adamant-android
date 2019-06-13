@@ -59,7 +59,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
  */
 public class WalletScreen extends BaseFragment implements WalletView {
 
-    private CompositeDisposable subscriptions = new CompositeDisposable();
+    private Disposable cardEventsDisposable;
 
     @Inject
     @Named(Screens.WALLET_SCREEN)
@@ -182,7 +182,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
     public void onResume() {
         super.onResume();
         WeakReference<WalletPresenter> thisReference = new WeakReference<>(presenter);
-        Disposable subscribe = currencyCardAdapter
+
+        if (cardEventsDisposable != null) {
+            cardEventsDisposable.dispose();
+        }
+
+        cardEventsDisposable = currencyCardAdapter
                 .getObservable()
                 .subscribe(event -> {
                     WalletPresenter presenter = thisReference.get();
@@ -197,16 +202,14 @@ public class WalletScreen extends BaseFragment implements WalletView {
                             break;
                     }
                 });
-
-        subscriptions.add(subscribe);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         presenter.onStopTransfersUpdate();
-        subscriptions.dispose();
-        subscriptions.clear();
+        cardEventsDisposable.dispose();
+        cardEventsDisposable = null;
     }
 
     @Override
