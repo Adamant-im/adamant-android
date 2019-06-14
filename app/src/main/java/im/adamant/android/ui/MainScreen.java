@@ -178,27 +178,8 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 break;
 
                 case Screens.CREATE_CHAT_SCREEN: {
-                    AnimationUtils.RevealAnimationSetting revealAnimationSetting = (AnimationUtils.RevealAnimationSetting)forwardCommand.getTransitionData();
-                    CreateChatFragment createChatFragment = CreateChatFragment.newInstance(
-                            revealAnimationSetting,
-                            () -> {
-                                final CreateChatFragment fragment = (CreateChatFragment)getSupportFragmentManager().findFragmentByTag(CreateChatFragment.TAG);
-                                if (fragment != null) {
-                                    getSupportFragmentManager()
-                                            .beginTransaction()
-                                            .remove(fragment)
-                                            .commitAllowingStateLoss();
-
-                                    getSupportFragmentManager().popBackStack();
-                                }
-                            }
-
-                    );
-
-                    getSupportFragmentManager().beginTransaction()
-                            .add(R.id.main_screen_content, createChatFragment, CreateChatFragment.TAG)
-                            .addToBackStack(CreateChatFragment.TAG)
-                            .commit();
+                    CreateChatFragment createChatFragment = CreateChatFragment.newInstance();
+                    createChatFragment.show(getSupportFragmentManager(), CreateChatFragment.TAG);
                 }
                 break;
 

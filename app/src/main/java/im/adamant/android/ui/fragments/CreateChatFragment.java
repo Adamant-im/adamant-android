@@ -33,11 +33,12 @@ import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.helpers.DrawableClickListener;
+import im.adamant.android.ui.fragments.base.BaseBottomFragment;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 
-public class CreateChatFragment extends BaseFragment implements CreateChatView, AnimationUtils.Dismissible {
+public class CreateChatFragment extends BaseBottomFragment implements CreateChatView{
     public static final String ARG_REVEAL_SETTINGS = "ARG_REVEAL_SETTINGS";
     public static final String TAG = "CreateChatFragment";
 
@@ -61,23 +62,11 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
     @BindView(R.id.fragment_create_chat_btn_enter) MaterialButton startChatButtonView;
     @BindView(R.id.fragment_create_chat_btn_show_my_qr) MaterialButton showMyQrCOde;
 
-//    private Disposable addressListener;
-    private AnimationUtils.AnimationFinishedListener animationFinishedListener;
-
-    public static CreateChatFragment newInstance(
-            AnimationUtils.RevealAnimationSetting animationSetting,
-            AnimationUtils.AnimationFinishedListener listener
-    ) {
-        CreateChatFragment createChatFragment = new CreateChatFragment(listener);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ARG_REVEAL_SETTINGS, animationSetting);
-        createChatFragment.setArguments(bundle);
-
-        return createChatFragment;
+    public static CreateChatFragment newInstance() {
+        return new CreateChatFragment();
     }
 
-    public CreateChatFragment(AnimationUtils.AnimationFinishedListener animationFinishedListener) {
-        this.animationFinishedListener = animationFinishedListener;
+    public CreateChatFragment() {
     }
 
     @Override
@@ -91,11 +80,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
         assert getArguments() != null;
-        AnimationUtils.startCreateChatRevealShowAnimation(
-                getContext(),
-                view,
-                getArguments().getParcelable(ARG_REVEAL_SETTINGS),
-                () -> {});
 
         addressView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -165,11 +149,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         dismiss();
     }
 
-    @OnClick(R.id.fragment_create_chat_cl_faded_layout)
-    public void clickOnFadedLayout() {
-        dismiss();
-    }
-
     public void scanQrCodeClick() {
         FragmentActivity activity = getActivity();
         if (activity != null) {
@@ -189,27 +168,6 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         createChatPresenter.onClickShowMyQrCodeButton();
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        addressListener = RxTextView
-//                .textChanges(addressView)
-//                .filter(charSequence -> charSequence.length() > 0)
-//                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-//                .map(CharSequence::toString)
-//                .doOnNext(createChatPresenter::onInputAddress)
-//                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
-//                .retry()
-//                .subscribe();
-//    }
-//
-//    @Override
-//    public void onPause() {
-//        super.onPause();
-//        addressListener.dispose();
-//        addressListener = null;
-//    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         FragmentActivity activity = getActivity();
@@ -224,16 +182,5 @@ public class CreateChatFragment extends BaseFragment implements CreateChatView, 
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void dismiss() {
-        assert getArguments() != null;
-        AnimationUtils.startCreateChatRevealExitAnimation(
-                getContext(),
-                getView(),
-                getArguments().getParcelable(ARG_REVEAL_SETTINGS),
-                animationFinishedListener
-        );
     }
 }
