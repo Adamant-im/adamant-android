@@ -21,7 +21,7 @@
     <string name="activity_registration_btn_create_address">Войти</string>
 
     <string name="activity_nodes_list_title">Список нод</string>
-    <string name="activity_nodes_list_new_node_placeholder">Новая нода</string>
+    <string name="activity_nodes_list_new_node_placeholder">protocol://IP:port</string>
     <string name="activity_nodes_list_add_new_node">Добавить ноду</string>
     <string name="activity_nodes_list_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
     <string name="activity_nodes_list_node_status">Нода %s, Пинг: %.0f мс</string>

@@ -20,7 +20,7 @@
     <string name="activity_registration_btn_create_address">Login</string>
 
     <string name="activity_nodes_list_title">Nodes</string>
-    <string name="activity_nodes_list_new_node_placeholder">New node\'s address</string>
+    <string name="activity_nodes_list_new_node_placeholder">protocol://IP:port</string>
     <string name="activity_nodes_list_add_new_node">Add new node</string>
     <string name="activity_nodes_list_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="activity_nodes_list_node_status">Node %s, Ping: %.0f ms</string>

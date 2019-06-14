@@ -1,11 +1,15 @@
 package im.adamant.android.ui;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -19,6 +23,7 @@ import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
+import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
 import im.adamant.android.ui.custom_view.IgnoreLastDividerItemDecorator;
@@ -48,8 +53,12 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @BindView(R.id.fragment_settings_et_new_node_address)
     EditText newNodeAddressView;
 
+    @BindView(R.id.fragment_settings_btn_add_new_node)
+    ImageButton addNodeButton;
+
     Disposable deleteItemDisposable;
     Disposable switchItemDisposable;
+    Disposable inputAddressDisposable;
 
     @Override
     public int getLayoutId() {
@@ -111,6 +120,22 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
                         error -> LoggerHelper.e("SwitchNode", error.getMessage(), error)
                 );
 
+        Context applicationContext = getApplicationContext();
+        inputAddressDisposable = RxTextView
+                .textChanges(newNodeAddressView)
+                .subscribe(
+                        (text) -> {
+                            Drawable drawable = addNodeButton.getDrawable();
+                            if (text.length() == 0) {
+                                Drawable changeDrawable = DrawableColorHelper.changeDrawable(applicationContext, R.color.textMuted, PorterDuff.Mode.SRC_IN, drawable);
+                                addNodeButton.setImageDrawable(changeDrawable);
+                            } else {
+                                Drawable changeDrawable = DrawableColorHelper.changeDrawable(applicationContext, R.color.secondary, PorterDuff.Mode.SRC_IN, drawable);
+                                addNodeButton.setImageDrawable(changeDrawable);
+                            }
+                        }
+                );
+
         nodeAdapter.startListenChanges();
     }
 
@@ -121,8 +146,13 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
         if (deleteItemDisposable != null){
             deleteItemDisposable.dispose();
         }
+
         if (switchItemDisposable != null){
             switchItemDisposable.dispose();
+        }
+
+        if (inputAddressDisposable != null){
+            inputAddressDisposable.dispose();
         }
         super.onPause();
     }
@@ -130,6 +160,7 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @OnClick(R.id.fragment_settings_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
+        addNodeButton.setEnabled(false);
     }
 
     @Override
