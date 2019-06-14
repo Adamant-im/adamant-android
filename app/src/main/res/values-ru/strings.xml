@@ -25,6 +25,7 @@
     <string name="activity_nodes_list_add_new_node">Добавить ноду</string>
     <string name="activity_nodes_list_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
     <string name="activity_nodes_list_node_status">Нода %s, Пинг: %.0f мс</string>
+    <string name="activity_nodes_reset_to_defaults">Сброс списка нод</string>
 
     <string name="activity_pincode_enter_pincode">Введите пин-код</string>
     <string name="activity_pincode_enter_new_pincode">Введите новый пин-код</string>

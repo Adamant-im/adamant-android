@@ -34,4 +34,8 @@ public class NodesListPresenter extends BasePresenter<NodesListView> {
     public void onClickSwitchNode(int index) {
         serverNodeInteractor.switchNode(index);
     }
+
+    public void onClickResetDefaults() {
+        serverNodeInteractor.resetToDefaults();
+    }
 }

@@ -48,12 +48,12 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @Inject
     ServerNodeAdapter nodeAdapter;
 
-    @BindView(R.id.fragment_settings_rv_list_of_nodes)
+    @BindView(R.id.activity_nodes_rv_list_of_nodes)
     RecyclerView nodeListView;
-    @BindView(R.id.fragment_settings_et_new_node_address)
+    @BindView(R.id.activity_nodes_et_new_node_address)
     EditText newNodeAddressView;
 
-    @BindView(R.id.fragment_settings_btn_add_new_node)
+    @BindView(R.id.activity_nodes_btn_add_new_node)
     ImageButton addNodeButton;
 
     Disposable deleteItemDisposable;
@@ -157,10 +157,14 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
         super.onPause();
     }
 
-    @OnClick(R.id.fragment_settings_btn_add_new_node)
+    @OnClick(R.id.activity_nodes_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
-        addNodeButton.setEnabled(false);
+    }
+
+    @OnClick(R.id.activity_nodes_btn_reset)
+    public void onClickResetToDefaults() {
+        presenter.onClickResetDefaults();
     }
 
     @Override

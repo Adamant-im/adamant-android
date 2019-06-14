@@ -35,15 +35,16 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_settings_rv_list_of_nodes"
+        android:id="@+id/activity_nodes_rv_list_of_nodes"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+        app:layout_constraintBottom_toTopOf="@+id/activity_nodes_btn_reset"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -76,20 +77,20 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/fragment_settings_et_new_node_address"
+            android:id="@+id/activity_nodes_et_new_node_address"
             style="@style/AdamantLight.EditTextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:hint="@string/activity_nodes_list_new_node_placeholder"
-            app:layout_constraintEnd_toStartOf="@+id/fragment_settings_btn_add_new_node"
+            app:layout_constraintEnd_toStartOf="@+id/activity_nodes_btn_add_new_node"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
         <ImageButton
-            android:id="@+id/fragment_settings_btn_add_new_node"
+            android:id="@+id/activity_nodes_btn_add_new_node"
             style="@style/AdamantLight.ImageButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
@@ -102,4 +103,17 @@
             app:srcCompat="@drawable/ic_plus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/activity_nodes_btn_reset"
+        style="@style/AdamantLight.FlatTextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/activity_nodes_reset_to_defaults"
+        app:layout_constraintBottom_toTopOf="@+id/constraintLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

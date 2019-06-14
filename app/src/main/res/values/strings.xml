@@ -24,6 +24,7 @@
     <string name="activity_nodes_list_add_new_node">Add new node</string>
     <string name="activity_nodes_list_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="activity_nodes_list_node_status">Node %s, Ping: %.0f ms</string>
+    <string name="activity_nodes_reset_to_defaults">Reset to defaults</string>
 
     <string name="activity_pincode_enter_pincode">Enter pin-code</string>
     <string name="activity_pincode_enter_new_pincode">Enter new pin-code</string>

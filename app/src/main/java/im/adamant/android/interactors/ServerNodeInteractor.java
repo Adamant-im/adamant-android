@@ -22,4 +22,9 @@ public class ServerNodeInteractor {
     public void switchNode(int index) {
         api.buildApibyIndex(index);
     }
+
+    public void resetToDefaults() {
+        settings.resetNodesToDefault();
+        api.buildApibyIndex(0);
+    }
 }
