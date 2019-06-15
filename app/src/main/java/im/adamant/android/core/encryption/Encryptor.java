@@ -29,7 +29,7 @@ public class Encryptor {
     }
 
     public String decryptMessage(String message, String ownMessage, String senderPublicKey, String mySecretKey) throws EncryptionException {
-        String decryptedMessage = "";
+        String decryptedMessage;
 
         byte[] nonceBytes = Hex.encodeStringToHexArray(ownMessage);
 

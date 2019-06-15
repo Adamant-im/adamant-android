@@ -120,6 +120,7 @@ public class ChatInteractor {
                         fallbackMessage.setiSay(((MessageDecryptException) throwable).isISay());
                         fallbackMessage.setTimestamp(((MessageDecryptException) throwable).getTimestamp());
                         fallbackMessage.setStatus(AbstractMessage.Status.INVALIDATED);
+                        fallbackMessage.setTransactionId(((MessageDecryptException) throwable).getTransactionId());
                     }
                     return fallbackMessage;
                 })

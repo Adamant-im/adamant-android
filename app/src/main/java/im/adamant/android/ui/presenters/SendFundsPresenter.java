@@ -153,7 +153,7 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
             return;
         }
 
-        if (currentAmount != null && currentAmount.compareTo(BigDecimal.ZERO) != 0) {
+        if (currentAmount == null || currentAmount.compareTo(BigDecimal.ZERO) <= 0) {
             getViewState().showAmountError(R.string.not_a_number);
             return;
         }

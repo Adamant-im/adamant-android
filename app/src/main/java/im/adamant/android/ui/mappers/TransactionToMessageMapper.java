@@ -51,7 +51,7 @@ public class TransactionToMessageMapper implements Function<Pair<String, Transac
         AbstractMessage message = null;
 
         if (!api.isAuthorized()){
-            throw new MessageDecryptException(new NotAuthorizedException("Not Authorized"), transaction.getSenderId(), false, 0L);
+            throw new MessageDecryptException(new NotAuthorizedException("Not Authorized"), transaction.getSenderId(), transaction.getId(), false, 0L);
         }
 
         String ownAddress = api.getAccount().getAddress();
@@ -77,7 +77,7 @@ public class TransactionToMessageMapper implements Function<Pair<String, Transac
                     "" //Detect by transaction
             );
         } catch (Exception ex) {
-            throw new MessageDecryptException(ex, companionId, !iRecipient, transaction.getUnixTimestamp());
+            throw new MessageDecryptException(ex, companionId, transaction.getId(), !iRecipient, transaction.getUnixTimestamp());
         }
 
         return message;
