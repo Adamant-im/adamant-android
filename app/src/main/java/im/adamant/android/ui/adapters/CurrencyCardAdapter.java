@@ -241,9 +241,9 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
                 this.balanceView.setTextColor(ContextCompat.getColor(context, R.color.secondary));
                 this.currencyView.setTextColor(ContextCompat.getColor(context, R.color.secondary));
             } else {
-                this.iconView.setColorFilter(ContextCompat.getColor(context, R.color.onPrimary));
-                this.balanceView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
-                this.currencyView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
+                this.iconView.setColorFilter(ContextCompat.getColor(context, R.color.textMuted));
+                this.balanceView.setTextColor(ContextCompat.getColor(context, R.color.textMuted));
+                this.currencyView.setTextColor(ContextCompat.getColor(context, R.color.textMuted));
             }
         }
     }

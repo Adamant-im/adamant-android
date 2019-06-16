@@ -36,4 +36,8 @@
         <item>@color/secondary</item>
         <item>@color/secondaryDarkVariant</item>
     </array>
+
+    <array name="shy_progressbar_colors">
+        <item>@color/textMuted</item>
+    </array>
 </resources>

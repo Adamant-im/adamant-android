@@ -45,6 +45,13 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="AdamantLight.BaseTextViewNormalEnlargedBold" parent="AdamantLight.TextViewNormal">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <style name="AdamantLight.TextViewNormalEnlargedBold" parent="AdamantLight.BaseTextViewNormalEnlargedBold" />
+
     <style name="AdamantLight.TextViewOverLine">
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textSize">12sp</item>
@@ -71,9 +78,9 @@
     </style>
 
     <style name="TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <!--<item name="boxStrokeColor">@color/textMuted</item>-->
+        <item name="boxStrokeColor">@color/textMuted</item>
         <!--<item name="boxStrokeWidth">2dp</item>-->
-        <!--<item name="hintTextAppearance">@style/AdamantLight.TextFloatLabelAppearance</item>-->
+        <item name="hintTextAppearance">@style/AdamantLight.TextFloatLabelAppearance</item>
     </style>
 
     <style name="AdamantLight.EditTextInput" parent="AdamantLight.TextViewNormal">

@@ -5,26 +5,25 @@
 
     <ImageView
         android:id="@+id/wallet_tab_layout_icon"
-        android:tint="@color/onPrimary"
+        android:tint="@color/textMuted"
         android:layout_gravity="center"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginBottom="8dp"/>
+        android:layout_height="40dp"/>
 
     <TextView
         android:id="@+id/wallet_tab_layout_balance"
         android:gravity="center"
         style="@style/AdamantLight.TextViewEnlargedOverLine"
         android:text="0"
-        android:textColor="@color/onPrimary"
+        android:textColor="@color/textMuted"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/wallet_tab_layout_currency"
-        style="@style/AdamantLight.TextViewOverLine"
+        style="@style/AdamantLight.TextViewEnlargedOverLine"
         android:text="adm"
-        android:textColor="@color/onPrimary"
+        android:textColor="@color/textMuted"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

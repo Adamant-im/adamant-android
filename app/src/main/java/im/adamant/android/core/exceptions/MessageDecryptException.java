@@ -11,12 +11,14 @@ public class MessageDecryptException extends Exception {
         this.companionId = companionId;
         this.timestamp = timestamp;
         this.isISay = isISay;
+        this.transactionId = transactionId;
     }
 
     public MessageDecryptException(String message, String companionId, String transactionId, boolean isISay, long timestamp) {
         super(message);
         this.companionId = companionId;
         this.timestamp = timestamp;
+        this.transactionId = transactionId;
         this.isISay = isISay;
     }
 

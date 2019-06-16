@@ -20,4 +20,8 @@
     <style name="AdamantLight.TextViewHeader" parent="AdamantLight.BaseTextViewHeader">
         <item name="android:fontWeight">500</item>
     </style>
+
+    <style name="AdamantLight.TextViewNormalEnlargedBold" parent="AdamantLight.BaseTextViewNormalEnlargedBold">
+        <item name="android:fontWeight">900</item>
+    </style>
 </resources>

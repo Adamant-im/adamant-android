@@ -7,6 +7,7 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
@@ -47,6 +48,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.ui.navigators.DefaultNavigator;
@@ -229,9 +231,10 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void onEnteredValidPassphrase() {
         Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.ic_copy);
+        Drawable copyBtn = DrawableColorHelper.changeDrawable(this, R.color.textMuted, PorterDuff.Mode.SRC_IN, copyButton);
 
         inputLayoutView.setError("");
-        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyButton, null);
+        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyBtn, null);
         saveQrCodeButton.setEnabled(true);
 //        createAddressButton.setEnabled(true);
     }

@@ -19,13 +19,14 @@
 
         <TextView
             android:id="@+id/list_item_chat_name"
-            style="@style/AdamantLight.TextViewNormal"
+            style="@style/AdamantLight.TextViewNormalEnlargedBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:maxLines="1"
             android:text="TextView"
+            android:ellipsize="end"
             app:layout_constraintEnd_toStartOf="@+id/list_item_chat_last_message_date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +40,6 @@
             android:background="@android:color/transparent"
             android:maxLines="1"
             android:text="TextView"
-            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
