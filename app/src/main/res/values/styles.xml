@@ -77,7 +77,7 @@
         <item name="android:textColor">@color/textMuted</item>
     </style>
 
-    <style name="TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="AdamantLight.TextInputLayoutStyle" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">@color/textMuted</item>
         <!--<item name="boxStrokeWidth">2dp</item>-->
         <item name="hintTextAppearance">@style/AdamantLight.TextFloatLabelAppearance</item>
@@ -86,6 +86,13 @@
     <style name="AdamantLight.EditTextInput" parent="AdamantLight.TextViewNormal">
         <item name="android:textColorHint">@color/textMuted</item>
     </style>
+
+    <style name="AdamantLight.FlatEditTextInput" parent="AdamantLight.TextViewSubHeader">
+        <item name="android:textColorHint">@color/strokeDark</item>
+        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:background">@color/text_input_2_background</item>
+    </style>
+
 
     <!--<style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">-->
         <!--<item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>-->

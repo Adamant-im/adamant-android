@@ -68,7 +68,7 @@
 
         <EditText
             android:id="@+id/activity_messages_et_new_msg_text"
-            style="@style/AdamantLight.EditTextInput"
+            style="@style/AdamantLight.FlatEditTextInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

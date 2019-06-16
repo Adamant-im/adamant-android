@@ -41,7 +41,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/fragment_create_chat_il_layout"
-                style="@style/TextInputLayoutStyle"
+                style="@style/AdamantLight.TextInputLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
