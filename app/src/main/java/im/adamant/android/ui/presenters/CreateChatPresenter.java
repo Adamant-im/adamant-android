@@ -77,15 +77,13 @@ public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
             chat.setTitle(addressEntity.getLabel());
             chatUpdatePublicKeyInteractor.execute(chat);
             chatsStorage.addNewChat(chat);
+
+            getViewState().close();
             router.navigateTo(Screens.MESSAGES_SCREEN, addressEntity.getAddress());
 
         } else {
            getViewState().showError(R.string.wrong_address);
         }
-    }
-
-    public void onClickScanQrCodeButton() {
-        router.navigateTo(Screens.SCAN_QRCODE_SCREEN);
     }
 
     public void onClickShowMyQrCodeButton() {

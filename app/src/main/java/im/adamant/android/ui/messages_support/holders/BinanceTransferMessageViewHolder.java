@@ -19,7 +19,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 public class BinanceTransferMessageViewHolder extends AbstractMessageViewHolder {
     private TextView messageView;
     private TextView amountView;
-    private ImageView processedView;
     private View contentView;
 
     public BinanceTransferMessageViewHolder(
@@ -30,8 +29,6 @@ public class BinanceTransferMessageViewHolder extends AbstractMessageViewHolder 
         LayoutInflater inflater = LayoutInflater.from(context);
         contentView = inflater.inflate(R.layout.list_subitem_binance_transfer_message, contentBlock, false);
         contentBlock.addView(contentView);
-
-        processedView = contentView.findViewById(R.id.list_item_message_processed);
 
         messageView = contentView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -60,6 +57,6 @@ public class BinanceTransferMessageViewHolder extends AbstractMessageViewHolder 
 
         amountView.setText(amountText);
 
-        displayProcessedStatus(processedView, binanceTransferMessage);
+        displayProcessedStatus(binanceTransferMessage);
     }
 }

@@ -38,8 +38,7 @@ import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.CreateChatView;
 import im.adamant.android.ui.presenters.CreateChatPresenter;
 
-public class CreateChatFragment extends BaseBottomFragment implements CreateChatView{
-    public static final String ARG_REVEAL_SETTINGS = "ARG_REVEAL_SETTINGS";
+public class CreateChatFragment extends BaseBottomFragment implements CreateChatView {
     public static final String TAG = "CreateChatFragment";
 
     @Inject
@@ -140,13 +139,16 @@ public class CreateChatFragment extends BaseBottomFragment implements CreateChat
         }
     }
 
+    @Override
+    public void close() {
+        dismiss();
+    }
+
     @OnClick(R.id.fragment_create_chat_btn_enter)
     public void createNewChatClick() {
         createChatPresenter.onClickCreateNewChat(
                 addressView.getText().toString()
         );
-
-        dismiss();
     }
 
     public void scanQrCodeClick() {

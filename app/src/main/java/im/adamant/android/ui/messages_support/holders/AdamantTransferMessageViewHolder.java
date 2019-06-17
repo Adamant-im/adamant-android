@@ -17,7 +17,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder {
     private TextView amountView;
-    private ImageView processedView;
     private View contentView;
 
     public AdamantTransferMessageViewHolder(Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
@@ -26,8 +25,6 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
         LayoutInflater inflater = LayoutInflater.from(context);
         contentView = inflater.inflate(R.layout.list_subitem_adamant_transfer_message, contentBlock, false);
         contentBlock.addView(contentView);
-
-        processedView = contentView.findViewById(R.id.list_item_message_processed);
         amountView = contentView.findViewById(R.id.list_item_message_amount);
     }
 
@@ -50,6 +47,6 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
 
         amountView.setText(amountText);
 
-        displayProcessedStatus(processedView, adamantTransferMessage);
+        displayProcessedStatus(adamantTransferMessage);
     }
 }

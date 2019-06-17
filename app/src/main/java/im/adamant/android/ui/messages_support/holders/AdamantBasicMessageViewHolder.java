@@ -17,7 +17,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     private TextView messageView;
-    private ImageView processedView;
     private View contentView;
 
     public AdamantBasicMessageViewHolder(
@@ -32,7 +31,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
         contentView = inflater.inflate(R.layout.list_subitem_adamant_basic_message, contentBlock, false);
         contentBlock.addView(contentView);
 
-        processedView = contentView.findViewById(R.id.list_item_message_processed);
+
 
         messageView = contentView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -55,7 +54,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
                 basicMessage.getHtmlText(adamantAddressProcessor)
         );
 
-        displayProcessedStatus(processedView, basicMessage);
+        displayProcessedStatus(basicMessage);
     }
 
 

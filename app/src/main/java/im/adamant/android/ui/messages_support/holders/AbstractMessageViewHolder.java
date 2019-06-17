@@ -30,7 +30,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected int avatarSize;
 
     protected ImageView processedView;
-//    protected TextView timeView;
+    protected TextView timeView;
     protected TextView errorView;
 //    protected View avatarBlockView;
     protected View messageBlockView;
@@ -42,7 +42,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     protected AdamantMarkdownProcessor adamantAddressProcessor;
-    protected Avatar avatar;
+    protected Avatar avatar; //TODO: Remove
 
     public AbstractMessageViewHolder(
             Context context,
@@ -65,8 +65,10 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 //        avatarBlockView = itemView.findViewById(R.id.list_item_message_avatar_block);
         messageBlockView = itemView.findViewById(R.id.list_item_message_card);
 
+        processedView = itemView.findViewById(R.id.list_item_message_processed);
+
 //        avatarView = itemView.findViewById(R.id.list_item_message_avatar);
-//        timeView = itemView.findViewById(R.id.list_item_message_time);
+        timeView = itemView.findViewById(R.id.list_item_message_time);
         errorView = itemView.findViewById(R.id.list_item_message_error_text);
         contentBlock = itemView.findViewById(R.id.list_item_message_content);
     }
@@ -95,7 +97,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 //            avatarView.setImageResource(R.mipmap.ic_launcher_foreground);
 //        }
 //
-//        timeView.setText(timeFormatter.format(abstractMessage.getDate()));
+        timeView.setText(timeFormatter.format(abstractMessage.getDate()));
         errorView.setText(abstractMessage.getError());
 
         if (abstractMessage.isiSay()){
@@ -161,7 +163,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 //        timeView.setText("00:00");
     }
 
-    protected void displayProcessedStatus(ImageView processedView, AbstractMessage message){
+    protected void displayProcessedStatus(AbstractMessage message){
         if (message.getStatus() == null) { return; }
         switch (message.getStatus()) {
             case DELIVERED: {

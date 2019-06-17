@@ -19,7 +19,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder {
     private TextView messageView;
     private TextView amountView;
-    private ImageView processedView;
     private View contentView;
 
     public EthereumTransferMessageViewHolder(Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
@@ -28,8 +27,6 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
         LayoutInflater inflater = LayoutInflater.from(context);
         contentView = inflater.inflate(R.layout.list_subitem_etherium_transfer_message, contentBlock, false);
         contentBlock.addView(contentView);
-
-        processedView = contentView.findViewById(R.id.list_item_message_processed);
 
         messageView = contentView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
@@ -58,6 +55,6 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
 
         amountView.setText(amountText);
 
-        displayProcessedStatus(processedView, ethereumTransferMessage);
+        displayProcessedStatus(ethereumTransferMessage);
     }
 }
