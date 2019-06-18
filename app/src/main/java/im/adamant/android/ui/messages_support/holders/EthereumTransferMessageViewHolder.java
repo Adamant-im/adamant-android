@@ -34,7 +34,7 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
     }
 
     @Override
-    public void bind(MessageListContent message) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.ETHEREUM_TRANSFER);
 
         if (isCorruptedMessage) {
@@ -42,7 +42,7 @@ public class EthereumTransferMessageViewHolder extends AbstractMessageViewHolder
             return;
         }
 
-        super.bind(message);
+        super.bind(message, isNextMessageWithSameSender);
 
         EthereumTransferMessage ethereumTransferMessage = (EthereumTransferMessage) message;
 

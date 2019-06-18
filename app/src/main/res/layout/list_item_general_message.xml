@@ -4,43 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/message_item"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="true"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
-
-    <!--<LinearLayout-->
-    <!--android:id="@+id/list_item_message_avatar_block"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_marginStart="16dp"-->
-    <!--android:layout_marginTop="16dp"-->
-    <!--android:orientation="vertical"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent">-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/list_item_message_avatar"-->
-    <!--android:layout_width="@dimen/list_item_avatar_size"-->
-    <!--android:layout_height="@dimen/list_item_avatar_size"-->
-    <!--android:src="@mipmap/ic_launcher_round" />-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/list_item_message_time"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_gravity="center_horizontal"-->
-    <!--android:text="11:00"-->
-    <!--android:textSize="10sp" />-->
-    <!--</LinearLayout>-->
-
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/list_item_message_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/activity_messages_not_same_sender_padding"
         android:minHeight="20dp"
         app:cardCornerRadius="@dimen/list_item_message_corner_radius"
         app:cardElevation="0dp"
@@ -56,6 +27,9 @@
                 android:id="@+id/list_item_message_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -87,8 +61,6 @@
 
     </androidx.cardview.widget.CardView>
 
-
-
     <TextView
         android:id="@+id/list_item_message_error_text"
         style="@style/AdamantLight.TextViewOverLine"
@@ -99,6 +71,7 @@
         android:layout_marginEnd="8dp"
         android:maxLines="3"
         android:textColor="@color/error"
+        android:text="error"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

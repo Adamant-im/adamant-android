@@ -31,14 +31,12 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
         contentView = inflater.inflate(R.layout.list_subitem_adamant_basic_message, contentBlock, false);
         contentBlock.addView(contentView);
 
-
-
         messageView = contentView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     @Override
-    public void bind(MessageListContent message) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.ADAMANT_BASIC);
 
         if (isCorruptedMessage) {
@@ -46,7 +44,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             return;
         }
 
-        super.bind(message);
+        super.bind(message, isNextMessageWithSameSender);
 
         AdamantBasicMessage basicMessage = (AdamantBasicMessage) message;
 

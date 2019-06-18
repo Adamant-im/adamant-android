@@ -15,5 +15,5 @@ public abstract class AbstractMessageListContentViewHolder extends RecyclerView.
         this.context = context;
     }
 
-    public abstract void bind(MessageListContent message);
+    public abstract void bind(MessageListContent message, boolean isNextMessageWithSameSender);
 }
