@@ -66,19 +66,28 @@
             <!--app:layout_constraintStart_toStartOf="@+id/activity_messages_et_new_msg_text"-->
             <!--app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />-->
 
-        <EditText
-            android:id="@+id/activity_messages_et_new_msg_text"
-            style="@style/AdamantLight.FlatEditTextInput"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/activity_messages_tv_cost"
+            style="@style/AdamantLight.FlatTextInputLayoutStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hint="@string/activity_messages_ev_message_placeholder"
-            android:maxLines="5"
+            android:paddingTop="0dp"
+            app:hintEnabled="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/activity_messages_btn_send"
             app:layout_constraintStart_toEndOf="@+id/activity_messages_btn_currency_transfer"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/activity_messages_et_new_msg_text"
+                android:theme="@style/AdamantLight.FlatEditTextInputTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:hint="@string/activity_messages_ev_message_placeholder"
+                android:maxLines="5" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/activity_messages_btn_send"
@@ -93,15 +102,12 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/activity_messages_tv_cost"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            style="@style/AdamantLight.TextViewOverLine"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/activity_messages_et_new_msg_text"
-            app:layout_constraintStart_toStartOf="@+id/activity_messages_et_new_msg_text"
-            app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />
+        <!--<TextView-->
+            <!--android:id="@+id/activity_messages_tv_cost"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--style="@style/AdamantLight.TextViewOverLine"-->
+            <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
 
         <ImageButton
             android:id="@+id/activity_messages_btn_currency_transfer"

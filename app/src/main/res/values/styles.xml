@@ -87,20 +87,24 @@
         <item name="android:textColorHint">@color/textMuted</item>
     </style>
 
-    <style name="AdamantLight.FlatEditTextInput" parent="AdamantLight.TextViewSubHeader">
-        <item name="android:textColorHint">@color/strokeDark</item>
-        <item name="android:textColor">@color/onPrimary</item>
-        <item name="android:background">@color/text_input_2_background</item>
-    </style>
-
-
-    <!--<style name="AdamantLight.ActivePrimaryButton" parent="@style/Widget.MaterialComponents.Button">-->
-        <!--<item name="android:textAppearance">@style/AdamantLight.TextAppearance</item>-->
-        <!--&lt;!&ndash;<item name="backgroundTint">@color/secondary</item>&ndash;&gt;-->
-        <!--<item name="android:textColor">@drawable/primary_button_selector_text</item>-->
-        <!--<item name="android:textAllCaps">true</item>-->
+    <!--TODO: Uncomment when you need to adjust the thickness of the underscore-->
+    <!--<style name="AdamantLight.FlatEditTextInput" parent="AdamantLight.TextViewSubHeader">-->
+        <!--<item name="android:textColorHint">@color/strokeDark</item>-->
+        <!--<item name="android:textColor">@color/onPrimary</item>-->
+        <!--<item name="android:background">@color/text_input_2_background</item>-->
     <!--</style>-->
 
+    <style name="AdamantLight.FlatEditTextInputTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="android:textViewStyle">@style/AdamantLight.TextViewSubHeader</item>
+        <item name="colorAccent">@color/textMuted</item>
+        <item name="colorControlNormal">@color/textMuted</item>
+        <item name="colorControlActivated">@color/secondaryLightVariant</item>
+    </style>
+
+    <style name="AdamantLight.FlatTextInputLayoutStyle">
+        <item name="android:textColorHint">@color/textMuted</item>
+        <item name="hintTextAppearance">@style/AdamantLight.TextFloatLabelAppearance</item>
+    </style>
 
     <style name="AdamantLight.BasePrimaryButton" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>

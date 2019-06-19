@@ -187,6 +187,10 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     }
 
     public void onChangeMessageText(String text) {
+        if (text == null || text.isEmpty()) {
+            getViewState().dropMessageCost();
+            return;
+        }
         //TODO: You need to navigate by the type of message that is being edited
         try {
             AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageListContentType.ADAMANT_BASIC);

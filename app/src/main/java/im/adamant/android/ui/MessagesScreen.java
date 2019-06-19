@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
@@ -92,7 +93,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
-    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
+    @BindView(R.id.activity_messages_tv_cost) TextInputLayout messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -148,14 +149,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         presenter.onResume();
         navigatorHolder.setNavigator(navigator);
 
-        Observable<String> obs = RxTextView
+        MessagesPresenter localPresenter = presenter;
+        Disposable subscribe = RxTextView
                 .textChanges(newMessageText)
                 .filter(charSequence -> charSequence.length() > 0)
                 .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString);
-
-        MessagesPresenter localPresenter = presenter;
-        Disposable subscribe = obs.subscribe(localPresenter::onChangeMessageText);
+                .map(CharSequence::toString)
+                .doOnNext(localPresenter::onChangeMessageText)
+                .subscribe();
 
         compositeDisposable.add(subscribe);
     }
@@ -195,6 +196,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
+    public void dropMessageCost() {
+        messageCostView.setHint(getString(R.string.activity_messages_ev_message_placeholder));
+    }
+
+    @Override
     public void changeTitles(String title, String subTitle) {
         setTitle(title);
         setSubTitle(subTitle);
@@ -205,12 +211,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
-        messageCostView.setText("");
+        messageCostView.setHint("");
     }
 
     @Override
     public void showMessageCost(String cost) {
-        runOnUiThread( () -> messageCostView.setText(cost));
+        runOnUiThread( () -> messageCostView.setHint(cost));
     }
 
     @Override
