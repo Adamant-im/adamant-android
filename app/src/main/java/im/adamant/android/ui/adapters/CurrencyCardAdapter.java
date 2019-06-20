@@ -177,6 +177,7 @@ public class CurrencyCardAdapter extends PagerAdapter implements CardAdapter  {
             Bundle bundle = new Bundle();
             bundle.putSerializable(SendFundsScreen.ARG_WALLET_FACADE, item.getFacadeType());
             intent.putExtras(bundle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             ctx.startActivity(intent);
         });

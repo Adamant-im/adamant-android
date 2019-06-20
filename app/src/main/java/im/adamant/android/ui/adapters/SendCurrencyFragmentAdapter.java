@@ -48,6 +48,10 @@ public class SendCurrencyFragmentAdapter extends FragmentStatePagerAdapter {
         return SendFundsFragment.newInstance(walletFacade.getCurrencyType(), companionId);
     }
 
+    public WalletFacade getFacadeItem(int position) {
+        return items.get(position);
+    }
+
     @Override
     public int getCount() {
         return items.size();

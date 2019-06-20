@@ -21,7 +21,9 @@ public abstract class SendCurrencyTransferScreenModule {
             SendFundsScreen activity,
             Map<SupportedWalletFacadeType, WalletFacade> wallets
     ) {
-        SendCurrencyFragmentAdapter sendCurrencyFragmentAdapter = new SendCurrencyFragmentAdapter(activity.getSupportFragmentManager());
+        SendCurrencyFragmentAdapter sendCurrencyFragmentAdapter = new SendCurrencyFragmentAdapter(
+                activity.getSupportFragmentManager()
+        );
         sendCurrencyFragmentAdapter.setItems(wallets);
 
         return sendCurrencyFragmentAdapter;

@@ -95,6 +95,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                         () -> {
                             Disposable updateDisposable = chatInteractor
                                     .update()
+                                    .observeOn(AndroidSchedulers.mainThread())
                                     .doAfterSuccess(cnt -> {
                                         if (cnt > 0) {
                                             getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());

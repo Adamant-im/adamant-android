@@ -18,6 +18,7 @@ import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
 import im.adamant.android.ui.navigators.DefaultNavigator;
 import ru.terrakok.cicerone.Navigator;
@@ -67,6 +68,14 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
 
         slider.setAdapter(adapter);
         tabs.setupWithViewPager(slider);
+
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            WalletFacade facadeItem = adapter.getFacadeItem(i);
+            TabLayout.Tab tabItem = tabs.getTabAt(i);
+            if (tabItem != null && facadeItem != null && facadeItem.getIconForEditText() != 0) {
+                tabItem.setIcon(facadeItem.getIconForEditText());
+            }
+        }
 
         if (intent != null) {
             SupportedWalletFacadeType facadeType = (SupportedWalletFacadeType) getIntent().getSerializableExtra(ARG_WALLET_FACADE);
