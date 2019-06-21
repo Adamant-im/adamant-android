@@ -21,13 +21,13 @@
 
     <TextView
         android:id="@+id/fragment_settings_tv_version"
+        style="@style/AdamantLight.TextViewOverLine"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textAlignment="textEnd"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -71,7 +71,7 @@
                     style="@style/AdamantLight.TextViewHeader"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/fragment_settings_general_title"
                     app:layout_constraintStart_toStartOf="parent"
@@ -80,13 +80,14 @@
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
                     android:divider="@drawable/line_divider"
                     android:paddingStart="@dimen/tablerow_default_margin_horizontal"
                     android:paddingLeft="@dimen/tablerow_default_margin_horizontal"
                     android:paddingEnd="@dimen/tablerow_default_margin_horizontal"
                     android:paddingRight="@dimen/tablerow_default_margin_horizontal"
-                    android:showDividers="middle"
+                    android:showDividers="beginning|middle|end"
                     android:stretchColumns="*"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,6 +109,7 @@
                             android:layout_width="0dp"
                             android:layout_height="24dp"
                             android:layout_weight="1"
+                            android:textSize="16sp"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
                             android:textAlignment="textEnd" />
@@ -133,8 +135,8 @@
                     </TableRow>
 
                     <TableRow
-                        style="@style/AdamantLight.TableRowStyle"
                         android:id="@+id/fragment_settings_tr_subscribe_to_push"
+                        style="@style/AdamantLight.TableRowStyle"
                         android:visibility="gone">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
@@ -154,7 +156,7 @@
 
                             <TextView
                                 android:id="@+id/fragment_settings_tv_notification"
-                                style="@style/AdamantLight.TextViewNormal"
+                                style="@style/AdamantLight.FlatTextButton"
                                 android:layout_width="0dp"
                                 android:layout_height="24dp"
                                 android:layout_marginStart="8dp"
@@ -162,8 +164,8 @@
                                 android:enabled="false"
                                 android:padding="0dp"
                                 android:text="@string/fcm_notification_service_short"
+                                android:textSize="16sp"
                                 android:textAlignment="textEnd"
-                                android:textColor="@drawable/selectable_text"
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintStart_toEndOf="@+id/textView9"

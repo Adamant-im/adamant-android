@@ -94,6 +94,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         changeLanguageButtonView.setText(locale.getDisplayLanguage());
 
         changeLanguageButtonView.setPaintFlags(changeLanguageButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        pushNotificationServiceView.setPaintFlags(pushNotificationServiceView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         return view;
     }
