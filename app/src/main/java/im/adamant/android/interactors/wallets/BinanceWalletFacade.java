@@ -83,7 +83,7 @@ public class BinanceWalletFacade implements WalletFacade {
 
     @Override
     public int getIconForEditText() {
-        return 0;
+        return R.drawable.ic_bnb_line;
     }
 
     @Override

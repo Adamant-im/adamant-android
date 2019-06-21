@@ -20,6 +20,7 @@ import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
@@ -134,7 +135,7 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
             this.companionId = address;
 
         } else {
-            getViewState().showRecipientAddressError(R.string.wrong_address);
+//            getViewState().showRecipientAddressError(R.string.wrong_address);
             this.companionId = null;
         }
 
@@ -162,15 +163,20 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
     }
 
     public void onClickConfirmSend() {
-        getViewState().unlockSendButton();
         if (companionId != null) {
+            getViewState().lockSendButton();
             Disposable subscribe = sendCurrencyInteractor
                     .sendCurrency(companionId, comment, currentAmount, facadeType)
+                    .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(
                             transactionWasProcessed -> {
+                                companionId = null;
+                                currentAmount = null;
+                                getViewState().unlockSendButton();
                                 router.backTo(Screens.MESSAGES_SCREEN);
                             },
                             error -> {
+                                getViewState().unlockSendButton();
                                 router.showSystemMessage(error.getMessage());
                             }
                     );
@@ -193,17 +199,17 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         BigDecimal reminder = balance.subtract(totalAmount);
         getViewState().setReminder(reminder, facadeType.name());
 
-        boolean isSendButtonMustLocked = (
-                    (reminder.compareTo(BigDecimal.ZERO) < 0) ||
-                    (amount.compareTo(BigDecimal.ZERO) <= 0) ||
-                    (companionId == null)
-        );
-
-        if (isSendButtonMustLocked) {
-            getViewState().lockSendButton();
-        } else {
-            getViewState().unlockSendButton();
-        }
+//        boolean isSendButtonMustLocked = (
+//                    (reminder.compareTo(BigDecimal.ZERO) < 0) ||
+//                    (amount.compareTo(BigDecimal.ZERO) <= 0) ||
+//                    (companionId == null)
+//        );
+//
+//        if (isSendButtonMustLocked) {
+//            getViewState().lockSendButton();
+//        } else {
+//            getViewState().unlockSendButton();
+//        }
     }
 
     private BigDecimal getAmountFromString(CharSequence amountString) {

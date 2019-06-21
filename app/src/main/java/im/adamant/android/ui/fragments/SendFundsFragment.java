@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -336,22 +337,26 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     @Override
     public void showRecipientAddressError(int resourceId) {
-        recipientAddressLayoutView.setError(getString(resourceId));
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Toast.makeText(activity, resourceId, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
-    public void dropRecipientAddressError() {
-        recipientAddressLayoutView.setError("");
-    }
+    public void dropRecipientAddressError() { }
 
     @Override
     public void showAmountError(int resourceId) {
-        amountLayoutView.setError(getString(resourceId));
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Toast.makeText(activity, resourceId, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public void dropAmountError() {
-        amountLayoutView.setError("");
+
     }
 
     @Override

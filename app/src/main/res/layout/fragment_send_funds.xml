@@ -9,8 +9,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/list_item_currency_send_btn_send"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -29,6 +28,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_address_layout"
+                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -47,11 +47,13 @@
                         android:drawablePadding="15dp"
                         android:enabled="false"
                         android:hint="@string/activity_send_funds_recipient_address_hint"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_amount_layout"
+                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -68,15 +70,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
-                        android:inputType="numberDecimal"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
+                        android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:text="0" />
+                        android:text="0"
+                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_fee_layout"
+                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -95,11 +99,13 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:enabled="false"
-                        android:maxLines="1"/>
+                        android:maxLines="1"
+                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_total_amount_layout"
+                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -118,42 +124,61 @@
                         android:layout_height="wrap_content"
                         android:drawablePadding="15dp"
                         android:enabled="false"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/list_item_currency_send_remainder"
+                    style="@style/AdamantLight.TextViewOverLine"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:textColor="@color/colorSuccess"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/list_item_currency_send_il_total_amount_layout" />
+                    app:layout_constraintTop_toBottomOf="@+id/list_item_currency_send_btn_send" />
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_comment_layout"
+                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="24dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="24dp"
                     app:errorEnabled="true"
                     app:hintEnabled="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/list_item_currency_send_remainder">
+                    app:layout_constraintTop_toBottomOf="@+id/list_item_currency_send_il_total_amount_layout">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/list_item_currency_send_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/list_item_currency_send_btn_send"
+                    style="@style/AdamantLight.FlatIconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/send"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/list_item_currency_send_il_comment_layout" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -175,18 +200,6 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/list_item_currency_send_btn_send"
-        style="@style/AdamantLight.FlatIconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/send"
-        android:enabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

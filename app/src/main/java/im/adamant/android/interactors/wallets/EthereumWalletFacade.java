@@ -83,7 +83,7 @@ public class EthereumWalletFacade implements WalletFacade {
 
     @Override
     public int getIconForEditText() {
-        return 0;
+        return R.drawable.ic_ethereum_line;
     }
 
     @Override
