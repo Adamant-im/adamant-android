@@ -216,9 +216,9 @@ public class SendFundsPresenter extends ProtectedBasePresenter<SendFundsView> {
         BigDecimal amount = null;
         try {
             amount = new BigDecimal(amountString.toString());
-            getViewState().dropAmountError();
+//            getViewState().dropAmountError();
         } catch (Exception e) {
-            getViewState().showAmountError(R.string.not_a_number);
+//            getViewState().showAmountError(R.string.not_a_number);
             LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
         }
 

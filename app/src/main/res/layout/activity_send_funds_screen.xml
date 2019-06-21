@@ -4,15 +4,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/activity_currency_transfer_tab_currencies"
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginTop="0dp"
         android:background="@android:color/transparent"
-        app:tabInlineLabel="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tabIconTint="@color/selected_tab_icon_color"
+        app:tabInlineLabel="true"
+        app:tabSelectedTextColor="@color/secondary"
+        app:tabTextColor="@color/textMuted"
+        app:tabPaddingTop="8dp"/>
 
     <View
         android:id="@+id/separator"

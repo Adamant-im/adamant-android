@@ -124,11 +124,11 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = super.onCreateView(inflater, container, savedInstanceState);
 
-        FragmentActivity activity = getActivity();
-        if (activity != null){
-            Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.ic_send_address);
-            recipientAddressView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
-        }
+//        FragmentActivity activity = getActivity();
+//        if (activity != null){
+//            Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.ic_send_address);
+//            recipientAddressView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+//        }
 
         return v;
     }
@@ -261,14 +261,14 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
         String hint = String.format(Locale.ENGLISH, pattern, reminder, currencyAbbr);
         reminderView.setText(hint);
 
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            if (reminder.compareTo(BigDecimal.ZERO) < 0) {
-                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.error));
-            } else {
-                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.colorSuccess));
-            }
-        }
+//        FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//            if (reminder.compareTo(BigDecimal.ZERO) < 0) {
+//                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.error));
+//            } else {
+//                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.colorSuccess));
+//            }
+//        }
 
     }
 
@@ -307,22 +307,22 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     @Override
     public void setEditTextCurrencyIcons(int resourceId) {
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-
-            Drawable drawable = getIcon(activity, resourceId);
-            feeView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            drawable = getIcon(activity, resourceId);
-            amountView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            drawable = getIcon(activity, resourceId);
-            totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
-        }
+//        FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//
+//            Drawable drawable = getIcon(activity, resourceId);
+//            feeView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            drawable = getIcon(activity, resourceId);
+//            amountView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            drawable = getIcon(activity, resourceId);
+//            totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//        }
     }
 
     @Override
