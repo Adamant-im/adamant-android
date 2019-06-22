@@ -63,8 +63,10 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @BindView(R.id.fragment_settings_tv_version) TextView versionView;
     @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
+    @BindView(R.id.fragment_settings_tr_store_keypair) TableRow storeKeypairTableRowView;
     @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
     @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_tr_change_lang) TableRow changeLanguageTableRowView;
     @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
     @BindView(R.id.fragment_settings_tr_subscribe_to_push) TableRow pushNotificationServiceLayoutView;
 
@@ -105,7 +107,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
 
-    @OnClick(R.id.fragment_settings_btn_change_lang)
+    @OnClick(R.id.fragment_settings_tr_change_lang)
     public void onSelectLanguage() {
         androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
@@ -126,12 +128,17 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         storeKeypairView.setEnabled(value);
     }
 
+    @OnClick(R.id.fragment_settings_tr_store_keypair)
+    public void onClickStoreKeyPair() {
+        storeKeypairView.setChecked(!storeKeypairView.isChecked());
+    }
+
     @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
     public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
         presenter.onSetCheckedStoreKeypair(checked, false);
     }
 
-    @OnClick(R.id.fragment_settings_tv_notification)
+    @OnClick(R.id.fragment_settings_tr_subscribe_to_push)
     public void onClickSelectPushNotificationService() {
         presenter.onClickShowSelectPushService();
     }

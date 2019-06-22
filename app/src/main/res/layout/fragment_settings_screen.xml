@@ -94,7 +94,9 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle">
+                    <TableRow
+                        android:id="@+id/fragment_settings_tr_change_lang"
+                        style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
                             style="@style/AdamantLight.TextViewNormal"
@@ -116,7 +118,9 @@
 
                     </TableRow>
 
-                    <TableRow style="@style/AdamantLight.TableRowStyle">
+                    <TableRow
+                        android:id="@+id/fragment_settings_tr_store_keypair"
+                        style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
                             style="@style/AdamantLight.TextViewNormal"
