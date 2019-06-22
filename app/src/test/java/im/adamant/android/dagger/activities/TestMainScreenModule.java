@@ -14,6 +14,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
+import im.adamant.android.ui.fragments.CreateChatFragment;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 
@@ -34,7 +35,7 @@ public abstract class TestMainScreenModule {
     public abstract BottomNavigationDrawerFragment drawerFragment();
 
     @ContributesAndroidInjector(modules = {TestCreateChatScreenModule.class})
-    public abstract BottomCreateChatFragment createChatScreenInjector();
+    public abstract CreateChatFragment createChatScreenInjector();
 
     @ActivityScope
     @Named("main")

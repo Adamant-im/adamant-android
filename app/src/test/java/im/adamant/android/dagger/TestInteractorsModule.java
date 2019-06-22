@@ -7,6 +7,7 @@ import dagger.Provides;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
@@ -65,18 +66,6 @@ public abstract class TestInteractorsModule {
     @Provides
     public static ServerNodeInteractor provideServerNodeInteractor() {
         return mock(ServerNodeInteractor.class);
-    }
-
-    @Singleton
-    @Provides
-    public static RefreshChatsInteractor provideRefreshInteractor() {
-        return mock(RefreshChatsInteractor.class);
-    }
-
-    @Singleton
-    @Provides
-    public static GetContactsInteractor provideGetContactsInteractor() {
-        return mock(GetContactsInteractor.class);
     }
 
     @Singleton

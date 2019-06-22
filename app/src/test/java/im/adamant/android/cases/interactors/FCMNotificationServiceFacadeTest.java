@@ -1,5 +1,7 @@
 package im.adamant.android.cases.interactors;
 
+import com.google.gson.Gson;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,6 +43,7 @@ import static org.mockito.Mockito.when;
         application = TestApplication.class
 )
 public class FCMNotificationServiceFacadeTest {
+    private Gson gson;
     private Settings settings;
     private MessageFactoryProvider messageFactoryProvider;
     private AdamantPushSubscriptionMessageFactory pushSubscriptionMessageFactory;
@@ -49,12 +52,13 @@ public class FCMNotificationServiceFacadeTest {
 
     @Before
     public void setUp() throws Exception {
+        gson = mock(Gson.class);
         settings = mock(Settings.class);
         messageFactoryProvider = mock(MessageFactoryProvider.class);
         pushSubscriptionMessageFactory = mock(AdamantPushSubscriptionMessageFactory.class);
         processor = mock(AdamantPushSubscriptionMessageProcessor.class);
 
-        facade = new FCMNotificationServiceFacade(settings, messageFactoryProvider);
+        facade = new FCMNotificationServiceFacade(gson, settings, messageFactoryProvider);
 
         when(messageFactoryProvider
                 .getFactoryByType(SupportedMessageListContentType.ADAMANT_SUBSCRIBE_ON_NOTIFICATION))

@@ -23,6 +23,8 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.dagger.DaggerTestAppComponent;
 import im.adamant.android.dagger.TestAppComponent;
+import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.shadows.FirebaseInstanceIdShadow;
@@ -62,6 +64,12 @@ public class SettingsPresenterTest {
     SecurityInteractor securityInteractor;
 
     @Inject
+    AccountInteractor accountInteractor;
+
+    @Inject
+    LogoutInteractor logoutInteractor;
+
+    @Inject
     Router router;
 
     @Inject
@@ -91,10 +99,11 @@ public class SettingsPresenterTest {
 
         presenter = new SettingsPresenter(
                 router,
+                accountInteractor,
+                logoutInteractor,
                 api,
                 securityInteractor,
-                switchPushNotificationServiceInteractor,
-                disposable
+                switchPushNotificationServiceInteractor
         );
     }
 
@@ -125,7 +134,7 @@ public class SettingsPresenterTest {
         when(switchPushNotificationServiceInteractor.resetNotificationFacade(false)).thenReturn(Completable.complete());
 
         presenter.attachView(view);
-        presenter.onSetCheckedStoreKeypair(true);
+        presenter.onSetCheckedStoreKeypair(true, true);
 
         ArgumentCaptor<Boolean> enablePushArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 

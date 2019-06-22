@@ -9,6 +9,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -85,7 +86,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
 
         pinLockView.setAdapter(keyPinAdapter);
         pinLockView.setLayoutManager(new LTRGridLayoutManager(this, 3));
-        pinLockView.addItemDecoration(new ItemSpaceDecoration(0, 0, 3, false));
+        int hSpace = (int)(getResources().getDisplayMetrics().density * 15);
+        pinLockView.addItemDecoration(new ItemSpaceDecoration(hSpace, 0, 3, false));
         pinLockView.setOverScrollMode(OVER_SCROLL_NEVER);
 
         cancelButtonView.setPaintFlags(cancelButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -157,7 +159,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
 
     @Override
     public void showError(int resourceId) {
-        errorView.setText(getString(resourceId));
+//        errorView.setText(getString(resourceId));
+        Toast.makeText(this, resourceId, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -179,7 +182,8 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     public void showRepeatableError(int resourceId, int secondsLeft) {
         String errorPattern = getString(resourceId);
         String formattedError = String.format(Locale.ENGLISH, errorPattern, secondsLeft);
-        errorView.setText(formattedError);
+//        errorView.setText(formattedError);
+        Toast.makeText(this, formattedError, Toast.LENGTH_SHORT).show();
     }
 
     @Override
