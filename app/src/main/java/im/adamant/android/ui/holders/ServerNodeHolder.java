@@ -60,12 +60,22 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
         if (serverNode != null){
             serverNameView.setText(serverNode.getUrl());
             serverStatusView.setTextColor(ContextCompat.getColor(context, detectStatusColor(serverNode)));
-            String statusString = String.format(
-                    Locale.ENGLISH,
-                    context.getString(R.string.activity_nodes_list_node_status),
-                    detectStatus(serverNode),
-                    serverNode.getPingInMilliseconds()
-            );
+
+            String statusString = "";
+            if (serverNode.getStatus() == ServerNode.Status.ACTIVE || serverNode.getStatus() == ServerNode.Status.CONNECTED) {
+                statusString = String.format(
+                        Locale.ENGLISH,
+                        context.getString(R.string.activity_nodes_list_active_node_status),
+                        detectStatus(serverNode),
+                        serverNode.getPingInMilliseconds()
+                );
+            } else {
+                statusString = String.format(
+                        Locale.ENGLISH,
+                        context.getString(R.string.activity_nodes_list_inactive_node_status),
+                        detectStatus(serverNode)
+                );
+            }
 
             serverStatusView.setText(statusString);
         }
