@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.widget.ImageButton;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.button.MaterialButton;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import javax.inject.Inject;
@@ -56,6 +58,9 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @BindView(R.id.activity_nodes_btn_add_new_node)
     ImageButton addNodeButton;
 
+    @BindView(R.id.activity_nodes_btn_reset)
+    MaterialButton resetButtonView;
+
     Disposable deleteItemDisposable;
     Disposable switchItemDisposable;
     Disposable inputAddressDisposable;
@@ -94,6 +99,8 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
                 hideKeyboard();
             }
         });
+
+        resetButtonView.setPaintFlags(resetButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     @Override
