@@ -59,6 +59,13 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
     public void bind(ServerNode serverNode){
         if (serverNode != null){
             serverNameView.setText(serverNode.getUrl());
+
+            if (serverNode.getStatus() == ServerNode.Status.UNAVAILABLE) {
+                serverNameView.setTextColor(ContextCompat.getColor(context, R.color.statusUnavailable));
+            } else {
+                serverNameView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
+            }
+
             serverStatusView.setTextColor(ContextCompat.getColor(context, detectStatusColor(serverNode)));
 
             String statusString = "";
