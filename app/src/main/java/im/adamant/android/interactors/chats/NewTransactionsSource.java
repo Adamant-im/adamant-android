@@ -6,14 +6,9 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
-import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
-import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.LoggerHelper;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Emitter;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -65,7 +60,7 @@ public class NewTransactionsSource {
 
     private Flowable<Transaction<? super TransactionAsset>> getAllAdamantTransfers(int height, int offset) {
         return  api
-                    .getAdamantTransactions(Transaction.SEND, height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
+                    .getAdamantAllFinanceTransactions(Transaction.SEND, height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
                     .observeOn(Schedulers.computation())
                     .flatMap(transactionList -> {
                         if (transactionList.isSuccess()){

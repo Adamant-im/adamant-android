@@ -12,12 +12,14 @@ import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
-import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
+import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 
 public class AdamantWalletFacade implements WalletFacade {
@@ -26,6 +28,7 @@ public class AdamantWalletFacade implements WalletFacade {
 
     private boolean isReceivedTransactionList = false;
     private boolean isEmptyTransactionList = false;
+    private int maxHeight = 1;
 
     public AdamantWalletFacade(AdamantApiWrapper api) {
         this.api = api;
@@ -77,59 +80,53 @@ public class AdamantWalletFacade implements WalletFacade {
 
     @Override
     public Single<List<CurrencyTransferEntity>> getLastTransfers() {
-        if (!api.isAuthorized()){
-            return Single.error(new NotAuthorizedException("Not Authorized"));
-        }
-
         String myAddress = api.getAccount().getAddress();
-        return api
-                .getAdamantTransactions(Transaction.SEND, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
-                .flatMap(transactionList -> {
-                    if (transactionList.isSuccess()){
-                        return Flowable.just(transactionList.getTransactions());
-                    } else {
-                        return Flowable.error(new Exception(transactionList.getError()));
-                    }
-                })
-                .doOnNext(list -> {
-                    isReceivedTransactionList = true;
-                    if (list.size() == 0) {
-                        isEmptyTransactionList = true;
-                    }
-                })
+        return mapTransactionsToTransfers(
+                    api.getAdamantAllFinanceTransactions(AdamantApi.ORDER_BY_TIMESTAMP_DESC)
+                )
                 .map(list -> {
                     List<CurrencyTransferEntity> transfers = new ArrayList<>();
 
                     for(Transaction transaction : list){
-                        CurrencyTransferEntity entity = new CurrencyTransferEntity();
-                        entity.setUnixTransferDate(transaction.getUnixTimestamp());
-                        entity.setPrecision(getPrecision());
-                        entity.setAmount(
-                                BalanceConvertHelper.convert(
-                                        transaction.getAmount()
-                                )
-                        );
-//                        entity.setCurrencyAbbreviation(SupportedCurrencyType.ADM.name());
-
-                        boolean iRecipient = myAddress.equalsIgnoreCase(transaction.getRecipientId());
-
-                        if (iRecipient){
-                            entity.setDirection(CurrencyTransferEntity.Direction.RECEIVE);
-                            entity.setAddress(transaction.getSenderId());
-                        } else {
-                            entity.setDirection(CurrencyTransferEntity.Direction.SEND);
-                            entity.setAddress(transaction.getRecipientId());
-                        }
-
-                        entity.setContactName(getTransferTitle(iRecipient, transaction));
-
-                        transfers.add(entity);
+                        if (transaction.getHeight() > maxHeight) { maxHeight = transaction.getHeight(); }
+                        transfers.add(mapTransactionToTransfer(transaction, myAddress));
                     }
                     return transfers;
                 })
-                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .first(new ArrayList<>());
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
 
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNewTransfers() {
+        String myAddress = api.getAccount().getAddress();
+        return mapTransactionsToTransfers(
+                    Flowable
+                            .defer(() -> Flowable.just(maxHeight + 1))
+                            .flatMap(height -> api.getAdamantAllFinanceTransactions(height, 0, AdamantApi.ORDER_BY_TIMESTAMP_DESC))
+                 )
+                 .toFlowable()
+                 .flatMapIterable(list -> list)
+                 .doOnNext(transaction -> {
+                     if (transaction.getHeight() > maxHeight) {
+                         maxHeight = transaction.getHeight();
+                     }
+                 })
+                 .map(transaction -> mapTransactionToTransfer(transaction, myAddress))
+                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNextTransfers(int offset) {
+        String myAddress = api.getAccount().getAddress();
+        return mapTransactionsToTransfers(
+                    api.getAdamantAllFinanceTransactions(1, offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC)
+                )
+                .toFlowable()
+                .flatMapIterable(list -> list)
+                .map(transaction -> mapTransactionToTransfer(transaction, myAddress))
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     @Override
@@ -195,4 +192,48 @@ public class AdamantWalletFacade implements WalletFacade {
         }
         return title;
     }
+
+    private Single<List<Transaction<? super TransactionAsset>>> mapTransactionsToTransfers(Flowable<TransactionList> transactionListFlowable) {
+        return transactionListFlowable
+                .flatMap(transactionList -> {
+                    if (transactionList.isSuccess()){
+                        return Flowable.just(transactionList.getTransactions());
+                    } else {
+                        return Flowable.error(new Exception(transactionList.getError()));
+                    }
+                })
+                .doOnNext(list -> {
+                    isReceivedTransactionList = true;
+                    if (list.size() == 0) {
+                        isEmptyTransactionList = true;
+                    }
+                })
+                .singleOrError();
+    }
+
+    private CurrencyTransferEntity mapTransactionToTransfer(Transaction transaction, String myAddress) {
+        CurrencyTransferEntity entity = new CurrencyTransferEntity();
+        entity.setUnixTransferDate(transaction.getUnixTimestamp());
+        entity.setPrecision(getPrecision());
+        entity.setAmount(
+                BalanceConvertHelper.convert(
+                        transaction.getAmount()
+                )
+        );
+
+        boolean iRecipient = myAddress.equalsIgnoreCase(transaction.getRecipientId());
+
+        if (iRecipient){
+            entity.setDirection(CurrencyTransferEntity.Direction.RECEIVE);
+            entity.setAddress(transaction.getSenderId());
+        } else {
+            entity.setDirection(CurrencyTransferEntity.Direction.SEND);
+            entity.setAddress(transaction.getRecipientId());
+        }
+
+        entity.setContactName(getTransferTitle(iRecipient, transaction));
+
+        return entity;
+    }
+
 }

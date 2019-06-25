@@ -15,4 +15,5 @@ public interface Screens {
     String NODES_LIST_SCREEN = "nodes_list_screen";
     String PUSH_SUBSCRIPTION_SCREEN = "push_subscription_service_screen";
     String PINCODE_SCREEN = "pincode_screen";
+    String ALL_TRANSACTIONS_SCREEN = "all_transactions_screen";
 }

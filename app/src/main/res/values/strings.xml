@@ -25,6 +25,8 @@
     <string name="activity_nodes_list_dialog_delete_node">Are you sure you want to delete this node from list?</string>
     <string name="activity_nodes_list_node_status">Node %s, Ping: %.0f ms</string>
 
+    <string name="activity_all_transactions_title">%s transactions</string>
+
     <string name="activity_pincode_enter_pincode">Enter pin-code</string>
     <string name="activity_pincode_enter_new_pincode">Enter new pin-code</string>
     <string name="activity_pincode_confirm">Confirm pin-code</string>
@@ -75,6 +77,7 @@
     <string name="fragment_wallet_free_tokens_title">Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
     <string name="fragment_wallet_last_transactions_title">Last transactions %s</string>
+    <string name="fragment_wallet_see_all">All</string>
     <string name="fragment_wallet_exit_title">Exit</string>
 
     <string name="fragment_settings_general_title">General</string>

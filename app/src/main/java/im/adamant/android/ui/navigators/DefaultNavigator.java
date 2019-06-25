@@ -41,7 +41,7 @@ public abstract class DefaultNavigator implements Navigator {
                     forward((Forward) command);
             }
         } else if (command instanceof SystemMessage) {
-            message((SystemMessage) command);
+            message((SystemMessage) command); //TODO: May be need just show Toast
         } else if (command instanceof Back) {
             back((Back) command);
         } else if (command instanceof BackTo) {

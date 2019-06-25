@@ -1,5 +1,7 @@
 package im.adamant.android.ui.presenters;
 
+import android.os.Bundle;
+
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
@@ -10,6 +12,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.ui.AllTransactionsScreen;
 import im.adamant.android.ui.entities.CurrencyCardItem;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -110,6 +113,13 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
             }
             getViewState().createQrCode(address);
         }
+    }
+
+    public void onClickShowAllTransfers() {
+        Bundle bundle = new Bundle();
+        bundle.putString(AllTransactionsScreen.ARG_CURRENCY_ABBR, currencyCardItem.getAbbreviation());
+
+        router.navigateTo(Screens.ALL_TRANSACTIONS_SCREEN, bundle);
     }
 
 }

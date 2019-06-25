@@ -13,12 +13,13 @@ public interface WalletFacade {
     BigDecimal getBalance();
     String getAddress();
     SupportedWalletFacadeType getCurrencyType();
-    //TODO: Remove hardcoded values
     String getTitle();
     int getPrecision();
     int getBackgroundLogoResource();
     void setChatStorage(ChatsStorage chatStorage);
     Single<List<CurrencyTransferEntity>> getLastTransfers();
+    Flowable<CurrencyTransferEntity> getNewTransfers();
+    Flowable<CurrencyTransferEntity> getNextTransfers(int offset);
     boolean isAvailableAirdropLink();
     int getAirdropLinkResource();
     String getAirdropLinkString();

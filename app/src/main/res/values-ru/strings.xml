@@ -26,6 +26,8 @@
     <string name="activity_nodes_list_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
     <string name="activity_nodes_list_node_status">Нода %s, Пинг: %.0f мс</string>
 
+    <string name="activity_all_transactions_title">%s транзакции</string>
+
     <string name="activity_pincode_enter_pincode">Введите пин-код</string>
     <string name="activity_pincode_enter_new_pincode">Введите новый пин-код</string>
     <string name="activity_pincode_confirm">Подтвердите пин-код</string>
@@ -76,6 +78,7 @@
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>
+    <string name="fragment_wallet_see_all">Все</string>
     <string name="fragment_wallet_exit_title">Выход</string>
 
     <string name="fragment_settings_general_title">Общие</string>

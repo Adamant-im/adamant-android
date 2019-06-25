@@ -31,6 +31,7 @@ public interface AdamantApi {
     long BASE_TIMESTAMP = 1504371600000L; //2017-08-02 17:00:00
     int SYNCHRONIZE_DELAY_SECONDS = 6;
     int MAX_TRANSACTIONS_PER_REQUEST = 100;
+    int DEFAULT_TRANSACTIONS_LIMIT = 25;
     String ORDER_BY_TIMESTAMP_DESC = "timestamp:desc";
     String ORDER_BY_TIMESTAMP_ASC = "timestamp:asc";
 
@@ -102,7 +103,18 @@ public interface AdamantApi {
             @Query("and:type") int type,
             @Query("and:fromHeight") int height,
             @Query("offset") int offset,
-            @Query("orderBy") String order
+            @Query("orderBy") String order,
+            @Query("limit") int limit
+    );
+
+    @GET("transactions")
+    Flowable<TransactionList> getAdamantAllFinanceTransactions(
+            @Query("inId") String address,
+            @Query("and:fromHeight") int height,
+            @Query("and:minAmount") int minAmount,
+            @Query("offset") int offset,
+            @Query("orderBy") String order,
+            @Query("limit") int limit
     );
 
     @POST("/api/transactions/process")

@@ -52,6 +52,16 @@ public class EthereumWalletFacade implements WalletFacade {
     }
 
     @Override
+    public Flowable<CurrencyTransferEntity> getNewTransfers() {
+        return Flowable.empty();
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNextTransfers(int offset) {
+        return Flowable.empty();
+    }
+
+    @Override
     public boolean isAvailableAirdropLink() {
         return false;
     }

@@ -23,6 +23,21 @@ public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTrans
         notifyDataSetChanged();
     }
 
+    public void addItemToBegin(CurrencyTransferEntity transfer) {
+        this.transfers.add(0, transfer);
+        notifyDataSetChanged();
+    }
+
+    public void addItemsToEnd(List<CurrencyTransferEntity> transfers) {
+        this.transfers.addAll(transfers);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        this.transfers.clear();
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public CurrencyTransferHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
