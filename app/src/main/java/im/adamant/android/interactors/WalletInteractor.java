@@ -57,15 +57,47 @@ public class WalletInteractor {
         try {
             SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
             if (wallets.containsKey(supportedCurrencyType)){
-                WalletFacade driver = wallets.get(supportedCurrencyType);
-                if (driver == null){return Single.error(new NullPointerException());}
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Single.error(new NullPointerException());}
 
-                return driver.getLastTransfers();
+                return facade.getLastTransfers();
             }
         }catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return Single.error(new Exception("Not found currency info driver"));
+        return Single.error(new Exception("Not found currency facade"));
+    }
+
+    public Flowable<CurrencyTransferEntity> getNewTransfersByCurrencyAbbr(String abbreviation) {
+        try {
+            SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
+            if (wallets.containsKey(supportedCurrencyType)){
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Flowable.error(new NullPointerException());}
+
+                return facade.getNewTransfers();
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Flowable.error(new Exception("Not found currency facade"));
+    }
+
+    public Flowable<CurrencyTransferEntity> getNextTransfersByCurrencyAbbr(String abbreviation, int offset) {
+        try {
+            SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
+            if (wallets.containsKey(supportedCurrencyType)){
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Flowable.error(new NullPointerException());}
+
+                return facade.getNextTransfers(offset);
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Flowable.error(new Exception("Not found currency facade"));
     }
 }

@@ -27,6 +27,8 @@
     <string name="activity_nodes_list_inactive_node_status">Node %s</string>
     <string name="activity_nodes_reset_to_defaults">Reset to defaults</string>
 
+    <string name="activity_all_transactions_title">%s transactions</string>
+
     <string name="activity_pincode_enter_pincode">Enter pin-code</string>
     <string name="activity_pincode_enter_new_pincode">Enter new pin-code</string>
     <string name="activity_pincode_confirm">Confirm pin-code</string>
@@ -79,6 +81,7 @@
     <string name="fragment_wallet_free_tokens_title">Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
     <string name="fragment_wallet_send_funds">Send %s</string>
+    <string name="fragment_wallet_see_all">All</string>
     <string name="fragment_wallet_last_transactions_title">Latest %s transactions</string>
 
 

@@ -209,6 +209,15 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                     startActivity(intent);
                 }
                 break;
+
+                case Screens.ALL_TRANSACTIONS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), AllTransactionsScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
             }
         }
 

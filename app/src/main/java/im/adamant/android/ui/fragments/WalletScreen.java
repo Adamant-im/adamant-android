@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
+import butterknife.OnClick;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
@@ -210,6 +211,11 @@ public class WalletScreen extends BaseFragment implements WalletView {
         presenter.onStopTransfersUpdate();
         cardEventsDisposable.dispose();
         cardEventsDisposable = null;
+    }
+
+    @OnClick(R.id.fragment_wallet_tv_see_all)
+    public void onClickShowAllButton() {
+        presenter.onClickShowAllTransfers();
     }
 
     @Override

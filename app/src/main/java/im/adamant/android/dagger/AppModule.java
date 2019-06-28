@@ -1,6 +1,7 @@
 package im.adamant.android.dagger;
 
 import im.adamant.android.dagger.activities.ActivityScope;
+import im.adamant.android.dagger.activities.AllTransactionsScreenModule;
 import im.adamant.android.dagger.activities.LoginScreenModule;
 import im.adamant.android.dagger.activities.MainScreenModule;
 import im.adamant.android.dagger.activities.MessagesScreenModule;
@@ -27,6 +28,7 @@ import im.adamant.android.services.AdamantFirebaseMessagingService;
 import im.adamant.android.services.AdamantLocalMessagingService;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.services.ServerNodesPingService;
+import im.adamant.android.ui.AllTransactionsScreen;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.MessagesScreen;
@@ -91,6 +93,10 @@ public abstract class AppModule {
     @ActivityScope
     @ContributesAndroidInjector(modules = {PincodeScreenModule.class})
     public abstract PincodeScreen createPincodeScreenInjector();
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {AllTransactionsScreenModule.class})
+    public abstract AllTransactionsScreen createAllTransactionsScreenInjector();
 
 
     //--Services

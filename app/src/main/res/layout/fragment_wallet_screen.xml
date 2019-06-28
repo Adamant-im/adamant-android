@@ -61,12 +61,23 @@
         style="@style/AdamantLight.TextViewHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/separator2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_wallet_tv_see_all"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/fragment_wallet_tv_see_all"
+        style="@style/AdamantLight.TextViewNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/fragment_wallet_see_all"
+        app:layout_constraintBottom_toTopOf="@+id/fragment_wallet_rv_last_transactions"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_wallet_rv_last_transactions"

@@ -126,6 +126,7 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
+    //TODO: refactor duplicate code. May be use transformation
     public Flowable<ChatList> getChatsByOffset(int offset, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
@@ -226,16 +227,34 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionList> getAdamantTransactions(int type, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantTransactions(account.getAddress(), type, 1, 0, order)
+        return api.getAdamantTransactions(account.getAddress(), type, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
-    public Flowable<TransactionList> getAdamantTransactions(int type, int fromHeight, int offset, String order) {
+    public Flowable<TransactionList> getAdamantAllFinanceTransactions(String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantTransactions(account.getAddress(), type, fromHeight, offset, order)
+        return api.getAdamantAllFinanceTransactions(account.getAddress(),1, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionList> getAdamantAllFinanceTransactions(int type, int fromHeight, int offset, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+        return api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionList> getAdamantAllFinanceTransactions(int fromHeight, int offset, String order) {
+        if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+        return api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))

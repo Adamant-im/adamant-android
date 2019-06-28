@@ -35,8 +35,12 @@ public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
 
     public void bind(CurrencyTransferEntity transferEntity) {
 
-        boolean hideAddress = (transferEntity.getAddress().equalsIgnoreCase(transferEntity.getContactName())) ||
-                transferEntity.getContactName().isEmpty();
+        boolean hideAddress = (transferEntity.getAddress() == null) ||
+                (transferEntity.getContactName() == null) ||
+                (
+                        (transferEntity.getAddress().equalsIgnoreCase(transferEntity.getContactName())) ||
+                        transferEntity.getContactName().isEmpty()
+                );
 
         if (hideAddress) {
             addressView.setVisibility(View.GONE);
