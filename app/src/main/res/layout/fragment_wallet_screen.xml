@@ -74,10 +74,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:text="@string/fragment_wallet_see_all"
-        app:layout_constraintBottom_toTopOf="@+id/fragment_wallet_rv_last_transactions"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_wallet_tv_last_transactions_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_wallet_tv_last_transactions_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_wallet_rv_last_transactions"
