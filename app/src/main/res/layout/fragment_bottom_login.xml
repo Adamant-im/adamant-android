@@ -12,7 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:text="@string/fragment_login_title"
-        style="@style/AdamantLight.TextViewHeader"
+        style="@style/AdamantLight.TextHeader"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,7 +45,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/fragment_login_btn_enter"
-        style="@style/AdamantLight.PrimaryButton"
+        style="@style/AdamantLight.ButtonActive"
         android:layout_width="@dimen/main_button_width"
         android:layout_height="@dimen/main_button_height"
         android:text="@string/activity_login_btn_enter_in_net"
@@ -62,14 +62,14 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
         android:text="@string/activity_login_tv_login_by_qr"
-        style="@style/AdamantLight.TextViewOverLine"
+        style="@style/AdamantLight.TextExplanation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_btn_enter" />
 
     <ImageButton
         android:id="@+id/fragment_login_btn_by_stored_qr"
-        style="@style/AdamantLight.ImageButton"
+        style="@style/AdamantLight.IconActive"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
@@ -88,7 +88,7 @@
 
     <ImageButton
         android:id="@+id/fragment_login_btn_by_camera_qr"
-        style="@style/AdamantLight.ImageButton"
+        style="@style/AdamantLight.IconActive"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"

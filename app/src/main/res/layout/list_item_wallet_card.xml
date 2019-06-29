@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_title"
-                style="@style/AdamantLight.TextViewHeadline"
+                style="@style/AdamantLight.TextHeadline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
@@ -60,7 +60,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_balance_title"
-                style="@style/AdamantLight.TextViewOverLine"
+                style="@style/AdamantLight.TextExplanation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -73,7 +73,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_balance"
-                style="@style/AdamantLight.TextViewEnlargedOverLine"
+                style="@style/AdamantLight.TextExplanationEnlarged"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="TextView"
@@ -86,7 +86,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_address_title"
-                style="@style/AdamantLight.TextViewOverLine"
+                style="@style/AdamantLight.TextExplanation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="9dp"
@@ -102,7 +102,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_address"
-                style="@style/AdamantLight.TextViewEnlargedOverLine"
+                style="@style/AdamantLight.TextExplanationEnlarged"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -142,7 +142,7 @@
 
             <ImageButton
                 android:id="@+id/list_item_wallet_card_ib_copy"
-                style="@style/AdamantLight.ImageButton"
+                style="@style/AdamantLight.IconActive"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="8dp"
@@ -152,7 +152,7 @@
 
             <ImageButton
                 android:id="@+id/list_item_wallet_card_ib_create_qr"
-                style="@style/AdamantLight.ImageButton"
+                style="@style/AdamantLight.IconActive"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_marginTop="8dp"

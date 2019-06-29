@@ -13,7 +13,7 @@
     <TextView
         android:id="@+id/wallet_tab_layout_balance"
         android:gravity="center"
-        style="@style/AdamantLight.TextViewEnlargedOverLine"
+        style="@style/AdamantLight.TextExplanationEnlarged"
         android:text="0"
         android:textColor="@color/textMuted"
         android:layout_width="match_parent"
@@ -21,7 +21,7 @@
 
     <TextView
         android:id="@+id/wallet_tab_layout_currency"
-        style="@style/AdamantLight.TextViewEnlargedOverLine"
+        style="@style/AdamantLight.TextExplanationEnlarged"
         android:text="adm"
         android:textColor="@color/textMuted"
         android:gravity="center"

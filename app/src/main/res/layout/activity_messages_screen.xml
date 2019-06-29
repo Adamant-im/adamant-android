@@ -68,7 +68,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_messages_tv_cost"
-            style="@style/AdamantLight.FlatTextInputLayoutStyle"
+            style="@style/AdamantLight.TextInput2LayoutStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="0dp"
@@ -80,7 +80,7 @@
 
             <EditText
                 android:id="@+id/activity_messages_et_new_msg_text"
-                android:theme="@style/AdamantLight.FlatEditTextInputTheme"
+                android:theme="@style/AdamantLight.TextInput2Theme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="true"

@@ -54,7 +54,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/activity_registration_et_passphrase"
-                style="@style/AdamantLight.EditTextInput"
+                style="@style/AdamantLight.TextInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textMultiLine|textNoSuggestions"
@@ -87,7 +87,7 @@
                 <!--app:srcCompat="@drawable/ic_save" />-->
 
             <TextView
-                style="@style/AdamantLight.TextViewOverLine"
+                style="@style/AdamantLight.TextExplanation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
@@ -100,7 +100,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/activity_registration_btn_save_qr"
-            style="@style/AdamantLight.FlatTextButton"
+            style="@style/AdamantLight.TextActive"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

@@ -12,16 +12,16 @@
         <item name="fontWeight">300</item>
     </style>
 
-    <style name="AdamantLight.TextViewHeadline" parent="AdamantLight.TextViewSubHeader">
+    <style name="AdamantLight.TextHeadline" parent="AdamantLight.TextRegularEnlarged">
         <item name="android:textAllCaps">true</item>
         <item name="android:fontWeight">100</item>
     </style>
 
-    <style name="AdamantLight.TextViewHeader" parent="AdamantLight.BaseTextViewHeader">
+    <style name="AdamantLight.TextHeader" parent="AdamantLight.BaseTextHeader">
         <item name="android:fontWeight">500</item>
     </style>
 
-    <style name="AdamantLight.TextViewNormalEnlargedBold" parent="AdamantLight.BaseTextViewNormalEnlargedBold">
+    <style name="AdamantLight.TextRegularEnlargedBold" parent="AdamantLight.BaseTextRegularEnlargedBold">
         <item name="android:fontWeight">900</item>
     </style>
 </resources>

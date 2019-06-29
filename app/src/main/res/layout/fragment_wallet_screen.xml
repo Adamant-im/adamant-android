@@ -58,7 +58,7 @@
 
     <TextView
         android:id="@+id/fragment_wallet_tv_last_transactions_title"
-        style="@style/AdamantLight.TextViewHeader"
+        style="@style/AdamantLight.TextHeader"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
@@ -70,7 +70,7 @@
 
     <TextView
         android:id="@+id/fragment_wallet_tv_see_all"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"

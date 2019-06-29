@@ -59,7 +59,7 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/activity_nodes_il_new_node_address_layout"
-            style="@style/AdamantLight.FlatTextInputLayoutStyle"
+            style="@style/AdamantLight.TextInput2LayoutStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingTop="0dp"
@@ -78,12 +78,12 @@
                 android:focusableInTouchMode="true"
                 android:hint="@string/activity_nodes_list_new_node_placeholder"
                 android:maxLines="1"
-                android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                android:theme="@style/AdamantLight.TextInput2Theme" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/activity_nodes_btn_add_new_node"
-            style="@style/AdamantLight.ImageButton"
+            style="@style/AdamantLight.IconActive"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="8dp"
@@ -98,7 +98,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_nodes_btn_reset"
-        style="@style/AdamantLight.FlatTextButton"
+        style="@style/AdamantLight.TextActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

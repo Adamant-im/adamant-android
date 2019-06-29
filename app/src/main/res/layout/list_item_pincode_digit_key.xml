@@ -12,7 +12,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/list_item_pincode_key_button"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextRegular"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="@dimen/pin_key_margin"

@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/activity_show_qr_code_tv_content"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextRegular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -36,7 +36,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/activity_show_qr_code_btn_save_in_gallery"
-        style="@style/AdamantLight.PrimaryButton"
+        style="@style/AdamantLight.ButtonActive"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/main_button_height"
         android:layout_marginStart="8dp"

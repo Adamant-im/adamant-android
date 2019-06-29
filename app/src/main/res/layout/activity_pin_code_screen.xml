@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_suggestion"
-                    style="@style/AdamantLight.TextViewHeader"
+                    style="@style/AdamantLight.TextHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -103,7 +103,7 @@
 
                 <TextView
                     android:id="@+id/activity_pincode_tv_error"
-                    style="@style/AdamantLight.TextViewOverLine"
+                    style="@style/AdamantLight.TextExplanation"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
@@ -133,7 +133,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_pin_code_btn_reset_or_cancel"
-                style="@style/AdamantLight.FlatTextButton"
+                style="@style/AdamantLight.TextActive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

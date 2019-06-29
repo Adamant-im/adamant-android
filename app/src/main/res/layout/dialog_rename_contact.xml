@@ -33,7 +33,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        style="@style/AdamantLight.TextViewOverLine"
+        style="@style/AdamantLight.TextExplanation"
         android:text="@string/dialog_rename_contact_cost"
         android:layout_marginBottom="10dp"
         android:layout_marginStart="?dialogPreferredPadding"

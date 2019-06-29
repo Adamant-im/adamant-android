@@ -12,12 +12,12 @@
         <!--<item name="android:stateListAnimator">@null</item>-->
     <!--</style>-->
 
-    <style name="AdamantLight.PrimaryButton" parent="AdamantLight.BasePrimaryButton">
+    <style name="AdamantLight.ButtonActive" parent="AdamantLight.BaseButtonActive">
         <item name="android:elevation">0dp</item>
         <item name="cornerRadius">@dimen/main_button_radius</item>
     </style>
 
-    <style name="AdamantLight.FlatIconButton" parent="AdamantLight.BaseFlatIconButton">
+    <style name="AdamantLight.DialogIconButton" parent="AdamantLight.BaseDialogIconButton">
         <item name="android:elevation">0dp</item>
     </style>
 

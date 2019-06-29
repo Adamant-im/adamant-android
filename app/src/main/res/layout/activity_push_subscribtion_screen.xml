@@ -62,7 +62,7 @@
                     <TableRow style="@style/AdamantLight.TableRowStyle">
 
                         <TextView
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextRegularEnlarged"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="2"
@@ -70,7 +70,7 @@
 
                         <TextView
                             android:id="@+id/activity_push_subscription_tv_current_service"
-                            style="@style/AdamantLight.TextViewSubHeader"
+                            style="@style/AdamantLight.TextRegularEnlarged"
                             android:layout_width="0dp"
                             android:layout_height="24dp"
                             android:layout_weight="1"
@@ -84,7 +84,7 @@
 
                 <TextView
                     android:id="@+id/textView3"
-                    style="@style/AdamantLight.TextViewHeader"
+                    style="@style/AdamantLight.TextHeader"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"

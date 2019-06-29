@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/list_item_message_time"
-                style="@style/AdamantLight.TextViewOverLine"
+                style="@style/AdamantLight.TextExplanation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -63,7 +63,7 @@
 
     <TextView
         android:id="@+id/list_item_message_error_text"
-        style="@style/AdamantLight.TextViewOverLine"
+        style="@style/AdamantLight.TextExplanation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

@@ -35,7 +35,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_login"
-                style="@style/AdamantLight.PrimaryButton"
+                style="@style/AdamantLight.ButtonActive"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
@@ -48,7 +48,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/activity_login_btn_generate_new_passphrase"
-                style="@style/AdamantLight.FlatTextButton"
+                style="@style/AdamantLight.TextActive"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"
@@ -67,7 +67,7 @@
 
     <ImageButton
         android:id="@+id/activity_login_ib_node_list"
-        style="@style/AdamantLight.ImageButton"
+        style="@style/AdamantLight.IconActive"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_marginTop="16dp"

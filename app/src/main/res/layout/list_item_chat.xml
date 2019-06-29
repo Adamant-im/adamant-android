@@ -19,7 +19,7 @@
 
         <TextView
             android:id="@+id/list_item_chat_name"
-            style="@style/AdamantLight.TextViewNormalEnlargedBold"
+            style="@style/AdamantLight.TextRegularEnlargedBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/list_item_chat_last_message"
-            style="@style/AdamantLight.TextViewEnlargedOverLine"
+            style="@style/AdamantLight.TextExplanationEnlarged"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -47,7 +47,7 @@
 
         <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/list_item_chat_last_message_date"
-            style="@style/AdamantLight.TextViewOverLine"
+            style="@style/AdamantLight.TextExplanation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"

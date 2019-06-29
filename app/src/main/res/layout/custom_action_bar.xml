@@ -23,7 +23,7 @@
             android:id="@+id/actionbarTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/AdamantLight.TextViewSubHeader"
+            style="@style/AdamantLight.TextRegularEnlarged"
             android:text="@string/app_name"/>
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            style="@style/AdamantLight.TextViewOverLine" />
+            style="@style/AdamantLight.TextExplanation" />
 
     </LinearLayout>
 </LinearLayout>

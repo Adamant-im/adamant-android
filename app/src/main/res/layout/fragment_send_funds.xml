@@ -28,7 +28,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_address_layout"
-                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
+                    style="@style/AdamantLight.TextInput2LayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -48,12 +48,12 @@
                         android:enabled="false"
                         android:hint="@string/activity_send_funds_recipient_address_hint"
                         android:maxLines="1"
-                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                        android:theme="@style/AdamantLight.TextInput2Theme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_amount_layout"
-                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
+                    style="@style/AdamantLight.TextInput2LayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -74,12 +74,12 @@
                         android:focusableInTouchMode="true"
                         android:inputType="numberDecimal"
                         android:maxLines="1"
-                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                        android:theme="@style/AdamantLight.TextInput2Theme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_fee_layout"
-                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
+                    style="@style/AdamantLight.TextInput2LayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -99,12 +99,12 @@
                         android:drawablePadding="15dp"
                         android:enabled="false"
                         android:maxLines="1"
-                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                        android:theme="@style/AdamantLight.TextInput2Theme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_total_amount_layout"
-                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
+                    style="@style/AdamantLight.TextInput2LayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -124,12 +124,12 @@
                         android:drawablePadding="15dp"
                         android:enabled="false"
                         android:maxLines="1"
-                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                        android:theme="@style/AdamantLight.TextInput2Theme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
                     android:id="@+id/list_item_currency_send_remainder"
-                    style="@style/AdamantLight.TextViewOverLine"
+                    style="@style/AdamantLight.TextExplanation"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -144,7 +144,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/list_item_currency_send_il_comment_layout"
-                    style="@style/AdamantLight.FlatTextInputLayoutStyle"
+                    style="@style/AdamantLight.TextInput2LayoutStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -162,12 +162,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:maxLines="1"
-                        android:theme="@style/AdamantLight.FlatEditTextInputTheme" />
+                        android:theme="@style/AdamantLight.TextInput2Theme" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/list_item_currency_send_btn_send"
-                    style="@style/AdamantLight.PrimaryButton"
+                    style="@style/AdamantLight.ButtonActive"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/main_button_height"
                     android:layout_marginStart="16dp"

@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/textView8"
-                style="@style/AdamantLight.TextViewHeader"
+                style="@style/AdamantLight.TextHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -71,7 +71,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fragment_create_chat_btn_enter"
-                style="@style/AdamantLight.PrimaryButton"
+                style="@style/AdamantLight.ButtonActive"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginBottom="16dp"
@@ -154,7 +154,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fragment_create_chat_btn_show_my_qr"
-                style="@style/AdamantLight.FlatTextButton"
+                style="@style/AdamantLight.TextActive"
                 android:layout_width="@dimen/main_button_width"
                 android:layout_height="@dimen/main_button_height"
                 android:layout_marginStart="8dp"

@@ -11,7 +11,7 @@
 
     <TextView
         android:id="@+id/list_item_servernode_tv_name"
-        style="@style/AdamantLight.TextViewNormal"
+        style="@style/AdamantLight.TextRegular"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -24,7 +24,7 @@
 
     <TextView
         android:id="@+id/list_item_servernode_tv_status"
-        style="@style/AdamantLight.TextViewOverLine"
+        style="@style/AdamantLight.TextExplanation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
@@ -36,7 +36,7 @@
 
     <ImageButton
         android:id="@+id/list_item_servernode_ibtn_delete"
-        style="@style/AdamantLight.ImageButton"
+        style="@style/AdamantLight.IconActive"
         android:layout_width="24dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="4dp"
