@@ -12,6 +12,7 @@
         android:layout_height="8dp"
         android:indeterminate="true"
         android:scaleY="2"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

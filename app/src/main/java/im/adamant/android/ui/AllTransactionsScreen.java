@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,22 +76,16 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
 
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
+    private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         transactionsView.setLayoutManager(layoutManager);
         transactionsView.setAdapter(currencyTransfersAdapter);
-
-        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                presenter.onLoadNextTransfers();
-            }
-        };
-        transactionsView.addOnScrollListener(endlessRecyclerViewScrollListener);
 
 
         Drawable divider = ContextCompat.getDrawable(transactionsView.getContext(), R.drawable.line_divider);
@@ -111,7 +106,9 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
                 String title = String.format(Locale.ENGLISH, pattern, abbr);
                 setTitle(title);
 
-                presenter.onShowTransactionsByCurrencyAbbr(abbr);
+                if (savedInstanceState == null) {
+                    presenter.onShowTransactionsByCurrencyAbbr(abbr);
+                }
             }
         }
     }
@@ -120,6 +117,14 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.onLoadNextTransfers();
+            }
+        };
+        transactionsView.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
     @Override
@@ -157,8 +162,11 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
 
     @Override
     public void firstTransfersWasLoaded(List<CurrencyTransferEntity> transfers) {
+        transfers = new ArrayList<>(transfers);
         currencyTransfersAdapter.refreshItems(transfers);
-        endlessRecyclerViewScrollListener.resetState();
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.resetState();
+        }
     }
 
     @Override
@@ -173,5 +181,10 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
         } else {
             progressBar.setVisibility(View.INVISIBLE);
         }
+    }
+
+    @Override
+    public void nextTransferWasLoaded(CurrencyTransferEntity transfer) {
+        currencyTransfersAdapter.addItemToEnd(transfer);
     }
 }

@@ -28,14 +28,25 @@ public class AllTransactionsPresenter extends ProtectedBasePresenter<AllTransact
         this.walletInteractor = walletInteractor;
     }
 
+
+    private boolean loading = false;
+
     public void onShowTransactionsByCurrencyAbbr(String abbr) {
 
+        currentOffset = 0;
         currentAbbr = abbr;
+        loading = true;
+        getViewState().setLoading(true);
 
         Disposable disposable = walletInteractor
                 .getLastTransfersByCurrencyAbbr(abbr)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess((transfers) -> getViewState().firstTransfersWasLoaded(transfers))
+                .doOnSuccess((transfers) -> {
+                    currentOffset += transfers.size();
+                    loading = false;
+                    getViewState().setLoading(false);
+                    getViewState().firstTransfersWasLoaded(transfers);
+                })
                 .doOnError(throwable -> {
                     LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
                     router.showSystemMessage(throwable.getMessage());
@@ -46,7 +57,10 @@ public class AllTransactionsPresenter extends ProtectedBasePresenter<AllTransact
                             Disposable subscribe = walletInteractor
                                     .getNewTransfersByCurrencyAbbr(abbr)
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .doOnNext(transfer -> getViewState().newTransferWasLoaded(transfer))
+                                    .doOnNext(transfer -> {
+                                        currentOffset++;
+                                        getViewState().newTransferWasLoaded(transfer);
+                                    })
                                     .doOnError(throwable -> {
                                         LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
                                         router.showSystemMessage(throwable.getMessage());
@@ -61,7 +75,28 @@ public class AllTransactionsPresenter extends ProtectedBasePresenter<AllTransact
         subscriptions.add(disposable);
     }
 
-    public void onLoadNextTransfers() {
 
+    public void onLoadNextTransfers() {
+        if (loading) {
+            return;
+        }
+        getViewState().setLoading(true);
+        loading = true;
+
+        Disposable disposable = walletInteractor
+                .getNextTransfersByCurrencyAbbr(currentAbbr, currentOffset)
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry()
+                .doOnComplete(() -> {
+                    loading = false;
+                    getViewState().setLoading(false);
+                })
+                .subscribe(
+                        (currencyTransferEntity -> {
+                            currentOffset++;
+                            getViewState().nextTransferWasLoaded(currencyTransferEntity);
+                        })
+                );
+        subscriptions.add(disposable);
     }
 }

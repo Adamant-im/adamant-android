@@ -4,11 +4,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.holders.CurrencyTransferHolder;
@@ -25,12 +26,12 @@ public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTrans
 
     public void addItemToBegin(CurrencyTransferEntity transfer) {
         this.transfers.add(0, transfer);
-        notifyDataSetChanged();
+        notifyItemInserted(0);
     }
 
-    public void addItemsToEnd(List<CurrencyTransferEntity> transfers) {
-        this.transfers.addAll(transfers);
-        notifyDataSetChanged();
+    public void addItemToEnd(CurrencyTransferEntity transfer) {
+        this.transfers.add(transfer);
+        notifyItemInserted(transfers.size());
     }
 
     public void clear() {
@@ -56,4 +57,5 @@ public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTrans
     public int getItemCount() {
         return transfers.size();
     }
+
 }
