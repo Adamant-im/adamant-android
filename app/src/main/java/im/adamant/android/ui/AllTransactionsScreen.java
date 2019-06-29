@@ -3,6 +3,7 @@ package im.adamant.android.ui;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -49,15 +50,18 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
     @InjectPresenter
     AllTransactionsPresenter presenter;
 
-    @ProvidePresenter
-    public AllTransactionsPresenter getPresenter(){
-        return presenterProvider.get();
-    }
+    @BindView(R.id.activity_all_transaction_rv_transactions)
+    RecyclerView transactionsView;
 
     @Inject
     CurrencyTransfersAdapter currencyTransfersAdapter;
+    @BindView(R.id.progress)
+    View progressBar;
 
-    @BindView(R.id.activity_all_transaction_rv_transactions) RecyclerView transactionsView;
+    @ProvidePresenter
+    public AllTransactionsPresenter getPresenter() {
+        return presenterProvider.get();
+    }
 
     @Override
     public int getLayoutId() {
@@ -100,8 +104,8 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
 
 
         Intent intent = getIntent();
-        if (intent != null){
-            if (intent.hasExtra(ARG_CURRENCY_ABBR)){
+        if (intent != null) {
+            if (intent.hasExtra(ARG_CURRENCY_ABBR)) {
                 String abbr = getIntent().getStringExtra(ARG_CURRENCY_ABBR);
                 String pattern = getString(R.string.activity_all_transactions_title);
                 String title = String.format(Locale.ENGLISH, pattern, abbr);
@@ -164,6 +168,10 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
 
     @Override
     public void setLoading(boolean loading) {
-
+        if (loading) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 }
