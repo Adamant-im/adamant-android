@@ -9,4 +9,6 @@ import im.adamant.android.ui.entities.CurrencyTransferEntity;
 public interface AllTransactionsView extends MvpView {
     void firstTransfersWasLoaded(List<CurrencyTransferEntity> transfers);
     void newTransferWasLoaded(CurrencyTransferEntity transfer);
+
+    void setLoading(boolean loading);
 }

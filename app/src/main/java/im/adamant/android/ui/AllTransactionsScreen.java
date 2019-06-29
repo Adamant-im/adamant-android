@@ -23,6 +23,7 @@ import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
+import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.mvp_view.AllTransactionsView;
 import im.adamant.android.ui.navigators.DefaultNavigator;
@@ -68,6 +69,8 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
         return true;
     }
 
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
@@ -76,6 +79,15 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         transactionsView.setLayoutManager(layoutManager);
         transactionsView.setAdapter(currencyTransfersAdapter);
+
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.onLoadNextTransfers();
+            }
+        };
+        transactionsView.addOnScrollListener(endlessRecyclerViewScrollListener);
+
 
         Drawable divider = ContextCompat.getDrawable(transactionsView.getContext(), R.drawable.line_divider);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(transactionsView.getContext(), layoutManager.getOrientation());
@@ -142,10 +154,16 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
     @Override
     public void firstTransfersWasLoaded(List<CurrencyTransferEntity> transfers) {
         currencyTransfersAdapter.refreshItems(transfers);
+        endlessRecyclerViewScrollListener.resetState();
     }
 
     @Override
     public void newTransferWasLoaded(CurrencyTransferEntity transfer) {
         currencyTransfersAdapter.addItemToBegin(transfer);
+    }
+
+    @Override
+    public void setLoading(boolean loading) {
+
     }
 }
