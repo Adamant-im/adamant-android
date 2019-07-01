@@ -13,13 +13,15 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
+import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.ui.entities.ADMTransferDetails;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.ui.entities.TransferDetails;
 import io.reactivex.Flowable;
-import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 
 public class AdamantWalletFacade implements WalletFacade {
@@ -174,6 +176,34 @@ public class AdamantWalletFacade implements WalletFacade {
     @Override
     public boolean isSupportComment() {
         return false;
+    }
+
+    @Override
+    public Flowable<TransferDetails> getTransferDetails(String id) {
+        return  mapTransactionDetailsResponseToTransfer(api.getTransactionDetails(id))
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
+    private TransferDetails transferDetailsFromTransaction(Transaction t){
+        return new ADMTransferDetails()
+                .setAmount(BalanceConvertHelper.convert(t.getAmount()))
+                .setConfirmations(t.getConfirmations())
+                .setId(t.getId())
+                .setUnixTransferDate(t.getUnixTimestamp())
+                .setFromId(t.getSenderId())
+                .setToId(t.getRecipientId())
+                .setFee(BalanceConvertHelper.convert(t.getFee()));
+    }
+
+    private Flowable<TransferDetails> mapTransactionDetailsResponseToTransfer(Flowable<TransactionDetailsResponse> response){
+        return response.flatMap(transferDetails->{
+                Transaction t = transferDetails.getTransaction();
+                if (transferDetails.isSuccess()){
+                    return Flowable.just(transferDetailsFromTransaction(t));
+                } else {
+                    return Flowable.error(new Exception(transferDetails.getError()));
+                }
+        });
     }
 
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {

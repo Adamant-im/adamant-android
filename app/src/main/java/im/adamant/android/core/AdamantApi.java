@@ -1,9 +1,6 @@
 package im.adamant.android.core;
 
-import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.TransactionState;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
-import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
 import im.adamant.android.core.requests.NewAccount;
@@ -14,15 +11,14 @@ import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.ParametrizedTransactionList;
 import im.adamant.android.core.responses.PublicKeyResponse;
+import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
-
 import io.reactivex.Flowable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
-import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -120,4 +116,6 @@ public interface AdamantApi {
     @POST("/api/transactions/process")
     Flowable<TransactionWasProcessed> sendAdmTransferTransaction(@Body ProcessTransaction transaction);
 
+    @GET("/api/transactions/get")
+    Flowable<TransactionDetailsResponse> getTransactionDetails(@Query("id") String transactionId);
 }
