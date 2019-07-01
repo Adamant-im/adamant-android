@@ -30,6 +30,8 @@
     <dimen name="activity_login_slider_height">450dp</dimen>
     <dimen name="activity_show_qr_code_size_of_qr_code">150dp</dimen>
 
+    <dimen name="activity_transaction_details_item_height">68dp</dimen>
+
     <dimen name="list_item_welcome_card_image_size">200dp</dimen>
     <dimen name="list_item_welcome_card_max_text_width">350dp</dimen>
 
