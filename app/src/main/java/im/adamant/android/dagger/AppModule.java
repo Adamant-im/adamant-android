@@ -1,5 +1,8 @@
 package im.adamant.android.dagger;
 
+import dagger.Module;
+import dagger.android.ContributesAndroidInjector;
+import dagger.android.support.AndroidSupportInjectionModule;
 import im.adamant.android.dagger.activities.ActivityScope;
 import im.adamant.android.dagger.activities.AllTransactionsScreenModule;
 import im.adamant.android.dagger.activities.LoginScreenModule;
@@ -13,6 +16,7 @@ import im.adamant.android.dagger.activities.ScanQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SendCurrencyTransferScreenModule;
 import im.adamant.android.dagger.activities.ShowQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SplashScreenModule;
+import im.adamant.android.dagger.activities.TransferDetailsScreenModule;
 import im.adamant.android.dagger.receivers.BootCompletedBroadcastReceiverModule;
 import im.adamant.android.dagger.receivers.ReceiverScope;
 import im.adamant.android.dagger.services.AdamantBalanceUpdateServiceModule;
@@ -21,7 +25,6 @@ import im.adamant.android.dagger.services.AdamantLocalMessagingServiceModule;
 import im.adamant.android.dagger.services.SaveContactsServiceModule;
 import im.adamant.android.dagger.services.ServerNodePingServiceModule;
 import im.adamant.android.dagger.services.ServiceScope;
-
 import im.adamant.android.receivers.BootCompletedBroadcast;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.AdamantFirebaseMessagingService;
@@ -40,10 +43,7 @@ import im.adamant.android.ui.ScanQrCodeScreen;
 import im.adamant.android.ui.SendFundsScreen;
 import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.SplashScreen;
-
-import dagger.Module;
-import dagger.android.ContributesAndroidInjector;
-import dagger.android.support.AndroidSupportInjectionModule;
+import im.adamant.android.ui.TransferDetailsScreen;
 
 @Module(includes = {AndroidSupportInjectionModule.class})
 public abstract class AppModule {
@@ -98,6 +98,9 @@ public abstract class AppModule {
     @ContributesAndroidInjector(modules = {AllTransactionsScreenModule.class})
     public abstract AllTransactionsScreen createAllTransactionsScreenInjector();
 
+    @ActivityScope
+    @ContributesAndroidInjector(modules = {TransferDetailsScreenModule.class})
+    public abstract TransferDetailsScreen createTransferDetailsScreenInjector();
 
     //--Services
 
