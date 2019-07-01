@@ -43,13 +43,13 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "boolean", "TEST_NET", "false"
+            buildConfigField "boolean", "TEST_NET", getPropTestNet('test_net')
             buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
 
             minifyEnabled false
         }
         release {
-            buildConfigField "boolean", "TEST_NET", "false" //Do not change
+            buildConfigField "boolean", "TEST_NET", getPropTestNet('test_net')
             buildConfigField "String", "DEFAULT_NOTIFICATION_SERVICE_ADDRESS", "\"U15243615587463307445\""
 
             minifyEnabled true
@@ -83,6 +83,20 @@ android {
                 outputFileName = "adamant-" + variant.buildType.name + ".apk"
             }
         }
+    }
+}
+
+def getPropTestNet(String propName) {
+    def propsFile = rootProject.file('local.properties')
+    if (propsFile.exists()) {
+        def props = new Properties()
+        props.load(new FileInputStream(propsFile))
+        if (props[propName] == null)
+            throw new GradleException('Property "test_net" must be defined in your local.properties')
+        else
+            return props[propName]
+    } else {
+        return "false"
     }
 }
 
