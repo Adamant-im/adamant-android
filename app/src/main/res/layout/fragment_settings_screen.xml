@@ -114,6 +114,7 @@
                             android:textSize="16sp"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
+                            android:clickable="false"
                             android:textAlignment="textEnd" />
 
                     </TableRow>
@@ -167,6 +168,7 @@
                                 android:layout_weight="1"
                                 android:enabled="false"
                                 android:padding="0dp"
+                                android:clickable="false"
                                 android:text="@string/fcm_notification_service_short"
                                 android:textSize="16sp"
                                 android:textAlignment="textEnd"
