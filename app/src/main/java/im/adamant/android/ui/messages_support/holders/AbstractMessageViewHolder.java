@@ -1,11 +1,13 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -15,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
+
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
@@ -39,7 +42,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected TextView errorView;
     protected View messageBlockView;
     protected FrameLayout contentBlock;
-
+    protected Context context;
     protected ConstraintLayout constraintLayout;
     protected ConstraintSet constraintSet = new ConstraintSet();
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -56,13 +59,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         super(context, itemView);
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
-
+        this.context = context;
         constraintLayout = itemView.findViewById(R.id.message_item);
         TransitionManager.beginDelayedTransition(constraintLayout);
         constraintSet.clone(constraintLayout);
 
-        parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
-        avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
+        parentPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_padding);
+        avatarMargin = (int) context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
         sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_same_sender_padding);
         notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_not_same_sender_padding);
@@ -80,7 +83,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() == SupportedMessageListContentType.SEPARATOR);
 
-        if (isCorruptedMessage){
+        if (isCorruptedMessage) {
             emptyView();
             return;
         }
@@ -89,7 +92,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
-        if (abstractMessage.isiSay()){
+        if (abstractMessage.isiSay()) {
             iToldLayoutModification(isNextMessageWithSameSender);
         } else {
             companionToldModification(isNextMessageWithSameSender);
@@ -130,11 +133,21 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         processedView.setImageResource(R.drawable.ic_sending);
     }
 
-    protected void displayProcessedStatus(AbstractMessage message){
-        if (message.getStatus() == null) { return; }
+    protected void displayProcessedStatus(AbstractMessage message) {
+        String shortMessage = message.getShortedMessage(context, 20);
+        int index = shortMessage.indexOf(":");
+        if (message.getStatus() == null) {
+            return;
+        }
         switch (message.getStatus()) {
             case DELIVERED: {
-                processedView.setImageResource(R.drawable.ic_delivered);
+                if (index != -1) {
+                    processedView.setVisibility(View.INVISIBLE);
+                    processedView.setImageResource(R.drawable.ic_delivered);
+                } else {
+                    processedView.setVisibility(View.VISIBLE);
+                    processedView.setImageResource(R.drawable.ic_delivered);
+                }
             }
             break;
             case SENDING_AND_VALIDATION: {
@@ -158,7 +171,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
     @Override
     protected void finalize() throws Throwable {
-        if (compositeDisposable != null){
+        if (compositeDisposable != null) {
             compositeDisposable.dispose();
             compositeDisposable.clear();
         }
