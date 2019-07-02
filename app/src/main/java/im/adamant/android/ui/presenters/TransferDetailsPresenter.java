@@ -24,6 +24,8 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         this.interactor = interactor;
     }
 
+    private TransferDetailsView.UITransferDetails uiTransferDetails;
+
     //Called only once, right after onFirstViewAttach
     //Used instead of onFirstViewAttach
     public void initParams(String transactionId, String currencyAbbr) {
@@ -33,6 +35,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         subscriptions.add(interactor.getTransferDetailsInteractor(transactionId, currencyAbbr)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(uiDetails -> {
+                    uiTransferDetails = uiDetails;
                     getViewState().setLoading(false);
                     getViewState().showTransferDetails(uiDetails);
                 })
@@ -46,7 +49,9 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
     }
 
     public void showExplorerClicked() {
-
+        if (uiTransferDetails != null) {
+            getViewState().openBrowser(uiTransferDetails.getExplorerLink());
+        }
     }
 
     public void chatClicked() {

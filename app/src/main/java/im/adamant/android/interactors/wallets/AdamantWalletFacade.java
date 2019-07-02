@@ -184,6 +184,11 @@ public class AdamantWalletFacade implements WalletFacade {
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
+    @Override
+    public String getExplorerUrl(String transactionId) {
+        return "https://explorer.adamant.im/tx/" + transactionId;
+    }
+
     private TransferDetails transferDetailsFromTransaction(Transaction t){
         return new ADMTransferDetails()
                 .setAmount(BalanceConvertHelper.convert(t.getAmount()))

@@ -32,7 +32,8 @@ public class MainPresenter extends ProtectedBasePresenter<MainView> {
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
         Bundle bundle = new Bundle();
-        bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY,"4529855394592563626");
+        //bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY,"4529855394592563626");
+        bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY, "7998779498446428408");
         bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, SupportedWalletFacadeType.ADM.toString());
         router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
         PushNotificationServiceFacade currentFacade = pushNotificationServiceInteractor.getCurrentFacade();

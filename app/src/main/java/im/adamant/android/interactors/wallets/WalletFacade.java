@@ -30,4 +30,5 @@ public interface WalletFacade {
     int getIconForEditText();
     boolean isSupportComment();
     Flowable<TransferDetails> getTransferDetails(String id);
+    String getExplorerUrl(String transactionId);
 }

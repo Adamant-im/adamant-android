@@ -56,10 +56,11 @@ public class TransferDetailsInteractor {
     }
 
     private String accountId;
+    private WalletFacade walletFacade;
 
     public Flowable<UITransferDetails> getTransferDetailsInteractor(String id, String abbr) {
         SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbr);
-        WalletFacade walletFacade = wallets.get(supportedCurrencyType);
+         walletFacade = wallets.get(supportedCurrencyType);
         return walletFacade.getTransferDetails(id)
                 .map(this::getUiTransferDetails);
     }
@@ -77,6 +78,7 @@ public class TransferDetailsInteractor {
                 .setToId(details.getToId())
                 .setToAddress(getAddressName(details.getToId()))
                 .setDate(dateFormat.format(new Date(details.getUnixTransferDate())))
+                .setExplorerLink(walletFacade.getExplorerUrl(details.getId()))
                 .setStatus(details.getStatus());
 
         if (accountId.equals(details.getFromId())) {

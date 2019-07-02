@@ -106,4 +106,9 @@ public class BinanceWalletFacade implements WalletFacade {
     public Flowable<TransferDetails> getTransferDetails(String id) {
         return Flowable.empty();
     }
+
+    @Override
+    public String getExplorerUrl(String transactionId) {
+        return null;
+    }
 }

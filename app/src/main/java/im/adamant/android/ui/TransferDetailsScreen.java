@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -150,5 +151,12 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
             explorerGroup.setVisibility(View.VISIBLE);
             chatGroup.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void openBrowser(String url) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW,
+                Uri.parse(url));
+        startActivity(browserIntent);
     }
 }
