@@ -1,15 +1,16 @@
 package im.adamant.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.multidex.MultiDexApplication;
+
 import com.franmontiel.localechanger.LocaleChanger;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;
@@ -35,9 +36,13 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
     @Inject
     List<Locale> supportedLocales;
 
+    @SuppressLint("StaticFieldLeak")
+    public static Context appCtx;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        appCtx = this;
 
         RxJavaPlugins.setErrorHandler(e -> LoggerHelper.e("UNCAUGHT RX", e.getMessage(), e));
 

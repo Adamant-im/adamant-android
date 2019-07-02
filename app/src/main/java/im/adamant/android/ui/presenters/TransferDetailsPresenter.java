@@ -1,56 +1,56 @@
 package im.adamant.android.ui.presenters;
 
-import android.os.Handler;
-
 import com.arellomobile.mvp.InjectViewState;
 
+import java.util.concurrent.TimeUnit;
+
+import im.adamant.android.core.AdamantApi;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.ui.mvp_view.TransferDetailsView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDetailsView> {
-    private WalletInteractor walletInteractor;
+    private TransferDetailsInteractor interactor;
 
-    private String transactionId,currencyAbbr;
+    private String transactionId, currencyAbbr;
 
     public TransferDetailsPresenter(Router router, AccountInteractor accountInteractor,
-                                    WalletInteractor walletInteractor) {
+                                    TransferDetailsInteractor interactor) {
         super(router, accountInteractor);
-        this.walletInteractor = walletInteractor;
+        this.interactor = interactor;
     }
 
     //Called only once, right after onFirstViewAttach
-    public void initParams(String transactionId,String currencyAbbr){
+    //Used instead of onFirstViewAttach
+    public void initParams(String transactionId, String currencyAbbr) {
         this.transactionId = transactionId;
         this.currencyAbbr = currencyAbbr;
-    }
-
-    public void showExplorerClicked(){
-
-    }
-
-    public void chatClicked(){
-
-    }
-
-    @Override
-    protected void onFirstViewAttach() {
-        super.onFirstViewAttach();
         getViewState().setLoading(true);
-        new Handler().postDelayed(()->{
-            getViewState().setLoading(false);
-            getViewState().showTransferDetails(new TransferDetailsView.UITransferDetails()
-            .setAmount("0.49 ADM")
-            .setDate("May 15, 2018, 20:23")
-            .setConfirmations(23)
-            .setId(transactionId)
-            .setStatus("Успешно")
-            .setFromId("12344566162")
-            .setFromAddress("Me")
-            .setToId("44566162980")
-            .setFee("0.5 ADM"));
-        },3000);
+        subscriptions.add(interactor.getTransferDetailsInteractor(transactionId, currencyAbbr)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(uiDetails -> {
+                    getViewState().setLoading(false);
+                    getViewState().showTransferDetails(uiDetails);
+                })
+                .doOnError(throwable -> {
+                    LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                    router.showSystemMessage(throwable.getMessage());
+                })
+                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                .subscribe());
     }
+
+    public void showExplorerClicked() {
+
+    }
+
+    public void chatClicked() {
+
+    }
+
 }

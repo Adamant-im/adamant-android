@@ -4,6 +4,8 @@ import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
+import im.adamant.android.ui.entities.TransferDetails;
+
 public interface TransferDetailsView extends MvpView {
     @StateStrategyType(AddToEndSingleStrategy.class)
     void showTransferDetails(UITransferDetails details);
@@ -12,6 +14,10 @@ public interface TransferDetailsView extends MvpView {
     void setLoading(boolean loading);
 
     public static class UITransferDetails{
+        public static enum Direction{
+            SENT, RECEIVED;
+        }
+
         protected String id;
         protected String amount;
         protected String fee;
@@ -20,9 +26,19 @@ public interface TransferDetailsView extends MvpView {
         protected long confirmations;
         protected String fromAddress;
         protected String toAddress;
-        protected String status;
+        protected TransferDetails.STATUS status;
         protected String explorerLink;
         protected boolean haveChat;
+        protected Direction direction;
+
+        public Direction getDirection() {
+            return direction;
+        }
+
+        public UITransferDetails setDirection(Direction direction) {
+            this.direction = direction;
+            return this;
+        }
 
         public boolean haveChat() {
             return haveChat;
@@ -33,11 +49,11 @@ public interface TransferDetailsView extends MvpView {
             return this;
         }
 
-        public String getStatus() {
+        public TransferDetails.STATUS getStatus() {
             return status;
         }
 
-        public UITransferDetails setStatus(String status) {
+        public UITransferDetails setStatus(TransferDetails.STATUS status) {
             this.status = status;
             return this;
         }

@@ -116,11 +116,10 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         return sb.toString();
     }
 
-
     @Override
     public void showTransferDetails(UITransferDetails details) {
         amount.setText(details.getAmount());
-        status.setText(details.getStatus());
+        status.setText(details.getStatus().getHumanString(this));
         date.setText(details.getDate());
         confirmations.setText(String.format(Locale.getDefault(), "%d", details.getConfirmations()));
         fee.setText(details.getFee());

@@ -1,6 +1,10 @@
 package im.adamant.android.ui.entities;
 
+import android.content.Context;
+
 import java.math.BigDecimal;
+
+import im.adamant.android.R;
 
 public abstract class TransferDetails {
     protected String id;
@@ -11,7 +15,17 @@ public abstract class TransferDetails {
     protected long confirmations;
 
     public static enum STATUS {
-        PENDING, SUCCESS
+        PENDING, SUCCESS;
+
+        public String getHumanString(Context ctx){
+            if(this == TransferDetails.STATUS.SUCCESS){
+                return ctx.getString(R.string.transaction_status_success);
+            }else if(this== TransferDetails.STATUS.PENDING){
+                return ctx.getString(R.string.transaction_status_pending);
+            }else {
+                throw new IllegalArgumentException("Can't find resource for this status");
+            }
+        }
     }
 
     public abstract STATUS getStatus();

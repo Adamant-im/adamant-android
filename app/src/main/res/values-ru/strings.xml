@@ -78,6 +78,10 @@
     <string name="activity_transfer_details_continue_chat">Продолжить переписку</string>
     <string name="activity_transfer_details_fee">Комиссия</string>
 
+    <string name="transaction_status_pending">Ожидание</string>
+    <string name="transaction_status_success">Подтверждена</string>
+    <string name="transaction_address_me">Я</string>
+
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>

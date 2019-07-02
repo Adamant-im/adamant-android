@@ -27,6 +27,10 @@
     <string name="activity_nodes_list_inactive_node_status">Node %s</string>
     <string name="activity_nodes_reset_to_defaults">Reset to defaults</string>
 
+    <string name="transaction_status_pending">Pending</string>
+    <string name="transaction_status_success">Success</string>
+    <string name="transaction_address_me">Me</string>
+
     <string name="activity_all_transactions_title">%s transactions</string>
 
     <string name="activity_pincode_enter_pincode">Enter pin-code</string>
