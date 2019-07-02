@@ -40,6 +40,9 @@ public class TransferDetailsInteractor {
 
     @Nullable
     private String getAddressName(String id) {
+        if (accountId.equals(id)) {
+            return AdamantApplication.appCtx.getString(R.string.transaction_address_me);
+        }
         Chat chat = chatsStorage.findChatByCompanionId(id);
         if (chat == null) {
             return null;
@@ -48,16 +51,13 @@ public class TransferDetailsInteractor {
         if (id.equals(title)) {
             return null;
         } else {
-            if (accountId.equals(title)) {
-                title = AdamantApplication.appCtx.getString(R.string.transaction_address_me);
-            }
             return title;
         }
     }
 
     private String accountId;
 
-    public Flowable<UITransferDetails> getTransferDetailsInteractor(String id,String abbr) {
+    public Flowable<UITransferDetails> getTransferDetailsInteractor(String id, String abbr) {
         SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbr);
         WalletFacade walletFacade = wallets.get(supportedCurrencyType);
         return walletFacade.getTransferDetails(id)
