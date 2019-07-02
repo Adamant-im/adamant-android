@@ -134,14 +134,12 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     protected void displayProcessedStatus(AbstractMessage message) {
-        String shortMessage = message.getShortedMessage(context, 20);
-        int index = shortMessage.indexOf(":");
         if (message.getStatus() == null) {
             return;
         }
         switch (message.getStatus()) {
             case DELIVERED: {
-                if (index != -1) {
+                if (!message.isiSay()) {
                     processedView.setVisibility(View.INVISIBLE);
                     processedView.setImageResource(R.drawable.ic_delivered);
                 } else {
