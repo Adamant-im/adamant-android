@@ -6,18 +6,23 @@ import android.os.Bundle;
 import com.arellomobile.mvp.InjectViewState;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -29,6 +34,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
     private Disposable logoutDisposable;
     private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
     private AdamantApiWrapper api;
+    private Scheduler observeScheduler;
 
     public SettingsPresenter(
             Router router,
@@ -36,10 +42,12 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
             LogoutInteractor logoutInteractor,
             AdamantApiWrapper api,
             SecurityInteractor securityInteractor,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            Scheduler observeScheduler
     ) {
         super(router, accountInteractor);
         this.api = api;
+        this.observeScheduler =observeScheduler;
         this.securityInteractor = securityInteractor;
         this.logoutInteractor = logoutInteractor;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
@@ -81,7 +89,11 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
     }
 
     public void onClickShowSelectPushService() {
-        router.navigateTo(Screens.PUSH_SUBSCRIPTION_SCREEN);
+        getViewState().showSelectServiceDialog(
+                new ArrayList<>(switchPushNotificationServiceInteractor.getFacades().values()),
+                switchPushNotificationServiceInteractor.getCurrentFacade());
+
+        //router.navigateTo(Screens.PUSH_SUBSCRIPTION_SCREEN);
     }
 
     public void onClickShowNodesList() {
@@ -111,6 +123,37 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
 
         logoutInteractor.logout();
     }
+
+    public void onClickSetNewPushService(PushNotificationServiceFacade facade) {
+        if (facade != null) {
+            getViewState().setEnablePushServiceTypeOption(false);
+            getViewState().startProgress();
+            Disposable subscribe = switchPushNotificationServiceInteractor
+                    .changeNotificationFacade(facade.getFacadeType())
+                    .doOnError((error) -> LoggerHelper.e("SWITCH NOTIFICATION SERVICE", error.getMessage(), error))
+                    .observeOn(observeScheduler)
+                    .subscribe(
+                            () -> {
+                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().stopProgress();
+                                getViewState().showMessage(R.string.fragment_settings_success_saved);
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                            },
+                            (error) -> {
+                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().stopProgress();
+                                getViewState().showMessage(error.getMessage());
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                            }
+                    );
+            subscriptions.add(subscribe);
+        }
+    }
+
 
     @Override
     public void onDestroy() {

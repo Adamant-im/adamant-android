@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/tile_bg"
     android:orientation="vertical"
-    android:paddingBottom="8dp"
-    tools:context=".ui.PushSubscriptionScreen">
+    android:paddingBottom="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

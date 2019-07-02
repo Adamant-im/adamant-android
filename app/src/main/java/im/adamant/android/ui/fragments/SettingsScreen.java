@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,13 +38,11 @@ import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Inject
@@ -109,7 +108,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @OnClick(R.id.fragment_settings_tr_change_lang)
     public void onSelectLanguage() {
-        androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
+        AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
     }
 
@@ -146,11 +145,6 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void setEnablePushOption(boolean value) {
         pushNotificationServiceView.setEnabled(value);
-        if (value) {
-            pushNotificationServiceLayoutView.setVisibility(View.VISIBLE);
-        } else {
-            pushNotificationServiceLayoutView.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -166,6 +160,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void stopProgress() {
         progressBarView.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void setEnablePushServiceTypeOption(boolean value) {
+
     }
 
     @Override
@@ -186,11 +185,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Override
     public void showTEENotSupportedDialog() {
-        androidx.appcompat.app.AlertDialog.Builder builder = null;
+        AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
         if (activity != null) {
-            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+            builder = new AlertDialog.Builder(activity);
             builder.setTitle(R.string.warning);
             builder.setMessage(R.string.tee_not_supported);
             builder.setNegativeButton(R.string.no, (d, w) -> {
@@ -213,15 +212,49 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         Toast.makeText(getActivity(), messageResource, Toast.LENGTH_LONG).show();
     }
 
-    //TODO: Refactor: method to long and dirty
-    private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
-        androidx.appcompat.app.AlertDialog.Builder builder = null;
+    @Override
+    public void showSelectServiceDialog(List<PushNotificationServiceFacade> facades, PushNotificationServiceFacade current) {
+        AlertDialog.Builder builder = null;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.activity_push_subscription_select_type_title));
+
+        CharSequence[] titles = new CharSequence[facades.size()];
+
+        int defaultSelected = 0;
+        SupportedPushNotificationFacadeType currentFacadeType = current.getFacadeType();
+        for (int i = 0; i < titles.length; i++){
+            titles[i] = getString(facades.get(i).getTitleResource());
+
+            if (currentFacadeType.equals(facades.get(i).getFacadeType())){
+                defaultSelected = i;
+            }
+        }
+
+        AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
+
+        builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
+            selectedLangIndex.set(i);
+        });
+
+        int finalDefaultSelected = defaultSelected;
+        builder.setPositiveButton(R.string.yes, (d, i) -> {
+            int currentSelected = selectedLangIndex.get();
+            if (finalDefaultSelected != currentSelected){
+                presenter.onClickSetNewPushService(facades.get(currentSelected));
+            }
+        });
+        builder.setNegativeButton(R.string.no, null);
+
+        builder.show();
+    }
+
+    private AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
+        AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
         if (activity != null){
-            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-
-//            builder.setTitle(getString(R.string.fragment_settings_choose_language));
+            builder = new AlertDialog.Builder(activity);
 
             CharSequence[] titles = new CharSequence[supportedLocales.size()];
 
@@ -244,17 +277,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 }
             });
 
-//            int finalDefaultSelected = defaultSelected;
-//            builder.setPositiveButton(R.string.yes, (d, i) -> {
-//                int currentSelected = selectedLangIndex.get();
-//                if (finalDefaultSelected != currentSelected){
-//                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
-//                    activity.recreate();
-//                }
-//            });
-//            builder.setNegativeButton(R.string.no, null);
         }
-
 
         return builder;
     }
