@@ -197,6 +197,8 @@ public class AdamantWalletFacade implements WalletFacade {
                 .setUnixTransferDate(t.getUnixTimestamp())
                 .setFromId(t.getSenderId())
                 .setToId(t.getRecipientId())
+                .setReceiverPublicKey(t.getRecipientPublicKey())
+                .setSenderPublicKey(t.getSenderPublicKey())
                 .setFee(BalanceConvertHelper.convert(t.getFee()));
     }
 

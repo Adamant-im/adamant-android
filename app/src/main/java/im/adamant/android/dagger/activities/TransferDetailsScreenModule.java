@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.TransferDetailsInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.presenters.TransferDetailsPresenter;
 import ru.terrakok.cicerone.Router;
 
@@ -12,7 +13,7 @@ public class TransferDetailsScreenModule {
     @ActivityScope
     @Provides
     public TransferDetailsPresenter provideTransferDetailsPresenter(Router router, AccountInteractor accountInteractor,
-                                                                    TransferDetailsInteractor interactor){
-        return new TransferDetailsPresenter(router, accountInteractor, interactor);
+                                                                    TransferDetailsInteractor interactor, ChatsStorage chatsStorage) {
+        return new TransferDetailsPresenter(router, accountInteractor, interactor, chatsStorage);
     }
 }

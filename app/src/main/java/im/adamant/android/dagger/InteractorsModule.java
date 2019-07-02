@@ -167,7 +167,7 @@ public abstract class InteractorsModule {
     @Provides
     public static TransferDetailsInteractor transferDetailsInteractor(AdamantApiWrapper api,
                                                                       Map<SupportedWalletFacadeType, WalletFacade> wallets,
-                                                                      ChatsStorage chatsStorage) {
-        return new TransferDetailsInteractor(api, wallets, chatsStorage);
+                                                                      ChatsStorage chatsStorage,PublicKeyStorage publicKeyStorage) {
+        return new TransferDetailsInteractor(api, wallets, chatsStorage,publicKeyStorage);
     }
 }

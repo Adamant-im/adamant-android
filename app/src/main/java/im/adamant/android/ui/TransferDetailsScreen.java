@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -19,8 +20,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.ui.mvp_view.TransferDetailsView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.TransferDetailsPresenter;
+import ru.terrakok.cicerone.Navigator;
+import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
+import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
+import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class TransferDetailsScreen extends BaseActivity implements TransferDetailsView {
     public static final String TRANSFER_ID_KEY = "transer_id";
@@ -86,6 +96,60 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         explorerGroup.setOnClickListener(v -> presenter.showExplorerClicked());
         chatGroup.setOnClickListener(v -> presenter.chatClicked());
     }
+
+    @Inject
+    NavigatorHolder navigatorHolder;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        navigatorHolder.setNavigator(navigator);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        navigatorHolder.removeNavigator();
+    }
+
+    private Navigator navigator = new DefaultNavigator(this) {
+        @Override
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.MESSAGES_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MessagesScreen.ARG_CHAT, (String)forwardCommand.getTransitionData());
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+            }
+        }
+
+        @Override
+        protected void back(Back backCommand) {
+                finish();
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+
+        }
+
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace command) {
+
+        }
+    };
 
     @Override
     public int getLayoutId() {

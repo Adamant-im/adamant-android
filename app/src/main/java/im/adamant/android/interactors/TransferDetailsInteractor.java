@@ -14,6 +14,7 @@ import java.util.Map;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
@@ -27,12 +28,15 @@ public class TransferDetailsInteractor {
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
     private ChatsStorage chatsStorage;
     private AdamantApiWrapper api;
+    private PublicKeyStorage publicKeyStorage;
 
 
-    public TransferDetailsInteractor(AdamantApiWrapper api, Map<SupportedWalletFacadeType, WalletFacade> wallets, ChatsStorage chatsStorage) {
+    public TransferDetailsInteractor(AdamantApiWrapper api, Map<SupportedWalletFacadeType, WalletFacade> wallets, ChatsStorage chatsStorage,
+                                     PublicKeyStorage keyStorage) {
         this.wallets = wallets;
         this.chatsStorage = chatsStorage;
         this.api = api;
+        this.publicKeyStorage = keyStorage;
     }
 
     private final DecimalFormat decimalFormatter = new DecimalFormat("#.###");
@@ -60,7 +64,7 @@ public class TransferDetailsInteractor {
 
     public Flowable<UITransferDetails> getTransferDetailsInteractor(String id, String abbr) {
         SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbr);
-         walletFacade = wallets.get(supportedCurrencyType);
+        walletFacade = wallets.get(supportedCurrencyType);
         return walletFacade.getTransferDetails(id)
                 .map(this::getUiTransferDetails);
     }
@@ -93,9 +97,23 @@ public class TransferDetailsInteractor {
         if (result.getDirection() == UITransferDetails.Direction.SENT) {
             result.setHaveChat(chatsStorage.
                     findChatByCompanionId(details.getToId()) != null);
+            if (!result.haveChat()) {
+                Chat chat = new Chat();
+                chat.setCompanionId(details.getToId());
+                chat.setCompanionPublicKey(details.getReceiverPublicKey());
+                publicKeyStorage.setPublicKey(details.getToId(), details.getReceiverPublicKey());
+                chatsStorage.addNewChat(chat);
+            }
         } else if (result.getDirection() == UITransferDetails.Direction.RECEIVED) {
             result.setHaveChat(chatsStorage.
                     findChatByCompanionId(details.getFromId()) != null);
+            if (!result.haveChat()) {
+                Chat chat = new Chat();
+                chat.setCompanionId(details.getFromId());
+                chat.setCompanionPublicKey(details.getSenderPublicKey());
+                publicKeyStorage.setPublicKey(details.getFromId(), details.getSenderPublicKey());
+                chatsStorage.addNewChat(chat);
+            }
         } else {
             throw new IllegalArgumentException("Unknown direction");
         }

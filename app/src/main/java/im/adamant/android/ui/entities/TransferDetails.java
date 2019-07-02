@@ -13,6 +13,7 @@ public abstract class TransferDetails {
     protected long unixTransferDate;
     protected String fromId, toId;
     protected long confirmations;
+    protected String senderPublicKey, receiverPublicKey;
 
     public static enum STATUS {
         PENDING, SUCCESS;
@@ -90,6 +91,24 @@ public abstract class TransferDetails {
 
     public TransferDetails setConfirmations(long confirmations) {
         this.confirmations = confirmations;
+        return this;
+    }
+
+    public String getSenderPublicKey() {
+        return senderPublicKey;
+    }
+
+    public TransferDetails setSenderPublicKey(String senderPublicKey) {
+        this.senderPublicKey = senderPublicKey;
+        return this;
+    }
+
+    public String getReceiverPublicKey() {
+        return receiverPublicKey;
+    }
+
+    public TransferDetails setReceiverPublicKey(String receiverPublicKey) {
+        this.receiverPublicKey = receiverPublicKey;
         return this;
     }
 }
