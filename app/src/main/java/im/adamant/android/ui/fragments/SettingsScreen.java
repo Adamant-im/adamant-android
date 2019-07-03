@@ -2,6 +2,7 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 
@@ -56,18 +57,26 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     SettingsPresenter presenter;
 
     @ProvidePresenter
-    public SettingsPresenter getPresenter(){
+    public SettingsPresenter getPresenter() {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.fragment_settings_tv_version) TextView versionView;
-    @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
-    @BindView(R.id.fragment_settings_tr_store_keypair) TableRow storeKeypairTableRowView;
-    @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
-    @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
-    @BindView(R.id.fragment_settings_tr_change_lang) TableRow changeLanguageTableRowView;
-    @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
-    @BindView(R.id.fragment_settings_tr_subscribe_to_push) TableRow pushNotificationServiceLayoutView;
+    @BindView(R.id.fragment_settings_tv_version)
+    TextView versionView;
+    @BindView(R.id.fragment_settings_sw_store_keypair)
+    Switch storeKeypairView;
+    @BindView(R.id.fragment_settings_tr_store_keypair)
+    TableRow storeKeypairTableRowView;
+    @BindView(R.id.fragment_settings_tv_notification)
+    TextView pushNotificationServiceView;
+    @BindView(R.id.fragment_settings_btn_change_lang)
+    TextView changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_tr_change_lang)
+    TableRow changeLanguageTableRowView;
+    @BindView(R.id.fragment_settings_pb_progress)
+    ProgressBar progressBarView;
+    @BindView(R.id.fragment_settings_tr_subscribe_to_push)
+    TableRow pushNotificationServiceLayoutView;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -170,7 +179,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void showExitDialog() {
         Activity activity = getActivity();
-        if (activity != null){
+        if (activity != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder
                     .setTitle(R.string.dialog_logout_title)
@@ -178,7 +187,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                         presenter.onClickExitButton();
                     })
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {})
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    })
                     .show();
         }
     }
@@ -217,34 +227,30 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         AlertDialog.Builder builder = null;
 
         builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.activity_push_subscription_select_type_title));
 
         CharSequence[] titles = new CharSequence[facades.size()];
 
         int defaultSelected = 0;
         SupportedPushNotificationFacadeType currentFacadeType = current.getFacadeType();
-        for (int i = 0; i < titles.length; i++){
+        for (int i = 0; i < titles.length; i++) {
             titles[i] = getString(facades.get(i).getTitleResource());
 
-            if (currentFacadeType.equals(facades.get(i).getFacadeType())){
+            if (currentFacadeType.equals(facades.get(i).getFacadeType())) {
                 defaultSelected = i;
             }
         }
 
-        AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
+        final AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
+        int finalDefaultSelected = defaultSelected;
 
         builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
             selectedLangIndex.set(i);
-        });
-
-        int finalDefaultSelected = defaultSelected;
-        builder.setPositiveButton(R.string.yes, (d, i) -> {
             int currentSelected = selectedLangIndex.get();
-            if (finalDefaultSelected != currentSelected){
+            if (finalDefaultSelected != currentSelected) {
+                d.dismiss();
                 presenter.onClickSetNewPushService(facades.get(currentSelected));
             }
         });
-        builder.setNegativeButton(R.string.no, null);
 
         builder.show();
     }
@@ -253,24 +259,24 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
-        if (activity != null){
+        if (activity != null) {
             builder = new AlertDialog.Builder(activity);
 
             CharSequence[] titles = new CharSequence[supportedLocales.size()];
 
             Locale locale = LocaleChanger.getLocale();
             int defaultSelected = 0;
-            for (int i = 0; i < titles.length; i++){
+            for (int i = 0; i < titles.length; i++) {
                 titles[i] = supportedLocales.get(i).getDisplayName();
 
-                if (locale.equals(supportedLocales.get(i))){
+                if (locale.equals(supportedLocales.get(i))) {
                     defaultSelected = i;
                 }
             }
 
             int finalDefaultSelected = defaultSelected;
             builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
-                if (finalDefaultSelected != i){
+                if (finalDefaultSelected != i) {
                     d.dismiss();
                     LocaleChanger.setLocale(supportedLocales.get(i));
                     activity.recreate();
