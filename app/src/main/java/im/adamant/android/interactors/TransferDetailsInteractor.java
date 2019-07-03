@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -61,12 +62,19 @@ public class TransferDetailsInteractor {
 
     private String accountId;
     private WalletFacade walletFacade;
+    private String abbr;
 
     public Flowable<UITransferDetails> getTransferDetailsInteractor(String id, String abbr) {
+        this.abbr = abbr;
         SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbr);
         walletFacade = wallets.get(supportedCurrencyType);
         return walletFacade.getTransferDetails(id)
                 .map(this::getUiTransferDetails);
+    }
+
+    private String formatValue(BigDecimal value){
+        return String.format(Locale.getDefault(), "%s %s",
+                decimalFormatter.format(value), abbr);
     }
 
     @NotNull
@@ -74,9 +82,9 @@ public class TransferDetailsInteractor {
         accountId = api.getAccount().getAddress();
 
         UITransferDetails result = new UITransferDetails()
-                .setAmount(decimalFormatter.format(details.getAmount()))
+                .setAmount(formatValue(details.getAmount()))
                 .setConfirmations(details.getConfirmations())
-                .setFee(decimalFormatter.format(details.getFee()))
+                .setFee(formatValue(details.getFee()))
                 .setFromId(details.getFromId())
                 .setFromAddress(getAddressName(details.getFromId()))
                 .setToId(details.getToId())
