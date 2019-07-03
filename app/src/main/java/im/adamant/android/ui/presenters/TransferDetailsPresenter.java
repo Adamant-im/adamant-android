@@ -73,6 +73,8 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
                 chat.setCompanionId(companionId);
                 chat.setTitle(companionId);
                 chatsStorage.addNewChat(chat);
+                uiTransferDetails.setHaveChat(true);
+                getViewState().showTransferDetails(uiTransferDetails);
             }
             router.navigateTo(Screens.MESSAGES_SCREEN, companionId);
         }
