@@ -24,6 +24,7 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
+import im.adamant.android.Screens;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
 import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
@@ -82,6 +83,7 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
+        currencyTransfersAdapter.setOnClickedLister(presenter::onTransactionClicked);
 
         layoutManager = new LinearLayoutManager(this);
         transactionsView.setLayoutManager(layoutManager);
@@ -136,7 +138,16 @@ public class AllTransactionsScreen extends BaseActivity implements AllTransactio
     private Navigator navigator = new DefaultNavigator(this) {
         @Override
         protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.TRANSFER_DETAILS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
+                    intent.putExtras(bundle);
 
+                    startActivity(intent);
+                }
+                break;
+            }
         }
 
         @Override

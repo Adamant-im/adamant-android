@@ -215,6 +215,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
                     startActivity(intent);
                 }
+                break;
                 case Screens.TRANSFER_DETAILS_SCREEN: {
                     Bundle bundle = (Bundle) forwardCommand.getTransitionData();
                     Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);

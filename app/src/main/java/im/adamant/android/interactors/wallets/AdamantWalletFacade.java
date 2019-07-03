@@ -250,6 +250,7 @@ public class AdamantWalletFacade implements WalletFacade {
 
     private CurrencyTransferEntity mapTransactionToTransfer(Transaction transaction, String myAddress) {
         CurrencyTransferEntity entity = new CurrencyTransferEntity();
+        entity.setId(transaction.getId());
         entity.setUnixTransferDate(transaction.getUnixTimestamp());
         entity.setPrecision(getPrecision());
         entity.setAmount(
