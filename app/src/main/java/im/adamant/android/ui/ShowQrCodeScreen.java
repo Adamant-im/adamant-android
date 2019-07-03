@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
@@ -69,6 +70,16 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
 
         Intent intent = getIntent();
         if (intent != null) {
+            if (intent.hasExtra(Constants.KEY)) {
+                final String key = intent.getStringExtra(Constants.KEY);
+                if(key.equals(Constants.ADDRESS)){
+                    setTitle(getString(R.string.activity_show_qrcode_title_address));
+                }
+                else{
+                    setTitle(getString(R.string.activity_show_qrcode_title_passphrase));
+                }
+            }
+
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {
                 final int backgroundColor = ContextCompat.getColor(this, R.color.alternate_background);
                 final int onColor = ContextCompat.getColor(this, R.color.onPrimary);

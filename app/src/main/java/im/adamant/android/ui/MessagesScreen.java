@@ -31,6 +31,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import im.adamant.android.AdamantApplication;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
@@ -306,6 +307,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     public void showQrCodeCompanionId(String companionId) {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
+        bundle.putString(Constants.KEY,Constants.ADDRESS);
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);

@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
@@ -197,7 +198,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     public void onClickSaveQrCode() {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, inputPassphraseView.getText().toString());
-
+        //bundle.putString("key","passphrase");
+        bundle.putString(Constants.KEY,Constants.PASSPHRASE);
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
 

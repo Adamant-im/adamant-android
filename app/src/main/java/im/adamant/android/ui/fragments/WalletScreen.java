@@ -37,6 +37,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
@@ -260,7 +261,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, address);
             bundle.putBoolean(ShowQrCodeScreen.ARG_SHOW_CONTENT, true);
-
+            bundle.putString(Constants.KEY,Constants.ADDRESS);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 
