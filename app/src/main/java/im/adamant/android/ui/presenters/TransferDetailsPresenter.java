@@ -71,6 +71,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
             if (chat == null) {
                 chat = new Chat();
                 chat.setCompanionId(companionId);
+                chat.setTitle(companionId);
                 chatsStorage.addNewChat(chat);
             }
             router.navigateTo(Screens.MESSAGES_SCREEN, companionId);

@@ -97,23 +97,11 @@ public class TransferDetailsInteractor {
         if (result.getDirection() == UITransferDetails.Direction.SENT) {
             result.setHaveChat(chatsStorage.
                     findChatByCompanionId(details.getToId()) != null);
-            if (!result.haveChat()) {
-                Chat chat = new Chat();
-                chat.setCompanionId(details.getToId());
-                chat.setCompanionPublicKey(details.getReceiverPublicKey());
-                publicKeyStorage.setPublicKey(details.getToId(), details.getReceiverPublicKey());
-                chatsStorage.addNewChat(chat);
-            }
+            publicKeyStorage.setPublicKey(details.getToId(), details.getReceiverPublicKey());
         } else if (result.getDirection() == UITransferDetails.Direction.RECEIVED) {
             result.setHaveChat(chatsStorage.
                     findChatByCompanionId(details.getFromId()) != null);
-            if (!result.haveChat()) {
-                Chat chat = new Chat();
-                chat.setCompanionId(details.getFromId());
-                chat.setCompanionPublicKey(details.getSenderPublicKey());
-                publicKeyStorage.setPublicKey(details.getFromId(), details.getSenderPublicKey());
-                chatsStorage.addNewChat(chat);
-            }
+            publicKeyStorage.setPublicKey(details.getFromId(), details.getSenderPublicKey());
         } else {
             throw new IllegalArgumentException("Unknown direction");
         }
