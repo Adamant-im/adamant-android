@@ -13,7 +13,9 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.AllTransactionsScreen;
+import im.adamant.android.ui.TransferDetailsScreen;
 import im.adamant.android.ui.entities.CurrencyCardItem;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -121,6 +123,13 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
         bundle.putString(AllTransactionsScreen.ARG_CURRENCY_ABBR, currencyCardItem.getAbbreviation());
 
         router.navigateTo(Screens.ALL_TRANSACTIONS_SCREEN, bundle);
+    }
+
+    public void onTransactionClicked(CurrencyTransferEntity currencyTransferEntity){
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY, currencyTransferEntity.getId());
+        bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, currencyTransferEntity.getCurrencyAbbreviation());
+        router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
     }
 
 }

@@ -253,6 +253,7 @@ public class AdamantWalletFacade implements WalletFacade {
         entity.setId(transaction.getId());
         entity.setUnixTransferDate(transaction.getUnixTimestamp());
         entity.setPrecision(getPrecision());
+        entity.setCurrencyAbbreviation(SupportedWalletFacadeType.ADM.toString());
         entity.setAmount(
                 BalanceConvertHelper.convert(
                         transaction.getAmount()
