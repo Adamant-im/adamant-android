@@ -84,8 +84,8 @@
         <ImageView
             android:id="@+id/activity_nodes_btn_add_new_node"
             style="@style/AdamantLight.IconActive"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
             android:layout_marginEnd="8dp"
             android:scaleType="centerCrop"
             android:tint="@color/add_icon_button"
