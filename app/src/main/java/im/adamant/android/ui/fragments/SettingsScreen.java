@@ -154,6 +154,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void setEnablePushOption(boolean value) {
         pushNotificationServiceView.setEnabled(value);
+        if (value) {
+            pushNotificationServiceLayoutView.setVisibility(View.VISIBLE);
+        } else {
+            pushNotificationServiceLayoutView.setVisibility(View.GONE);
+        }
     }
 
     @Override
