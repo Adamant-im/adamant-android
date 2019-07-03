@@ -16,7 +16,6 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/activity_messages_cl_new_message_block"
         app:layout_constraintTop_toTopOf="parent" />
 
