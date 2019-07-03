@@ -4,6 +4,7 @@ import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.helpers.LoggerHelper;
@@ -81,30 +82,30 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
     }
 
     public void amountGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getAmount());
     }
 
     public void statusGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getStatus().getHumanString(AdamantApplication.appCtx));
     }
 
     public void dateGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getDate());
     }
 
     public void confirmationsClicked() {
-
+        getViewState().share(Long.toString(uiTransferDetails.getConfirmations()));
     }
 
     public void feeGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getFee());
     }
 
     public void fromGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getFromId());
     }
 
     public void toGroupClicked() {
-
+        getViewState().share(uiTransferDetails.getToId());
     }
 }

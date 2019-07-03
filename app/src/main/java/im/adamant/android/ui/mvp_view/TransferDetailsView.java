@@ -17,6 +17,9 @@ public interface TransferDetailsView extends MvpView {
     @StateStrategyType(OneExecutionStateStrategy.class)
     void openBrowser(String url);
 
+    @StateStrategyType(OneExecutionStateStrategy.class)
+    void share(String text);
+
     public static class UITransferDetails{
         public static enum Direction{
             SENT, RECEIVED;

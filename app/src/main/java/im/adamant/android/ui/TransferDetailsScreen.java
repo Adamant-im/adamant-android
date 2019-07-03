@@ -238,4 +238,13 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
                 Uri.parse(url));
         startActivity(browserIntent);
     }
+
+    @Override
+    public void share(String text) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
+    }
 }
