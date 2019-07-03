@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -67,7 +67,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragment_login_btn_enter" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/fragment_login_btn_by_stored_qr"
         style="@style/AdamantLight.IconActive"
         android:layout_width="48dp"
@@ -76,6 +76,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="@dimen/bottom_fragment_bottom_padding"
         android:adjustViewBounds="true"
+        android:tint="@color/secondary"
         android:cropToPadding="true"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -84,14 +85,15 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:srcCompat="@drawable/ic_from_file" />
+        app:srcCompat="@drawable/add_file" />
 
-    <ImageButton
+    <ImageView
         android:id="@+id/fragment_login_btn_by_camera_qr"
         style="@style/AdamantLight.IconActive"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_marginTop="16dp"
+        android:tint="@color/secondary"
         android:layout_marginBottom="@dimen/bottom_fragment_bottom_padding"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -99,6 +101,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fragment_login_btn_by_stored_qr"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:srcCompat="@drawable/ic_qr_code" />
+        app:srcCompat="@drawable/qr_scan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
