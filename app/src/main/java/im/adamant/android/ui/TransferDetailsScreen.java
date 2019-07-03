@@ -46,6 +46,14 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
     @BindView(R.id.explorerGroup) View explorerGroup;
     @BindView(R.id.chatGroup) View chatGroup;
     @BindView(R.id.chatLabel) TextView chatLabel;
+    @BindView(R.id.amountGroup) View amountGroup;
+    @BindView(R.id.statusGroup) View statusGroup;
+    @BindView(R.id.dateGroup) View dateGroup;
+    @BindView(R.id.confirmationsGroup) View confirmationsGroup;
+    @BindView(R.id.feeGroup) View feeGroup;
+    @BindView(R.id.fromGroup) View fromGroup;
+    @BindView(R.id.toGroup) View toGroup;
+
 
     @Inject
     Provider<TransferDetailsPresenter> presenterProvider;
@@ -95,6 +103,13 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         initTitle();
         explorerGroup.setOnClickListener(v -> presenter.showExplorerClicked());
         chatGroup.setOnClickListener(v -> presenter.chatClicked());
+        amountGroup.setOnClickListener(v -> presenter.amountGroupClicked());
+        statusGroup.setOnClickListener(v -> presenter.statusGroupClicked());
+        dateGroup.setOnClickListener(v -> presenter.dateGroupClicked());
+        confirmationsGroup.setOnClickListener(v -> presenter.confirmationsClicked());
+        feeGroup.setOnClickListener(v -> presenter.feeGroupClicked());
+        fromGroup.setOnClickListener(v -> presenter.fromGroupClicked());
+        toGroup.setOnClickListener(v -> presenter.toGroupClicked());
     }
 
     @Inject

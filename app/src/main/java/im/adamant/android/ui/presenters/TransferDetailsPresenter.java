@@ -80,4 +80,31 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         }
     }
 
+    public void amountGroupClicked() {
+
+    }
+
+    public void statusGroupClicked() {
+
+    }
+
+    public void dateGroupClicked() {
+
+    }
+
+    public void confirmationsClicked() {
+
+    }
+
+    public void feeGroupClicked() {
+
+    }
+
+    public void fromGroupClicked() {
+
+    }
+
+    public void toGroupClicked() {
+
+    }
 }

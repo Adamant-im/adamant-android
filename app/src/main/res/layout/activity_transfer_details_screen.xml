@@ -14,10 +14,12 @@
         android:showDividers="middle">
 
         <LinearLayout
+            android:id="@+id/amountGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -39,10 +41,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/statusGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -64,10 +68,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/dateGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -90,10 +96,12 @@
 
 
         <LinearLayout
+            android:id="@+id/confirmationsGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -116,10 +124,12 @@
 
 
         <LinearLayout
+            android:id="@+id/feeGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -141,10 +151,12 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/fromGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
@@ -167,10 +179,12 @@ U15423595369615486571"
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/toGroup"
             android:layout_width="match_parent"
             android:layout_height="@dimen/activity_transaction_details_item_height"
             android:gravity="center_vertical"
             android:orientation="horizontal"
+            android:background="?selectableItemBackground"
             android:padding="16dp">
 
             <TextView
