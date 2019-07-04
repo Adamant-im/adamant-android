@@ -45,7 +45,7 @@
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_messages_tv_cost_text">Cost of message</string>
-    <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
+    <string name="activity_messages_ev_message_placeholder">~0.001 ADM</string>
 
     <string name="activity_messages_action_rename">Rename</string>
     <string name="activity_messages_action_copy">Copy address</string>

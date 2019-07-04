@@ -49,7 +49,7 @@
 
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="activity_messages_tv_cost_text">Стоимость сообщения</string>
-    <string name="activity_messages_ev_message_placeholder">Введите текст сообщения…</string>
+    <string name="activity_messages_ev_message_placeholder">~0.001 ADM</string>
 
     <string name="activity_messages_action_rename">Переименовать</string>
     <string name="activity_messages_action_copy">Копировать адрес</string>

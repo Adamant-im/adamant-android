@@ -80,7 +80,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     @Override
-    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() == SupportedMessageListContentType.SEPARATOR);
 
         if (isCorruptedMessage) {
@@ -89,7 +89,9 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
-
+        if (isLastMessage) {
+            constraintLayout.setPadding(0, 0, 0, 16);
+        }
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
         if (abstractMessage.isiSay()) {

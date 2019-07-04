@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@drawable/tile_bg"
     android:layout_height="match_parent">
@@ -44,6 +46,7 @@
         android:id="@+id/activity_messages_cl_new_message_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
         android:background="@android:color/white"
         android:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -51,20 +54,21 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <!--<TextView-->
-            <!--android:id="@+id/activity_messages_tv_cost_text"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="5dp"-->
-            <!--android:layout_marginEnd="8dp"-->
-            <!--android:layout_marginBottom="5dp"-->
-            <!--android:text="@string/activity_messages_tv_cost_text"-->
-            <!--android:textSize="10sp"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"-->
-            <!--app:layout_constraintEnd_toStartOf="@+id/activity_messages_tv_cost"-->
-            <!--app:layout_constraintStart_toStartOf="@+id/activity_messages_et_new_msg_text"-->
-            <!--app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />-->
+        <!--android:id="@+id/activity_messages_tv_cost_text"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:text="@string/activity_messages_tv_cost_text"-->
+        <!--android:textSize="10sp"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--app:layout_constraintEnd_toStartOf="@+id/activity_messages_tv_cost"-->
+        <!--app:layout_constraintStart_toStartOf="@+id/activity_messages_et_new_msg_text"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/activity_messages_et_new_msg_text" />-->
 
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="4dp"
             android:id="@+id/activity_messages_tv_cost"
             style="@style/AdamantLight.TextInput2LayoutStyle"
             android:layout_width="0dp"
@@ -90,11 +94,10 @@
         <ImageButton
             android:id="@+id/activity_messages_btn_send"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:paddingLeft="12dp"
-            android:paddingTop="8dp"
-            android:paddingRight="12dp"
-            android:paddingBottom="8dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
             android:src="@drawable/send"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -102,21 +105,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <!--<TextView-->
-            <!--android:id="@+id/activity_messages_tv_cost"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--style="@style/AdamantLight.TextViewOverLine"-->
-            <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
+        <!--android:id="@+id/activity_messages_tv_cost"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--style="@style/AdamantLight.TextViewOverLine"-->
+        <!--app:layout_constraintBottom_toBottomOf="parent"/>-->
 
         <ImageButton
             android:id="@+id/activity_messages_btn_currency_transfer"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
-            android:paddingLeft="12dp"
-            android:paddingTop="8dp"
-            android:paddingRight="12dp"
-            android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
