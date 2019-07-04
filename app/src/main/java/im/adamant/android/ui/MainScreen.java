@@ -195,12 +195,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 }
                 break;
 
-                case Screens.PUSH_SUBSCRIPTION_SCREEN: {
-                    Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
-                    startActivity(intent);
-                }
-                break;
-
                 case Screens.PINCODE_SCREEN: {
                     Bundle bundle = (Bundle) forwardCommand.getTransitionData();
                     Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
