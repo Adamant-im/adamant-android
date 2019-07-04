@@ -7,7 +7,6 @@ import im.adamant.android.dagger.activities.MainScreenModule;
 import im.adamant.android.dagger.activities.MessagesScreenModule;
 import im.adamant.android.dagger.activities.NodesListScreenModule;
 import im.adamant.android.dagger.activities.PincodeScreenModule;
-import im.adamant.android.dagger.fragments.PushSubscriptionScreenModule;
 import im.adamant.android.dagger.activities.RegistrationScreenModule;
 import im.adamant.android.dagger.activities.ScanQrCodeScreenModule;
 import im.adamant.android.dagger.activities.SendCurrencyTransferScreenModule;
