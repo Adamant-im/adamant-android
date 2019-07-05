@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
 
-import im.adamant.android.AdamantApplication;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.helpers.LoggerHelper;
@@ -12,6 +11,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.entities.UITransferDetails;
 import im.adamant.android.ui.mvp_view.TransferDetailsView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.terrakok.cicerone.Router;
@@ -30,7 +30,11 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         this.chatsStorage = chatsStorage;
     }
 
-    private TransferDetailsView.UITransferDetails uiTransferDetails;
+    private UITransferDetails uiTransferDetails;
+
+    public void setUiTransferDetails(UITransferDetails uiTransferDetails) {
+        this.uiTransferDetails = uiTransferDetails;
+    }
 
     //Called only once, right after onFirstViewAttach
     //Used instead of onFirstViewAttach
@@ -41,7 +45,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         subscriptions.add(interactor.getTransferDetailsInteractor(transactionId, currencyAbbr)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(uiDetails -> {
-                    uiTransferDetails = uiDetails;
+                    setUiTransferDetails(uiDetails);
                     getViewState().setLoading(false);
                     getViewState().showTransferDetails(uiDetails);
                 })
@@ -63,7 +67,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
     public void chatClicked() {
         if (uiTransferDetails != null) {
             String companionId;
-            if (uiTransferDetails.getDirection() == TransferDetailsView.UITransferDetails.Direction.SENT) {
+            if (uiTransferDetails.getDirection() == UITransferDetails.Direction.SENT) {
                 companionId = uiTransferDetails.getToId();
             } else {
                 companionId = uiTransferDetails.getFromId();
@@ -86,7 +90,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
     }
 
     public void statusGroupClicked() {
-        getViewState().share(uiTransferDetails.getStatus().getHumanString(AdamantApplication.appCtx));
+        getViewState().shareStatus(uiTransferDetails.getStatus());
     }
 
     public void dateGroupClicked() {

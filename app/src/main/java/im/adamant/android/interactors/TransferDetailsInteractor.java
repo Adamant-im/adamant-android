@@ -12,8 +12,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import im.adamant.android.AdamantApplication;
-import im.adamant.android.R;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -21,9 +19,8 @@ import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.TransferDetails;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.entities.UITransferDetails;
 import io.reactivex.Flowable;
-
-import static im.adamant.android.ui.mvp_view.TransferDetailsView.UITransferDetails;
 
 public class TransferDetailsInteractor {
     private Map<SupportedWalletFacadeType, WalletFacade> wallets;
@@ -45,9 +42,6 @@ public class TransferDetailsInteractor {
 
     @Nullable
     private String getAddressName(String id) {
-        if (accountId.equals(id)) {
-            return AdamantApplication.appCtx.getString(R.string.transaction_address_me);
-        }
         Chat chat = chatsStorage.findChatByCompanionId(id);
         if (chat == null) {
             return null;
@@ -72,7 +66,7 @@ public class TransferDetailsInteractor {
                 .map(this::getUiTransferDetails);
     }
 
-    private String formatValue(BigDecimal value){
+    private String formatValue(BigDecimal value) {
         return String.format(Locale.getDefault(), "%s %s",
                 decimalFormatter.format(value), abbr);
     }

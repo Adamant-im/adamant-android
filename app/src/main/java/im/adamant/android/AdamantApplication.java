@@ -1,6 +1,5 @@
 package im.adamant.android;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
@@ -36,13 +35,9 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
     @Inject
     List<Locale> supportedLocales;
 
-    @SuppressLint("StaticFieldLeak")
-    public static Context appCtx;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        appCtx = this;
 
         RxJavaPlugins.setErrorHandler(e -> LoggerHelper.e("UNCAUGHT RX", e.getMessage(), e));
 

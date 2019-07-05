@@ -21,6 +21,8 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.wallets.TransferDetails;
+import im.adamant.android.ui.entities.UITransferDetails;
 import im.adamant.android.ui.mvp_view.TransferDetailsView;
 import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.TransferDetailsPresenter;
@@ -178,7 +180,10 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
 
     private String getFrom(UITransferDetails details){
         StringBuilder sb = new StringBuilder();
-        if(details.getFromAddress() != null) {
+        if (details.getDirection() == UITransferDetails.Direction.SENT){
+            sb.append(getString(R.string.transaction_address_me));
+            sb.append("\n");
+        } else if(details.getFromAddress() != null) {
             sb.append(details.getFromAddress());
             sb.append("\n");
         }
@@ -188,7 +193,10 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
 
     private String getTo(UITransferDetails details) {
         StringBuilder sb = new StringBuilder();
-        if (details.getToAddress() != null) {
+        if (details.getDirection() == UITransferDetails.Direction.RECEIVED){
+            sb.append(getString(R.string.transaction_address_me));
+            sb.append("\n");
+        } else if (details.getToAddress() != null) {
             sb.append(details.getToAddress());
             sb.append("\n");
         }
@@ -246,5 +254,10 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         sendIntent.putExtra(Intent.EXTRA_TEXT, text);
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
+    }
+
+    @Override
+    public void shareStatus(TransferDetails.STATUS status) {
+        share(status.getHumanString(this));
     }
 }
