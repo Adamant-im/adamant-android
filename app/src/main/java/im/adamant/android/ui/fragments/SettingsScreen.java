@@ -4,12 +4,6 @@ package im.adamant.android.ui.fragments;
 import android.app.Activity;
 import android.graphics.Paint;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,13 +14,17 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.franmontiel.localechanger.LocaleChanger;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -38,8 +36,8 @@ import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.fragments.base.BaseFragment;
-import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import im.adamant.android.ui.presenters.SettingsPresenter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -125,7 +123,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Override
     public void setEnableStoreKeyPairOption(boolean value) {
-        storeKeypairView.setEnabled(value);
+        storeKeypairView.setClickable(false);
     }
 
     @OnClick(R.id.fragment_settings_tr_store_keypair)

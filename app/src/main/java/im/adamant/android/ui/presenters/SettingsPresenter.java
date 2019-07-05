@@ -18,8 +18,9 @@ import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
@@ -62,21 +63,44 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
         );
     }
 
+    private boolean storeKeyPairViewValue;
+    private boolean checkingTEE;
+
+    private void setCheckingTEE(boolean checkingTEE) {
+        this.checkingTEE = checkingTEE;
+        getViewState().setEnableStoreKeyPairOption(!checkingTEE);
+    }
+
+    public void onSecurityCheckResult(boolean hardwareSecuredDevice) {
+        setCheckingTEE(false);
+        if (!hardwareSecuredDevice) {
+            getViewState().showTEENotSupportedDialog();
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PinCodeView.ARG_MODE, storeKeyPairViewValue ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
+            router.navigateTo(Screens.PINCODE_SCREEN, bundle);
+        }
+    }
+
     public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
+        if (checkingTEE) {
+            return;
+        }
+        storeKeyPairViewValue = value;
         if (value != securityInteractor.isKeyPairMustBeStored()) {
 
             if (value && !isUserConfirmed) {
-                boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
-
-                if (!hardwareSecuredDevice) {
-                    getViewState().showTEENotSupportedDialog();
-                    return;
-                }
+                setCheckingTEE(true);
+                Disposable disposable = securityInteractor.isHardwareSecuredDevice()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(this::onSecurityCheckResult);
+                subscriptions.add(disposable);
+            } else {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
+                router.navigateTo(Screens.PINCODE_SCREEN, bundle);
             }
-
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
-            router.navigateTo(Screens.PINCODE_SCREEN, bundle);
         }
     }
 

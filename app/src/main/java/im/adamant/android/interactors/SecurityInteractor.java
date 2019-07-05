@@ -5,7 +5,6 @@ import android.security.keystore.KeyInfo;
 
 import com.google.gson.Gson;
 
-import java.security.InvalidKeyException;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
@@ -18,7 +17,6 @@ import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
@@ -149,15 +147,18 @@ public class SecurityInteractor {
         return api.isAuthorized();
     }
 
-    public boolean isHardwareSecuredDevice() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            KeyInfo keyInfo = keyStoreCipher.provideKeyInfo(Constants.ADAMANT_ACCOUNT_ALIAS);
-            if (keyInfo == null) { return false; }
+    public Single<Boolean> isHardwareSecuredDevice() {
+        return Single.fromCallable(() -> {
+            Thread.sleep(250); //TODO: find way to receive animation end callback from switch
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                KeyInfo keyInfo = keyStoreCipher.provideKeyInfo(Constants.ADAMANT_ACCOUNT_ALIAS);
+                if (keyInfo == null) { return false; }
 
-            return keyInfo.isInsideSecureHardware();
-        }
+                return keyInfo.isInsideSecureHardware();
+            }
 
-        return false;
+            return false;
+        });
     }
 
 
