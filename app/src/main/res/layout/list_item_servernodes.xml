@@ -39,7 +39,7 @@
         style="@style/AdamantLight.IconActive"
         android:layout_width="36dp"
         android:tint="@color/secondary"
-        android:layout_height="26dp"
+        android:layout_height="36dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="13dp"
         app:layout_constraintEnd_toEndOf="parent"
