@@ -230,7 +230,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
 
     @Override
     public void onEnteredValidPassphrase() {
-        Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.copy);
+        Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.ic_copy);
         Drawable copyBtn = DrawableColorHelper.changeDrawable(this, R.color.textMuted, PorterDuff.Mode.SRC_IN, copyButton);
 
         inputLayoutView.setError("");

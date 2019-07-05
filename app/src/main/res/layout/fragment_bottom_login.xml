@@ -85,7 +85,7 @@
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:srcCompat="@drawable/add_file" />
+        app:srcCompat="@drawable/ic_add_file" />
 
     <ImageView
         android:id="@+id/fragment_login_btn_by_camera_qr"
@@ -101,6 +101,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/fragment_login_btn_by_stored_qr"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:srcCompat="@drawable/qr_scan" />
+        app:srcCompat="@drawable/ic_qr_scan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

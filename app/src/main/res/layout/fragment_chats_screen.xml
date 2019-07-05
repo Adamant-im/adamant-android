@@ -40,6 +40,6 @@
         app:backgroundTint="@color/primary"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_chats_rv_chats"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/add_user" />
+        app:srcCompat="@drawable/ic_add_user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,13 +37,13 @@
     <ImageView
         android:id="@+id/list_item_servernode_ibtn_delete"
         style="@style/AdamantLight.IconActive"
-        android:layout_width="24dp"
+        android:layout_width="36dp"
         android:tint="@color/secondary"
-        android:layout_height="24dp"
+        android:layout_height="26dp"
         android:scaleType="centerCrop"
         android:layout_marginTop="13dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/delete" />
+        app:srcCompat="@drawable/ic_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

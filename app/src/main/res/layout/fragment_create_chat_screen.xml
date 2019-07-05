@@ -56,17 +56,20 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:passwordToggleEnabled="true">
 
+
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/fragment_create_chat_et_address"
+                    android:textColorHint="@color/secondary"
                     style="AdamantLight.EditTextInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/ic_from_file"
+                    android:drawableStart="@drawable/ic_add_file"
                     android:drawableEnd="@drawable/ic_qr_code"
                     android:drawablePadding="5dp"
                     android:imeOptions="actionSend"
                     android:singleLine="true"
                     android:textColor="@color/onSurface" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.button.MaterialButton
