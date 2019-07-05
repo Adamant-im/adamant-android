@@ -237,8 +237,6 @@ U15423595369615486571"
                 android:id="@+id/chatLabel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_message"
-                android:drawablePadding="8dp"
                 android:text="@string/activity_transfer_details_start_chat" />
         </LinearLayout>
 
