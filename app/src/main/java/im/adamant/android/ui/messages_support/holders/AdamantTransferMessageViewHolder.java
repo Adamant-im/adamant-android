@@ -52,16 +52,7 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
             bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, SupportedWalletFacadeType.ADM.toString());
             router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
         };
-
-        messageBlockView.setOnClickListener(onClickListener);
-        contentBlock.setOnClickListener(onClickListener);
-        contentBlock.setOnFocusChangeListener((v, hasFocus) -> {
-            if (v.isInTouchMode()) {
-                onClickListener.onClick(v);
-            }
-        });
-
-        adamantTransferMessage.getTransactionId();
+        amountView.setOnClickListener(onClickListener);
 
         String amountText = String.format(Locale.ENGLISH, "%.3f", adamantTransferMessage.getAmount()) + " " +
                 context.getResources().getString(R.string.adm_currency_abbr);
