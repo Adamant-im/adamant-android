@@ -58,7 +58,7 @@ public class TransferDetailsInteractor {
     private WalletFacade walletFacade;
     private String abbr;
 
-    public Flowable<UITransferDetails> getTransferDetailsInteractor(String id, String abbr) {
+    public Flowable<UITransferDetails> getTransferDetails(String id, String abbr) {
         this.abbr = abbr;
         SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbr);
         walletFacade = wallets.get(supportedCurrencyType);

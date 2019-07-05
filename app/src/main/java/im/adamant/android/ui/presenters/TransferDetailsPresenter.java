@@ -42,7 +42,7 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
         this.transactionId = transactionId;
         this.currencyAbbr = currencyAbbr;
         getViewState().setLoading(true);
-        subscriptions.add(interactor.getTransferDetailsInteractor(transactionId, currencyAbbr)
+        subscriptions.add(interactor.getTransferDetails(transactionId, currencyAbbr)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(uiDetails -> {
                     setUiTransferDetails(uiDetails);
