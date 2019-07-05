@@ -31,6 +31,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected int parentPadding;
     protected int sameSenderTopPadding;
     protected int notSameSenderTopPadding;
+    protected int lastMessagePadding;
     protected int avatarMargin;
     protected int avatarSize;
 
@@ -62,6 +63,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         constraintSet.clone(constraintLayout);
 
         parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
+        lastMessagePadding=(int)context.getResources().getDimension(R.dimen.activity_messages_last_message_padding);
         avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
         sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_same_sender_padding);
@@ -87,7 +89,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
         if (isLastMessage) {
-            constraintLayout.setPadding(0, 0, 0, 16);
+            constraintLayout.setPadding(0, 0, 0, lastMessagePadding);
         }
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
