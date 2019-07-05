@@ -35,8 +35,8 @@ import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class TransferDetailsScreen extends BaseActivity implements TransferDetailsView {
-    public static final String TRANSFER_ID_KEY = "transer_id";
-    public static final String CURRENCY_ABBR = "currency";
+    public static final String ARG_TRANSFER_ID_KEY = "transer_id";
+    public static final String ARG_CURRENCY_ABBR = "currency";
 
     @BindView(R.id.amount) TextView amount;
     @BindView(R.id.status) TextView status;
@@ -80,8 +80,8 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         if (args == null) {
             throw new IllegalArgumentException();
         }
-        transferId = args.getString(TRANSFER_ID_KEY);
-        currencyAbbr = args.getString(CURRENCY_ABBR);
+        transferId = args.getString(ARG_TRANSFER_ID_KEY);
+        currencyAbbr = args.getString(ARG_CURRENCY_ABBR);
         if (transferId == null || currencyAbbr == null) {
             throw new IllegalArgumentException();
         }

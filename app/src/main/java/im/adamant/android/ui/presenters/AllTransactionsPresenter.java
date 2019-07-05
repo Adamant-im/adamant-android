@@ -107,9 +107,8 @@ public class AllTransactionsPresenter extends ProtectedBasePresenter<AllTransact
 
     public void onTransactionClicked(CurrencyTransferEntity currencyTransferEntity){
         Bundle bundle = new Bundle();
-        //bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY,"4529855394592563626");
-        bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY, currencyTransferEntity.getId());
-        bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, currentAbbr);
+        bundle.putString(TransferDetailsScreen.ARG_TRANSFER_ID_KEY, currencyTransferEntity.getId());
+        bundle.putString(TransferDetailsScreen.ARG_CURRENCY_ABBR, currentAbbr);
         router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
     }
 }

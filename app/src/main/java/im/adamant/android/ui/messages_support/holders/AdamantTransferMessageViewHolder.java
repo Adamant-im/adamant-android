@@ -48,8 +48,8 @@ public class AdamantTransferMessageViewHolder extends AbstractMessageViewHolder 
 
         View.OnClickListener onClickListener = v -> {
             Bundle bundle = new Bundle();
-            bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY, adamantTransferMessage.getTransactionId());
-            bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, SupportedWalletFacadeType.ADM.toString());
+            bundle.putString(TransferDetailsScreen.ARG_TRANSFER_ID_KEY, adamantTransferMessage.getTransactionId());
+            bundle.putString(TransferDetailsScreen.ARG_CURRENCY_ABBR, SupportedWalletFacadeType.ADM.toString());
             router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
         };
         amountView.setOnClickListener(onClickListener);

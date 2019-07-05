@@ -127,8 +127,8 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
 
     public void onTransactionClicked(CurrencyTransferEntity currencyTransferEntity){
         Bundle bundle = new Bundle();
-        bundle.putString(TransferDetailsScreen.TRANSFER_ID_KEY, currencyTransferEntity.getId());
-        bundle.putString(TransferDetailsScreen.CURRENCY_ABBR, currencyTransferEntity.getCurrencyAbbreviation());
+        bundle.putString(TransferDetailsScreen.ARG_TRANSFER_ID_KEY, currencyTransferEntity.getId());
+        bundle.putString(TransferDetailsScreen.ARG_CURRENCY_ABBR, currencyTransferEntity.getCurrencyAbbreviation());
         router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
     }
 
