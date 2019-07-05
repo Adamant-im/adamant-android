@@ -20,7 +20,6 @@ import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.ADMTransferDetails;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
-import im.adamant.android.ui.entities.TransferDetails;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 

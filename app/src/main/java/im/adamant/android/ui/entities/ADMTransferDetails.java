@@ -1,5 +1,7 @@
 package im.adamant.android.ui.entities;
 
+import im.adamant.android.interactors.wallets.TransferDetails;
+
 public class ADMTransferDetails extends TransferDetails {
     @Override
     public STATUS getStatus() {

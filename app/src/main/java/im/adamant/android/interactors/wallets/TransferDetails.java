@@ -1,4 +1,4 @@
-package im.adamant.android.ui.entities;
+package im.adamant.android.interactors.wallets;
 
 import android.content.Context;
 
