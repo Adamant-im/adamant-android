@@ -32,7 +32,7 @@ import im.adamant.android.ui.presenters.ShowQrCodePresenter;
 public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";
     public static final String ARG_SHOW_CONTENT = "show_content";
-
+    public static final String ARG_TITLE_RESOURCE = "title";
     @Inject
     Provider<ShowQrCodePresenter> presenterProvider;
 
@@ -66,18 +66,12 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        setTitle(getString(R.string.activity_show_qr_code_title));
+        //setTitle(getString(R.string.activity_show_qr_code_title));
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(Constants.KEY)) {
-                final String key = intent.getStringExtra(Constants.KEY);
-                if(key.equals(Constants.ADDRESS)){
-                    setTitle(getString(R.string.activity_show_qrcode_title_address));
-                }
-                else{
-                    setTitle(getString(R.string.activity_show_qrcode_title_passphrase));
-                }
+            if (intent.hasExtra(ARG_TITLE_RESOURCE)) {
+                setTitle(getString(intent.getIntExtra(ARG_TITLE_RESOURCE,0)));
             }
 
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {

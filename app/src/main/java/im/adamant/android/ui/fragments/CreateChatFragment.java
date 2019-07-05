@@ -80,16 +80,13 @@ public class CreateChatFragment extends BaseBottomFragment implements CreateChat
 
         assert getArguments() != null;
 
-        addressView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    createNewChatClick();
-                    handled = true;
-                }
-                return handled;
+        addressView.setOnEditorActionListener((v, actionId, event) -> {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                createNewChatClick();
+                handled = true;
             }
+            return handled;
         });
 
 
@@ -131,8 +128,7 @@ public class CreateChatFragment extends BaseBottomFragment implements CreateChat
         if (activity != null){
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, content);
-            bundle.putString(Constants.KEY,Constants.PASSPHRASE);
-            //bundle.putString("key","passphrase");
+            bundle.putInt(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE,R.string.activity_show_qrcode_title_passphrase);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 

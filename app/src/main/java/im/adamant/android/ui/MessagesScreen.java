@@ -307,7 +307,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     public void showQrCodeCompanionId(String companionId) {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
-        bundle.putString(Constants.KEY,Constants.ADDRESS);
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);

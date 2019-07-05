@@ -261,7 +261,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, address);
             bundle.putBoolean(ShowQrCodeScreen.ARG_SHOW_CONTENT, true);
-            bundle.putString(Constants.KEY,Constants.ADDRESS);
+            bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 

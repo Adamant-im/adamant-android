@@ -198,8 +198,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     public void onClickSaveQrCode() {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, inputPassphraseView.getText().toString());
-        //bundle.putString("key","passphrase");
-        bundle.putString(Constants.KEY,Constants.PASSPHRASE);
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_passphrase);
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
 
