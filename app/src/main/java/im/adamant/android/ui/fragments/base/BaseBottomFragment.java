@@ -6,12 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
 import com.arellomobile.mvp.MvpDelegate;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 
 public abstract class BaseBottomFragment extends BottomSheetDialogFragment {
@@ -43,12 +45,14 @@ public abstract class BaseBottomFragment extends BottomSheetDialogFragment {
         getMvpDelegate().onCreate(savedInstanceState);
     }
 
+    private Unbinder unbinder;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(getLayoutId(), container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         return view;
     }
@@ -83,6 +87,7 @@ public abstract class BaseBottomFragment extends BottomSheetDialogFragment {
 
         getMvpDelegate().onDetach();
         getMvpDelegate().onDestroyView();
+        unbinder.unbind();
     }
 
     @Override
