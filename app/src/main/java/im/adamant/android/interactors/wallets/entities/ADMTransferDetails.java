@@ -1,6 +1,4 @@
-package im.adamant.android.ui.entities;
-
-import im.adamant.android.interactors.wallets.TransferDetails;
+package im.adamant.android.interactors.wallets.entities;
 
 public class ADMTransferDetails extends TransferDetails {
     @Override

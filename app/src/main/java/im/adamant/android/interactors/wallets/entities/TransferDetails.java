@@ -1,4 +1,4 @@
-package im.adamant.android.interactors.wallets;
+package im.adamant.android.interactors.wallets.entities;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ public abstract class TransferDetails {
     protected long confirmations;
     protected String senderPublicKey, receiverPublicKey;
 
-    public static enum STATUS {
+    public enum STATUS {
         PENDING, SUCCESS;
 
         public String getHumanString(Context ctx){

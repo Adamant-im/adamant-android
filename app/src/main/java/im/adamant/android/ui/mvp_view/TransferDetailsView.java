@@ -5,7 +5,7 @@ import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
-import im.adamant.android.interactors.wallets.TransferDetails;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.ui.entities.UITransferDetails;
 
 public interface TransferDetailsView extends MvpView {

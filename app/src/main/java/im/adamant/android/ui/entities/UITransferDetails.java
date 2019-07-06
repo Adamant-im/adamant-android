@@ -1,10 +1,10 @@
 package im.adamant.android.ui.entities;
 
-import im.adamant.android.interactors.wallets.TransferDetails;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 
 public class UITransferDetails{
-    public static enum Direction{
-        SENT, RECEIVED;
+    public enum Direction{
+        SENT, RECEIVED
     }
 
     protected String id;

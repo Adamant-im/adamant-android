@@ -17,7 +17,8 @@ import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
-import im.adamant.android.ui.entities.ADMTransferDetails;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
+import im.adamant.android.interactors.wallets.entities.ADMTransferDetails;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
@@ -134,11 +135,8 @@ public class AdamantWalletFacade implements WalletFacade {
     public boolean isAvailableAirdropLink() {
         boolean isZeroBalance = (getBalance().compareTo(BigDecimal.ZERO) == 0);
         boolean isEmptyTransactionList = (isReceivedTransactionList && this.isEmptyTransactionList);
-        if (isZeroBalance && isEmptyTransactionList) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return isZeroBalance && isEmptyTransactionList;
     }
 
     @Override
@@ -215,7 +213,7 @@ public class AdamantWalletFacade implements WalletFacade {
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {
         String title = "";
         if (chatsStorage == null){ return "";}
-        String address = "";
+        String address;
         if (iRecipient){
             address = transaction.getSenderId();
         } else {
@@ -273,5 +271,4 @@ public class AdamantWalletFacade implements WalletFacade {
 
         return entity;
     }
-
 }

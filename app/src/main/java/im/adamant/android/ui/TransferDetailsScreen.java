@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.interactors.wallets.TransferDetails;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.ui.entities.UITransferDetails;
 import im.adamant.android.ui.mvp_view.TransferDetailsView;
 import im.adamant.android.ui.navigators.DefaultNavigator;
