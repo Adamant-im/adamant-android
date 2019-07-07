@@ -88,9 +88,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
-        if (isLastMessage) {
-            constraintLayout.setPadding(0, 0, 0, lastMessagePadding);
-        }
+
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
         if (abstractMessage.isiSay()){
@@ -100,6 +98,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         boolean isHideError = (abstractMessage.getError() == null || abstractMessage.getError().isEmpty());
+
+        if (isLastMessage) {
+            constraintLayout.setPadding(0, 0, 0, lastMessagePadding);
+        } else {
+            constraintLayout.setPadding(0, 0, 0, 0);
+        }
+
         //VERY IMPORTANT: This code must be placed under function which will change constraints, otherwise setVisibility doesn't work.
         if (isHideError) {
             errorView.setVisibility(View.GONE);
