@@ -22,7 +22,7 @@
 
     <dimen name="list_item_chat_placeholder_date_width">60dp</dimen>
     <dimen name="list_item_chat_placeholder_date_height">18dp</dimen>
-
+    <dimen name="activity_messages_last_message_padding">16dp</dimen>
     <dimen name="activity_messages_new_message_height">42dp</dimen>
     <dimen name="activity_messages_same_sender_padding">4dp</dimen>
     <dimen name="activity_messages_not_same_sender_padding">10dp</dimen>

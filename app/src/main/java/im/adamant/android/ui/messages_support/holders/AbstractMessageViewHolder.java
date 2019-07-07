@@ -64,8 +64,9 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         TransitionManager.beginDelayedTransition(constraintLayout);
         constraintSet.clone(constraintLayout);
 
-        parentPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_padding);
-        avatarMargin = (int) context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
+        parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
+        lastMessagePadding=(int)context.getResources().getDimension(R.dimen.activity_messages_last_message_padding);
+        avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
         sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_same_sender_padding);
         notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_not_same_sender_padding);
@@ -89,9 +90,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         AbstractMessage abstractMessage = (AbstractMessage) message;
-        if (isLastMessage) {
-            constraintLayout.setPadding(0, 0, 0, 16);
-        }
+
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
         if (abstractMessage.isiSay()) {
@@ -101,6 +100,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         }
 
         boolean isHideError = (abstractMessage.getError() == null || abstractMessage.getError().isEmpty());
+
+        if (isLastMessage) {
+            constraintLayout.setPadding(0, 0, 0, lastMessagePadding);
+        } else {
+            constraintLayout.setPadding(0, 0, 0, 0);
+        }
+
         //VERY IMPORTANT: This code must be placed under function which will change constraints, otherwise setVisibility doesn't work.
         if (isHideError) {
             errorView.setVisibility(View.GONE);
