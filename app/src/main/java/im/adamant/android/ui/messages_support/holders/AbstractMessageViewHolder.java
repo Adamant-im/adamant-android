@@ -1,21 +1,16 @@
 package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
 
 import im.adamant.android.R;
@@ -26,12 +21,11 @@ import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.disposables.CompositeDisposable;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 public abstract class AbstractMessageViewHolder extends AbstractMessageListContentViewHolder {
     protected final static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
     protected int parentPadding;
+    protected int lastMessagePadding;
     protected int sameSenderTopPadding;
     protected int notSameSenderTopPadding;
     protected int avatarMargin;
@@ -65,11 +59,11 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         constraintSet.clone(constraintLayout);
 
         parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
-        lastMessagePadding=(int)context.getResources().getDimension(R.dimen.activity_messages_last_message_padding);
+        lastMessagePadding=(int)context.getResources().getDimension(R.dimen.list_item_message_last_message_padding);
         avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
-        sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_same_sender_padding);
-        notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_not_same_sender_padding);
+        sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_same_sender_padding);
+        notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_not_same_sender_padding);
 
         messageBlockView = itemView.findViewById(R.id.list_item_message_card);
 

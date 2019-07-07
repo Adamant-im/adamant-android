@@ -373,6 +373,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
+                break;
                 case Screens.TRANSFER_DETAILS_SCREEN: {
                     Bundle bundle = (Bundle) forwardCommand.getTransitionData();
                     Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
