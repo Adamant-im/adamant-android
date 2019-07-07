@@ -8,18 +8,6 @@
     android:layout_height="match_parent"
     android:clickable="true"
     android:focusable="true">
-
-    <!--<androidx.cardview.widget.CardView-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/primary"-->
-        <!--app:cardCornerRadius="30dp"-->
-        <!--android:clickable="true"-->
-        <!--android:focusable="true"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintEnd_toEndOf="parent"-->
-        <!--app:layout_constraintStart_toStartOf="parent">-->
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -84,77 +72,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <!--<androidx.constraintlayout.widget.ConstraintLayout-->
-                <!--android:id="@+id/constraintLayout5"-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginTop="24dp"-->
-                <!--android:background="@color/disabled"-->
-                <!--android:padding="10dp"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/fragment_create_chat_btn_enter">-->
-
-                <!--<ImageView-->
-                    <!--android:id="@+id/imageView3"-->
-                    <!--android:layout_width="wrap_content"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="8dp"-->
-                    <!--android:layout_marginTop="8dp"-->
-                    <!--android:layout_marginBottom="8dp"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--app:layout_constraintStart_toStartOf="parent"-->
-                    <!--app:layout_constraintTop_toTopOf="parent"-->
-                    <!--app:srcCompat="@drawable/ic_attention" />-->
-
-                <!--<TextView-->
-                    <!--android:id="@+id/textView10"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:layout_marginStart="18dp"-->
-                    <!--android:layout_marginEnd="8dp"-->
-                    <!--android:text="@string/fragment_create_chat_attention"-->
-                    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                    <!--app:layout_constraintEnd_toEndOf="parent"-->
-                    <!--app:layout_constraintStart_toEndOf="@+id/imageView3"-->
-                    <!--app:layout_constraintTop_toTopOf="parent" />-->
-
-            <!--</androidx.constraintlayout.widget.ConstraintLayout>-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/fragment_create_chat_btn_by_stored_qr"-->
-                <!--style="@style/AdamantLight.ImageButton"-->
-                <!--android:layout_width="48dp"-->
-                <!--android:layout_height="48dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_marginEnd="40dp"-->
-                <!--android:layout_marginBottom="16dp"-->
-                <!--android:adjustViewBounds="true"-->
-                <!--android:cropToPadding="true"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/fragment_create_chat_btn_show_my_qr"-->
-                <!--app:layout_constraintEnd_toStartOf="@+id/fragment_create_chat_btn_by_camera_qr"-->
-                <!--app:layout_constraintHorizontal_bias="0.5"-->
-                <!--app:layout_constraintHorizontal_chainStyle="packed"-->
-                <!--app:layout_constraintStart_toStartOf="parent"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/fragment_create_chat_btn_enter"-->
-                <!--app:srcCompat="@drawable/ic_from_file" />-->
-
-            <!--<ImageButton-->
-                <!--android:id="@+id/fragment_create_chat_btn_by_camera_qr"-->
-                <!--style="@style/AdamantLight.ImageButton"-->
-                <!--android:layout_width="48dp"-->
-                <!--android:layout_height="48dp"-->
-                <!--android:layout_marginTop="8dp"-->
-                <!--android:layout_marginBottom="16dp"-->
-                <!--android:scaleType="centerCrop"-->
-                <!--app:layout_constraintBottom_toTopOf="@+id/fragment_create_chat_btn_show_my_qr"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintHorizontal_bias="0.5"-->
-                <!--app:layout_constraintStart_toEndOf="@+id/fragment_create_chat_btn_by_stored_qr"-->
-                <!--app:layout_constraintTop_toBottomOf="@+id/fragment_create_chat_btn_enter"-->
-                <!--app:srcCompat="@drawable/ic_qr_code" />-->
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/fragment_create_chat_btn_show_my_qr"
                 style="@style/AdamantLight.TextActive"
@@ -168,5 +85,4 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-    <!--</androidx.cardview.widget.CardView>-->
 </androidx.constraintlayout.widget.ConstraintLayout>
