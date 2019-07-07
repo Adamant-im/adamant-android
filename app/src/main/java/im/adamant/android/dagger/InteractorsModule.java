@@ -12,22 +12,23 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
-import im.adamant.android.helpers.PublicKeyStorage;
-import im.adamant.android.interactors.HasNewMessagesInteractor;
-import im.adamant.android.interactors.chats.ChatInteractor;
-import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.KvsHelper;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.chats.ContactsSource;
 import im.adamant.android.interactors.chats.HistoryTransactionsSource;
 import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
@@ -160,5 +161,13 @@ public abstract class InteractorsModule {
             SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
     ) {
         return new SecurityInteractor(gson, settings, api, keyStoreCipher, pushNotificationServiceInteractor);
+    }
+
+    @Singleton
+    @Provides
+    public static TransferDetailsInteractor transferDetailsInteractor(AdamantApiWrapper api,
+                                                                      Map<SupportedWalletFacadeType, WalletFacade> wallets,
+                                                                      ChatsStorage chatsStorage,PublicKeyStorage publicKeyStorage) {
+        return new TransferDetailsInteractor(api, wallets, chatsStorage,publicKeyStorage);
     }
 }

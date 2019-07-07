@@ -3,10 +3,12 @@ package im.adamant.android.ui.messages_support.entities;
 import android.content.Context;
 
 import java.math.BigDecimal;
+
 import im.adamant.android.R;
 
 public class AdamantTransferMessage extends AbstractMessage {
     private BigDecimal amount;
+    private String transactionId;
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {

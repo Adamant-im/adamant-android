@@ -8,8 +8,8 @@ import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.messages_support.builders.AdamantTransferMessageBuilder;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
@@ -17,6 +17,7 @@ import im.adamant.android.ui.messages_support.holders.AbstractMessageListContent
 import im.adamant.android.ui.messages_support.holders.AdamantTransferMessageViewHolder;
 import im.adamant.android.ui.messages_support.processors.AdamantTransferMessageProcessor;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
+import ru.terrakok.cicerone.Router;
 
 public class AdamantTransferMessageFactory implements MessageFactory<AdamantTransferMessage> {
     private AdamantMarkdownProcessor adamantAddressProcessor;
@@ -24,19 +25,21 @@ public class AdamantTransferMessageFactory implements MessageFactory<AdamantTran
     private AdamantApiWrapper api;
     private Avatar avatar;
     private PublicKeyStorage publicKeyStorage;
+    private Router router;
 
     public AdamantTransferMessageFactory(
             AdamantMarkdownProcessor adamantAddressProcessor,
             Encryptor encryptor,
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
-            Avatar avatar
+            Avatar avatar,Router router
     ) {
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
         this.encryptor = encryptor;
         this.api = api;
         this.publicKeyStorage = publicKeyStorage;
+        this.router= router;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class AdamantTransferMessageFactory implements MessageFactory<AdamantTran
     public AbstractMessageListContentViewHolder getViewHolder(ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_general_message, parent, false);
-        return new AdamantTransferMessageViewHolder(parent.getContext(), v, adamantAddressProcessor, avatar);
+        return new AdamantTransferMessageViewHolder(router,parent.getContext(), v, adamantAddressProcessor, avatar);
     }
 
     @Override

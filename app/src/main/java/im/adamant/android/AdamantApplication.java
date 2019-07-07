@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.multidex.MultiDexApplication;
+
 import com.franmontiel.localechanger.LocaleChanger;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;

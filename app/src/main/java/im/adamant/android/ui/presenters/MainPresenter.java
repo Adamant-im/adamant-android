@@ -2,14 +2,11 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.MainView;
-import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 

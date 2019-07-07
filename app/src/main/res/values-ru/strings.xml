@@ -67,6 +67,17 @@
     <string name="activity_send_funds_recipient_address_hint">Адрес получателя</string>
     <string name="activity_send_funds_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
 
+    <string name="activity_transfer_details_amount">Сумма</string>
+    <string name="activity_transfer_details_status">Статус</string>
+    <string name="activity_transfer_details_date">Дата</string>
+    <string name="activity_transfer_details_confirmations">Количество подтверждений</string>
+    <string name="activity_transfer_details_from">Отправитель</string>
+    <string name="activity_transfer_details_to">Получатель</string>
+    <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
+    <string name="activity_transfer_details_start_chat">Начать переписку</string>
+    <string name="activity_transfer_details_continue_chat">Продолжить переписку</string>
+    <string name="activity_transfer_details_fee">Комиссия</string>
+
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
     <string name="bottom_menu_title_settings">Настройки</string>
@@ -196,6 +207,8 @@
     <string name="node_status_connected">подключена</string>
     <string name="node_status_unavailable">недоступна</string>
     <string name="node_status_connecting">подключение…</string>
+    <string name="transaction_status_pending">Ожидание</string>
+    <string name="transaction_status_success">Подтверждена</string>
 
     <!--GENERAL-->
     <string name="yes">Да</string>
@@ -211,4 +224,5 @@
     <string name="send">Отправить</string>
     <string name="cancel">Отмена</string>
     <string name="exit">Выход</string>
+    <string name="transaction_address_me">Я</string>
 </resources>
