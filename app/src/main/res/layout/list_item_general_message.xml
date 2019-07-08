@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/message_item"
+    android:paddingTop="5dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -11,8 +11,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="@dimen/activity_messages_not_same_sender_padding"
-        android:minHeight="20dp"
         app:cardCornerRadius="@dimen/list_item_message_corner_radius"
         app:cardElevation="0dp"
         app:layout_constraintStart_toStartOf="parent"

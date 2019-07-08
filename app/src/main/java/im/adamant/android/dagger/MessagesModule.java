@@ -13,16 +13,16 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
-import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.chats.ContactsSource;
 import im.adamant.android.interactors.chats.HistoryTransactionsSource;
 import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
 import im.adamant.android.interactors.chats.NewTransactionsSource;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
-import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
+import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFactory;
@@ -32,6 +32,7 @@ import im.adamant.android.ui.messages_support.factories.BinanceTransferMessageFa
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import ru.terrakok.cicerone.Router;
 
 @Module
 public abstract class MessagesModule {
@@ -50,8 +51,8 @@ public abstract class MessagesModule {
             Encryptor encryptor,
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
-            Avatar avatar
-    ) {
+            Avatar avatar, Router router
+            ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
@@ -81,7 +82,7 @@ public abstract class MessagesModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE,
-                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
+                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar,router)
         );
 
         return provider;

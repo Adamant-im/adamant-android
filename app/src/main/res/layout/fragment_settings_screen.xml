@@ -142,7 +142,7 @@
                     <TableRow
                         android:id="@+id/fragment_settings_tr_subscribe_to_push"
                         style="@style/AdamantLight.TableRowStyle"
-                        android:visibility="gone">
+                        >
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"

@@ -8,6 +8,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -21,7 +22,7 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
 
     private TextView serverNameView;
     private TextView serverStatusView;
-    private ImageButton deleteButton;
+    private ImageView deleteButton;
 
     public ServerNodeHolder(
             View itemView,

@@ -48,7 +48,7 @@
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_messages_tv_cost_text">Cost of message</string>
-    <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
+    <string name="activity_messages_ev_message_placeholder">~0.001 ADM</string>
 
     <string name="activity_messages_action_rename">Rename</string>
     <string name="activity_messages_action_copy">Copy address</string>
@@ -68,6 +68,17 @@
     <string name="activity_send_funds_recipient_address_hint">Recipient address</string>
     <string name="activity_send_funds_dialog_funds_title">Transfer confirmation</string>
     <string name="activity_send_funds_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
+    
+    <string name="activity_transfer_details_amount">Amount</string>
+    <string name="activity_transfer_details_status">Status</string>
+    <string name="activity_transfer_details_date">Date</string>
+    <string name="activity_transfer_details_confirmations">Confirmations</string>
+    <string name="activity_transfer_details_fee">Fee</string>
+    <string name="activity_transfer_details_from">From</string>
+    <string name="activity_transfer_details_to">To</string>
+    <string name="activity_transfer_details_open_explorer">Open in Explorer</string>
+    <string name="activity_transfer_details_start_chat">Start chat</string>
+    <string name="activity_transfer_details_continue_chat">Continue chat</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
@@ -199,7 +210,8 @@
     <string name="node_status_connected">connected</string>
     <string name="node_status_unavailable">unreachable</string>
     <string name="node_status_connecting">connecting…</string>
-
+    <string name="transaction_status_pending">Pending</string>
+    <string name="transaction_status_success">Success</string>
 
     <!--GENERAL-->
     <string name="yes">Yes</string>
@@ -215,4 +227,5 @@
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
+    <string name="transaction_address_me">Me</string>
 </resources>

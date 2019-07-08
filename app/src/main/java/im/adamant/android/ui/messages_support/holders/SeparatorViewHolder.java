@@ -25,7 +25,7 @@ public class SeparatorViewHolder extends AbstractMessageListContentViewHolder {
     }
 
     @Override
-    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
         if (isCorruptedMessage) {
             emptyView();
