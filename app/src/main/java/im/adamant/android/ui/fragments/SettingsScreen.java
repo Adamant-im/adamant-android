@@ -25,9 +25,11 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.franmontiel.localechanger.LocaleChanger;
+import com.jakewharton.rxbinding3.widget.RxCompoundButton;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
@@ -38,11 +40,14 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
@@ -78,6 +83,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @BindView(R.id.fragment_settings_tr_subscribe_to_push)
     TableRow pushNotificationServiceLayoutView;
 
+    Disposable storeKeypairViewDisposable;
+
     public SettingsScreen() {
         // Required empty public constructor
     }
@@ -107,6 +114,29 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         pushNotificationServiceView.setPaintFlags(pushNotificationServiceView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        storeKeypairViewDisposable = RxCompoundButton
+                .checkedChanges(storeKeypairView)
+                .delay(50, TimeUnit.MILLISECONDS)
+                .subscribe(
+                        value -> presenter.onSetCheckedStoreKeypair(value, false),
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (storeKeypairViewDisposable != null) {
+            storeKeypairViewDisposable.dispose();
+            storeKeypairViewDisposable = null;
+        }
     }
 
     @OnClick(R.id.fragment_settings_tr_show_nodes)
@@ -141,10 +171,10 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         storeKeypairView.setChecked(!storeKeypairView.isChecked());
     }
 
-    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
-    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
-        presenter.onSetCheckedStoreKeypair(checked, false);
-    }
+//    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+//    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
+//        presenter.onSetCheckedStoreKeypair(checked, false);
+//    }
 
     @OnClick(R.id.fragment_settings_tr_subscribe_to_push)
     public void onClickSelectPushNotificationService() {
