@@ -2,12 +2,11 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -24,14 +23,13 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.AnimationUtils;
-import im.adamant.android.ui.fragments.CreateChatFragment;
-import im.adamant.android.ui.navigators.DefaultNavigator;
-import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.fragments.ChatsScreen;
+import im.adamant.android.ui.fragments.CreateChatFragment;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.mvp_view.MainView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
+import im.adamant.android.ui.presenters.MainPresenter;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
@@ -195,12 +193,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 }
                 break;
 
-                case Screens.PUSH_SUBSCRIPTION_SCREEN: {
-                    Intent intent = new Intent(getApplicationContext(), PushSubscriptionScreen.class);
-                    startActivity(intent);
-                }
-                break;
-
                 case Screens.PINCODE_SCREEN: {
                     Bundle bundle = (Bundle) forwardCommand.getTransitionData();
                     Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
@@ -213,6 +205,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
                 case Screens.ALL_TRANSACTIONS_SCREEN: {
                     Bundle bundle = (Bundle) forwardCommand.getTransitionData();
                     Intent intent = new Intent(getApplicationContext(), AllTransactionsScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+                case Screens.TRANSFER_DETAILS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
                     intent.putExtras(bundle);
 
                     startActivity(intent);

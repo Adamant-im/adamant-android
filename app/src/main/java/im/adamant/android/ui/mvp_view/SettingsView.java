@@ -18,6 +18,8 @@ public interface SettingsView extends MvpView {
     void startProgress();
     void stopProgress();
 
+    void setEnablePushServiceTypeOption(boolean value);
+
     void showExitDialog();
 
     @StateStrategyType(SkipStrategy.class)
@@ -28,4 +30,7 @@ public interface SettingsView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showMessage(int messageResource);
+
+    @StateStrategyType(SkipStrategy.class)
+    void showSelectServiceDialog(List<PushNotificationServiceFacade> facades, PushNotificationServiceFacade current);
 }

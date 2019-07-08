@@ -114,6 +114,7 @@
                             android:textSize="16sp"
                             android:padding="0dp"
                             android:text="@string/fragment_settings_language"
+                            android:clickable="false"
                             android:textAlignment="textEnd" />
 
                     </TableRow>
@@ -141,7 +142,7 @@
                     <TableRow
                         android:id="@+id/fragment_settings_tr_subscribe_to_push"
                         style="@style/AdamantLight.TableRowStyle"
-                        android:visibility="gone">
+                        >
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
@@ -167,6 +168,7 @@
                                 android:layout_weight="1"
                                 android:enabled="false"
                                 android:padding="0dp"
+                                android:clickable="false"
                                 android:text="@string/fcm_notification_service_short"
                                 android:textSize="16sp"
                                 android:textAlignment="textEnd"

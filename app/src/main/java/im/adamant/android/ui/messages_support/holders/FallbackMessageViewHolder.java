@@ -35,7 +35,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     }
 
     @Override
-    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.FALLBACK);
 
         if (isCorruptedMessage) {
@@ -43,7 +43,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
             return;
         }
 
-        super.bind(message, isNextMessageWithSameSender);
+        super.bind(message, isNextMessageWithSameSender, isLastMessage);
 
         FallbackMessage fallbackMessage = (FallbackMessage) message;
         Spanned messageText = fallbackMessage.getHtmlFallBackMessage(adamantAddressProcessor);

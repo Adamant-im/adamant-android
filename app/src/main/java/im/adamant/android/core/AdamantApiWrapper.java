@@ -1,8 +1,6 @@
 package im.adamant.android.core;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
@@ -12,10 +10,9 @@ import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
-import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
-import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
+import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.requests.NewAccount;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.Authorization;
@@ -24,6 +21,7 @@ import im.adamant.android.core.responses.MessageList;
 import im.adamant.android.core.responses.OperationComplete;
 import im.adamant.android.core.responses.ParametrizedTransactionList;
 import im.adamant.android.core.responses.PublicKeyResponse;
+import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
@@ -263,6 +261,14 @@ public class AdamantApiWrapper {
 
     public Flowable<TransactionWasProcessed> sendAdmTransferTransaction(ProcessTransaction transaction) {
         return api.sendAdmTransferTransaction(transaction)
+                .subscribeOn(Schedulers.io())
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    public Flowable<TransactionDetailsResponse> getTransactionDetails(String transactionId){
+        return api.getTransactionDetails(transactionId)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))

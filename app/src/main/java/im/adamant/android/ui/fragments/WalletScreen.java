@@ -7,15 +7,20 @@ import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -25,32 +30,26 @@ import com.google.android.material.tabs.TabLayout;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import butterknife.OnClick;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.ui.ShowQrCodeScreen;
-import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.ui.fragments.base.BaseFragment;
-import im.adamant.android.ui.presenters.WalletPresenter;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
-import im.adamant.android.ui.transformations.ShadowTransformation;
 import im.adamant.android.ui.entities.CurrencyCardItem;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.WalletView;
-import io.reactivex.disposables.CompositeDisposable;
+import im.adamant.android.ui.presenters.WalletPresenter;
+import im.adamant.android.ui.transformations.ShadowTransformation;
 import io.reactivex.disposables.Disposable;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -180,6 +179,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        currencyTransfersAdapter.setOnClickedLister(presenter::onTransactionClicked);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         WeakReference<WalletPresenter> thisReference = new WeakReference<>(presenter);
@@ -260,7 +265,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, address);
             bundle.putBoolean(ShowQrCodeScreen.ARG_SHOW_CONTENT, true);
-
+            bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 

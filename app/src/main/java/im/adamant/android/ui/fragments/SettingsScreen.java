@@ -2,6 +2,7 @@ package im.adamant.android.ui.fragments;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 
@@ -9,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,9 +25,11 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.franmontiel.localechanger.LocaleChanger;
+import com.jakewharton.rxbinding3.widget.RxCompoundButton;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.inject.Inject;
@@ -36,14 +40,15 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @Inject
@@ -57,18 +62,28 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     SettingsPresenter presenter;
 
     @ProvidePresenter
-    public SettingsPresenter getPresenter(){
+    public SettingsPresenter getPresenter() {
         return presenterProvider.get();
     }
 
-    @BindView(R.id.fragment_settings_tv_version) TextView versionView;
-    @BindView(R.id.fragment_settings_sw_store_keypair) Switch storeKeypairView;
-    @BindView(R.id.fragment_settings_tr_store_keypair) TableRow storeKeypairTableRowView;
-    @BindView(R.id.fragment_settings_tv_notification) TextView pushNotificationServiceView;
-    @BindView(R.id.fragment_settings_btn_change_lang) TextView changeLanguageButtonView;
-    @BindView(R.id.fragment_settings_tr_change_lang) TableRow changeLanguageTableRowView;
-    @BindView(R.id.fragment_settings_pb_progress) ProgressBar progressBarView;
-    @BindView(R.id.fragment_settings_tr_subscribe_to_push) TableRow pushNotificationServiceLayoutView;
+    @BindView(R.id.fragment_settings_tv_version)
+    TextView versionView;
+    @BindView(R.id.fragment_settings_sw_store_keypair)
+    Switch storeKeypairView;
+    @BindView(R.id.fragment_settings_tr_store_keypair)
+    TableRow storeKeypairTableRowView;
+    @BindView(R.id.fragment_settings_tv_notification)
+    TextView pushNotificationServiceView;
+    @BindView(R.id.fragment_settings_btn_change_lang)
+    TextView changeLanguageButtonView;
+    @BindView(R.id.fragment_settings_tr_change_lang)
+    TableRow changeLanguageTableRowView;
+    @BindView(R.id.fragment_settings_pb_progress)
+    ProgressBar progressBarView;
+    @BindView(R.id.fragment_settings_tr_subscribe_to_push)
+    TableRow pushNotificationServiceLayoutView;
+
+    Disposable storeKeypairViewDisposable;
 
     public SettingsScreen() {
         // Required empty public constructor
@@ -101,6 +116,29 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        storeKeypairViewDisposable = RxCompoundButton
+                .checkedChanges(storeKeypairView)
+                .delay(50, TimeUnit.MILLISECONDS)
+                .subscribe(
+                        value -> presenter.onSetCheckedStoreKeypair(value, false),
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (storeKeypairViewDisposable != null) {
+            storeKeypairViewDisposable.dispose();
+            storeKeypairViewDisposable = null;
+        }
+    }
+
     @OnClick(R.id.fragment_settings_tr_show_nodes)
     public void onClickShowNodesList() {
         presenter.onClickShowNodesList();
@@ -109,7 +147,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     @OnClick(R.id.fragment_settings_tr_change_lang)
     public void onSelectLanguage() {
-        androidx.appcompat.app.AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
+        AlertDialog.Builder languageDialogBuilder = getLanguageDialogBuilder(supportedLocales);
         languageDialogBuilder.create().show();
     }
 
@@ -133,10 +171,10 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         storeKeypairView.setChecked(!storeKeypairView.isChecked());
     }
 
-    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
-    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
-        presenter.onSetCheckedStoreKeypair(checked, false);
-    }
+//    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+//    public void onSwitchStoreKeyPair(CompoundButton button, boolean checked) {
+//        presenter.onSetCheckedStoreKeypair(checked, false);
+//    }
 
     @OnClick(R.id.fragment_settings_tr_subscribe_to_push)
     public void onClickSelectPushNotificationService() {
@@ -169,9 +207,14 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     }
 
     @Override
+    public void setEnablePushServiceTypeOption(boolean value) {
+
+    }
+
+    @Override
     public void showExitDialog() {
         Activity activity = getActivity();
-        if (activity != null){
+        if (activity != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder
                     .setTitle(R.string.dialog_logout_title)
@@ -179,18 +222,19 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                     .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                         presenter.onClickExitButton();
                     })
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {})
+                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+                    })
                     .show();
         }
     }
 
     @Override
     public void showTEENotSupportedDialog() {
-        androidx.appcompat.app.AlertDialog.Builder builder = null;
+        AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
         if (activity != null) {
-            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
+            builder = new AlertDialog.Builder(activity);
             builder.setTitle(R.string.warning);
             builder.setMessage(R.string.tee_not_supported);
             builder.setNegativeButton(R.string.no, (d, w) -> {
@@ -213,48 +257,68 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         Toast.makeText(getActivity(), messageResource, Toast.LENGTH_LONG).show();
     }
 
-    //TODO: Refactor: method to long and dirty
-    private androidx.appcompat.app.AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
-        androidx.appcompat.app.AlertDialog.Builder builder = null;
+    @Override
+    public void showSelectServiceDialog(List<PushNotificationServiceFacade> facades, PushNotificationServiceFacade current) {
+        AlertDialog.Builder builder = null;
+
+        builder = new AlertDialog.Builder(getActivity());
+
+        CharSequence[] titles = new CharSequence[facades.size()];
+
+        int defaultSelected = 0;
+        SupportedPushNotificationFacadeType currentFacadeType = current.getFacadeType();
+        for (int i = 0; i < titles.length; i++) {
+            titles[i] = getString(facades.get(i).getTitleResource());
+
+            if (currentFacadeType.equals(facades.get(i).getFacadeType())) {
+                defaultSelected = i;
+            }
+        }
+
+        final AtomicInteger selectedLangIndex = new AtomicInteger(defaultSelected);
+        int finalDefaultSelected = defaultSelected;
+
+        builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
+            selectedLangIndex.set(i);
+            int currentSelected = selectedLangIndex.get();
+            if (finalDefaultSelected != currentSelected) {
+                d.dismiss();
+                presenter.onClickSetNewPushService(facades.get(currentSelected));
+            }
+        });
+
+        builder.show();
+    }
+
+    private AlertDialog.Builder getLanguageDialogBuilder(List<Locale> supportedLocales) {
+        AlertDialog.Builder builder = null;
         FragmentActivity activity = getActivity();
 
-        if (activity != null){
-            builder = new androidx.appcompat.app.AlertDialog.Builder(activity);
-
-//            builder.setTitle(getString(R.string.fragment_settings_choose_language));
+        if (activity != null) {
+            builder = new AlertDialog.Builder(activity);
 
             CharSequence[] titles = new CharSequence[supportedLocales.size()];
 
             Locale locale = LocaleChanger.getLocale();
             int defaultSelected = 0;
-            for (int i = 0; i < titles.length; i++){
+            for (int i = 0; i < titles.length; i++) {
                 titles[i] = supportedLocales.get(i).getDisplayName();
 
-                if (locale.equals(supportedLocales.get(i))){
+                if (locale.equals(supportedLocales.get(i))) {
                     defaultSelected = i;
                 }
             }
 
             int finalDefaultSelected = defaultSelected;
             builder.setSingleChoiceItems(titles, defaultSelected, (d, i) -> {
-                if (finalDefaultSelected != i){
+                if (finalDefaultSelected != i) {
                     d.dismiss();
                     LocaleChanger.setLocale(supportedLocales.get(i));
                     activity.recreate();
                 }
             });
 
-//            int finalDefaultSelected = defaultSelected;
-//            builder.setPositiveButton(R.string.yes, (d, i) -> {
-//                int currentSelected = selectedLangIndex.get();
-//                if (finalDefaultSelected != currentSelected){
-//                    LocaleChanger.setLocale(supportedLocales.get(currentSelected));
-//                    activity.recreate();
-//                }
-//            });
-//            builder.setNegativeButton(R.string.no, null);
         }
-
 
         return builder;
     }

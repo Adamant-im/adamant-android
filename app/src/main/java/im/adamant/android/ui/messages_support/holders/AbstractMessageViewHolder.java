@@ -2,7 +2,6 @@ package im.adamant.android.ui.messages_support.holders;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,9 +11,8 @@ import java.util.Locale;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.transition.TransitionManager;
+
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
@@ -23,12 +21,11 @@ import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.disposables.CompositeDisposable;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 public abstract class AbstractMessageViewHolder extends AbstractMessageListContentViewHolder {
     protected final static SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 
     protected int parentPadding;
+    protected int lastMessagePadding;
     protected int sameSenderTopPadding;
     protected int notSameSenderTopPadding;
     protected int avatarMargin;
@@ -39,7 +36,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected TextView errorView;
     protected View messageBlockView;
     protected FrameLayout contentBlock;
-
+    protected Context context;
     protected ConstraintLayout constraintLayout;
     protected ConstraintSet constraintSet = new ConstraintSet();
     protected CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -56,16 +53,17 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         super(context, itemView);
         this.adamantAddressProcessor = adamantAddressProcessor;
         this.avatar = avatar;
-
+        this.context = context;
         constraintLayout = itemView.findViewById(R.id.message_item);
         TransitionManager.beginDelayedTransition(constraintLayout);
         constraintSet.clone(constraintLayout);
 
         parentPadding = (int)context.getResources().getDimension(R.dimen.list_item_message_padding);
+        lastMessagePadding=(int)context.getResources().getDimension(R.dimen.list_item_message_last_message_padding);
         avatarMargin = (int)context.getResources().getDimension(R.dimen.list_item_message_avatar_margin);
         avatarSize = (int) context.getResources().getDimension(R.dimen.list_item_avatar_size);
-        sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_same_sender_padding);
-        notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.activity_messages_not_same_sender_padding);
+        sameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_same_sender_padding);
+        notSameSenderTopPadding = (int) context.getResources().getDimension(R.dimen.list_item_message_not_same_sender_padding);
 
         messageBlockView = itemView.findViewById(R.id.list_item_message_card);
 
@@ -77,10 +75,10 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     @Override
-    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() == SupportedMessageListContentType.SEPARATOR);
 
-        if (isCorruptedMessage){
+        if (isCorruptedMessage) {
             emptyView();
             return;
         }
@@ -89,13 +87,20 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
         timeView.setText(timeFormatter.format(abstractMessage.getDate()));
 
-        if (abstractMessage.isiSay()){
+        if (abstractMessage.isiSay()) {
             iToldLayoutModification(isNextMessageWithSameSender);
         } else {
             companionToldModification(isNextMessageWithSameSender);
         }
 
         boolean isHideError = (abstractMessage.getError() == null || abstractMessage.getError().isEmpty());
+
+        if (isLastMessage) {
+            constraintLayout.setPadding(0, 0, 0, lastMessagePadding);
+        } else {
+            constraintLayout.setPadding(0, 0, 0, 0);
+        }
+
         //VERY IMPORTANT: This code must be placed under function which will change constraints, otherwise setVisibility doesn't work.
         if (isHideError) {
             errorView.setVisibility(View.GONE);
@@ -130,11 +135,19 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         processedView.setImageResource(R.drawable.ic_sending);
     }
 
-    protected void displayProcessedStatus(AbstractMessage message){
-        if (message.getStatus() == null) { return; }
+    protected void displayProcessedStatus(AbstractMessage message) {
+        if (message.getStatus() == null) {
+            return;
+        }
         switch (message.getStatus()) {
             case DELIVERED: {
-                processedView.setImageResource(R.drawable.ic_delivered);
+                if (!message.isiSay()) {
+                    processedView.setVisibility(View.INVISIBLE);
+                    processedView.setImageResource(R.drawable.ic_delivered);
+                } else {
+                    processedView.setVisibility(View.VISIBLE);
+                    processedView.setImageResource(R.drawable.ic_delivered);
+                }
             }
             break;
             case SENDING_AND_VALIDATION: {
@@ -158,7 +171,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
 
     @Override
     protected void finalize() throws Throwable {
-        if (compositeDisposable != null){
+        if (compositeDisposable != null) {
             compositeDisposable.dispose();
             compositeDisposable.clear();
         }

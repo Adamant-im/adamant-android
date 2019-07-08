@@ -81,7 +81,7 @@
                 android:theme="@style/AdamantLight.TextInput2Theme" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <ImageButton
+        <ImageView
             android:id="@+id/activity_nodes_btn_add_new_node"
             style="@style/AdamantLight.IconActive"
             android:layout_width="32dp"

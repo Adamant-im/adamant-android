@@ -67,7 +67,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
     @Override
     public void onBindViewHolder(@NonNull AbstractMessageListContentViewHolder holder, int position) {
         MessageListContent message = messages.get(position);
-        holder.bind(message, detectNextMessageWithSameSender(position));
+        boolean isLastMessage = !(position < (messages.size() - 1));
+        holder.bind(message, detectNextMessageWithSameSender(position), isLastMessage);
     }
 
     @Override
