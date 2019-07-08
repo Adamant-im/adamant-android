@@ -21,6 +21,8 @@ public abstract class BaseBottomFragment extends BottomSheetDialogFragment {
     private boolean mIsStateSaved;
     private MvpDelegate<? extends BaseBottomFragment> mMvpDelegate;
 
+    private Unbinder unbinder;
+
     public abstract int getLayoutId();
 
     @Override
@@ -45,7 +47,6 @@ public abstract class BaseBottomFragment extends BottomSheetDialogFragment {
         getMvpDelegate().onCreate(savedInstanceState);
     }
 
-    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

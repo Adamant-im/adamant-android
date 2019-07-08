@@ -25,6 +25,8 @@ public abstract class BaseFragment extends Fragment {
     private boolean mIsStateSaved;
     private MvpDelegate<? extends BaseFragment> mMvpDelegate;
 
+    private Unbinder unbinder;
+
     public abstract int getLayoutId();
 
     @Override
@@ -48,8 +50,6 @@ public abstract class BaseFragment extends Fragment {
 
         getMvpDelegate().onCreate(savedInstanceState);
     }
-
-    private Unbinder unbinder;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

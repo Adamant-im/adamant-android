@@ -22,6 +22,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     private boolean mIsStateSaved;
     private MvpDelegate<? extends BaseDialogFragment> mMvpDelegate;
 
+    private Unbinder unbinder;
 
     @Override
     public void onStart() {
@@ -44,8 +45,6 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
         getMvpDelegate().onCreate(savedInstanceState);
     }
-
-    Unbinder unbinder;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,9 +87,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
         getMvpDelegate().onDetach();
         getMvpDelegate().onDestroyView();
-        if (unbinder != null) {
-            unbinder.unbind();
-        }
+        unbinder.unbind();
     }
 
     @Override
