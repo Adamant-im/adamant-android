@@ -128,7 +128,7 @@ public class CreateChatFragment extends BaseBottomFragment implements CreateChat
         if (activity != null){
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, content);
-            bundle.putInt(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE,R.string.activity_show_qrcode_title_passphrase);
+            bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE, R.string.activity_show_qrcode_title_passphrase);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 

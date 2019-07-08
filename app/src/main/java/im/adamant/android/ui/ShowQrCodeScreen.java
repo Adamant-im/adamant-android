@@ -33,6 +33,7 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";
     public static final String ARG_SHOW_CONTENT = "show_content";
     public static final String ARG_TITLE_RESOURCE = "title";
+
     @Inject
     Provider<ShowQrCodePresenter> presenterProvider;
 
