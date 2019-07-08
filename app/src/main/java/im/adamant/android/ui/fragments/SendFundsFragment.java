@@ -149,14 +149,6 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
                     .retry()
                     .subscribe();
 
-            amountView.setOnFocusChangeListener((v, focused) -> {
-                if (focused) {
-                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.secondary, PorterDuff.Mode.SRC_IN);
-                } else {
-                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
-                }
-            });
-
             RxTextView.textChanges(recipientAddressView)
                     .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                     .map(CharSequence::toString)

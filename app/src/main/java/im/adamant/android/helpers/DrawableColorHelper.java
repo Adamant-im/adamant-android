@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 
 public class DrawableColorHelper {
     public static void changeColorForDrawable(Context context, TextView textView, int color, PorterDuff.Mode mode) {
+        if (textView == null) { return; }
         Drawable[] compoundDrawablesRelative = textView.getCompoundDrawablesRelative();
         Drawable[] newDrawablesRelative = changeColorForDrawable(context, color, mode, compoundDrawablesRelative);
         textView.setCompoundDrawablesRelative(newDrawablesRelative[0], newDrawablesRelative[1], newDrawablesRelative[2], newDrawablesRelative[3]);
