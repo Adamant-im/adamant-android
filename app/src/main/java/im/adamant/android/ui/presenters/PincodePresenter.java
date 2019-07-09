@@ -13,7 +13,6 @@ import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
@@ -40,11 +39,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case ACCESS_TO_APP: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
                 getViewState().setCancelButtonText(R.string.activity_pincode_remove_pin);
-            }
-            break;
-            case DROP: {
-                getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
-                getViewState().setCancelButtonText(R.string.cancel);
             }
             break;
         }
@@ -121,31 +115,11 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                         );
             }
             break;
-            case DROP: {
-                getViewState().startProcess();
-                currentOperation = securityInteractor
-                        .dropPassphrase(pinCode)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                (value) -> {
-                                    LoggerHelper.e("PINCODE", "SUCCESS SUBSCRIBE");
-                                    getViewState().stopProcess(true);
-                                    getViewState().close();
-                                },
-                                error -> {
-                                    getViewState().stopProcess(false);
-                                    getViewState().showError(R.string.wrong_pincode);
-                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
-                                }
-                        );
-            }
-            break;
         }
     }
 
     public void onClickCancelButton() {
         switch (mode) {
-            case DROP:
             case CREATE:
             case CONFIRM:
                 getViewState().close();
