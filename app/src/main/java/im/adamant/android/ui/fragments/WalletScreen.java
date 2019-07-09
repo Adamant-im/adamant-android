@@ -37,7 +37,6 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -161,7 +160,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext()){
+            @Override
+            public int computeVerticalScrollRange(RecyclerView.State state) {
+                return (int) (getItemCount() * getResources().getDimension(R.dimen.list_item_transfers_height));
+            }
+        };
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
 
