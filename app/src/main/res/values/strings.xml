@@ -77,8 +77,7 @@
     <string name="activity_transfer_details_from">From</string>
     <string name="activity_transfer_details_to">To</string>
     <string name="activity_transfer_details_open_explorer">Open in Explorer</string>
-    <string name="activity_transfer_details_start_chat">Start chat</string>
-    <string name="activity_transfer_details_continue_chat">Continue chat</string>
+    <string name="activity_transfer_details_go_to_chat">Go to chat</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>

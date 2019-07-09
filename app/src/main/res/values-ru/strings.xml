@@ -77,8 +77,7 @@
     <string name="activity_transfer_details_from">Отправитель</string>
     <string name="activity_transfer_details_to">Получатель</string>
     <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
-    <string name="activity_transfer_details_start_chat">Начать переписку</string>
-    <string name="activity_transfer_details_continue_chat">Продолжить переписку</string>
+    <string name="activity_transfer_details_go_to_chat">Перейти к чату</string>
     <string name="activity_transfer_details_fee">Комиссия</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>

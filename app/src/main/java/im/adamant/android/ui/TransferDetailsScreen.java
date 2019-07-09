@@ -213,11 +213,6 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         fee.setText(details.getFee());
         from.setText(getFrom(details));
         to.setText(getTo(details));
-        if (details.haveChat()) {
-            chatLabel.setText(R.string.activity_transfer_details_continue_chat);
-        } else {
-            chatLabel.setText(R.string.activity_transfer_details_start_chat);
-        }
     }
 
     private static final String LOADING_CHAR = "\u231B";
