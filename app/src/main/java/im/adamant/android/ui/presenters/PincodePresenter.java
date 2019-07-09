@@ -2,15 +2,12 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import java.util.concurrent.TimeUnit;
-
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 
@@ -20,9 +17,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
     private CharSequence pincodeForConfirmation;
     private int attemptsCount = 0;
-    private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
-    private Disposable timerErrorDisposable;
 
     public PincodePresenter(SecurityInteractor securityInteractor) {
         this.securityInteractor = securityInteractor;
@@ -30,7 +25,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void setMode(PinCodeView.MODE mode) {
         this.mode = mode;
-        switch (mode){
+        switch (mode) {
             case CREATE: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_new_pincode);
                 getViewState().setCancelButtonText(R.string.cancel);
@@ -45,15 +40,18 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(CharSequence pinCode) {
-        if (!validate(pinCode)) {
-            return;
+        pinCode = pinCode.toString();
+        if (mode == PinCodeView.MODE.CREATE) {
+            if (!validate(pinCode)) {
+                return;
+            }
         }
 
         if (currentOperation != null) {
             currentOperation.dispose();
         }
 
-        switch (mode){
+        switch (mode) {
             case CREATE: {
                 mode = PinCodeView.MODE.CONFIRM;
                 pincodeForConfirmation = pinCode;
@@ -61,7 +59,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             }
             break;
             case CONFIRM: {
-                if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)){
+                if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)) {
                     getViewState().startProcess();
                     currentOperation = securityInteractor
                             .savePassphrase(pinCode)
@@ -90,10 +88,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case ACCESS_TO_APP: {
                 attemptsCount++;
 
-                if (waitTimeOut()) { return; }
-
-                lastAttemptTimestamp = System.currentTimeMillis();
-
                 getViewState().startProcess();
                 currentOperation = securityInteractor
                         .restoreAuthorizationByPincode(pinCode)
@@ -111,6 +105,12 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     getViewState().stopProcess(false);
                                     getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                    if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
+                                        securityInteractor.dropPassphrase();
+                                        getViewState().stopProcess(true);
+                                        getViewState().showError(R.string.pincode_exceeded_limit);
+                                        getViewState().goToSplash();
+                                    }
                                 }
                         );
             }
@@ -141,39 +141,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
                 subscriptions.add(pincodeReset);
         }
-    }
-
-    private boolean waitTimeOut() {
-        if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-            if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
-                attemptsCount = 0;
-                return false;
-            } else {
-                lastAttemptTimestamp = System.currentTimeMillis();
-
-                if (timerErrorDisposable != null) {
-                    timerErrorDisposable.dispose();
-                }
-
-                int waitSeconds = BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS / 1000;
-
-                timerErrorDisposable = Observable
-                        .interval(1, TimeUnit.SECONDS)
-                        .take(waitSeconds)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                (second) -> {
-                                    LoggerHelper.e("INTERVAL", Long.toString(second));
-                                    getViewState().showRepeatableError(R.string.pincode_exceeding_the_number_of_attempts, waitSeconds - second.intValue());
-                                },
-                                (error) -> LoggerHelper.e("PINCODE", error.getMessage()),
-                                () -> getViewState().clearError()
-                        );
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private boolean validate(CharSequence pincode) {
