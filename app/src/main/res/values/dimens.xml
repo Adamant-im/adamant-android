@@ -43,8 +43,8 @@
     <dimen name="list_item_message_same_sender_padding">4dp</dimen>
     <dimen name="list_item_message_not_same_sender_padding">10dp</dimen>
 
-    <dimen name="tablerow_default_margin_horizontal">12dp</dimen>
-    <dimen name="tablerow_default_height">30dp</dimen>
+    <dimen name="tablerow_default_margin_horizontal">16dp</dimen>
+    <dimen name="tablerow_default_height">48dp</dimen>
 
     <dimen name="fragment_wallet_card_padding">20dp</dimen>
     <dimen name="fragment_wallet_card_height">284dp</dimen>
