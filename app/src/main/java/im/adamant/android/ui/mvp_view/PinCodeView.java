@@ -35,6 +35,8 @@ public interface PinCodeView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void showError(int resourceId);
 
+    void showWrongPin(int attemptsRemained);
+
     @StateStrategyType(SkipStrategy.class)
     void showRepeatableError(int resourceId, int secondsLeft);
 
