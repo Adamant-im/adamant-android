@@ -97,12 +97,7 @@ public class ChatInteractor {
                         .doOnNext(message -> chatsStorage.addMessageToChat(message))
                         .onErrorReturn(throwable -> new FallbackMessage())
                 )
-                .count()
-                .doAfterSuccess(count -> {
-                    if (count > 0) {
-                        chatsStorage.updateLastMessages();
-                    }
-                });
+                .count();
 
     }
 
@@ -126,7 +121,6 @@ public class ChatInteractor {
                             return fallbackMessage;
                         })
                 )
-                .doOnNext(message -> chatsStorage.addMessageToChat(message))
-                .doOnComplete(() -> chatsStorage.updateLastMessages());
+                .doOnNext(message -> chatsStorage.addMessageToChat(message));
     }
 }
