@@ -55,30 +55,38 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
-    public Flowable<Chat> loadChats() {
-        return chatsSource
-                .execute()
-                .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
-                .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
-                .doOnComplete(() -> chatsStorage.setLoaded(true))
-                .flatMap(description -> Flowable.fromCallable(() -> keyStorage
-                        .combinePublicKeyWithTransaction(
-                                description.getLastTransaction()
-                        ))
-                        .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
-                        .onErrorReturnItem(new Pair<>(null, null))
-                        .map(transactionPair -> {
-                            if ((transactionPair.first != null) && (transactionPair.second != null)) {
-                                Chat chat = chatMapper.apply(transactionPair);
-                                AbstractMessage message = messageMapper.apply(transactionPair);
-                                chat.setLastMessage(message);
-                                chatsStorage.addNewChat(chat);
-                                return chat;
-                            } else {
-                                return new Chat();
+    public Single<Flowable<Chat>> loadChats() {
+        return Single.fromCallable(() -> {
+            if (chatsStorage.isLoaded()) {
+                return Flowable.fromIterable(chatsStorage.getChatList());
+            } else {
+                return chatsSource
+                        .execute()
+                        .doOnNext(description -> {
+                            if (description.getLastTransaction().getHeight() > maxHeight) {
+                                maxHeight = description.getLastTransaction().getHeight();
                             }
                         })
-                );
+                        .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
+                        .doOnComplete(() -> chatsStorage.setLoaded(true))
+                        .flatMap(description -> Flowable.fromCallable(() -> keyStorage
+                                .combinePublicKeyWithTransaction(
+                                        description.getLastTransaction()
+                                ))
+                                .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
+                                .onErrorReturnItem(new Pair<>(null, null))
+                                .filter(transactionPair -> transactionPair.first != null && (transactionPair.second != null))
+                                .map(transactionPair -> {
+                                    Chat chat = chatMapper.apply(transactionPair);
+                                    AbstractMessage message = messageMapper.apply(transactionPair);
+                                    chat.setLastMessage(message);
+                                    chatsStorage.addNewChat(chat);
+                                    return chat;
+                                })
+                        );
+            }
+        });
+
     }
 
     public Completable loadContacts() {
@@ -87,10 +95,15 @@ public class ChatInteractor {
                 .doOnNext(contacts -> chatsStorage.refreshContacts(contacts))
                 .ignoreElements();
     }
+
     public Single<Long> update() {
-       return newItemsSource
+        return newItemsSource
                 .execute(maxHeight)
-                .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
+                .doOnNext(transaction -> {
+                    if (transaction.getHeight() > maxHeight) {
+                        maxHeight = transaction.getHeight();
+                    }
+                })
                 .flatMap(transaction -> Flowable
                         .fromCallable(() -> keyStorage.combinePublicKeyWithTransaction(transaction))
                         .map(transactionPair -> messageMapper.apply(transactionPair))
@@ -103,7 +116,11 @@ public class ChatInteractor {
 
     public Flowable<AbstractMessage> loadHistory(String chatId) {
         return historySource.execute(chatId)
-                .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
+                .doOnNext(transaction -> {
+                    if (transaction.getHeight() > maxHeight) {
+                        maxHeight = transaction.getHeight();
+                    }
+                })
                 .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
                 .flatMap(pair -> Flowable.just(pair)
                         .map(transaction -> messageMapper.apply(transaction))

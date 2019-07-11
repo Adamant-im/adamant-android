@@ -183,11 +183,18 @@ public class ChatsStorage {
     }
 
     public boolean isLoaded() {
-        return isLoaded;
+        chatsReadLock.lock();
+        try {
+            return isLoaded;
+        } finally {
+            chatsReadLock.unlock();
+        }
     }
 
     public void setLoaded(boolean loaded) {
+        chatsWriteLock.lock();
         isLoaded = loaded;
+        chatsWriteLock.unlock();
     }
 
     public void cleanUp() {
