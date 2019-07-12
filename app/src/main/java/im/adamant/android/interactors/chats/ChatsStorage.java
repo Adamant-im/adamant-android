@@ -95,6 +95,7 @@ public class ChatsStorage {
                     }
                 }
             }
+            Collections.sort(chats, chatComparator);
         } finally {
             chatsWriteLock.unlock();
         }
