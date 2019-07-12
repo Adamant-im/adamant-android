@@ -22,7 +22,7 @@ public class ChatStorageTest {
     public void concurrentOneProducerOneConsumer() {
         ChatsStorage chatsStorage = new ChatsStorage();
 
-        Flowable<AdamantBasicMessage> producer = provideProducer(chatsStorage);
+        Flowable<AdamantBasicMessage> producer = provideProducer(chatsStorage, 1);
         Flowable<Integer> consumer = provideConsumer(chatsStorage, CHAT_COUNT);
 
         Disposable producerSubscription = producer.subscribe();
@@ -35,8 +35,8 @@ public class ChatStorageTest {
     public void concurrentTwoProducerOneConsumer() {
         ChatsStorage chatsStorage = new ChatsStorage();
 
-        Flowable<AdamantBasicMessage> producer1 = provideProducer(chatsStorage);
-        Flowable<AdamantBasicMessage> producer2 = provideProducer(chatsStorage);
+        Flowable<AdamantBasicMessage> producer1 = provideProducer(chatsStorage, 1);
+        Flowable<AdamantBasicMessage> producer2 = provideProducer(chatsStorage, CHAT_COUNT + 1);
         Flowable<Integer> consumer = provideConsumer(chatsStorage, CHAT_COUNT * 2);
 
         Disposable producerSubscription1 = producer1.subscribe();
@@ -47,9 +47,9 @@ public class ChatStorageTest {
     }
 
 
-    private Flowable<AdamantBasicMessage> provideProducer(ChatsStorage chatsStorage) {
+    private Flowable<AdamantBasicMessage> provideProducer(ChatsStorage chatsStorage, int start) {
         return Flowable
-                .range(1, CHAT_COUNT)
+                .range(start, CHAT_COUNT)
                 .subscribeOn(Schedulers.io())
                 .map(integer -> {
                     AdamantBasicMessage message = new AdamantBasicMessage();
