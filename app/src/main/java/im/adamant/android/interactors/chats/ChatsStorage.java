@@ -81,6 +81,7 @@ public class ChatsStorage {
             if (!messages.contains(message)) {
                 addSeparatorIfNeeded(messages, message);
                 messages.add(message);
+                Collections.sort(messages, messageComparator);
 
                 boolean isMessageWithContent = message.getSupportedType()
                         != SupportedMessageListContentType.SEPARATOR;
@@ -98,30 +99,6 @@ public class ChatsStorage {
             chatsWriteLock.unlock();
         }
 
-    }
-
-    public void updateLastMessages() {
-        //Setting last message to chats
-        for (Chat chat : chats) {
-            List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
-            if (messages != null && messages.size() > 0) {
-                for (int i = (messages.size() - 1); i >= 0; i--) {
-                    MessageListContent mes = messages.get(i);
-                    boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
-                    if (isMessageWithContent) {
-                        AbstractMessage message = (AbstractMessage) mes;
-                        chat.setLastMessage(message);
-                        break;
-                    }
-                }
-            }
-        }
-
-        Collections.sort(chats, chatComparator);
-
-        for (Map.Entry<String, List<MessageListContent>> entry : messagesByChats.entrySet()) {
-            Collections.sort(entry.getValue(), messageComparator);
-        }
     }
 
     public void refreshContacts(Map<String, Contact> contacts) {
@@ -260,16 +237,7 @@ public class ChatsStorage {
                 return -1;
             }
 
-            long diff = secondObjectMessage.getTimestamp() - firstObjectMessage.getTimestamp();
-
-            if (diff > 0) {
-                return 1;
-            }
-            if (diff == 0) {
-                return 0;
-            } else {
-                return -1;
-            }
+            return Long.compare(secondObjectMessage.getTimestamp(), firstObjectMessage.getTimestamp());
         }
     }
 
@@ -288,16 +256,7 @@ public class ChatsStorage {
                 return 1;
             }
 
-            long diff = o2.getTimestamp() - o1.getTimestamp();
-
-            if (diff > 0) {
-                return -1;
-            }
-            if (diff == 0) {
-                return 0;
-            } else {
-                return 1;
-            }
+            return Long.compare(o1.getTimestamp(), o2.getTimestamp());
         }
     }
 }
