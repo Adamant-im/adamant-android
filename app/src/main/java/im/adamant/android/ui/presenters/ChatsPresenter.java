@@ -15,6 +15,7 @@ import im.adamant.android.ui.mvp_view.ChatsView;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
@@ -44,6 +45,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                     LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
                     router.showSystemMessage(throwable.getMessage());
                 })
+                .subscribeOn(Schedulers.io())
                 .subscribe(chats -> {
                     chatInteractor.loadContacts();
                     getViewState().showChats(chats);

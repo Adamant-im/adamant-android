@@ -205,7 +205,7 @@ public class ChatsStorage {
             separators.clear();
             isLoaded = false;
         } finally {
-            chatsWriteLock.lock();
+            chatsWriteLock.unlock();
         }
     }
 
