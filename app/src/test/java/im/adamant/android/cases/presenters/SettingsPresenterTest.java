@@ -33,6 +33,7 @@ import im.adamant.android.ui.mvp_view.SettingsView;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import io.reactivex.Completable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -103,7 +104,8 @@ public class SettingsPresenterTest {
                 logoutInteractor,
                 api,
                 securityInteractor,
-                switchPushNotificationServiceInteractor
+                switchPushNotificationServiceInteractor,
+                Schedulers.trampoline()
         );
     }
 

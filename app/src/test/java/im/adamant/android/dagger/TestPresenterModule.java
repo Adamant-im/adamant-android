@@ -13,11 +13,11 @@ import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.presenters.MainPresenter;
 import im.adamant.android.ui.presenters.MessagesPresenter;
 import im.adamant.android.ui.presenters.NodesListPresenter;
-import im.adamant.android.ui.presenters.PushSubscriptionPresenter;
 import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.presenters.SendFundsPresenter;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
+import im.adamant.android.ui.presenters.TransferDetailsPresenter;
 import im.adamant.android.ui.presenters.WalletPresenter;
 import io.reactivex.disposables.CompositeDisposable;
 import ru.terrakok.cicerone.Router;
@@ -50,13 +50,6 @@ public abstract class TestPresenterModule {
     @Named(Screens.NODES_LIST_SCREEN)
     public static CompositeDisposable provideNodesListComposite() {
         return new CompositeDisposable();
-    }
-
-    @Singleton
-    @Provides
-    public static PushSubscriptionPresenter providePushSubscriptionPresenter(
-    ){
-        return mock(PushSubscriptionPresenter.class);
     }
 
     @Singleton
@@ -181,5 +174,11 @@ public abstract class TestPresenterModule {
     @Provides
     public static MainPresenter provideMainPresenter(){
         return mock(MainPresenter.class);
+    }
+
+    @Singleton
+    @Provides
+    public static TransferDetailsPresenter provideTransferDetailsPresenter() {
+        return mock(TransferDetailsPresenter.class);
     }
 }

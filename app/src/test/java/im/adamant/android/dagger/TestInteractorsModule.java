@@ -1,9 +1,13 @@
 package im.adamant.android.dagger;
 
+import java.util.Map;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
@@ -14,7 +18,11 @@ import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 
 import static org.mockito.Mockito.mock;
 
@@ -84,5 +92,11 @@ public abstract class TestInteractorsModule {
     @Provides
     public static HasNewMessagesInteractor provideHasNewMessagesInteractor() {
         return mock(HasNewMessagesInteractor.class);
+    }
+
+    @Singleton
+    @Provides
+    public static TransferDetailsInteractor transferDetailsInteractor() {
+        return mock(TransferDetailsInteractor.class);
     }
 }

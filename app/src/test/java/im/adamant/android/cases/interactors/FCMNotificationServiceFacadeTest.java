@@ -52,7 +52,7 @@ public class FCMNotificationServiceFacadeTest {
 
     @Before
     public void setUp() throws Exception {
-        gson = mock(Gson.class);
+        gson = new Gson();
         settings = mock(Settings.class);
         messageFactoryProvider = mock(MessageFactoryProvider.class);
         pushSubscriptionMessageFactory = mock(AdamantPushSubscriptionMessageFactory.class);
