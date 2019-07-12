@@ -3,6 +3,7 @@ package im.adamant.android.cases.interactors.chats;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.interactors.chats.ChatsStorage;
@@ -22,7 +23,7 @@ public class ChatStorageTest {
     public void concurrentOneProducerOneConsumer() {
         ChatsStorage chatsStorage = new ChatsStorage();
 
-        Flowable<AdamantBasicMessage> producer = provideProducer(chatsStorage, 1);
+        Flowable<AdamantBasicMessage> producer = provideProducer(chatsStorage, 1, CHAT_COUNT);
         Flowable<Integer> consumer = provideConsumer(chatsStorage, CHAT_COUNT);
 
         Disposable producerSubscription = producer.subscribe();
@@ -35,8 +36,8 @@ public class ChatStorageTest {
     public void concurrentTwoProducerOneConsumer() {
         ChatsStorage chatsStorage = new ChatsStorage();
 
-        Flowable<AdamantBasicMessage> producer1 = provideProducer(chatsStorage, 1);
-        Flowable<AdamantBasicMessage> producer2 = provideProducer(chatsStorage, CHAT_COUNT + 1);
+        Flowable<AdamantBasicMessage> producer1 = provideProducer(chatsStorage, 1, CHAT_COUNT);
+        Flowable<AdamantBasicMessage> producer2 = provideProducer(chatsStorage, CHAT_COUNT + 1, CHAT_COUNT);
         Flowable<Integer> consumer = provideConsumer(chatsStorage, CHAT_COUNT * 2);
 
         Disposable producerSubscription1 = producer1.subscribe();
@@ -46,8 +47,47 @@ public class ChatStorageTest {
         Assert.assertEquals(CHAT_COUNT * 2, (int) size);
     }
 
+    @Test
+    public void testMessagesAndChatOrder() {
+        final int count = 3;
+        ChatsStorage chatsStorage = new ChatsStorage();
 
-    private Flowable<AdamantBasicMessage> provideProducer(ChatsStorage chatsStorage, int start) {
+        Flowable<AdamantBasicMessage> adamantBasicMessageFlowable =  provideProducer(chatsStorage, 1, CHAT_COUNT)
+                .zipWith(Flowable.range(1, count), (message, index) -> {
+                    AdamantBasicMessage secondMessage = new AdamantBasicMessage();
+                    secondMessage.setCompanionId(message.getCompanionId());
+                    secondMessage.setText("Second Message " + index);
+                    secondMessage.setTimestamp(Integer.MAX_VALUE - (index + 1));
+
+                    chatsStorage.addMessageToChat(secondMessage);
+
+                    message.setTimestamp(Integer.MAX_VALUE - index); //Добавлено раньше но должно выводится последним
+                    return message;
+                });
+
+        adamantBasicMessageFlowable.blockingSubscribe();
+
+        chatsStorage.updateLastMessages();
+
+        List<Chat> chatList = chatsStorage.getChatList();
+        Chat chat = chatList.get(chatList.size() - 1);
+
+        Assert.assertEquals("U" + count, chat.getCompanionId());
+
+        List<MessageListContent> messages = chatsStorage.getMessagesByCompanionId(chat.getCompanionId());
+
+        Assert.assertEquals(2, messages.size());
+        MessageListContent messageListContent = messages.get(messages.size() - 1);
+
+        long timestamp = messageListContent.getTimestamp();
+        String text = ((AdamantBasicMessage) messageListContent).getText();
+
+        Assert.assertEquals(Integer.MAX_VALUE - 1, timestamp);
+        Assert.assertEquals("Text: " + count, text);
+    }
+
+
+    private Flowable<AdamantBasicMessage> provideProducer(ChatsStorage chatsStorage, int start, int count) {
         return Flowable
                 .range(start, CHAT_COUNT)
                 .subscribeOn(Schedulers.io())
