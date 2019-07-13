@@ -57,6 +57,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         Disposable disposable = chatInteractor.loadMoreChats()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
+                .share()
                 .subscribe(chats -> {
                     getViewState().progress(false);
                     getViewState().showChats(chats);
@@ -83,16 +84,19 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
     }
 
     public void onLoadMore() {
-        getViewState().progress(true);
-        Disposable disposable = chatInteractor.loadMoreChats()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess(chats -> {
-                    getViewState().progress(false);
-                    showChats(chats);
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
-        subscriptions.add(disposable);
+        if (chatInteractor.haveMoreChats()) {
+            getViewState().progress(true);
+            Disposable disposable = chatInteractor.loadMoreChats()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(chats -> {
+                        getViewState().progress(false);
+                        showChats(chats);
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .share()
+                    .subscribe();
+            subscriptions.add(disposable);
+        }
     }
 
 //    @Override

@@ -62,7 +62,7 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
-    public static final int PAGE_SIZE = 1;
+    public static final int PAGE_SIZE = 3;
 
     private int currentPage = 0;
 
@@ -71,26 +71,36 @@ public class ChatInteractor {
         return currentPage;
     }
 
-    private Single<List<Chat>> loadingChatsSingle;
+    private Flowable<List<Chat>> loadingChatsSingle;
 
-    private int getCurrentOffset(){
+    @MainThread
+    private int getCurrentOffset() {
         return getCurrentPage() * PAGE_SIZE;
     }
 
     @MainThread
-    public Single<List<Chat>> loadMoreChats(){
+    public boolean haveMoreChats() {
+        return chatsSource.getCount() > getCurrentOffset();
+    }
+
+    @MainThread
+    public Flowable<List<Chat>> loadMoreChats(){
+        if(!haveMoreChats()){
+            return Flowable.fromCallable(()-> chatsStorage.getChatList());
+        }
         if (loadingChatsSingle == null) {
             loadingChatsSingle = chatsSource.execute(getCurrentOffset(), PAGE_SIZE)
                     .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                     .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
                     .flatMap(this::mapToChat)
                     .toList()
+                    .toFlowable()
                     .map(list -> {
                         chatsStorage.updateLastMessages();
                         return chatsStorage.getChatList();
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSuccess(list -> {
+                    .doOnComplete(() -> {
                         loadingChatsSingle = null;
                         currentPage++;
                     })

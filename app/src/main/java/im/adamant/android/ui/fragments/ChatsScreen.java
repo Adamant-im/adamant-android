@@ -124,6 +124,7 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         }
     }
 
+    private boolean haveMore = true;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
