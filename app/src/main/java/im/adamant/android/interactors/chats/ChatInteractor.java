@@ -2,7 +2,14 @@ package im.adamant.android.interactors.chats;
 
 import android.util.Pair;
 
+import androidx.annotation.MainThread;
+
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import im.adamant.android.core.exceptions.MessageDecryptException;
+import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Chat;
@@ -14,6 +21,7 @@ import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class ChatInteractor {
     //TODO: Schedulers must be injected through Dagger for comfort unit-testing
@@ -55,30 +63,73 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
+    private enum State {
+        EMPTY, LOADING, LOADED
+    }
+
+    public static final int PAGE_SIZE = 1;
+
+    private int getPageOffset(int page){
+        return page*PAGE_SIZE;
+    }
+
+    private Map<Integer, State> pageState = new TreeMap<>();
+    private Map<Integer, Single<List<Chat>>> pageFlowable = new TreeMap<>();
+
+    @MainThread
+    private State getPageState(int page){
+        if (pageState.containsKey(page)) {
+            return pageState.get(page);
+        } else {
+            return State.EMPTY;
+        }
+    }
+
+    @MainThread
+    private void setPageState(int page, State state){
+        pageState.put(page, state);
+    }
+
+
+    @MainThread
+    public Single<List<Chat>> loadChats(int page){
+        State state = getPageState(page);
+        if(state==State.LOADING){
+            return pageFlowable.get(page);
+        } else if(state == State.EMPTY) {
+            pageState.put(page,State.LOADING);
+            Single<List<Chat>> chatsFlowable = chatsSource.execute(getPageOffset(page), PAGE_SIZE)
+                    .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
+                    .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
+                    .flatMap(this::mapToChat)
+                    .toList()
+                    .map(list -> {
+                        chatsStorage.updateLastMessages();
+                        return chatsStorage.getChatList();
+                    })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally(()->{
+                        pageFlowable.remove(page);
+                        setPageState(page,State.LOADED);
+                    });
+            if (getPageState(page)==State.LOADING) {
+                pageFlowable.put(page, chatsFlowable);
+            }
+            return chatsFlowable;
+        }else if(state == State.LOADED){
+            return Single.just(chatsStorage.getChats(getPageOffset(page),getPageOffset(page)+PAGE_SIZE));
+        }else {
+            throw new IllegalStateException("Unknown page's state");
+        }
+    }
+
     public Flowable<Chat> loadChats() {
         return chatsSource
                 .execute()
                 .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                 .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
                 .doOnComplete(() -> chatsStorage.setLoaded(true))
-                .flatMap(description -> Flowable.fromCallable(() -> keyStorage
-                        .combinePublicKeyWithTransaction(
-                                description.getLastTransaction()
-                        ))
-                        .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
-                        .onErrorReturnItem(new Pair<>(null, null))
-                        .map(transactionPair -> {
-                            if ((transactionPair.first != null) && (transactionPair.second != null)) {
-                                Chat chat = chatMapper.apply(transactionPair);
-                                AbstractMessage message = messageMapper.apply(transactionPair);
-                                chat.setLastMessage(message);
-                                chatsStorage.addNewChat(chat);
-                                return chat;
-                            } else {
-                                return new Chat();
-                            }
-                        })
-                );
+                .flatMap(this::mapToChat);
     }
 
     public Completable loadContacts() {
@@ -128,5 +179,25 @@ public class ChatInteractor {
                 )
                 .doOnNext(message -> chatsStorage.addMessageToChat(message))
                 .doOnComplete(() -> chatsStorage.updateLastMessages());
+    }
+
+    private Flowable<Chat> mapToChat(ChatList.ChatDescription description) {
+        return Flowable.fromCallable(() -> keyStorage
+                .combinePublicKeyWithTransaction(
+                        description.getLastTransaction()
+                ))
+                .doOnError(throwable -> LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable))
+                .onErrorReturnItem(new Pair<>(null, null))
+                .map(transactionPair -> {
+                    if ((transactionPair.first != null) && (transactionPair.second != null)) {
+                        Chat chat = chatMapper.apply(transactionPair);
+                        AbstractMessage message = messageMapper.apply(transactionPair);
+                        chat.setLastMessage(message);
+                        chatsStorage.addNewChat(chat);
+                        return chat;
+                    } else {
+                        return new Chat();
+                    }
+                });
     }
 }

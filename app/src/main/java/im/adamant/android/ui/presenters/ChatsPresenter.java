@@ -2,11 +2,12 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
-import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.AnimationUtils;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
@@ -14,9 +15,9 @@ import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mvp_view.ChatsView;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
@@ -35,27 +36,26 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         this.chatsStorage = chatsStorage;
     }
 
+    private List<Chat> chatList = Collections.emptyList();
+
+    private void showChats(List<Chat> chats) {
+        this.chatList = chats;
+        getViewState().showChats(chatList);
+    }
+
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
         getViewState().progress(!chatsStorage.isLoaded());
-        getViewState().showChats(chatsStorage.getChatList());
+        showChats(chatsStorage.getChatList());
 
-        Disposable disposable = chatInteractor
-                .loadChats()
-                .ignoreElements()
-                .andThen(chatInteractor.loadContacts())
+        Disposable disposable = chatInteractor.loadChats(0)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(throwable -> {
-                    LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
-                    router.showSystemMessage(throwable.getMessage());
-                })
-                .doOnComplete(() -> {
+                .subscribeOn(Schedulers.io())
+                .subscribe(chats -> {
                     getViewState().progress(false);
-                    getViewState().showChats(chatsStorage.getChatList());
-                })
-                .subscribe(() -> {
+                    getViewState().showChats(chats);
                     Disposable updatedDisposabled = chatInteractor
                             .update()
                             .observeOn(AndroidSchedulers.mainThread())
@@ -65,7 +65,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                             })
                             .doAfterSuccess((newItemsCount) -> {
                                 if (newItemsCount > 0) {
-                                    getViewState().showChats(chatsStorage.getChatList());
+                                    showChats(chatsStorage.getChatList());
                                 }
                             })
                             .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
@@ -78,6 +78,18 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         subscriptions.add(disposable);
     }
 
+    public void onLoadMore() {
+        getViewState().progress(true);
+        Disposable disposable = chatInteractor.loadChats(chatList.size() / ChatInteractor.PAGE_SIZE)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess(chats -> {
+                    getViewState().progress(false);
+                    showChats(chats);
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe();
+        subscriptions.add(disposable);
+    }
 
 //    @Override
 //    public void attachView(ChatsView view) {
@@ -86,7 +98,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
 //        getViewState().showChats(chatsStorage.getChatList());
 //    }
 
-    public void onChatWasSelected(Chat chat){
+    public void onChatWasSelected(Chat chat) {
         router.navigateTo(Screens.MESSAGES_SCREEN, chat.getCompanionId());
     }
 

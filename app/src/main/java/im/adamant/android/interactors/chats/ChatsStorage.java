@@ -30,6 +30,10 @@ public class ChatsStorage {
         return chats;
     }
 
+    public List<Chat> getChats(int from, int to){
+        return new ArrayList<>(chats.subList(from,Math.min(to,chats.size())));
+    }
+
     public List<MessageListContent> getMessagesByCompanionId(String companionId) {
         List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
 

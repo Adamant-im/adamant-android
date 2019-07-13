@@ -4,13 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Emitter;
 import io.reactivex.Flowable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,17 +20,20 @@ public class LastTransactionInChatsSource {
     public Flowable<ChatList.ChatDescription> execute() {
         if (!api.isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return getTransactionsBatch(0);
+        return getTransactionsBatch(0,AdamantApi.DEFAULT_TRANSACTIONS_LIMIT);
     }
 
 
-    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset) {
+    public Flowable<ChatList.ChatDescription> execute(int offset,int limit) {
+        if (!api.isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return getTransactionsBatch(offset,limit);
+    }
+
+
+    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset,int limit) {
         Flowable<ChatList> transactionFlowable = null;
-        if (offset > 0){
-            transactionFlowable = api.getChatsByOffset(offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
-        } else {
-            transactionFlowable = api.getChats(AdamantApi.ORDER_BY_TIMESTAMP_DESC);
-        }
+        transactionFlowable = api.getChatsByOffset(offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
 
         return transactionFlowable
                 .observeOn(Schedulers.computation())
@@ -47,7 +46,7 @@ public class LastTransactionInChatsSource {
                                 .fromIterable(transactionList.getChats());
 
                         if (newOffset <= count) {
-                            return result.concatWith(getTransactionsBatch(newOffset));
+                            return result.concatWith(getTransactionsBatch(newOffset,limit));
                         }
 
                         return result;

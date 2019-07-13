@@ -46,6 +46,7 @@ public interface AdamantApi {
     Flowable<ChatList> getChatsByOffset(
             @Path("address") String address,
             @Query("offset") int offset,
+            @Query("limit") int limit,
             @Query("orderBy") String order
     );
 
