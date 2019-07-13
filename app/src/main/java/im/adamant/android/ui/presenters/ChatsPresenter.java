@@ -1,5 +1,7 @@
 package im.adamant.android.ui.presenters;
 
+import androidx.annotation.MainThread;
+
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.Collections;
@@ -38,10 +40,12 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
 
     private List<Chat> chatList = Collections.emptyList();
 
+    @MainThread
     private void showChats(List<Chat> chats) {
         this.chatList = chats;
         getViewState().showChats(chatList);
     }
+
 
     @Override
     protected void onFirstViewAttach() {
@@ -50,7 +54,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         getViewState().progress(!chatsStorage.isLoaded());
         showChats(chatsStorage.getChatList());
 
-        Disposable disposable = chatInteractor.loadChats(0)
+        Disposable disposable = chatInteractor.loadMoreChats()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(chats -> {
@@ -80,7 +84,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
 
     public void onLoadMore() {
         getViewState().progress(true);
-        Disposable disposable = chatInteractor.loadChats(chatList.size() / ChatInteractor.PAGE_SIZE)
+        Disposable disposable = chatInteractor.loadMoreChats()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess(chats -> {
                     getViewState().progress(false);

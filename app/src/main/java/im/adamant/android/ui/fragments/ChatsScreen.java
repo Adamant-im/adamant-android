@@ -49,7 +49,7 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     ChatsPresenter presenter;
 
     @ProvidePresenter
-    public ChatsPresenter getPresenter(){
+    public ChatsPresenter getPresenter() {
         return presenterProvider.get();
     }
 
@@ -119,6 +119,9 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless croll
+        }
     }
 
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
@@ -138,6 +141,9 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
     @Override
     public void progress(boolean value) {
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.setLoading(value);
+        }
         if (value) {
             progressBar.setVisibility(View.VISIBLE);
         } else {

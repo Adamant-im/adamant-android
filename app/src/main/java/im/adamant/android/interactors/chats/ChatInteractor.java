@@ -4,9 +4,8 @@ import android.util.Pair;
 
 import androidx.annotation.MainThread;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.core.responses.ChatList;
@@ -63,42 +62,25 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
-    private enum State {
-        EMPTY, LOADING, LOADED
-    }
-
     public static final int PAGE_SIZE = 1;
 
-    private int getPageOffset(int page){
-        return page*PAGE_SIZE;
-    }
-
-    private Map<Integer, State> pageState = new TreeMap<>();
-    private Map<Integer, Single<List<Chat>>> pageFlowable = new TreeMap<>();
+    private int currentPage = 0;
 
     @MainThread
-    private State getPageState(int page){
-        if (pageState.containsKey(page)) {
-            return pageState.get(page);
-        } else {
-            return State.EMPTY;
-        }
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    private Single<List<Chat>> loadingChatsSingle;
+
+    private int getCurrentOffset(){
+        return getCurrentPage() * PAGE_SIZE;
     }
 
     @MainThread
-    private void setPageState(int page, State state){
-        pageState.put(page, state);
-    }
-
-
-    @MainThread
-    public Single<List<Chat>> loadChats(int page){
-        State state = getPageState(page);
-        if(state==State.LOADING){
-            return pageFlowable.get(page);
-        } else if(state == State.EMPTY) {
-            pageState.put(page,State.LOADING);
-            Single<List<Chat>> chatsFlowable = chatsSource.execute(getPageOffset(page), PAGE_SIZE)
+    public Single<List<Chat>> loadMoreChats(){
+        if (loadingChatsSingle == null) {
+            loadingChatsSingle = chatsSource.execute(getCurrentOffset(), PAGE_SIZE)
                     .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                     .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
                     .flatMap(this::mapToChat)
@@ -108,19 +90,19 @@ public class ChatInteractor {
                         return chatsStorage.getChatList();
                     })
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doFinally(()->{
-                        pageFlowable.remove(page);
-                        setPageState(page,State.LOADED);
+                    .doOnSuccess(list -> {
+                        loadingChatsSingle = null;
+                        currentPage++;
+                    })
+                    .retry(throwable -> throwable instanceof IOException)
+                    .doOnError(e -> {
+                        loadingChatsSingle = null;
+                        if(!(e instanceof IOException)){
+                            currentPage++;
+                        }
                     });
-            if (getPageState(page)==State.LOADING) {
-                pageFlowable.put(page, chatsFlowable);
-            }
-            return chatsFlowable;
-        }else if(state == State.LOADED){
-            return Single.just(chatsStorage.getChats(getPageOffset(page),getPageOffset(page)+PAGE_SIZE));
-        }else {
-            throw new IllegalStateException("Unknown page's state");
         }
+        return loadingChatsSingle;
     }
 
     public Flowable<Chat> loadChats() {

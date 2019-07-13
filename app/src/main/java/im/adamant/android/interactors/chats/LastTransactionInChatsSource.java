@@ -1,5 +1,7 @@
 package im.adamant.android.interactors.chats;
 
+import androidx.annotation.MainThread;
+
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.core.AdamantApi;
@@ -8,6 +10,7 @@ import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class LastTransactionInChatsSource {
@@ -30,13 +33,31 @@ public class LastTransactionInChatsSource {
         return getTransactionsBatch(offset,limit);
     }
 
+    private int count = Integer.MAX_VALUE;
 
-    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset,int limit) {
+    @MainThread
+    public int getCount() {
+        return count;
+    }
+
+    @MainThread
+    private void setCount(int count){
+        this.count = count;
+    }
+
+    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset, int limit) {
         Flowable<ChatList> transactionFlowable = null;
         transactionFlowable = api.getChatsByOffset(offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
 
         return transactionFlowable
-                .observeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(transactionList->{
+                    if (transactionList.isSuccess()) {
+                        setCount(transactionList.getCount());
+                    }
+                    return transactionList;
+                })
+                .observeOn(Schedulers.io())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {
                         int count = transactionList.getCount();
