@@ -120,11 +120,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
         if (endlessRecyclerViewScrollListener != null) {
-            endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless croll
+            endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless scroll
         }
     }
 
-    private boolean haveMore = true;
     private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
@@ -134,9 +133,9 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 presenter.onLoadMore();
-                //page = totalItemsCount / AdamantApi.DEFAULT_TRANSACTIONS_LIMIT;
             }
         };
+        endlessRecyclerViewScrollListener.setVisibleThreshold(12);
         chatList.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 

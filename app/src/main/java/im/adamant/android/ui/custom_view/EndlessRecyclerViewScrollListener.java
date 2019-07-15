@@ -19,6 +19,10 @@ public abstract class EndlessRecyclerViewScrollListener extends RecyclerView.OnS
     // Sets the starting page index
     private int startingPageIndex = 0;
 
+    public void setVisibleThreshold(int visibleThreshold) {
+        this.visibleThreshold = visibleThreshold;
+    }
+
     public EndlessRecyclerViewScrollListener(LinearLayoutManager layoutManager) {
         this.mLayoutManager = layoutManager;
     }
