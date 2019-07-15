@@ -93,7 +93,6 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                         showChats(chats);
                     })
                     .subscribeOn(Schedulers.io())
-                    .share()
                     .subscribe();
             subscriptions.add(disposable);
         }

@@ -62,7 +62,7 @@ public class ChatInteractor {
         this.messageMapper = messageMapper;
     }
 
-    public static final int PAGE_SIZE = 3;
+    public static final int PAGE_SIZE = 25;
 
     private int currentPage = 0;
 
@@ -71,7 +71,7 @@ public class ChatInteractor {
         return currentPage;
     }
 
-    private Flowable<List<Chat>> loadingChatsSingle;
+    private Flowable<List<Chat>> loadingChatsFlowable;
 
     @MainThread
     private int getCurrentOffset() {
@@ -88,8 +88,8 @@ public class ChatInteractor {
         if(!haveMoreChats()){
             return Flowable.fromCallable(()-> chatsStorage.getChatList());
         }
-        if (loadingChatsSingle == null) {
-            loadingChatsSingle = chatsSource.execute(getCurrentOffset(), PAGE_SIZE)
+        if (loadingChatsFlowable == null) {
+            loadingChatsFlowable = chatsSource.execute(getCurrentOffset(), PAGE_SIZE)
                     .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
                     .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
                     .flatMap(this::mapToChat)
@@ -101,18 +101,19 @@ public class ChatInteractor {
                     })
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnComplete(() -> {
-                        loadingChatsSingle = null;
+                        loadingChatsFlowable = null;
                         currentPage++;
                     })
                     .retry(throwable -> throwable instanceof IOException)
                     .doOnError(e -> {
-                        loadingChatsSingle = null;
+                        loadingChatsFlowable = null;
                         if(!(e instanceof IOException)){
                             currentPage++;
                         }
-                    });
+                    })
+            .share();
         }
-        return loadingChatsSingle;
+        return loadingChatsFlowable;
     }
 
     public Flowable<Chat> loadChats() {

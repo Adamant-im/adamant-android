@@ -60,15 +60,8 @@ public class LastTransactionInChatsSource {
                 .observeOn(Schedulers.io())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {
-                        int count = transactionList.getCount();
-                        int newOffset = offset + AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
-
                         Flowable<ChatList.ChatDescription> result = Flowable
                                 .fromIterable(transactionList.getChats());
-
-                        if (newOffset <= count) {
-                            return result.concatWith(getTransactionsBatch(newOffset,limit));
-                        }
 
                         return result;
                     } else {
