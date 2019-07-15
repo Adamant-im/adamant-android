@@ -51,7 +51,6 @@ before_deploy:
   - "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v -f 4 adamant-release.apk
     adamant.apk"
   - cd -
-  - fastlane android deploy;
 deploy:
   - provider: releases
     api_key:
@@ -60,4 +59,13 @@ deploy:
     skip_cleanup: true
     on:
       repo: Adamant-im/adamant-android
+      branch: master
       tags: true
+      condition: $TRAVIS_TAG =~ ^release-.*$
+  - provider: script
+    script: google-play-market-deploy.sh
+    on:
+      repo: Adamant-im/adamant-android
+      branch: master
+      tags: true
+      condition: $TRAVIS_TAG =~ ^release-.*$
