@@ -193,4 +193,9 @@ public class ChatInteractor {
                     }
                 });
     }
+
+    public void startInitialLoading(){
+        loadMoreChats().
+                subscribe();
+    }
 }

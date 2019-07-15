@@ -46,41 +46,48 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         getViewState().showChats(chatList);
     }
 
+    private void subscribeToUpdates() {
+        Disposable updatedDisposable = chatInteractor
+                .update()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> {
+                    LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                    router.showSystemMessage(throwable.getMessage());
+                })
+                .doAfterSuccess((newItemsCount) -> {
+                    if (newItemsCount > 0) {
+                        showChats(chatsStorage.getChatList());
+                    }
+                })
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                .onErrorReturnItem(1L)
+                .subscribe();
+
+        subscriptions.add(updatedDisposable);
+    }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
 
-        getViewState().progress(!chatsStorage.isLoaded());
         showChats(chatsStorage.getChatList());
+        if (chatsStorage.getChatList().isEmpty()) {
+            getViewState().progress(true);
+            Disposable disposable = chatInteractor.loadMoreChats()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .share()
+                    .subscribe(chats -> {
+                        getViewState().progress(false);
+                        getViewState().showChats(chats);
+                        subscribeToUpdates();
+                    });
 
-        Disposable disposable = chatInteractor.loadMoreChats()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .share()
-                .subscribe(chats -> {
-                    getViewState().progress(false);
-                    getViewState().showChats(chats);
-                    Disposable updatedDisposabled = chatInteractor
-                            .update()
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .doOnError(throwable -> {
-                                LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
-                                router.showSystemMessage(throwable.getMessage());
-                            })
-                            .doAfterSuccess((newItemsCount) -> {
-                                if (newItemsCount > 0) {
-                                    showChats(chatsStorage.getChatList());
-                                }
-                            })
-                            .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                            .onErrorReturnItem(1L)
-                            .subscribe();
-
-                    subscriptions.add(updatedDisposabled);
-                });
-
-        subscriptions.add(disposable);
+            subscriptions.add(disposable);
+        } else {
+            getViewState().progress(false);
+            subscribeToUpdates();
+        }
     }
 
     public void onLoadMore() {
