@@ -43,7 +43,7 @@ public class HistoryTransactionsSource {
 
     private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(String chatId, int offset, int limit) {
         Flowable<MessageList> transactionFlowable =
-                api.getMessagesByOffset(chatId, offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_ASC);
+                api.getMessagesByOffset(chatId, offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
 
         return transactionFlowable
                 .observeOn(AndroidSchedulers.mainThread())
