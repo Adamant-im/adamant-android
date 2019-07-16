@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.core.responses.ChatList;
@@ -54,7 +57,7 @@ public class ChatInteractor {
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
-            TransactionToMessageMapper messageMapper
+            TransactionToMessageMapper messageMapper,Provider<ChatHistoryInteractor> chatInteractorProvider
     ) {
         this.keyStorage = keyStorage;
         this.newItemsSource = newItemsSource;
@@ -64,6 +67,7 @@ public class ChatInteractor {
         this.chatsStorage = chatsStorage;
         this.chatMapper = chatMapper;
         this.messageMapper = messageMapper;
+        this.chatHistoryInteractorProvider = chatInteractorProvider;
     }
 
     public static final int PAGE_SIZE = 25;
@@ -156,11 +160,15 @@ public class ChatInteractor {
 
     private Map<String,ChatHistoryInteractor> chatsInteractors = new TreeMap<>();
 
+    @Inject
+    Provider<ChatHistoryInteractor> chatHistoryInteractorProvider;
+
     @MainThread
     private ChatHistoryInteractor getInteractorForChat(String chatId){
         if(!chatsInteractors.containsKey(chatId)) {
-            chatsInteractors.put(chatId, new ChatHistoryInteractor(historySource, chatsStorage,
-                    keyStorage, messageMapper, chatId));
+            ChatHistoryInteractor interactor = chatHistoryInteractorProvider.get();
+            interactor.setChatId(chatId);
+            chatsInteractors.put(chatId, interactor);
         }
         return chatsInteractors.get(chatId);
     }

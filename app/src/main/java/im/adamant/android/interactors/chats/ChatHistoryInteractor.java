@@ -34,8 +34,13 @@ public class ChatHistoryInteractor {
         return getCurrentPage() * PAGE_SIZE;
     }
 
+    protected HistoryTransactionsSource historySource;
 
-    private HistoryTransactionsSource historySource;
+    @MainThread
+    public void setChatId(String chatId) {
+        this.chatId = chatId;
+    }
+
     private ChatsStorage chatsStorage;
     private PublicKeyStorage
             keyStorage;
@@ -44,9 +49,8 @@ public class ChatHistoryInteractor {
 
     public ChatHistoryInteractor(HistoryTransactionsSource historySource, ChatsStorage chatsStorage,
                                  PublicKeyStorage keyStorage,
-                                 TransactionToMessageMapper messageMapper, String chatId) {
+                                 TransactionToMessageMapper messageMapper) {
         this.historySource = historySource;
-        this.chatId = chatId;
         this.chatsStorage = chatsStorage;
         this.keyStorage = keyStorage;
         this.messageMapper = messageMapper;
@@ -73,6 +77,9 @@ public class ChatHistoryInteractor {
 
     @MainThread
     public Flowable<List<MessageListContent>> loadMoreMessages() {
+        if (chatId == null) {
+            throw new IllegalStateException("Chat setChatId must be called");
+        }
         if (!haveMoreMessages()) {
             return Flowable.fromCallable(() -> chatsStorage.getMessagesByCompanionId(chatId));
         }
