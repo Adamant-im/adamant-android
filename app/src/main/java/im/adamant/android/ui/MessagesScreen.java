@@ -38,12 +38,12 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
-import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
+import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
@@ -105,12 +105,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         return true;
     }
 
+    private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         messagesList.setLayoutManager(layoutManager);
         messagesList.setAdapter(adapter);
 
@@ -138,6 +139,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         showByAddress(intent);
     }
 
+    private EndlessRecyclerViewScrollListener endlessScrollListener;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,6 +157,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 .subscribe();
 
         compositeDisposable.add(subscribe);
+
+        endlessScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.loadMore();
+            }
+        };
+        messagesList.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
@@ -307,6 +318,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+
+
+    @Override
+    public void showLoading(boolean loading) {
+        //TODO add loading indication
     }
 
     @OnClick(R.id.activity_messages_btn_send)

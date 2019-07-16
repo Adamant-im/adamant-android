@@ -6,7 +6,10 @@ import androidx.annotation.MainThread;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
+import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
@@ -17,6 +20,7 @@ import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -150,12 +154,32 @@ public class ChatInteractor {
 
     }
 
-    public Flowable<AbstractMessage> loadHistory(String chatId) {
-        return historySource.execute(chatId)
+    private Map<String,ChatHistoryInteractor> chatsInteractors = new TreeMap<>();
+
+    @MainThread
+    private ChatHistoryInteractor getInteractorForChat(String chatId){
+        if(!chatsInteractors.containsKey(chatId)) {
+            chatsInteractors.put(chatId, new ChatHistoryInteractor(historySource, chatsStorage,
+                    keyStorage, messageMapper, chatId));
+        }
+        return chatsInteractors.get(chatId);
+    }
+
+    @MainThread
+    public Flowable<List<MessageListContent>> loadMoreChatMessages(String chatId) {
+        ChatHistoryInteractor chatHistoryInteractor = getInteractorForChat(chatId);
+        return chatHistoryInteractor.loadMoreMessages()
+                .observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete(()-> maxHeight = Math.max(maxHeight, chatHistoryInteractor.getMaxHeight()))
+            .share();
+    }
+
+    public Flowable<MessageListContent> loadHistory(String chatId) {
+        return historySource.execute(chatId, 0, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
                 .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
                 .flatMap(pair -> Flowable.just(pair)
-                        .map(transaction -> messageMapper.apply(transaction))
+                        .map(transaction -> (MessageListContent)messageMapper.apply(transaction))
                         .onErrorReturn(throwable -> {
                             FallbackMessage fallbackMessage = new FallbackMessage();
                             fallbackMessage.setError(throwable.getMessage());

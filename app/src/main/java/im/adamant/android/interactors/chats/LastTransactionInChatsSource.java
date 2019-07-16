@@ -51,13 +51,12 @@ public class LastTransactionInChatsSource {
 
         return transactionFlowable
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(transactionList->{
+                .doOnNext(transactionList -> {
                     if (transactionList.isSuccess()) {
                         setCount(transactionList.getCount());
                     }
-                    return transactionList;
                 })
-                .observeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {
                         Flowable<ChatList.ChatDescription> result = Flowable

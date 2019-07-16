@@ -152,10 +152,16 @@ public class AdamantApiWrapper {
     }
 
     public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset, String order) {
+        return getMessagesByOffset(companionAddress, offset,
+                AdamantApi.DEFAULT_TRANSACTIONS_LIMIT, order);
+    }
+
+
+    public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset,int limit, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getMessagesByOffset(account.getAddress(), companionAddress, offset, order)
+                .getMessagesByOffset(account.getAddress(), companionAddress, offset, limit, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))

@@ -61,6 +61,7 @@ public interface AdamantApi {
             @Path("address") String address,
             @Path("companionAddress") String companionAddress,
             @Query("offset") int offset,
+            @Query("limit") int limit,
             @Query("orderBy") String order
     );
 

@@ -1,15 +1,13 @@
 package im.adamant.android.ui.mvp_view;
 
-import android.graphics.Bitmap;
-
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
+import java.util.List;
+
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
-
-import java.util.List;
 
 public interface MessagesView extends MvpView {
     void showChatMessages(List<MessageListContent> messages);
@@ -31,4 +29,6 @@ public interface MessagesView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showQrCodeCompanionId(String companionId);
+
+    void showLoading(boolean loading);
 }
