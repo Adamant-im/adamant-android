@@ -40,5 +40,6 @@ public interface MessagesView extends MvpView {
     @StateStrategyType(SkipStrategy.class)
     void showQrCodeCompanionId(String companionId);
 
+    @StateStrategyType(AddToEndSingleStrategy.class)
     void showLoading(boolean loading);
 }

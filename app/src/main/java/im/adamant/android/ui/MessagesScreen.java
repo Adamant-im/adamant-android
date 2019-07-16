@@ -90,6 +90,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
     @BindView(R.id.activity_messages_tv_cost) TextInputLayout messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
+    @BindView(R.id.progress) View progressView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -313,7 +314,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         ClipData clip = ClipData.newPlainText("adamant_address", companionId);
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
 
-        if(clipboard != null){
+        if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
             Toast.makeText(this.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
         }
@@ -332,10 +333,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
 
-
     @Override
     public void showLoading(boolean loading) {
-        //TODO add loading indication
+       if (loading) {
+           progressView.setVisibility(View.VISIBLE);
+       } else {
+           progressView.setVisibility(View.INVISIBLE);
+       }
     }
 
     @OnClick(R.id.activity_messages_btn_send)
