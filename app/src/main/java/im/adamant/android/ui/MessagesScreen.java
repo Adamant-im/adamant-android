@@ -176,21 +176,32 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void showChatMessages(List<MessageListContent> messages) {
-        if (messages != null){
-            adapter.updateDataset(
-                    messages
-            );
+    public void showChatMessages(List<MessageListContent> messages, int addedCount) {
+        if (messages != null) {
+            adapter.updateDataset(messages, addedCount);
 
-            if (messages.size() == 0){
+            if (messages.size() == 0) {
                 emptyView.setVisibility(View.VISIBLE);
                 messagesList.setVisibility(View.GONE);
             } else {
                 emptyView.setVisibility(View.GONE);
                 messagesList.setVisibility(View.VISIBLE);
             }
+        }
+    }
 
-            goToLastMessage();
+    @Override
+    public void showChatMessages(List<MessageListContent> messages) {
+        if (messages != null) {
+            adapter.updateDataset(messages);
+
+            if (messages.size() == 0) {
+                emptyView.setVisibility(View.VISIBLE);
+                messagesList.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                messagesList.setVisibility(View.VISIBLE);
+            }
         }
     }
 

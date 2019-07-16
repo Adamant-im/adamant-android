@@ -1,6 +1,8 @@
 package im.adamant.android.ui.mvp_view;
 
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
@@ -10,8 +12,16 @@ import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public interface MessagesView extends MvpView {
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showChatMessages(List<MessageListContent> messages, int addedCount);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
     void showChatMessages(List<MessageListContent> messages);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void goToLastMessage();
+
     void dropMessageCost();
     void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);

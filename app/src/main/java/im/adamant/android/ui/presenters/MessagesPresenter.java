@@ -38,7 +38,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
 
     private Chat currentChat;
     private List<MessageListContent> messages;
-    private int currentMessageCount = 0;
+    private int previousMessagesCount = 0;
 
     private Disposable syncSubscription;
 
@@ -59,6 +59,12 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         this.api = api;
     }
 
+    public void setMessages(List<MessageListContent> messages) {
+        int addedCount = messages.size() - previousMessagesCount;
+        this.messages = messages;
+        getViewState().showChatMessages(messages, addedCount);
+        previousMessagesCount = messages.size();
+    }
 
     @Override
     public void attachView(MessagesView view) {
@@ -101,14 +107,15 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
         List<MessageListContent> messages = chatsStorage.getMessagesByCompanionId(companionId);
-        getViewState().showChatMessages(messages);
+        setMessages(messages);
         getViewState().showLoading(messages.isEmpty());
         if (messages.isEmpty()) {
             Disposable subscribe = chatInteractor.loadMoreChatMessages(companionId)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(newMessages -> {
                         getViewState().showLoading(false);
-                        getViewState().showChatMessages(newMessages);
+                        setMessages(newMessages);
+                        getViewState().goToLastMessage();
                     })
                     .ignoreElements()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -122,6 +129,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                 subscriptions.add(subscribe);
         } else {
             subscribeToUpdates();
+            getViewState().goToLastMessage();
         }
     }
 
@@ -156,7 +164,6 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         chatUpdatePublicKeyInteractor.execute(chat);
         chatsStorage.addNewChat(chat);
         onShowChatByCompanionId(address);
-
     }
 
     public void onClickSendAdamantBasicMessage(String message){
@@ -237,6 +244,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         messages = chatsStorage.getMessagesByCompanionId(
                 companionId
         );
+        previousMessagesCount = messages.size();
 
         getViewState().showChatMessages(messages);
     }
@@ -272,7 +280,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(messages -> {
                     getViewState().showLoading(false);
-                    getViewState().showChatMessages(messages);
+                    setMessages(messages);
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe();
