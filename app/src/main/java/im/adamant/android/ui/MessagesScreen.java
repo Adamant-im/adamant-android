@@ -43,7 +43,7 @@ import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
-import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
+import im.adamant.android.ui.custom_view.EndlessUpScrollListener;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
@@ -139,7 +139,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         showByAddress(intent);
     }
 
-    private EndlessRecyclerViewScrollListener endlessScrollListener;
+    private EndlessUpScrollListener endlessScrollListener;
 
     @Override
     protected void onResume() {
@@ -158,7 +158,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
         compositeDisposable.add(subscribe);
 
-        endlessScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+        endlessScrollListener = new EndlessUpScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 presenter.loadMore();

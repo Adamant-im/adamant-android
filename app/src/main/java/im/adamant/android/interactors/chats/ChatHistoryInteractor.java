@@ -108,7 +108,7 @@ public class ChatHistoryInteractor {
                     .doOnComplete(() -> chatsStorage.updateLastMessages())
                     .map(ignored -> chatsStorage.getMessagesByCompanionId(chatId))
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnComplete(() -> {
+                    .doOnNext(ignored -> {
                         loadingMessagesFlowable = null;
                         currentPage++;
                     })
