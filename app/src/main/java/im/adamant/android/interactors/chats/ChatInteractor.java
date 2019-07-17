@@ -1,5 +1,6 @@
 package im.adamant.android.interactors.chats;
 
+import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.MainThread;
@@ -27,6 +28,7 @@ import io.reactivex.Completable;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class ChatInteractor {
     //TODO: Schedulers must be injected through Dagger for comfort unit-testing
@@ -230,8 +232,18 @@ public class ChatInteractor {
                 });
     }
 
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressLint("CheckResult")
+    @MainThread
     public void startInitialLoading(){
-        loadMoreChats().
-                subscribe();
+        loadMoreChats()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe(chats -> {
+                    for(Chat chat:chats.subList(0,Math.min(5,chats.size()))){
+                        loadMoreChatMessages(chat.getCompanionId())
+                                .subscribe();
+                    }
+                });
     }
 }
