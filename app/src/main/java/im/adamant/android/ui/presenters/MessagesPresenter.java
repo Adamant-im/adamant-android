@@ -278,12 +278,11 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         getViewState().showLoading(true);
         Disposable disposable = chatInteractor.loadMoreChatMessages(companionId)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(messages -> {
+                .subscribeOn(Schedulers.io())
+                .subscribe(contents -> {
                     getViewState().showLoading(false);
                     setMessages(messages);
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe();
+                });
         subscriptions.add(disposable);
     }
 }

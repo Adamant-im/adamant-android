@@ -178,6 +178,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void showChatMessages(List<MessageListContent> messages, int addedCount) {
+        if (endlessScrollListener!=null) {
+            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
+        }
         if (messages != null) {
             adapter.updateDataset(messages, addedCount);
 
@@ -193,6 +196,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void showChatMessages(List<MessageListContent> messages) {
+        if (endlessScrollListener!=null) {
+            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
+        }
         if (messages != null) {
             adapter.updateDataset(messages);
 
@@ -335,6 +341,9 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void showLoading(boolean loading) {
+        if(endlessScrollListener != null) {
+            endlessScrollListener.setLoading(false);
+        }
        if (loading) {
            progressView.setVisibility(View.VISIBLE);
        } else {

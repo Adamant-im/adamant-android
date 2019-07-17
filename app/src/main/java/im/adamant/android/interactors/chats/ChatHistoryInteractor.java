@@ -113,12 +113,13 @@ public class ChatHistoryInteractor {
                         }
                     })
                     .doOnComplete(() -> chatsStorage.updateLastMessages())
-                    .map(ignored -> chatsStorage.getMessagesByCompanionId(chatId))
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(ignored -> {
                         loadingMessagesFlowable = null;
                         currentPage++;
                     })
+                    .observeOn(Schedulers.computation())
+                    .map(ignored -> chatsStorage.getMessagesByCompanionId(chatId))
                     .retry(throwable -> throwable instanceof IOException)
                     .doOnError(e -> {
                         loadingMessagesFlowable = null;
