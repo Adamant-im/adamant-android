@@ -275,14 +275,16 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     }
 
     public void loadMore(){
-        getViewState().showLoading(true);
-        Disposable disposable = chatInteractor.loadMoreChatMessages(companionId)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe(contents -> {
-                    getViewState().showLoading(false);
-                    setMessages(messages);
-                });
-        subscriptions.add(disposable);
+        if (chatInteractor.haveMoreChatMessages(companionId)) {
+            getViewState().showLoading(true);
+            Disposable disposable = chatInteractor.loadMoreChatMessages(companionId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(contents -> {
+                        getViewState().showLoading(false);
+                        setMessages(messages);
+                    });
+            subscriptions.add(disposable);
+        }
     }
 }

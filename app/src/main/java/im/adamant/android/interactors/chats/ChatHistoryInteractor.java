@@ -59,7 +59,7 @@ public class ChatHistoryInteractor {
 
     private Flowable<List<MessageListContent>> loadingMessagesFlowable;
 
-    private boolean haveMoreMessages() {
+    public boolean haveMoreMessages() {
         return historySource.getCount() > getCurrentOffset();
     }
 

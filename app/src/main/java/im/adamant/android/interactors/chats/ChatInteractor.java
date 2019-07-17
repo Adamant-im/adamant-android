@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.inject.Inject;
 import javax.inject.Provider;
 
 import im.adamant.android.core.AdamantApi;
@@ -46,6 +45,7 @@ public class ChatInteractor {
     private ChatsStorage chatsStorage;
     private TransactionToChatMapper chatMapper;
     private TransactionToMessageMapper messageMapper;
+    private Provider<ChatHistoryInteractor> chatHistoryInteractorProvider;
 
     private int maxHeight = 1;
 
@@ -160,9 +160,6 @@ public class ChatInteractor {
 
     private Map<String,ChatHistoryInteractor> chatsInteractors = new TreeMap<>();
 
-    @Inject
-    Provider<ChatHistoryInteractor> chatHistoryInteractorProvider;
-
     @MainThread
     private ChatHistoryInteractor getInteractorForChat(String chatId){
         if(!chatsInteractors.containsKey(chatId)) {
@@ -171,6 +168,13 @@ public class ChatInteractor {
             chatsInteractors.put(chatId, interactor);
         }
         return chatsInteractors.get(chatId);
+    }
+
+
+    @MainThread
+    public boolean haveMoreChatMessages(String chatId){
+        ChatHistoryInteractor chatHistoryInteractor = getInteractorForChat(chatId);
+        return chatHistoryInteractor.haveMoreMessages();
     }
 
     @MainThread
