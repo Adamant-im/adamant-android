@@ -12,15 +12,12 @@ import java.util.TreeMap;
 
 import javax.inject.Provider;
 
-import im.adamant.android.core.AdamantApi;
-import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
-import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -126,15 +123,6 @@ public class ChatInteractor {
         return loadingChatsFlowable;
     }
 
-    public Flowable<Chat> loadChats() {
-        return chatsSource
-                .execute()
-                .doOnNext(description -> {if (description.getLastTransaction().getHeight() > maxHeight) {maxHeight = description.getLastTransaction().getHeight();}})
-                .doOnNext(description -> keyStorage.savePublicKeysFromParticipant(description))
-                .doOnComplete(() -> chatsStorage.setLoaded(true))
-                .flatMap(this::mapToChat);
-    }
-
     public Completable loadContacts() {
         return contactsSource
                 .execute()
@@ -186,30 +174,6 @@ public class ChatInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
             .doOnComplete(()-> maxHeight = Math.max(maxHeight, chatHistoryInteractor.getMaxHeight()))
             .share();
-    }
-
-    public Flowable<MessageListContent> loadHistory(String chatId) {
-        return historySource.execute(chatId, 0, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
-                .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
-                .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
-                .flatMap(pair -> Flowable.just(pair)
-                        .map(transaction -> (MessageListContent)messageMapper.apply(transaction))
-                        .onErrorReturn(throwable -> {
-                            FallbackMessage fallbackMessage = new FallbackMessage();
-                            fallbackMessage.setError(throwable.getMessage());
-                            fallbackMessage.setSupportedType(SupportedMessageListContentType.FALLBACK);
-                            if (throwable instanceof MessageDecryptException) {
-                                fallbackMessage.setCompanionId(((MessageDecryptException) throwable).getCompanionId());
-                                fallbackMessage.setiSay(((MessageDecryptException) throwable).isISay());
-                                fallbackMessage.setTimestamp(((MessageDecryptException) throwable).getTimestamp());
-                                fallbackMessage.setStatus(AbstractMessage.Status.INVALIDATED);
-                                fallbackMessage.setTransactionId(((MessageDecryptException) throwable).getTransactionId());
-                            }
-                            return fallbackMessage;
-                        })
-                )
-                .doOnNext(message -> chatsStorage.addMessageToChat(message))
-                .doOnComplete(() -> chatsStorage.updateLastMessages());
     }
 
     private Flowable<Chat> mapToChat(ChatList.ChatDescription description) {
