@@ -18,7 +18,7 @@ import io.reactivex.schedulers.Schedulers;
 
 public class ChatHistoryInteractor {
 
-    public static final int PAGE_SIZE = 3;
+    public static final int PAGE_SIZE = 25;
 
     private String chatId;
 

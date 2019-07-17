@@ -165,6 +165,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                 presenter.loadMore();
             }
         };
+        endlessScrollListener.setVisibleThreshold(12);
         messagesList.addOnScrollListener(endlessScrollListener);
     }
 
