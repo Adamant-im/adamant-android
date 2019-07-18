@@ -74,10 +74,6 @@ public class SecurityInteractor {
         .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
-    public void dropPassphrase() {
-        clearSettings();
-    }
-
     public Completable forceDropPassphrase() {
         return pushNotificationServiceInteractor
                 .resetNotificationFacade(true)

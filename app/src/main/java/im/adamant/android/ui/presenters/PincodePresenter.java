@@ -105,7 +105,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     getViewState().stopProcess(false);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                     if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-                                        securityInteractor.dropPassphrase();
+                                        securityInteractor.forceDropPassphrase();
                                         getViewState().stopProcess(true);
                                         getViewState().showError(R.string.pincode_exceeded_limit);
                                         getViewState().goToSplash();
