@@ -75,6 +75,7 @@
     <string name="activity_transfer_details_date">Дата</string>
     <string name="activity_transfer_details_confirmations">Количество подтверждений</string>
     <string name="activity_transfer_details_from">Отправитель</string>
+    <string name="activity_transfer_details_id">Id Транзакции</string>
     <string name="activity_transfer_details_to">Получатель</string>
     <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
     <string name="activity_transfer_details_go_to_chat">Перейти к чату</string>

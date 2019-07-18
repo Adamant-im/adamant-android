@@ -43,6 +43,7 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
     @BindView(R.id.date) TextView date;
     @BindView(R.id.confirmations) TextView confirmations;
     @BindView(R.id.fee) TextView fee;
+    @BindView(R.id.transactionId) TextView id;
     @BindView(R.id.from) TextView from;
     @BindView(R.id.to) TextView to;
     @BindView(R.id.explorerGroup) View explorerGroup;
@@ -55,6 +56,7 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
     @BindView(R.id.feeGroup) View feeGroup;
     @BindView(R.id.fromGroup) View fromGroup;
     @BindView(R.id.toGroup) View toGroup;
+    @BindView(R.id.idGroup) View idGroup;
 
 
     @Inject
@@ -103,6 +105,8 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         }
         ButterKnife.bind(this);
         initTitle();
+        id.setText(transferId);
+
         explorerGroup.setOnClickListener(v -> presenter.showExplorerClicked());
         chatGroup.setOnClickListener(v -> presenter.chatClicked());
         amountGroup.setOnClickListener(v -> presenter.amountGroupClicked());
@@ -112,6 +116,7 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         feeGroup.setOnClickListener(v -> presenter.feeGroupClicked());
         fromGroup.setOnClickListener(v -> presenter.fromGroupClicked());
         toGroup.setOnClickListener(v -> presenter.toGroupClicked());
+        idGroup.setOnClickListener(v -> presenter.idGroupClicked());
     }
 
     @Inject
