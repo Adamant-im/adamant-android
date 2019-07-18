@@ -4,7 +4,6 @@ import com.arellomobile.mvp.InjectViewState;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
@@ -15,7 +14,7 @@ import io.reactivex.disposables.Disposable;
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor securityInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
-    private CharSequence pincodeForConfirmation;
+    private String pincodeForConfirmation;
     private int attemptsCount = 0;
     private Disposable currentOperation;
 
@@ -40,9 +39,9 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
     }
 
     public void onInputPincodeWasCompleted(CharSequence pinCode) {
-        pinCode = pinCode.toString();
+        String pinCodeString = pinCode.toString();
         if (mode == PinCodeView.MODE.CREATE) {
-            if (!validate(pinCode)) {
+            if (!validate(pinCodeString)) {
                 return;
             }
         }
@@ -54,15 +53,15 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
         switch (mode) {
             case CREATE: {
                 mode = PinCodeView.MODE.CONFIRM;
-                pincodeForConfirmation = pinCode;
+                pincodeForConfirmation = pinCodeString;
                 getViewState().setSuggestion(R.string.activity_pincode_confirm);
             }
             break;
             case CONFIRM: {
-                if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)) {
+                if (pinCodeString.equals(pincodeForConfirmation)) {
                     getViewState().startProcess();
                     currentOperation = securityInteractor
-                            .savePassphrase(pinCode)
+                            .savePassphrase(pinCodeString)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     () -> {
@@ -90,7 +89,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
                 getViewState().startProcess();
                 currentOperation = securityInteractor
-                        .restoreAuthorizationByPincode(pinCode)
+                        .restoreAuthorizationByPincode(pinCodeString)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (authorization) -> {
@@ -105,7 +104,8 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     getViewState().stopProcess(false);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                     if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-                                        securityInteractor.forceDropPassphrase();
+                                        securityInteractor.forceDropPassphrase()
+                                                .subscribe();
                                         getViewState().stopProcess(true);
                                         getViewState().showError(R.string.pincode_exceeded_limit);
                                         getViewState().goToSplash();

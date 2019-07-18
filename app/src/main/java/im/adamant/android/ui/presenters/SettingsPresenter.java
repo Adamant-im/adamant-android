@@ -86,7 +86,8 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
                 bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.CREATE);
                 router.navigateTo(Screens.PINCODE_SCREEN, bundle);
             }else {
-                securityInteractor.forceDropPassphrase();
+                securityInteractor.forceDropPassphrase()
+                        .subscribe();
             }
         }
     }
