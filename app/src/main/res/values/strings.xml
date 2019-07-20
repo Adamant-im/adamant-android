@@ -53,6 +53,7 @@
     <string name="activity_messages_action_rename">Rename</string>
     <string name="activity_messages_action_copy">Copy address</string>
     <string name="activity_messages_action_qrcode">Show QR-code</string>
+    <string name="activity_messages_action_type">Type message</string>
 
     <string name="activity_show_qr_code_title">QR-Code</string>
     <string name="activity_show_qr_code_btn_save">Save qr-code in gallery</string>
