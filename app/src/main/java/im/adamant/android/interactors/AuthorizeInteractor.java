@@ -1,12 +1,11 @@
 package im.adamant.android.interactors;
 
-import android.util.Pair;
-
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
-import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -14,13 +13,10 @@ import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.responses.Authorization;
 
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.ObservableRxList;
-import io.github.novacrypto.bip39.MnemonicValidator;
 import io.github.novacrypto.bip39.Validation.InvalidChecksumException;
 import io.github.novacrypto.bip39.Validation.InvalidWordCountException;
 import io.github.novacrypto.bip39.Validation.UnexpectedWhiteSpaceException;
 import io.github.novacrypto.bip39.Validation.WordNotFoundException;
-import io.github.novacrypto.bip39.wordlists.English;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -45,52 +41,32 @@ public class AuthorizeInteractor {
         this.settings = settings;
     }
 
-    public Flowable<Authorization> authorize(String passPhrase) {
+    public Flowable<Authorization> authorize(CharSequence passPhrase) {
         try {
             return api.authorize(passPhrase)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnNext(authorization -> {
                         if (settings.isKeyPairMustBeStored()){
-                            String account = keyStoreCipher.encrypt(Constants.ADAMANT_ACCOUNT_ALIAS, api.getKeyPair());
-                            settings.setAccountKeypair(account);
+                            String account = keyStoreCipher.encrypt(
+                                    Constants.ADAMANT_ACCOUNT_ALIAS,
+                                    api.getPassPhrase()
+                            );
+                            settings.setAccountPassphrase(account);
                         }
-                    });
+                    })
+                    .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
         }catch (Exception ex){
             ex.printStackTrace();
             return Flowable.error(ex);
         }
     }
 
-    public Flowable<Authorization> restoreAuthorization() {
-
-            //Not transform this code in lambda (Application crashed if unchecked exception)
-           return Flowable.fromCallable(new Callable<KeyPair>() {
-                    @Override
-                    public KeyPair call() throws Exception {
-                        String account = settings.getAccountKeypair();
-                        if (account == null || account.isEmpty()){
-                            throw new Exception("Account not stored!");
-                        }
-
-                        KeyPair keyPair = keyStoreCipher.decrypt(Constants.ADAMANT_ACCOUNT_ALIAS, account);
-
-                        if (keyPair == null) {
-                            throw new Exception("Account not decrypted!");
-                        }
-
-                        return keyPair;
-                    }
-                })
-               .subscribeOn(Schedulers.computation())
-               .flatMap(keyPair -> api.authorize(keyPair));
-
-    }
 
     public CharSequence generatePassPhrase() {
         return keyGenerator.generateNewPassphrase();
     }
 
-    public boolean isValidPassphrase(String passphrase) {
+    public boolean isValidPassphrase(CharSequence passphrase) {
         return keyGenerator.isValidPassphrase(passphrase);
     }
 
@@ -98,9 +74,10 @@ public class AuthorizeInteractor {
             keyGenerator.validatePassphrase(passphrase);
     }
 
-    public Flowable<Authorization> createNewAccount(String passPhrase) {
+    public Flowable<Authorization> createNewAccount(CharSequence passPhrase) {
         return api.createNewAccount(passPhrase)
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public String getPublicKeyFromPassphrase(String passphrase) {

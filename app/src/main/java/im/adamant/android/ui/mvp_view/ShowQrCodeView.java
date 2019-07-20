@@ -7,4 +7,5 @@ import com.arellomobile.mvp.MvpView;
 public interface ShowQrCodeView extends MvpView {
     void showQrCode(Bitmap bitmap);
     void showMessage(int resourceId);
+    void showContent(String content);
 }

@@ -17,15 +17,21 @@ import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
 import dagger.android.AndroidInjection;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.adapters.SendCurrencyFragmentAdapter;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
-import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class SendFundsScreen extends BaseActivity implements HasSupportFragmentInjector {
     public static final String ARG_COMPANION_ID = "companion_id";
+    public static final String ARG_WALLET_FACADE = "wallet_facade";
 
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
@@ -33,9 +39,6 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
     @Inject
     NavigatorHolder navigatorHolder;
 
-//    @Inject
-//    Provider<SendCurrencyPresenter> presenterProvider;
-//
     @Inject
     SendCurrencyFragmentAdapter adapter;
 
@@ -59,17 +62,30 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.hasExtra(ARG_COMPANION_ID)) {
                 String companionId = getIntent().getStringExtra(ARG_COMPANION_ID);
                 adapter.setCompanionId(companionId);
-            }
         }
 
         slider.setAdapter(adapter);
-
         tabs.setupWithViewPager(slider);
 
-        setTitle(getString(R.string.activity_currency_send_title));
+        for (int i = 0; i < tabs.getTabCount(); i++) {
+            WalletFacade facadeItem = adapter.getFacadeItem(i);
+            TabLayout.Tab tabItem = tabs.getTabAt(i);
+            if (tabItem != null && facadeItem != null && facadeItem.getIconForEditText() != 0) {
+                tabItem.setIcon(facadeItem.getIconForEditText());
+            }
+        }
+
+        if (intent != null) {
+            SupportedWalletFacadeType facadeType = (SupportedWalletFacadeType) getIntent().getSerializableExtra(ARG_WALLET_FACADE);
+            if (facadeType != null) {
+                int indexByFacade = adapter.getIndexByFacade(facadeType);
+                slider.setCurrentItem(indexByFacade);
+            }
+        }
+
+        setTitle(getString(R.string.activity_send_funds_title));
     }
 
     @Override
@@ -91,27 +107,35 @@ public class SendFundsScreen extends BaseActivity implements HasSupportFragmentI
         navigatorHolder.removeNavigator();
     }
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+
+        }
+
+        @Override
+        protected void back(Back backCommand) {
+
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+            switch (backToCommand.getScreenKey()) {
+                case Screens.MESSAGES_SCREEN: {
+                    finish();
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if (command instanceof BackTo) {
-                BackTo backTo = (BackTo)command;
-                switch (backTo.getScreenKey()) {
-                    case Screens.MESSAGES_SCREEN: {
-                        finish();
-                    }
-                    break;
-                }
-            } else if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            }
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
         }
     };
 }

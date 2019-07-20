@@ -1,24 +1,35 @@
 package im.adamant.android.ui;
 
+import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
+import com.google.android.material.button.MaterialButton;
+import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
+import im.adamant.android.helpers.DrawableColorHelper;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.adapters.ServerNodeAdapter;
+import im.adamant.android.ui.custom_view.IgnoreLastDividerItemDecorator;
 import im.adamant.android.ui.mvp_view.NodesListView;
 import im.adamant.android.ui.presenters.NodesListPresenter;
 import io.reactivex.disposables.Disposable;
@@ -40,12 +51,20 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     @Inject
     ServerNodeAdapter nodeAdapter;
 
-    @BindView(R.id.fragment_settings_rv_list_of_nodes)
+    @BindView(R.id.activity_nodes_rv_list_of_nodes)
     RecyclerView nodeListView;
-    @BindView(R.id.fragment_settings_et_new_node_address)
+    @BindView(R.id.activity_nodes_et_new_node_address)
     EditText newNodeAddressView;
 
-    Disposable adapterDisposable;
+    @BindView(R.id.activity_nodes_btn_add_new_node)
+    ImageView addNodeButton;
+
+    @BindView(R.id.activity_nodes_btn_reset)
+    MaterialButton resetButtonView;
+
+    Disposable deleteItemDisposable;
+    Disposable switchItemDisposable;
+    Disposable inputAddressDisposable;
 
     @Override
     public int getLayoutId() {
@@ -68,11 +87,11 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         nodeListView.setLayoutManager(layoutManager);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
-                nodeListView.getContext(),
-                layoutManager.getOrientation()
-        );
-        nodeListView.addItemDecoration(dividerItemDecoration);
+        Drawable drawable = ContextCompat.getDrawable(nodeListView.getContext(), R.drawable.line_divider);
+        if (drawable != null) {
+            IgnoreLastDividerItemDecorator dividerItemDecoration = new IgnoreLastDividerItemDecorator(drawable);
+            nodeListView.addItemDecoration(dividerItemDecoration);
+        }
 
         nodeListView.setAdapter(nodeAdapter);
 
@@ -81,12 +100,14 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
                 hideKeyboard();
             }
         });
+
+        resetButtonView.setPaintFlags(resetButtonView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        adapterDisposable = nodeAdapter
+        deleteItemDisposable = nodeAdapter
                 .getRemoveObservable()
                 .subscribe(serverNode -> {
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
@@ -100,6 +121,29 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
                                 .show();
                 });
 
+        switchItemDisposable = nodeAdapter
+                .getSwitchObservable()
+                .subscribe(
+                        index -> presenter.onClickSwitchNode(index),
+                        error -> LoggerHelper.e("SwitchNode", error.getMessage(), error)
+                );
+
+        Context applicationContext = getApplicationContext();
+        inputAddressDisposable = RxTextView
+                .textChanges(newNodeAddressView)
+                .subscribe(
+                        (text) -> {
+                            Drawable drawable = addNodeButton.getDrawable();
+                            if (text.length() == 0) {
+                                Drawable changeDrawable = DrawableColorHelper.changeDrawable(applicationContext, R.color.textMuted, PorterDuff.Mode.SRC_IN, drawable);
+                                addNodeButton.setImageDrawable(changeDrawable);
+                            } else {
+                                Drawable changeDrawable = DrawableColorHelper.changeDrawable(applicationContext, R.color.secondary, PorterDuff.Mode.SRC_IN, drawable);
+                                addNodeButton.setImageDrawable(changeDrawable);
+                            }
+                        }
+                );
+
         nodeAdapter.startListenChanges();
     }
 
@@ -107,15 +151,28 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     protected void onPause() {
         nodeAdapter.stopListenChanges();
 
-        if (adapterDisposable != null){
-            adapterDisposable.dispose();
+        if (deleteItemDisposable != null){
+            deleteItemDisposable.dispose();
+        }
+
+        if (switchItemDisposable != null){
+            switchItemDisposable.dispose();
+        }
+
+        if (inputAddressDisposable != null){
+            inputAddressDisposable.dispose();
         }
         super.onPause();
     }
 
-    @OnClick(R.id.fragment_settings_btn_add_new_node)
+    @OnClick(R.id.activity_nodes_btn_add_new_node)
     public void onClickAddNewNode() {
         presenter.onClickAddNewNode(newNodeAddressView.getText().toString());
+    }
+
+    @OnClick(R.id.activity_nodes_btn_reset)
+    public void onClickResetToDefaults() {
+        presenter.onClickResetDefaults();
     }
 
     @Override

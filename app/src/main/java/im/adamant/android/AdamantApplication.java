@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
-import androidx.multidex.MultiDexApplication;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import androidx.multidex.MultiDexApplication;
+
 import com.franmontiel.localechanger.LocaleChanger;
-import com.squareup.leakcanary.LeakCanary;
 
 import java.util.List;
 import java.util.Locale;
@@ -81,6 +81,13 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
         InputMethodManager imm = (InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null){
             imm.hideSoftInputFromWindow(view.getWindowToken(), flags);
+        }
+    }
+
+    public static void showKeyboard(Context ctx, View view, int flags) {
+        InputMethodManager imm = (InputMethodManager)ctx.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.showSoftInput(view, flags);
         }
     }
 

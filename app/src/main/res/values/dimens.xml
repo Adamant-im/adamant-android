@@ -1,10 +1,14 @@
 <resources>
     <dimen name="main_button_width">210dp</dimen>
     <dimen name="main_button_height">54dp</dimen>
+    <dimen name="main_button_radius">36dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_bar_bottom_height">56dp</dimen>
     <dimen name="bottom_sheet_corner_radius">18dp</dimen>
+    <dimen name="pin_key_elevation">2dp</dimen>
+    <dimen name="pin_key_margin">5dp</dimen>
+    <dimen name="pin_key_margin_bottom">10dp</dimen>
 
     <dimen name="list_item_chat_text_size">16sp</dimen>
     <dimen name="list_item_chat_padding">12dp</dimen>
@@ -18,12 +22,15 @@
 
     <dimen name="list_item_chat_placeholder_date_width">60dp</dimen>
     <dimen name="list_item_chat_placeholder_date_height">18dp</dimen>
-
     <dimen name="activity_messages_new_message_height">42dp</dimen>
-    <dimen name="activity_login_max_form_width">600dp</dimen>
-    <dimen name="activity_login_title_text_size">30sp</dimen>
 
+    <dimen name="activity_login_slider_height">450dp</dimen>
     <dimen name="activity_show_qr_code_size_of_qr_code">150dp</dimen>
+
+    <dimen name="activity_transaction_details_item_height">68dp</dimen>
+
+    <dimen name="list_item_welcome_card_image_size">200dp</dimen>
+    <dimen name="list_item_welcome_card_max_text_width">350dp</dimen>
 
     <dimen name="list_item_message_padding">16dp</dimen>
     <dimen name="list_item_message_avatar_margin">8dp</dimen>
@@ -32,11 +39,19 @@
     <dimen name="list_item_message_bubble_max_width">232dp</dimen>
     <dimen name="list_item_message_bubble_content_max_width">200dp</dimen>
     <dimen name="list_item_message_bubble_content_min_width">80dp</dimen>
+    <dimen name="list_item_message_last_message_padding">16dp</dimen>
+    <dimen name="list_item_message_same_sender_padding">4dp</dimen>
+    <dimen name="list_item_message_not_same_sender_padding">10dp</dimen>
 
-    <dimen name="tablerow_default_margin_horizontal">10dp</dimen>
-    <dimen name="tablerow_default_height">20dp</dimen>
+    <dimen name="tablerow_default_margin_horizontal">12dp</dimen>
+    <dimen name="tablerow_default_height">30dp</dimen>
 
     <dimen name="fragment_wallet_card_padding">20dp</dimen>
+    <dimen name="fragment_wallet_card_height">284dp</dimen>
+    <dimen name="list_item_wallet_card_padding">20dp</dimen>
+    <dimen name="list_item_wallet_card_subtitle_size">12sp</dimen>
+    <dimen name="list_item_wallet_card_content_size">14sp</dimen>
+
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

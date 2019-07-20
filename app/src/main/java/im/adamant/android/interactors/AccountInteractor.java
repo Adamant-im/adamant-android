@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.BalanceConvertHelper;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Flowable;
 
@@ -25,6 +25,10 @@ public class AccountInteractor {
 
     public Flowable<BigDecimal> getAdamantBalance() {
         return Flowable.fromCallable(this::getBalance);
+    }
+
+    public boolean isAuthorized() {
+        return api.isAuthorized();
     }
 
     private BigDecimal getBalance() {

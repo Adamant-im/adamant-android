@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@android:color/transparent"
+    android:paddingTop="@dimen/pin_key_margin"
+    android:paddingLeft="@dimen/pin_key_margin"
+    android:paddingRight="@dimen/pin_key_margin"
+    android:paddingBottom="@dimen/pin_key_margin_bottom"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/list_item_pincode_key_button"
+        style="@style/AdamantLight.TextRegular"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/pin_key_margin"
+        android:layout_marginLeft="@dimen/pin_key_margin"
+        android:layout_marginRight="@dimen/pin_key_margin"
+        android:layout_marginBottom="@dimen/pin_key_margin_bottom"
+        android:background="@color/background"
+        android:elevation="@dimen/pin_key_elevation"
+        android:iconTint="@color/on_click_pincode_icon_key"
+        android:drawableTint="@color/on_click_pincode_icon_key"
+        android:gravity="center"
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:textAlignment="center"
+        android:textColor="@color/on_click_pincode_text_key"
+        app:iconPadding="0dp"
+        app:iconGravity="textStart"
+        app:cornerRadius="48dp" />
+
+</LinearLayout>

@@ -11,7 +11,9 @@ import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionMessage;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
+import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.core.exceptions.NotFoundPublicKey;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import io.reactivex.Flowable;
@@ -47,13 +49,18 @@ public class AdamantBasicMessageProcessor extends AbstractMessageProcessor<Adama
         KeyPair keyPair = api.getKeyPair();
         Account account = api.getAccount();
 
-         return Single
-                .defer(() -> Single.just(recipientPublicKey))
-                .flatMap((publicKey) -> Single.just(encryptor.encryptMessage(
-                        message.getText(),
-                        publicKey,
-                        keyPair.getSecretKeyString().toLowerCase()
-                )))
+        return Single
+                .fromCallable(() -> {
+                    if (recipientPublicKey == null || recipientPublicKey.isEmpty()) {
+                        throw new NotFoundPublicKey("Recipient public key not found");
+                    }
+
+                    return encryptor.encryptMessage(
+                            message.getText(),
+                            recipientPublicKey,
+                            keyPair.getSecretKeyString().toLowerCase()
+                    );
+                })
                 .flatMap((transactionMessage -> Single.fromCallable(
                         () -> {
                             UnnormalizedTransactionMessage unnormalizedMessage = new UnnormalizedTransactionMessage();

@@ -20,7 +20,6 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
     private TextView messageView;
-    private ImageView processedView;
     private View contentView;
 
     public FallbackMessageViewHolder(Context context, View v, AdamantMarkdownProcessor adamantAddressProcessor, Avatar avatar) {
@@ -30,15 +29,13 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
         contentView = inflater.inflate(R.layout.list_subitem_fallback_message, contentBlock, false);
         contentBlock.addView(contentView);
 
-        processedView = contentView.findViewById(R.id.list_item_message_processed);
-
         messageView = contentView.findViewById(R.id.list_item_message_text);
         messageView.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
 
     @Override
-    public void bind(MessageListContent message) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.FALLBACK);
 
         if (isCorruptedMessage) {
@@ -46,7 +43,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
             return;
         }
 
-        super.bind(message);
+        super.bind(message, isNextMessageWithSameSender, isLastMessage);
 
         FallbackMessage fallbackMessage = (FallbackMessage) message;
         Spanned messageText = fallbackMessage.getHtmlFallBackMessage(adamantAddressProcessor);
@@ -56,7 +53,7 @@ public class FallbackMessageViewHolder extends AbstractMessageViewHolder {
 
         messageView.setText(messageText);
 
-        displayProcessedStatus(processedView, fallbackMessage);
+        displayProcessedStatus(fallbackMessage);
     }
 
     private String resolveFallbackMessage(FallbackMessage message) {

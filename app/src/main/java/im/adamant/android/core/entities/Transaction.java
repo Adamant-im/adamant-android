@@ -24,9 +24,6 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
 
     private T asset;
 
-    //TODO: maybe not a string
-//    private List<String> confirmations;
-
     private long confirmations;
 
     private List<String> signatures;
@@ -59,6 +56,7 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
 
     private String signature;
 
+
     public T getAsset ()
     {
         return asset;
@@ -69,19 +67,12 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         this.asset = asset;
     }
 
-//    public List<String> getConfirmations ()
-//    {
-//        return confirmations;
-//    }
-
-//    public void setConfirmations (List<String> confirmations)
-//    {
-//        this.confirmations = confirmations;
-//    }
-
-
     public void setConfirmations(long confirmations) {
         this.confirmations = confirmations;
+    }
+
+    public long getConfirmations() {
+        return confirmations;
     }
 
     public List<String> getSignatures ()
@@ -234,10 +225,11 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         this.signature = signature;
     }
 
+
     @Override
     public String toString()
     {
-        return  this.getClass().getCanonicalName() + " [asset = " + asset + ", confirmations = " + confirmations + ", signatures = " + signatures + ", requesterPublicKey = " + requesterPublicKey + ", senderId = " + senderId + ", type = " + type + ", id = " + id + ", timestamp = " + timestamp + ", amount = " + amount + ", fee = " + fee + ", height = " + height + ", recipientId = " + recipientId + ", signSignature = " + signSignature + ", blockId = " + blockId + ", recipientPublicKey = " + recipientPublicKey + ", senderPublicKey = " + senderPublicKey + ", signature = " + signature + "]";
+        return  this.getClass().getCanonicalName() + " [id = " + id + ", asset = " + asset + ", confirmations = " + confirmations + ", signatures = " + signatures + ", requesterPublicKey = " + requesterPublicKey + ", senderId = " + senderId + ", type = " + type + ", timestamp = " + timestamp + ", amount = " + amount + ", fee = " + fee + ", height = " + height + ", recipientId = " + recipientId + ", signSignature = " + signSignature + ", blockId = " + blockId + ", recipientPublicKey = " + recipientPublicKey + ", senderPublicKey = " + senderPublicKey + ", signature = " + signature + "]";
     }
 
     public long getUnixTimestamp() {
@@ -245,7 +237,7 @@ public class Transaction<T extends TransactionAsset> implements WithBytesDigest 
         return (timestamp * 1000L) + AdamantApi.BASE_TIMESTAMP;
     }
 
-    public byte[] getBytesDigest(){
+    public byte[] getBytesDigest() {
         int assetSize = 0;
         byte[] assetBytes = null;
 

@@ -3,7 +3,9 @@ package im.adamant.android.interactors;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.entities.CurrencyCardItem;
@@ -20,7 +22,7 @@ public class WalletInteractor {
     }
 
     public Flowable<List<CurrencyCardItem>> getCurrencyItemCards() {
-        return Flowable.fromCallable(() -> {
+        return Flowable.defer(() -> {
             List<CurrencyCardItem> list = new ArrayList<>();
 
             for (SupportedWalletFacadeType currencyType : SupportedWalletFacadeType.values()){
@@ -35,6 +37,8 @@ public class WalletInteractor {
                     item.setPrecision(wallet.getPrecision());
                     item.setBackgroundLogoResource(wallet.getBackgroundLogoResource());
                     item.setAbbreviation(currencyType.name());
+                    item.setFacadeType(currencyType);
+
                     if (wallet.isAvailableAirdropLink()){
                         item.setAirdropLinkResource(wallet.getAirdropLinkResource());
                     }
@@ -43,24 +47,57 @@ public class WalletInteractor {
 
             }
 
-            return list;
+            return Flowable.just(list);
         })
-                .subscribeOn(Schedulers.computation());
+        .subscribeOn(Schedulers.computation())
+        .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public Single<List<CurrencyTransferEntity>> getLastTransfersByCurrencyAbbr(String abbreviation) {
         try {
             SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
             if (wallets.containsKey(supportedCurrencyType)){
-                WalletFacade driver = wallets.get(supportedCurrencyType);
-                if (driver == null){return Single.error(new NullPointerException());}
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Single.error(new NullPointerException());}
 
-                return driver.getLastTransfers();
+                return facade.getLastTransfers();
             }
         }catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        return Single.error(new Exception("Not found currency info driver"));
+        return Single.error(new Exception("Not found currency facade"));
+    }
+
+    public Flowable<CurrencyTransferEntity> getNewTransfersByCurrencyAbbr(String abbreviation) {
+        try {
+            SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
+            if (wallets.containsKey(supportedCurrencyType)){
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Flowable.error(new NullPointerException());}
+
+                return facade.getNewTransfers();
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Flowable.error(new Exception("Not found currency facade"));
+    }
+
+    public Flowable<CurrencyTransferEntity> getNextTransfersByCurrencyAbbr(String abbreviation, int offset) {
+        try {
+            SupportedWalletFacadeType supportedCurrencyType = SupportedWalletFacadeType.valueOf(abbreviation);
+            if (wallets.containsKey(supportedCurrencyType)){
+                WalletFacade facade = wallets.get(supportedCurrencyType);
+                if (facade == null){return Flowable.error(new NullPointerException());}
+
+                return facade.getNextTransfers(offset);
+            }
+        }catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return Flowable.error(new Exception("Not found currency facade"));
     }
 }

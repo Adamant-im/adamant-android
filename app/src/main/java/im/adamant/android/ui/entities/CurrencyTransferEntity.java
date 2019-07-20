@@ -14,7 +14,16 @@ public class CurrencyTransferEntity {
     private Direction direction;
     private String currencyAbbreviation;
     private String contactName;
+    private long unixTransferDate;
+    private String id;
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAddress() {
         return address;
@@ -62,5 +71,13 @@ public class CurrencyTransferEntity {
 
     public void setContactName(String contactName) {
         this.contactName = contactName;
+    }
+
+    public long getUnixTransferDate() {
+        return unixTransferDate;
+    }
+
+    public void setUnixTransferDate(long unixTransferDate) {
+        this.unixTransferDate = unixTransferDate;
     }
 }

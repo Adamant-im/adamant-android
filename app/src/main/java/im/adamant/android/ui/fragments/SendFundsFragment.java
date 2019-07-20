@@ -1,15 +1,18 @@
 package im.adamant.android.ui.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -20,6 +23,7 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.math.BigDecimal;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -27,15 +31,20 @@ import javax.inject.Provider;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.ui.fragments.base.BaseFragment;
+import im.adamant.android.ui.fragments.dialogs.ConfirmationSendFundsDialog;
 import im.adamant.android.ui.mvp_view.SendFundsView;
 import im.adamant.android.ui.presenters.SendFundsPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -75,6 +84,10 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
+    private boolean isSupportedCurrency = false;
+
+    private AlertDialog alert;
+
 
     public static SendFundsFragment newInstance(
             SupportedWalletFacadeType facadeType,
@@ -101,49 +114,65 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             SupportedWalletFacadeType type = (SupportedWalletFacadeType) arguments.getSerializable(ARG_WALLET_FACADE_TYPE);
             String companionId = arguments.getString(ARG_COMPANION_ID);
 
-            if (type != null && companionId != null) {
+            if (type != null) {
                 presenter.setCompanionIdAndFacadeType(companionId, type);
             }
         }
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+
+//        FragmentActivity activity = getActivity();
+//        if (activity != null){
+//            Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.ic_send_address);
+//            recipientAddressView.setCompoundDrawablesWithIntrinsicBounds(drawable, null, null, null);
+//        }
+
+        return v;
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
+
         FragmentActivity activity = getActivity();
         if (activity != null){
-            DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
+            DrawableColorHelper.changeColorForDrawable(activity, recipientAddressView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
 
             RxTextView
                     .textChanges(amountView)
-                    .filter(charSequence -> charSequence.length() > 0)
                     .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                    .map(charSequence -> new BigDecimal(charSequence.toString()))
-                    .doOnNext(presenter::onEnterAmount)
-                    .doOnError(error -> {
-                        if (error instanceof NumberFormatException) {
-                            amountLayoutView.setError(activity.getString(R.string.not_a_number));
-                        } else {
-                            LoggerHelper.e("ERR", error.getMessage(), error);
-                        }
-                    })
+                    .doOnNext(presenter::onInputAmount)
+                    .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
                     .retry()
                     .subscribe();
 
-            amountView.setOnFocusChangeListener((v, focused) -> {
-                if (focused) {
-                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.secondary, PorterDuff.Mode.SRC_IN);
-                } else {
-                    DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-                }
-            });
+            RxTextView.textChanges(recipientAddressView)
+                    .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+                    .map(CharSequence::toString)
+                    .doOnNext(address -> {
+                        Editable text = amountView.getText();
+                        if (text == null) { return; }
+
+                        presenter.onInputRecipientAddress(address, text.toString());
+
+                    })
+                    .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
+                    .retry()
+                    .subscribe();
+
         }
     }
-
 
     @Override
     public void onPause() {
         super.onPause();
+
+        if (alert != null){
+            alert.dismiss();
+        }
 
         subscriptions.dispose();
         subscriptions.clear();
@@ -156,6 +185,7 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
 
     @Override
     public void setFundsSendingIsSupported(boolean value) {
+        isSupportedCurrency = value;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) contentContainerView.getLayoutParams();
         if (value) {
             layoutParams.gravity = Gravity.TOP;
@@ -164,6 +194,9 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             supportedView.setVisibility(View.VISIBLE);
             notSupportedView.setVisibility(View.GONE);
             sendButtonView.setVisibility(View.VISIBLE);
+
+            show(true);
+
         } else {
             layoutParams.gravity = Gravity.CENTER;
 
@@ -171,7 +204,29 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
             supportedView.setVisibility(View.GONE);
             notSupportedView.setVisibility(View.VISIBLE);
             sendButtonView.setVisibility(View.GONE);
+
+            show(false);
         }
+    }
+
+    private void show(boolean value) {
+        if (value && isSupportedCurrency) {
+            if (getUserVisibleHint() && amountView != null) {
+                amountView.requestFocus();
+                AdamantApplication.showKeyboard(Objects.requireNonNull(getActivity()), amountView, 0);
+            }
+        } else {
+            if (amountView != null) {
+                AdamantApplication.hideKeyboard(Objects.requireNonNull(getActivity()), amountView);
+            }
+        }
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        show(isVisibleToUser);
     }
 
     @Override
@@ -198,14 +253,14 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
         String hint = String.format(Locale.ENGLISH, pattern, reminder, currencyAbbr);
         reminderView.setText(hint);
 
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            if (reminder.compareTo(BigDecimal.ZERO) < 0) {
-                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.error));
-            } else {
-                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.colorSuccess));
-            }
-        }
+//        FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//            if (reminder.compareTo(BigDecimal.ZERO) < 0) {
+//                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.error));
+//            } else {
+//                reminderView.setTextColor(ContextCompat.getColor(activity, R.color.colorSuccess));
+//            }
+//        }
 
     }
 
@@ -223,6 +278,16 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
+    public void lockRecipientAddress() {
+        recipientAddressView.setEnabled(false);
+    }
+
+    @Override
+    public void unlockRecipientAddress() {
+        recipientAddressView.setEnabled(true);
+    }
+
+    @Override
     public void lockSendButton() {
         sendButtonView.setEnabled(false);
     }
@@ -233,23 +298,23 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
-    public void setEditTextIcons(int resourceId) {
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-
-            Drawable drawable = getIcon(activity, resourceId);
-            feeView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            drawable = getIcon(activity, resourceId);
-            amountView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            drawable = getIcon(activity, resourceId);
-            totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
-
-            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.inactiveInputOutline, PorterDuff.Mode.SRC_IN);
-        }
+    public void setEditTextCurrencyIcons(int resourceId) {
+//        FragmentActivity activity = getActivity();
+//        if (activity != null) {
+//
+//            Drawable drawable = getIcon(activity, resourceId);
+//            feeView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            drawable = getIcon(activity, resourceId);
+//            amountView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            drawable = getIcon(activity, resourceId);
+//            totalAmountView.setCompoundDrawablesRelative(drawable, null, null, null);
+//
+//            DrawableColorHelper.changeColorForDrawable(activity, feeView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//            DrawableColorHelper.changeColorForDrawable(activity, amountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//            DrawableColorHelper.changeColorForDrawable(activity, totalAmountView, R.color.textMuted, PorterDuff.Mode.SRC_IN);
+//        }
     }
 
     @Override
@@ -263,26 +328,43 @@ public class SendFundsFragment extends BaseFragment implements SendFundsView {
     }
 
     @Override
+    public void showRecipientAddressError(int resourceId) {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Toast.makeText(activity, resourceId, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void dropRecipientAddressError() { }
+
+    @Override
+    public void showAmountError(int resourceId) {
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            Toast.makeText(activity, resourceId, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void dropAmountError() {
+
+    }
+
+    @Override
     public void showTransferConfirmationDialog(BigDecimal amount, String currencyAbbr, String address) {
-        Activity activity = getActivity();
+        FragmentActivity activity = getActivity();
         if (activity != null){
-            String pattern = getString(R.string.activity_currency_send_dialog_funds_message);
+            String pattern = getString(R.string.activity_send_funds_dialog_funds_message);
             String message = String.format(Locale.ENGLISH, pattern, amount, currencyAbbr, address);
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            builder
-                    .setTitle(R.string.activity_currency_send_dialog_funds_title)
-                    .setMessage(message)
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                        presenter.onClickConfirmSend();
-                    })
-                    .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
-                    .show();
+            ConfirmationSendFundsDialog fragment = ConfirmationSendFundsDialog.provide(presenter, message);
+            fragment.show(activity.getSupportFragmentManager(), "transferConfirmation");
         }
     }
 
     private Drawable getIcon(Context context, int resourceId) {
-        Drawable drawable = ContextCompat.getDrawable(context, resourceId);
+        Drawable drawable = AppCompatResources.getDrawable(context, resourceId);
         if (drawable == null) {return null;}
         int h = drawable.getIntrinsicHeight();
         int w = drawable.getIntrinsicWidth();

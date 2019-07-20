@@ -12,9 +12,30 @@ import androidx.core.content.ContextCompat;
 
 public class DrawableColorHelper {
     public static void changeColorForDrawable(Context context, TextView textView, int color, PorterDuff.Mode mode) {
+        if (textView == null) { return; }
         Drawable[] compoundDrawablesRelative = textView.getCompoundDrawablesRelative();
         Drawable[] newDrawablesRelative = changeColorForDrawable(context, color, mode, compoundDrawablesRelative);
         textView.setCompoundDrawablesRelative(newDrawablesRelative[0], newDrawablesRelative[1], newDrawablesRelative[2], newDrawablesRelative[3]);
+    }
+
+    public static Drawable changeDrawable(
+        Context context,
+        int color,
+        PorterDuff.Mode mode,
+        Drawable drawable
+    ) {
+        if (drawable != null) {
+            drawable = drawable.mutate();
+            drawable.setColorFilter(
+                    new PorterDuffColorFilter(
+                            ContextCompat.getColor(context, color),
+                            mode
+                    )
+            );
+            return drawable;
+        }
+
+        return null;
     }
 
     private static Drawable[] changeColorForDrawable(
@@ -29,17 +50,7 @@ public class DrawableColorHelper {
         if (length > 0){
             for (int position = 0; position < drawables.length; position++) {
                 Drawable drawable = drawables[position];
-
-                if (drawable != null) {
-                    drawable = drawable.mutate();
-                    drawable.setColorFilter(
-                            new PorterDuffColorFilter(
-                                    ContextCompat.getColor(context, color),
-                                    mode
-                            )
-                    );
-                    newDrawables[position] = drawable;
-                }
+                newDrawables[position] = changeDrawable(context, color, mode, drawable);
 
             }
         }

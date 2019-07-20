@@ -6,6 +6,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
@@ -43,11 +45,14 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
@@ -59,8 +64,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
@@ -101,8 +109,8 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @BindView(R.id.activity_registration_il_layout)
     TextInputLayout inputLayoutView;
 
-    @BindView(R.id.activity_registration_btn_register)
-    MaterialButton createAddressButton;
+//    @BindView(R.id.activity_registration_btn_register)
+//    MaterialButton createAddressButton;
 
     @BindView(R.id.activity_registration_btn_save_qr)
     MaterialButton saveQrCodeButton;
@@ -172,23 +180,25 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
                 AdamantApplication.hideKeyboard(this, inputPassphraseView);
             }
         });
+
+        saveQrCodeButton.setPaintFlags(saveQrCodeButton.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
-    @OnClick(R.id.activity_registration_btn_refresh)
-    public void onClickGenerateButton() {
-        presenter.onClickGeneratePassphrases();
-    }
+//    @OnClick(R.id.activity_registration_btn_refresh)
+//    public void onClickGenerateButton() {
+//        presenter.onClickGeneratePassphrases();
+//    }
 
-    @OnClick(R.id.activity_registration_btn_register)
-    public void onClickRegisterButton() {
-        presenter.onClickRegisterAccount();
-    }
+//    @OnClick(R.id.activity_registration_btn_register)
+//    public void onClickRegisterButton() {
+//        presenter.onClickRegisterAccount();
+//    }
 
     @OnClick(R.id.activity_registration_btn_save_qr)
     public void onClickSaveQrCode() {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, inputPassphraseView.getText().toString());
-
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_passphrase);
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
 
@@ -222,11 +232,12 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void onEnteredValidPassphrase() {
         Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.ic_copy);
+        Drawable copyBtn = DrawableColorHelper.changeDrawable(this, R.color.textMuted, PorterDuff.Mode.SRC_IN, copyButton);
 
         inputLayoutView.setError("");
-        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyButton, null);
+        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyBtn, null);
         saveQrCodeButton.setEnabled(true);
-        createAddressButton.setEnabled(true);
+//        createAddressButton.setEnabled(true);
     }
 
     @Override
@@ -243,7 +254,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void lockUI() {
         inputPassphraseView.setEnabled(false);
-        createAddressButton.setEnabled(false);
+//        createAddressButton.setEnabled(false);
         passphrasesListView.setEnabled(false);
         saveQrCodeButton.setEnabled(false);
     }
@@ -251,7 +262,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void unlockUI() {
         inputPassphraseView.setEnabled(true);
-        createAddressButton.setEnabled(true);
+//        createAddressButton.setEnabled(true);
         passphrasesListView.setEnabled(true);
         saveQrCodeButton.setEnabled(true);
     }
@@ -305,41 +316,50 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
         inputLayoutView.setError(error);
         inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
         saveQrCodeButton.setEnabled(false);
-        createAddressButton.setEnabled(false);
+//        createAddressButton.setEnabled(false);
     }
 
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
-            }
-        }
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()) {
+                case Screens.WALLET_SCREEN:
+                case Screens.SETTINGS_SCREEN:
+                case Screens.CHATS_SCREEN: {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forwardCommand.getScreenKey());
 
-        private void apply(Command command){
-            if (command instanceof Forward) {
-                Forward forward = (Forward)command;
-                switch (forward.getScreenKey()) {
-                    case Screens.WALLET_SCREEN:
-                    case Screens.SETTINGS_SCREEN:
-                    case Screens.CHATS_SCREEN: {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MainScreen.ARG_CURRENT_SCREEN, forward.getScreenKey());
+                    Intent intent = new Intent(getApplicationContext(), MainScreen.class);
+                    intent.putExtras(bundle);
 
-                        Intent intent = new Intent(getApplicationContext(), MainScreen.class);
-                        intent.putExtras(bundle);
-
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
+                    startActivity(intent);
+                    finish();
                 }
-            } else if(command instanceof SystemMessage) {
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
+                break;
             }
         }
+
+        @Override
+        protected void back(Back backCommand) {
+
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+
+        }
+
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
+        }
+
     };
 
 }

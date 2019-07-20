@@ -21,6 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.textfield.TextInputEditText;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -35,11 +36,10 @@ import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
+import im.adamant.android.ui.fragments.base.BaseBottomFragment;
 import im.adamant.android.ui.presenters.LoginPresenter;
 import im.adamant.android.ui.mvp_view.LoginView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 public class BottomLoginFragment extends BaseBottomFragment implements LoginView {
@@ -62,7 +62,7 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     @BindView(R.id.fragment_login_et_passphrase) TextInputEditText passPhraseView;
     @BindView(R.id.fragment_login_btn_enter) Button loginButtonView;
 
-    Disposable passphraseListener;
+//    Disposable passphraseListener;
 
     @Override
     public int getLayoutId() {
@@ -123,22 +123,21 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     public void onResume() {
         super.onResume();
 
-        passphraseListener = RxTextView
-                .textChanges(passPhraseView)
-                .filter(charSequence -> charSequence.length() > 0)
-                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
-                .doOnNext(loginPresenter::onInputPassphrase)
-                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
-                .retry()
-                .subscribe();
+//        passphraseListener = RxTextView
+//                .textChanges(passPhraseView)
+//                .filter(charSequence -> charSequence.length() > 0)
+//                .debounce(800, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+//                .doOnNext(loginPresenter::onInputPassphrase)
+//                .doOnError(error -> LoggerHelper.e("ERR", error.getMessage(), error))
+//                .retry()
+//                .subscribe();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        passphraseListener.dispose();
-        passphraseListener = null;
+//        passphraseListener.dispose();
+//        passphraseListener = null;
     }
 
     @Override
@@ -195,11 +194,32 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     }
 
     @Override
-    public void loginError(int resourceId) {
-        FragmentActivity activity = getActivity();
-        if (activity != null){
-            Toast.makeText(activity.getApplicationContext(), resourceId, Toast.LENGTH_LONG).show();
-        }
+    public void invalidWords(CharSequence word, CharSequence suggestion1, CharSequence suggestion2) {
+        String patternString = getString(R.string.invalid_word_in_passphrase);
+        patternString = String.format(Locale.ENGLISH, patternString, word, suggestion1, suggestion2);
+        showError(patternString);
+    }
+
+    @Override
+    public void invalidSymbol() {
+        showError(getString(R.string.invalid_symbol_in_passphrase));
+    }
+
+    @Override
+    public void invalidCount(int currentCount, int necessaryCount) {
+        String patternString = getString(R.string.invalid_count_words_in_passphrase);
+        patternString = String.format(Locale.ENGLISH, patternString, currentCount, necessaryCount);
+        showError(patternString);
+    }
+
+    @Override
+    public void invalidChecksum() {
+        showError(getString(R.string.invalid_checksum_in_passphrase));
+    }
+
+    @Override
+    public void networkError(String errorString) {
+        showError(errorString);
     }
 
     @Override
@@ -210,6 +230,13 @@ public class BottomLoginFragment extends BaseBottomFragment implements LoginView
     @Override
     public void unlockUI() {
         loginButtonView.setEnabled(true);
+    }
+
+    private void showError(String error) {
+        FragmentActivity activity = getActivity();
+        if (activity != null){
+            Toast.makeText(activity.getApplicationContext(), error, Toast.LENGTH_LONG).show();
+        }
     }
 
     private void handleDismissWindow() {

@@ -2,7 +2,7 @@ package im.adamant.android.ui.holders;
 
 import androidx.annotation.NonNull;
 
-import im.adamant.android.ui.fragments.BaseFragment;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 
 public class FragmentClassHolder {
     private int titleResource;

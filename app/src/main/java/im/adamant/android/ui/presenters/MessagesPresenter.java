@@ -9,9 +9,10 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
@@ -25,14 +26,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MessagesPresenter extends BasePresenter<MessagesView>{
-    private Router router;
-    private RefreshChatsInteractor refreshChatsInteractor;
+public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
+    private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
     private MessageFactoryProvider messageFactoryProvider;
     private ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor;
@@ -46,16 +45,15 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
 
     public MessagesPresenter(
             Router router,
-            RefreshChatsInteractor refreshChatsInteractor,
+            AccountInteractor accountInteractor,
+            ChatInteractor chatInteractor,
             ChatUpdatePublicKeyInteractor chatUpdatePublicKeyInteractor,
             MessageFactoryProvider messageFactoryProvider,
             ChatsStorage chatsStorage,
-            AdamantApiWrapper api,
-            CompositeDisposable subscriptions
+            AdamantApiWrapper api
     ) {
-        super(subscriptions);
-        this.router = router;
-        this.refreshChatsInteractor = refreshChatsInteractor;
+        super(router, accountInteractor);
+        this.chatInteractor = chatInteractor;
         this.chatUpdatePublicKeyInteractor = chatUpdatePublicKeyInteractor;
         this.messageFactoryProvider = messageFactoryProvider;
         this.chatsStorage = chatsStorage;
@@ -67,27 +65,6 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     public void attachView(MessagesView view) {
         super.attachView(view);
 
-        syncSubscription = refreshChatsInteractor
-                .execute()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    (irrelevant) -> {
-                        if (currentMessageCount != messages.size()) {
-                            getViewState().showChatMessages(messages);
-                            currentMessageCount = messages.size();
-                        }
-                    },
-                    (error) -> {
-                        if (error instanceof NotAuthorizedException){
-                            router.navigateTo(Screens.SPLASH_SCREEN);
-                        } else {
-                            router.showSystemMessage(error.getMessage());
-                        }
-                        LoggerHelper.e("Messages", error.getMessage(), error);
-                    }
-                );
-
-        subscriptions.add(syncSubscription);
     }
 
     @Override
@@ -103,21 +80,46 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         currentChat = chatsStorage.findChatByCompanionId(companionId);
         if (currentChat == null){return;}
 
-        messages = chatsStorage.getMessagesByCompanionId(
-                companionId
-        );
-
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
-        getViewState()
-            .showChatMessages(
-                messages
-            );
+        Disposable subscribe = chatInteractor
+                .loadHistory(companionId)
+                .ignoreElements()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+                    refreshMessageList(companionId);
+                    getViewState().goToLastMessage();
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        () -> {
+                            Disposable updateDisposable = chatInteractor
+                                    .update()
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doAfterSuccess(cnt -> {
+                                        if (cnt > 0) {
+                                            getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
+                                            refreshMessageList(companionId);
+                                        }
+                                    })
+                                    .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                                    .subscribe();
+                            subscriptions.add(updateDisposable);
+                        },
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                            LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
+                        }
+                );
+
+        subscriptions.add(subscribe);
+
     }
 
     public void onResume() {
         if (currentChat != null) {
             getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
+            getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
         }
     }
 
@@ -159,7 +161,9 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         try {
             AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageListContentType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(message, messageFactory);
+
             chatsStorage.addMessageToChat(messageEntity);
+            getViewState().showChatMessages(messages);
 
             MessageProcessor<AdamantBasicMessage> messageProcessor = messageFactory.getMessageProcessor();
 
@@ -167,17 +171,12 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
                     .sendMessage(messageEntity)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
-                                if (transaction.isSuccess()){
-                                    messageEntity.setProcessed(true);
-                                    messageEntity.setTransactionId(transaction.getTransactionId());
-                                }
-
-                                getViewState().messageWasSended(messageEntity);
-                            }),
-                            (error) -> {
-                                router.showSystemMessage(error.getMessage());
-                                error.printStackTrace();
-                            }
+                            getViewState().messageWasSended(messageEntity);
+                        }),
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                            error.printStackTrace();
+                        }
                     );
 
             subscriptions.add(subscription);
@@ -189,13 +188,17 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
     }
 
     public void onChangeMessageText(String text) {
+        if (text == null || text.isEmpty()) {
+            getViewState().dropMessageCost();
+            return;
+        }
         //TODO: You need to navigate by the type of message that is being edited
         try {
             AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageListContentType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(text, messageFactory);
 
             long cost = messageFactory.getMessageProcessor().calculateMessageCostInAdamant(messageEntity);
-            getViewState().showMessageCost(BalanceConvertHelper.convert(cost).toString());
+            getViewState().showMessageCost("~" + BalanceConvertHelper.convert(cost).toString() + " ADM");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,6 +224,13 @@ public class MessagesPresenter extends BasePresenter<MessagesView>{
         return abstractMessage;
     }
 
+    private void refreshMessageList(String companionId) {
+        messages = chatsStorage.getMessagesByCompanionId(
+                companionId
+        );
+
+        getViewState().showChatMessages(messages);
+    }
 
     public void onClickShowRenameDialog() {
         if (currentChat != null){

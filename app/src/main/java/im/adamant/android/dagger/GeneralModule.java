@@ -10,12 +10,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.Constants;
+import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.helpers.Settings;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.terrakok.cicerone.Cicerone;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
@@ -24,8 +29,10 @@ import ru.terrakok.cicerone.Router;
 public abstract class GeneralModule {
     @Singleton
     @Provides
-    public static Gson provideGson() {
-        return new Gson();
+    public static Gson provideGson(GsonBuilder builder) {
+        return builder
+                .registerTypeAdapterFactory(new AdamantTransactonTypeAdapterFactory())
+                .create();
     }
 
     @Singleton
@@ -72,5 +79,12 @@ public abstract class GeneralModule {
     @Provides
     public static QrCodeHelper provideQrCodeParser() {
         return new QrCodeHelper();
+    }
+
+    @Named(Constants.UI_SCHEDULER)
+    @Singleton
+    @Provides
+    public static Scheduler provideUIObserveScheduler() {
+        return AndroidSchedulers.mainThread();
     }
 }

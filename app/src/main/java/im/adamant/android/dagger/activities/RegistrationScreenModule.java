@@ -41,18 +41,10 @@ public class RegistrationScreenModule {
 
     @ActivityScope
     @Provides
-    public static RegistrationPresenter providePresenter(
+    public static RegistrationPresenter provideRegistrationPresenter(
             Router router,
-            AuthorizeInteractor authorizeInteractor,
-            @Named(Screens.REGISTRATION_SCREEN) CompositeDisposable subscriptions
+            AuthorizeInteractor authorizeInteractor
     ) {
-        return new RegistrationPresenter(router, authorizeInteractor, subscriptions);
-    }
-
-    @ActivityScope
-    @Provides
-    @Named(value = Screens.REGISTRATION_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
+        return new RegistrationPresenter(router, authorizeInteractor);
     }
 }

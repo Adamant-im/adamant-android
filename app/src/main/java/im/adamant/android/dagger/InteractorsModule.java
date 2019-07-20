@@ -1,5 +1,7 @@
 package im.adamant.android.dagger;
 
+import com.google.gson.Gson;
+
 import java.util.Map;
 
 import javax.inject.Singleton;
@@ -10,25 +12,31 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.encryption.KeyStoreCipher;
 import im.adamant.android.core.kvs.ApiKvsProvider;
-import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.helpers.KvsHelper;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
-import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.chats.ContactsSource;
+import im.adamant.android.interactors.chats.HistoryTransactionsSource;
+import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
+import im.adamant.android.interactors.chats.NewTransactionsSource;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
-import im.adamant.android.ui.mappers.LocalizedChatMapper;
-import im.adamant.android.ui.mappers.LocalizedMessageMapper;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
@@ -72,21 +80,11 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static SaveKeypairInteractor provideKeypairInteractor(
+    public static SwitchPushNotificationServiceInteractor provideSubscribeToPushInteractor(
             Settings settings,
-            KeyStoreCipher keyStoreCipher,
-            AdamantApiWrapper apiWrapper
+            Map<SupportedPushNotificationFacadeType, PushNotificationServiceFacade> facades
     ) {
-        return new SaveKeypairInteractor(settings, apiWrapper, keyStoreCipher);
-    }
-
-    @Singleton
-    @Provides
-    public static SubscribeToPushInteractor provideSubscribeToPushInteractor(
-            Settings settings,
-            MessageFactoryProvider messageFactoryProvider
-    ) {
-        return new SubscribeToPushInteractor(settings, messageFactoryProvider);
+        return new SwitchPushNotificationServiceInteractor(settings, facades);
     }
 
     @Singleton
@@ -99,38 +97,32 @@ public abstract class InteractorsModule {
 
     @Singleton
     @Provides
-    public static ServerNodeInteractor provideServerNodeInteractor(Settings settings) {
-        return new ServerNodeInteractor(settings);
+    public static ServerNodeInteractor provideServerNodeInteractor(AdamantApiWrapper api, Settings settings) {
+        return new ServerNodeInteractor(api, settings);
     }
 
     @Singleton
     @Provides
-    public static RefreshChatsInteractor provideRefreshInteractor(
-            AdamantApiWrapper api,
-            TransactionToMessageMapper messageMapper,
-            TransactionToChatMapper chatMapper,
-            LocalizedMessageMapper localizedMessageMapper,
-            LocalizedChatMapper localizedChatMapper,
-            ChatsStorage chatsStorage
-    ) {
-        return new RefreshChatsInteractor(
-                api,
-                chatMapper,
-                messageMapper,
-                localizedMessageMapper,
-                localizedChatMapper,
-                chatsStorage
-        );
-    }
-
-    @Singleton
-    @Provides
-    public static GetContactsInteractor provideGetContactsInteractor(
-            ApiKvsProvider apiKvsProvider,
+    public static ChatInteractor provideGetChatListInteractor(
+            PublicKeyStorage publicKeyStorage,
+            NewTransactionsSource newTransactionsSource,
+            LastTransactionInChatsSource lastTransactionInChatsSource,
+            HistoryTransactionsSource historyTransactionsSource,
+            ContactsSource contactsSource,
             ChatsStorage chatsStorage,
-            KvsHelper kvsHelper
+            TransactionToChatMapper chatMapper,
+            TransactionToMessageMapper messageMapper
     ) {
-        return new GetContactsInteractor(apiKvsProvider, chatsStorage, kvsHelper);
+        return new ChatInteractor(
+                publicKeyStorage,
+                newTransactionsSource,
+                lastTransactionInChatsSource,
+                historyTransactionsSource,
+                contactsSource,
+                chatsStorage,
+                chatMapper,
+                messageMapper
+        );
     }
 
     @Singleton
@@ -145,9 +137,37 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SubscribeToPushInteractor subscribeToPushInteractor,
-            RefreshChatsInteractor refreshChatsInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
     ) {
-        return new LogoutInteractor(chatsStorage, settings, api, subscribeToPushInteractor, refreshChatsInteractor);
+        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor);
+    }
+
+    @Singleton
+    @Provides
+    public static HasNewMessagesInteractor provideHasNewMessagesInteractor(
+            Settings settings,
+            AdamantApiWrapper api
+    ) {
+        return new HasNewMessagesInteractor(api, settings);
+    }
+
+    @Singleton
+    @Provides
+    public static SecurityInteractor provideSecurityInteractor(
+            Settings settings,
+            AdamantApiWrapper api,
+            KeyStoreCipher keyStoreCipher,
+            Gson gson,
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
+    ) {
+        return new SecurityInteractor(gson, settings, api, keyStoreCipher, pushNotificationServiceInteractor);
+    }
+
+    @Singleton
+    @Provides
+    public static TransferDetailsInteractor transferDetailsInteractor(AdamantApiWrapper api,
+                                                                      Map<SupportedWalletFacadeType, WalletFacade> wallets,
+                                                                      ChatsStorage chatsStorage,PublicKeyStorage publicKeyStorage) {
+        return new TransferDetailsInteractor(api, wallets, chatsStorage,publicKeyStorage);
     }
 }

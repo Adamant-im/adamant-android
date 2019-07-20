@@ -3,6 +3,7 @@ package im.adamant.android.ui.messages_support.builders;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
 
@@ -27,7 +28,7 @@ public class AdamantTransferMessageBuilder implements MessageBuilder<AdamantTran
             message.setAmount(BalanceConvertHelper.convert(transaction.getAmount()));
             message.setOwnerPublicKey(transaction.getSenderPublicKey());
 
-            message.setProcessed(true);
+            message.setStatus(AbstractMessage.Status.DELIVERED);
             message.setTransactionId(transaction.getId());
         }
 

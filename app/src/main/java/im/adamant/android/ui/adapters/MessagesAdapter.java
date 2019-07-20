@@ -67,7 +67,8 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
     @Override
     public void onBindViewHolder(@NonNull AbstractMessageListContentViewHolder holder, int position) {
         MessageListContent message = messages.get(position);
-        holder.bind(message);
+        boolean isLastMessage = !(position < (messages.size() - 1));
+        holder.bind(message, detectNextMessageWithSameSender(position), isLastMessage);
     }
 
     @Override
@@ -83,5 +84,25 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
         }
 
         notifyDataSetChanged();
+    }
+
+    private boolean detectNextMessageWithSameSender(int position) {
+        if (position == 0) { return false; }
+
+        MessageListContent currentMessage = messages.get(position);
+        if (currentMessage.getSupportedType() == SupportedMessageListContentType.SEPARATOR) { return false; }
+
+        MessageListContent nextMessage = null;
+        int i = 1;
+        do {
+            if ((position - i) <= 0) { return false; }
+
+            nextMessage = messages.get(position - i);
+            if (nextMessage == null) { return false; }
+
+            i++;
+        } while (nextMessage.getSupportedType() == SupportedMessageListContentType.SEPARATOR);
+
+        return ((AbstractMessage)currentMessage).isiSay() == ((AbstractMessage)nextMessage).isiSay();
     }
 }

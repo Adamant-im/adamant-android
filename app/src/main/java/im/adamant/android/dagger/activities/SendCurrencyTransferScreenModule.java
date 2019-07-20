@@ -6,7 +6,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.android.ContributesAndroidInjector;
 import im.adamant.android.dagger.fragments.FragmentScope;
-import im.adamant.android.dagger.fragments.SendCurrencyTransferFragmentModule;
+import im.adamant.android.dagger.fragments.SendFundsFragmentModule;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.interactors.wallets.WalletFacade;
 import im.adamant.android.ui.SendFundsScreen;
@@ -21,13 +21,15 @@ public abstract class SendCurrencyTransferScreenModule {
             SendFundsScreen activity,
             Map<SupportedWalletFacadeType, WalletFacade> wallets
     ) {
-        SendCurrencyFragmentAdapter sendCurrencyFragmentAdapter = new SendCurrencyFragmentAdapter(activity.getSupportFragmentManager());
+        SendCurrencyFragmentAdapter sendCurrencyFragmentAdapter = new SendCurrencyFragmentAdapter(
+                activity.getSupportFragmentManager()
+        );
         sendCurrencyFragmentAdapter.setItems(wallets);
 
         return sendCurrencyFragmentAdapter;
     }
 
     @FragmentScope
-    @ContributesAndroidInjector(modules = {SendCurrencyTransferFragmentModule.class})
+    @ContributesAndroidInjector(modules = {SendFundsFragmentModule.class})
     public abstract SendFundsFragment createSendCurrencyFragmentInjector();
 }

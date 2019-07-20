@@ -1,5 +1,8 @@
 package im.adamant.android.interactors;
 
+import java.util.concurrent.TimeUnit;
+
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.ui.entities.Chat;
@@ -20,6 +23,7 @@ public class ChatUpdatePublicKeyInteractor {
                 .getPublicKey(chat.getCompanionId())
                 .firstOrError()
                 .observeOn(AndroidSchedulers.mainThread())
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .subscribe(publicKeyResponse -> {
                     if (publicKeyResponse.isSuccess()) {
                         chat.setCompanionPublicKey(publicKeyResponse.getPublicKey());

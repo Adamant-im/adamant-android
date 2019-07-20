@@ -15,6 +15,7 @@ import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.TransactionState;
 import im.adamant.android.core.entities.transaction_assets.TransactionStateAsset;
+import im.adamant.android.core.exceptions.EncryptionException;
 import im.adamant.android.core.exceptions.InvalidValueForKeyValueStorage;
 import im.adamant.android.ui.entities.Contact;
 import io.reactivex.Flowable;
@@ -30,7 +31,7 @@ public class KvsHelper {
         this.gson = gson;
     }
 
-    public <T> Transaction<TransactionStateAsset> transformToTransaction(String key, boolean encrypted, T object) {
+    public <T> Transaction<TransactionStateAsset> transformToTransaction(String key, boolean encrypted, T object) throws EncryptionException {
         JsonObject valueObject = new JsonObject();
         valueObject.add("payload", gson.toJsonTree(object));
         String valueString = valueObject.toString();

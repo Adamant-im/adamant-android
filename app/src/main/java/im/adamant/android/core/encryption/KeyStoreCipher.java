@@ -7,13 +7,23 @@ import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import com.goterl.lazycode.lazysodium.LazySodium;
+import com.goterl.lazycode.lazysodium.Sodium;
+import com.goterl.lazycode.lazysodium.exceptions.SodiumException;
+import com.goterl.lazycode.lazysodium.interfaces.PwHash;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
+import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
@@ -22,14 +32,20 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
+import java.security.SignatureException;
 import java.security.UnrecoverableEntryException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.spec.ECParameterSpec;
 import java.security.spec.RSAKeyGenParameterSpec;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
+import android.security.keystore.KeyInfo;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
@@ -40,10 +56,20 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.security.auth.x500.X500Principal;
 
+import im.adamant.android.BuildConfig;
+import im.adamant.android.core.exceptions.EncryptionException;
+import im.adamant.android.helpers.CharSequenceHelper;
+import im.adamant.android.helpers.LoggerHelper;
+
 import static java.lang.Math.floor;
 
 public class KeyStoreCipher {
+    public static final String LARGE_DATA_TYPE = "LD";
+    public static final String SMALL_DATA_TYPE = "SD";
+
+    public static final int SECURE_HASH_LEN = 128;
     public static final int KEY_SIZE = 4096;
+    public static final int MAX_BLOCK_SIZE = ((KEY_SIZE >> 3) - 11);
     public static final String ALGORITHM = "RSA";
     public static final String PROVIDER = "AndroidKeyStore";
     public static final String KEY_ALIAS_PREFIX = "AdamantKeystoreAlias_";
@@ -51,12 +77,14 @@ public class KeyStoreCipher {
 
     private static KeyStore androidKeyStore;
 
-    private Gson gson;
+    private LazySodium sodium;
     private Context context;
+    private JsonParser parser;
 
-    public KeyStoreCipher(Gson gson, Context context) {
-        this.gson = gson;
+    public KeyStoreCipher(LazySodium sodium, JsonParser parser, Context context) {
         this.context = context;
+        this.sodium = sodium;
+        this.parser = parser;
 
         if (androidKeyStore == null){
             KeyStore instance = null;
@@ -73,14 +101,40 @@ public class KeyStoreCipher {
         }
     }
 
-    public String encrypt(String alias, com.goterl.lazycode.lazysodium.utils.KeyPair object) throws Exception {
-        String json = gson.toJson(object);
-        byte[] bytes = json.getBytes();
-        long maxContentSize = Math.round(floor(KEY_SIZE / 8) - 11);
-        if(bytes.length > maxContentSize){
-            throw new Exception("Serialized object to long (maximum " + maxContentSize + " bytes)");
-        }
+    public KeyInfo provideKeyInfo(String alias) {
+        KeyInfo keyInfo = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alias = KEY_ALIAS_PREFIX + alias;
 
+            try {
+                KeyPair keyPair = getKeyPair(alias);
+                KeyFactory factory = KeyFactory.getInstance(keyPair.getPrivate().getAlgorithm(), PROVIDER);
+                keyInfo = factory.getKeySpec(keyPair.getPrivate(), KeyInfo.class);
+            } catch (Exception ex) {
+                LoggerHelper.e("KeyStoreCipher", ex.getMessage(), ex);
+            }
+        }
+        return keyInfo;
+    }
+
+    public String encrypt(String alias, CharSequence data) throws Exception {
+        if (data == null) {throw new EncryptionException("Data for encryption is null");}
+
+        try {
+            byte[] bytes = data.toString().getBytes();
+
+            if(bytes.length > MAX_BLOCK_SIZE){
+                return LARGE_DATA_TYPE + encryptLargeBlock(alias, data);
+            } else {
+                return SMALL_DATA_TYPE + encryptSmallBlock(alias, bytes);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EncryptionException(ex.getMessage(), ex);
+        }
+    }
+
+    private String encryptSmallBlock(String alias, byte[] bytes) throws Exception {
         alias = KEY_ALIAS_PREFIX + alias;
 
         KeyPair securityKeyPair = getKeyPair(alias);
@@ -93,50 +147,121 @@ public class KeyStoreCipher {
         return Base64.encodeToString(encryptedBytes, Base64.NO_PADDING | Base64.NO_WRAP);
     }
 
-    public com.goterl.lazycode.lazysodium.utils.KeyPair decrypt(String alias, String object) throws NoSuchProviderException, InvalidAlgorithmParameterException {
-        com.goterl.lazycode.lazysodium.utils.KeyPair decryptedKeyPair = null;
+    private String encryptLargeBlock(String alias, CharSequence sequence) throws Exception {
+        alias = KEY_ALIAS_PREFIX + alias;
+
+        KeyPair securityKeyPair = getKeyPair(alias);
+
+        final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.ENCRYPT_MODE, securityKeyPair.getPublic());
+
+        JsonArray blocks = new JsonArray();
+
+        int index = 0;
+        int maxChars = MAX_BLOCK_SIZE >>> 1;
+
+        while (index < sequence.length()) {
+            int count = maxChars;
+            int endPosition = index + count;
+
+            if (endPosition >= sequence.length() - 1) {
+                count = sequence.length()  - index;
+                endPosition = index + count;
+            }
+
+            CharSequence charSequence = sequence.subSequence(index, endPosition);
+            blocks.add(
+                    Base64.encodeToString(
+                            cipher.doFinal(
+                                    charSequence.toString().getBytes()
+                            ),
+                            Base64.NO_PADDING | Base64.NO_WRAP
+                    )
+            );
+
+            index += count;
+        }
+
+        return blocks.toString();
+    }
+
+    public CharSequence decrypt(String alias, String object) throws Exception {
+        try {
+            String dataSizeType = object.substring(0, 2);
+            String data = object.substring(2);
+
+            switch (dataSizeType) {
+                case SMALL_DATA_TYPE: {
+                    return decryptSmallBlock(alias, data);
+                }
+                case LARGE_DATA_TYPE: {
+                    return decryptLargeBlock(alias, data);
+                }
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new EncryptionException(ex.getMessage(), ex);
+        }
+
+        return "";
+    }
+
+    private CharSequence decryptSmallBlock(String alias, String object) throws Exception {
+        String decryptedString = "";
 
         byte[] encryptedData = Base64.decode(object, Base64.NO_PADDING | Base64.NO_WRAP);
 
-        try {
-            alias = KEY_ALIAS_PREFIX + alias;
+        alias = KEY_ALIAS_PREFIX + alias;
 
-            KeyPair securityKeyPair = getKeyPair(alias);
+        KeyPair securityKeyPair = getKeyPair(alias);
 
-            final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
-            cipher.init(Cipher.DECRYPT_MODE, securityKeyPair.getPrivate());
+        final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.DECRYPT_MODE, securityKeyPair.getPrivate());
 
-            final byte[] decodedData = cipher.doFinal(encryptedData);
-            final String unencryptedString = new String(decodedData, "UTF-8");
+        final byte[] decodedData = cipher.doFinal(encryptedData);
 
-            decryptedKeyPair = gson.fromJson(unencryptedString, com.goterl.lazycode.lazysodium.utils.KeyPair.class);
+        //TODO: Must be StringBuffer not String
+        decryptedString = new String(decodedData, StandardCharsets.UTF_8);
 
-        } catch (NoSuchAlgorithmException | IOException | NoSuchPaddingException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException e) {
-            e.printStackTrace();
-        }
-
-        return decryptedKeyPair;
+        return decryptedString;
     }
 
-    private KeyPair getKeyPair(String alias) throws NoSuchAlgorithmException , NoSuchProviderException, InvalidAlgorithmParameterException {
+    private CharSequence decryptLargeBlock(String alias, String object) throws Exception {
+        StringBuilder builder = new StringBuilder();
+
+        alias = KEY_ALIAS_PREFIX + alias;
+
+        KeyPair securityKeyPair = getKeyPair(alias);
+
+        final Cipher cipher = Cipher.getInstance(TRANSFORMATION);
+        cipher.init(Cipher.DECRYPT_MODE, securityKeyPair.getPrivate());
+
+        JsonElement largeElement = parser.parse(object);
+        JsonArray blocks = largeElement.getAsJsonArray();
+
+       for (JsonElement blockElement : blocks) {
+           String blockData = blockElement.getAsString();
+           byte[] bytesInBlock = Base64.decode(blockData, Base64.NO_PADDING | Base64.NO_WRAP);
+           byte[] decodedData = cipher.doFinal(bytesInBlock);
+           builder.append(new String(decodedData, StandardCharsets.UTF_8));
+       }
+
+        return builder.toString();
+    }
+
+    private KeyPair getKeyPair(String alias) throws Exception {
 
         PrivateKey privateKey = null;
         PublicKey publicKey = null;
 
         if (androidKeyStore != null){
-            try {
-                privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
-                Certificate certificate = androidKeyStore.getCertificate(alias);
+            privateKey = (PrivateKey) androidKeyStore.getKey(alias, null);
+            Certificate certificate = androidKeyStore.getCertificate(alias);
 
-                if (certificate != null){
-                    publicKey = certificate
-                            .getPublicKey();
-                }
-
-            } catch (UnrecoverableKeyException | KeyStoreException ex) {
-                ex.printStackTrace();
+            if (certificate != null){
+                publicKey = certificate
+                        .getPublicKey();
             }
-
         }
 
         if (privateKey != null && publicKey != null){
@@ -145,6 +270,21 @@ public class KeyStoreCipher {
             return generateKeyPair(alias);
         }
     }
+
+
+    public String secureHash(CharSequence data) throws EncryptionException {
+        try {
+            return sodium.cryptoPwHashStr(data.toString(), PwHash.OPSLIMIT_SENSITIVE, PwHash.MEMLIMIT_MODERATE);
+        } catch (SodiumException e) {
+            e.printStackTrace();
+            throw new EncryptionException("Hash not created");
+        }
+    }
+
+    public boolean verifyHash(String hash, String data) {
+        return sodium.cryptoPwHashStrVerify(hash, data);
+    }
+
 
     //TODO: Protect store via pincode and fingerprint
     private KeyPair generateKeyPair(String alias) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidAlgorithmParameterException {

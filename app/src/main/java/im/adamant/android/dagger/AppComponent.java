@@ -19,6 +19,7 @@ import dagger.Component;
         GeneralModule.class,
         MarkdownModule.class,
         InteractorsModule.class,
+        PushNotificationsModule.class,
         AppModule.class
 })
 public interface AppComponent {

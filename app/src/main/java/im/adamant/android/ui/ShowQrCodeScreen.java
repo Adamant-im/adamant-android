@@ -1,13 +1,12 @@
 package im.adamant.android.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
@@ -25,13 +24,15 @@ import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
-import io.reactivex.Flowable;
 
 public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";
+    public static final String ARG_SHOW_CONTENT = "show_content";
+    public static final String ARG_TITLE_RESOURCE = "title";
 
     @Inject
     Provider<ShowQrCodePresenter> presenterProvider;
@@ -48,6 +49,9 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     @BindView(R.id.activity_show_qr_code_im_image)
     ImageView qrCodeView;
 
+    @BindView(R.id.activity_show_qr_code_tv_content)
+    TextView contentView;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_show_qr_code_screen;
@@ -63,20 +67,32 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        setTitle(getString(R.string.activity_show_qr_code_title));
+        //setTitle(getString(R.string.activity_show_qr_code_title));
 
         Intent intent = getIntent();
         if (intent != null) {
+            if (intent.hasExtra(ARG_TITLE_RESOURCE)) {
+                setTitle(getString(intent.getIntExtra(ARG_TITLE_RESOURCE,0)));
+            }
+
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {
-                final int backgroundColor = ContextCompat.getColor(this, R.color.qr_background);
+                final int backgroundColor = ContextCompat.getColor(this, R.color.alternate_background);
                 final int onColor = ContextCompat.getColor(this, R.color.onPrimary);
+
                 qrCodeView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
                         qrCodeView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         int size = qrCodeView.getWidth();
 
-                        presenter.onBuildQrCode(intent.getStringExtra(ARG_DATA_FOR_QR_CODE), size, onColor, backgroundColor);
+                        boolean isShowContent = intent.getBooleanExtra(ARG_SHOW_CONTENT, false);
+                        presenter.onBuildQrCode(
+                                intent.getStringExtra(ARG_DATA_FOR_QR_CODE),
+                                size,
+                                onColor,
+                                backgroundColor,
+                                isShowContent
+                        );
                     }
                 });
             }
@@ -105,6 +121,11 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     @Override
     public void showMessage(int resourceId) {
         Toast.makeText(this, resourceId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showContent(String content) {
+        contentView.setText(content);
     }
 
     private PermissionListener permissionlistener = new PermissionListener() {

@@ -5,11 +5,12 @@ import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
 import java.util.List;
 
-public class TransactionList<AT extends TransactionAsset> {
+public class TransactionList {
     private int nodeTimestamp;
     private boolean success;
-    private List<Transaction<AT>> transactions;
+    private List<Transaction<? super TransactionAsset>> transactions;
     private String error;
+    private int count;
 
     public boolean isSuccess() {
         return success;
@@ -19,11 +20,11 @@ public class TransactionList<AT extends TransactionAsset> {
         this.success = success;
     }
 
-    public List<Transaction<AT>> getTransactions() {
+    public List<Transaction<? super TransactionAsset>> getTransactions() {
         return transactions;
     }
 
-    public void setTransactions(List<Transaction<AT>> transactions) {
+    public void setTransactions(List<Transaction<? super TransactionAsset>> transactions) {
         this.transactions = transactions;
     }
 
@@ -41,5 +42,13 @@ public class TransactionList<AT extends TransactionAsset> {
 
     public void setNodeTimestamp(int nodeTimestamp) {
         this.nodeTimestamp = nodeTimestamp;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 }

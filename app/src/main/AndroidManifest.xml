@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="im.adamant.android">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -8,19 +7,23 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".AdamantApplication"
         android:allowBackup="true"
+        android:largeHeap= "true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AdamantLight"
+        android:usesCleartextTraffic="true"
         >
         <activity android:name=".ui.SplashScreen"
-            android:theme="@style/AdamantLight.Launcher">
+            android:theme="@style/AdamantLight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +37,7 @@
             android:name=".ui.MessagesScreen"
             android:theme="@style/AdamantLight.WithActionBar"
             android:launchMode="singleTop"
+            android:windowSoftInputMode="stateUnchanged|adjustResize"
             android:exported="true">
 
             <!--
@@ -61,7 +65,9 @@
             android:exported="false"
             android:label="@string/activity_scan_qrcode_title" />
         <activity
-            android:name=".ui.PinCodeScreen" />
+            android:name=".ui.PincodeScreen"
+            android:theme="@style/AdamantLight.PincodeTheme"
+            android:exported="false"/>
         <activity
             android:name=".ui.RegistrationScreen"
             android:exported="false"
@@ -81,6 +87,20 @@
             android:exported="false"
             android:theme="@style/AdamantLight.WithActionBar"
             />
+        <activity
+            android:name=".ui.PushSubscriptionScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar"/>
+        <activity
+            android:name=".ui.AllTransactionsScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar"/>
+        <activity
+            android:name=".ui.TransferDetailsScreen"
+            android:exported="false"
+            android:theme="@style/AdamantLight.WithActionBar"/>
+
+
 
         <service
             android:name=".services.ServerNodesPingService"
@@ -97,6 +117,25 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <!--TODO: Write code for enable this service and receiver-->
+        <service
+            android:name=".services.AdamantLocalMessagingService"
+            android:enabled="false"
+            android:exported="false"
+            android:process=":remote"/>
+
+
+        <receiver
+            android:name=".receivers.BootCompletedBroadcast"
+            android:directBootAware="true"
+            android:enabled="false"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

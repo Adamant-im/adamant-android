@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -52,6 +53,16 @@ public class BinanceWalletFacade implements WalletFacade {
     }
 
     @Override
+    public Flowable<CurrencyTransferEntity> getNewTransfers() {
+        return Flowable.empty();
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNextTransfers(int offset) {
+        return Flowable.empty();
+    }
+
+    @Override
     public boolean isAvailableAirdropLink() {
         return false;
     }
@@ -83,11 +94,21 @@ public class BinanceWalletFacade implements WalletFacade {
 
     @Override
     public int getIconForEditText() {
-        return 0;
+        return R.drawable.ic_bnb_line;
     }
 
     @Override
     public boolean isSupportComment() {
         return true;
+    }
+
+    @Override
+    public Flowable<TransferDetails> getTransferDetails(String id) {
+        return Flowable.empty();
+    }
+
+    @Override
+    public String getExplorerUrl(String transactionId) {
+        return null;
     }
 }

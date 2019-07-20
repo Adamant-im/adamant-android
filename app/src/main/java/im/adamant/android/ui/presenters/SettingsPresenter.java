@@ -1,123 +1,166 @@
 package im.adamant.android.ui.presenters;
 
+
 import android.os.Bundle;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import im.adamant.android.BuildConfig;
+import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
+import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
-import static im.adamant.android.ui.mvp_view.SettingsView.IS_RECEIVE_NOTIFICATIONS;
-import static im.adamant.android.ui.mvp_view.SettingsView.IS_SAVE_KEYPAIR;
-
-
 @InjectViewState
-public class SettingsPresenter extends  BasePresenter<SettingsView> {
-    private Router router;
-    private SaveKeypairInteractor saveKeypairInteractor;
-    private SubscribeToPushInteractor subscribeToPushInteractor;
+public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
+    private SecurityInteractor securityInteractor;
+    private LogoutInteractor logoutInteractor;
+    private Disposable logoutDisposable;
+    private SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor;
     private AdamantApiWrapper api;
+    private Scheduler observeScheduler;
 
     public SettingsPresenter(
             Router router,
+            AccountInteractor accountInteractor,
+            LogoutInteractor logoutInteractor,
             AdamantApiWrapper api,
-            SaveKeypairInteractor saveKeypairInteractor,
-            SubscribeToPushInteractor subscribeToPushInteractor,
-            CompositeDisposable subscriptions
+            SecurityInteractor securityInteractor,
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            Scheduler observeScheduler
     ) {
-        super(subscriptions);
-        this.router = router;
+        super(router, accountInteractor);
         this.api = api;
-        this.saveKeypairInteractor = saveKeypairInteractor;
-        this.subscribeToPushInteractor = subscribeToPushInteractor;
+        this.observeScheduler =observeScheduler;
+        this.securityInteractor = securityInteractor;
+        this.logoutInteractor = logoutInteractor;
+        this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
     }
 
     @Override
     public void attachView(SettingsView view) {
         super.attachView(view);
 
-        getViewState().setStoreKeyPairOption(
-                saveKeypairInteractor.isKeyPairMustBeStored()
+        getViewState().setCheckedStoreKeyPairOption(
+                securityInteractor.isKeyPairMustBeStored()
         );
+
+        //TODO: Check minimum balance must be move to FCMPushServiceFacade
         getViewState().setEnablePushOption(
-                saveKeypairInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
+                securityInteractor.isKeyPairMustBeStored() && isHaveMinimumBalance()
         );
-        getViewState().switchPushOption(
-                subscribeToPushInteractor.isSubscribedOnPush()
+        getViewState().displayCurrentNotificationFacade(
+                switchPushNotificationServiceInteractor.getCurrentFacade()
         );
     }
 
-    public void onSwitchStoreKeypair(boolean value) {
-        getViewState().setEnablePushOption(value);
-    }
+    public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
+        if (value != securityInteractor.isKeyPairMustBeStored()) {
 
-    public void onClickSaveSettings(Bundle config) {
-        if (config != null) {
-            boolean isSaveKeypair = config.getBoolean(IS_SAVE_KEYPAIR, false);
-            boolean isSubscribeToNotifications = config.getBoolean(IS_RECEIVE_NOTIFICATIONS, false);
+            if (value && !isUserConfirmed) {
+                boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
 
-            if (!isSaveKeypair) {isSubscribeToNotifications = false;}
+                if (!hardwareSecuredDevice) {
+                    getViewState().showTEENotSupportedDialog();
+                    return;
+                }
+            }
 
-            saveKeyPair(isSaveKeypair);
-            savePushSettings(isSubscribeToNotifications);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
+            router.navigateTo(Screens.PINCODE_SCREEN, bundle);
         }
+    }
+
+    public void onClickShowSelectPushService() {
+        getViewState().showSelectServiceDialog(
+                new ArrayList<>(switchPushNotificationServiceInteractor.getFacades().values()),
+                switchPushNotificationServiceInteractor.getCurrentFacade());
+
+        //router.navigateTo(Screens.PUSH_SUBSCRIPTION_SCREEN);
     }
 
     public void onClickShowNodesList() {
         router.navigateTo(Screens.NODES_LIST_SCREEN);
     }
 
-    private void savePushSettings(boolean enable) {
-        CompositeDisposable localSubscriptions = subscriptions;
+    public void onClickShowExitDialogButton() {
+        getViewState().showExitDialog();
+    }
 
-        if (enable) {
-            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(instanceIdResult -> {
-                String deviceToken = instanceIdResult.getToken();
-                Disposable subscribeToPush = subscribeToPushInteractor
-                        .getEventsObservable()
-                        .subscribe(
-                                (event) -> {},
-                                (error) -> LoggerHelper.e("savePushToken", error.getMessage(), error)
-                        );
-                localSubscriptions.add(subscribeToPush);
+    public void onClickExitButton() {
 
-                subscribeToPushInteractor.savePushToken(deviceToken);
-            });
-        } else {
-            Disposable unsubscribeFromPush = subscribeToPushInteractor
-                    .getEventsObservable()
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
+
+        logoutDisposable = logoutInteractor
+                .getEventBus()
+                .subscribe(
+                        (irrelevant) -> {
+                            router.navigateTo(Screens.SPLASH_SCREEN);
+                        },
+                        (error) -> {
+                            router.showSystemMessage(error.getMessage());
+                        }
+                );
+
+        logoutInteractor.logout();
+    }
+
+    public void onClickSetNewPushService(PushNotificationServiceFacade facade) {
+        if (facade != null) {
+            getViewState().setEnablePushServiceTypeOption(false);
+            getViewState().startProgress();
+            Disposable subscribe = switchPushNotificationServiceInteractor
+                    .changeNotificationFacade(facade.getFacadeType())
+                    .doOnError((error) -> LoggerHelper.e("SWITCH NOTIFICATION SERVICE", error.getMessage(), error))
+                    .observeOn(observeScheduler)
                     .subscribe(
-                            (event) -> {},
-                            (error) -> LoggerHelper.e("savePushToken", error.getMessage(), error)
+                            () -> {
+                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().stopProgress();
+                                getViewState().showMessage(R.string.fragment_settings_success_saved);
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                            },
+                            (error) -> {
+                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().stopProgress();
+                                getViewState().showMessage(error.getMessage());
+                                getViewState().displayCurrentNotificationFacade(
+                                        switchPushNotificationServiceInteractor.getCurrentFacade()
+                                );
+                            }
                     );
-            localSubscriptions.add(unsubscribeFromPush);
-
-            subscribeToPushInteractor.deleteCurrentToken();
+            subscriptions.add(subscribe);
         }
     }
 
-    private void saveKeyPair(boolean value) {
-        Disposable subscribe = saveKeypairInteractor.getFlowable()
-                .subscribe(
-                        (irrelevant) -> {},
-                        (error) -> LoggerHelper.e("saveKeyPair", error.getMessage(), error)
-                );
-        subscriptions.add(subscribe);
 
-        saveKeypairInteractor.saveKeypair(value);
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (logoutDisposable != null) {
+            logoutDisposable.dispose();
+        }
     }
 
     private boolean isHaveMinimumBalance() {

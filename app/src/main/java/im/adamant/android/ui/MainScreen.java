@@ -2,19 +2,15 @@ package im.adamant.android.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -27,18 +23,19 @@ import dagger.android.support.HasSupportFragmentInjector;
 import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.ui.fragments.BottomCreateChatFragment;
-import im.adamant.android.ui.presenters.MainPresenter;
-import im.adamant.android.ui.fragments.BottomNavigationDrawerFragment;
 import im.adamant.android.ui.fragments.ChatsScreen;
+import im.adamant.android.ui.fragments.CreateChatFragment;
 import im.adamant.android.ui.fragments.SettingsScreen;
 import im.adamant.android.ui.fragments.WalletScreen;
 import im.adamant.android.ui.mvp_view.MainView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
+import im.adamant.android.ui.presenters.MainPresenter;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
-import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
@@ -63,22 +60,13 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> fragmentDispatchingAndroidInjector;
 
-//    @Named("main")
-//    @Inject
-//    FragmentsAdapter mainAdapterReference;
 
     @BindView(R.id.main_screen_content) FrameLayout content;
-//    @BindView(R.id.main_screen_navigation)
-//    BottomNavigationView navigation;
 
-//    @BindView(R.id.fab)
-//    FloatingActionButton fab;
+    @BindView(R.id.activity_main_bnv_navigation)
+    BottomNavigationView appBar;
 
-    @BindView(R.id.bottom_appbar)
-    BottomAppBar appBar;
-
-    @Inject
-    Avatar avatar;
+    private ChatsScreen chatsScreen;
 
     @Override
     public int getLayoutId() {
@@ -95,7 +83,24 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        setSupportActionBar(appBar);
+        appBar.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()){
+                case R.id.navigation_chats: {
+                    presenter.onSelectedChatsScreen();
+                    return true;
+                }
+                case R.id.navigation_wallet: {
+                    presenter.onSelectedWalletScreen();
+                    return true;
+                }
+                case R.id.navigation_settings: {
+                    presenter.onSelectedSettingsScreen();
+                    return true;
+                }
+            }
+
+            return false;
+        });
     }
 
     //TODO: Don't recreate fragments
@@ -109,8 +114,9 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
     @Override
     public void showChatsScreen() {
+        if (chatsScreen == null) { chatsScreen = new ChatsScreen(); }
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new ChatsScreen());
+        transaction.replace(R.id.main_screen_content, chatsScreen);
         transaction.commit();
     }
 
@@ -140,92 +146,99 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home: {
-                FragmentManager supportFragmentManager = getSupportFragmentManager();
-                BottomNavigationDrawerFragment bottomNavDrawerFragment = new BottomNavigationDrawerFragment();
-                bottomNavDrawerFragment.show(supportFragmentManager, bottomNavDrawerFragment.getTag());
+    public void onBackPressed() {
+        int count = getSupportFragmentManager().getBackStackEntryCount();
 
-                return true;
+        if (count == 0) {
+            super.onBackPressed();
+        } else {
+            final CreateChatFragment createChatFragment = (CreateChatFragment)getSupportFragmentManager().findFragmentByTag(CreateChatFragment.TAG);
+            if (createChatFragment != null && createChatFragment.isVisible()) {
+                createChatFragment.dismiss();
+            } else {
+                getSupportFragmentManager().popBackStack();
             }
         }
-        return false;
     }
 
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        FragmentManager fragManager = this.getSupportFragmentManager();
-//        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-//
-//        Fragment currentFragment = fragManager.getFragments().get(count>0?count-1:count);
-//        if (currentFragment != null) {
-//            currentFragment.onActivityResult(requestCode, resultCode, data);
-//        }
-//    }
-
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.MESSAGES_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MessagesScreen.ARG_CHAT, (String)forwardCommand.getTransitionData());
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.CREATE_CHAT_SCREEN: {
+                    CreateChatFragment createChatFragment = CreateChatFragment.newInstance();
+                    createChatFragment.show(getSupportFragmentManager(), CreateChatFragment.TAG);
+                }
+                break;
+
+                case Screens.SCAN_QRCODE_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
+                    startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
+                }
+                break;
+
+                case Screens.NODES_LIST_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.PINCODE_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), PincodeScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+
+                case Screens.ALL_TRANSACTIONS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), AllTransactionsScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
+                case Screens.TRANSFER_DETAILS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if (command instanceof Forward) {
-                Forward forward = (Forward)command;
-                switch (forward.getScreenKey()){
-                    case Screens.MESSAGES_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), MessagesScreen.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(MessagesScreen.ARG_CHAT, (String)forward.getTransitionData());
-                        intent.putExtras(bundle);
+        @Override
+        protected void back(Back backCommand) {
 
-                        startActivity(intent);
-                    }
-                    break;
+        }
 
-                    case Screens.CREATE_CHAT_SCREEN: {
+        @Override
+        protected void backTo(BackTo backToCommand) {
 
-                        BottomCreateChatFragment createChatFragment = new BottomCreateChatFragment();
-                        FragmentManager supportFragmentManager = getSupportFragmentManager();
-                        createChatFragment.show(supportFragmentManager, createChatFragment.getTag());
-                    }
-                    break;
+        }
 
-                    case Screens.LOGIN_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                        startActivity(intent);
-                        MainScreen.this.finish();
-                    }
-                    break;
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
-                    case Screens.SPLASH_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                        startActivity(intent);
-                        finish();
-                    }
-                    break;
+        @Override
+        protected void replace(Replace command) {
 
-                    case Screens.SCAN_QRCODE_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), ScanQrCodeScreen.class);
-                        startActivityForResult(intent, Constants.SCAN_QR_CODE_RESULT);
-                    }
-                    break;
-
-                    case Screens.NODES_LIST_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), NodesListScreen.class);
-                        startActivity(intent);
-                    }
-                    break;
-                }
-            } else if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            }
         }
     };
 }

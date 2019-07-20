@@ -1,94 +1,57 @@
 package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
-import com.arellomobile.mvp.MvpPresenter;
 
-import im.adamant.android.Screens;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.LogoutInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.MainView;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class MainPresenter extends BasePresenter<MainView> {
-    private Router router;
-    private LogoutInteractor logoutInteractor;
-    private Disposable logoutDisposable;
-
-    private String currentWindowCode = Screens.WALLET_SCREEN;
+public class MainPresenter extends ProtectedBasePresenter<MainView> {
+    private SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor;
 
     public MainPresenter(
             Router router,
-            LogoutInteractor logoutInteractor,
-            CompositeDisposable compositeDisposable
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
+            AccountInteractor accountInteractor
     ) {
-        super(compositeDisposable);
-        this.router = router;
-        this.logoutInteractor = logoutInteractor;
+        super(router, accountInteractor);
+        this.pushNotificationServiceInteractor = pushNotificationServiceInteractor;
     }
 
     @Override
-    public void attachView(MainView view) {
-        super.attachView(view);
-        switch (currentWindowCode){
-            case Screens.WALLET_SCREEN: {
-                getViewState().showWalletScreen();
-            }
-            break;
-            case Screens.CHATS_SCREEN: {
-                getViewState().showChatsScreen();
-            }
-            break;
-            case Screens.SETTINGS_SCREEN: {
-                getViewState().showSettingsScreen();
-            }
-            break;
+    protected void onFirstViewAttach() {
+        super.onFirstViewAttach();
+        PushNotificationServiceFacade currentFacade = pushNotificationServiceInteractor.getCurrentFacade();
+        if (currentFacade != null) {
+            Disposable pushSubscription = currentFacade
+                    .subscribe()
+                    .subscribe(
+                            () -> {},
+                            (error) -> {
+                                LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
+                            }
+                    );
+            subscriptions.add(pushSubscription);
         }
+
+        onSelectedWalletScreen();
     }
 
+
     public void onSelectedWalletScreen() {
-        currentWindowCode = Screens.WALLET_SCREEN;
         getViewState().showWalletScreen();
     }
 
     public void onSelectedChatsScreen() {
-        currentWindowCode = Screens.CHATS_SCREEN;
         getViewState().showChatsScreen();
     }
 
     public void onSelectedSettingsScreen() {
-        currentWindowCode = Screens.SETTINGS_SCREEN;
         getViewState().showSettingsScreen();
-    }
-
-    public void onClickExitButton() {
-
-        if (logoutDisposable != null) {
-            logoutDisposable.dispose();
-        }
-
-        logoutDisposable = logoutInteractor
-                .getEventBus()
-                .subscribe(
-                    (irrelevant) -> {
-                        router.navigateTo(Screens.LOGIN_SCREEN);
-                    },
-                    (error) -> {
-                        router.showSystemMessage(error.getMessage());
-                    }
-                );
-
-        logoutInteractor.execute();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (logoutDisposable != null) {
-            logoutDisposable.dispose();
-        }
     }
 }

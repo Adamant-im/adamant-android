@@ -5,17 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:text="@string/dialog_rename_contact_cost"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_marginStart="?dialogPreferredPadding"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/dialog_rename_contact_il_layout"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        style="@style/AdamantLight.TextInputLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="?dialogPreferredPadding"
@@ -31,6 +23,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/dialog_rename_contact_name"
+            style="AdamantLight.EditTextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:selectAllOnFocus="true"
@@ -38,5 +31,13 @@
             android:maxLines="1"
             android:textColor="@color/onSurface" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        style="@style/AdamantLight.TextExplanation"
+        android:text="@string/dialog_rename_contact_cost"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="?dialogPreferredPadding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

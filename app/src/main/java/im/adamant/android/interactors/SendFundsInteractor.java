@@ -1,11 +1,13 @@
 package im.adamant.android.interactors;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.TransactionWasProcessed;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.builders.MessageBuilder;
@@ -13,7 +15,6 @@ import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
 import im.adamant.android.ui.messages_support.factories.AdamantTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 
 public class SendFundsInteractor {
@@ -68,11 +69,6 @@ public class SendFundsInteractor {
         MessageProcessor<AdamantTransferMessage> messageProcessor = factory.getMessageProcessor();
         return messageProcessor
                 .sendMessage(message)
-                .doAfterSuccess(transactionWasProcessed -> {
-                    if (transactionWasProcessed.isSuccess()){
-                        message.setTransactionId(transactionWasProcessed.getTransactionId());
-                        message.setProcessed(true);
-                    }
-                });
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

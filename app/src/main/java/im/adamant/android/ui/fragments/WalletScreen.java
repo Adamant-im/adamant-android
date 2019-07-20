@@ -1,56 +1,55 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
+
+import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.tabs.TabLayout;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 
-import net.glxn.qrgen.android.QRCode;
-import net.glxn.qrgen.core.image.ImageType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Provider;
 
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 import butterknife.BindView;
+import butterknife.OnClick;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.ui.ShowQrCodeScreen;
-import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.ui.presenters.WalletPresenter;
+import im.adamant.android.ui.ShowQrCodeScreen;
 import im.adamant.android.ui.adapters.CurrencyCardAdapter;
 import im.adamant.android.ui.adapters.CurrencyTransfersAdapter;
-import im.adamant.android.ui.transformations.ShadowTransformation;
 import im.adamant.android.ui.entities.CurrencyCardItem;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.WalletView;
-import io.reactivex.disposables.CompositeDisposable;
+import im.adamant.android.ui.presenters.WalletPresenter;
+import im.adamant.android.ui.transformations.ShadowTransformation;
 import io.reactivex.disposables.Disposable;
 
 import static android.content.Context.CLIPBOARD_SERVICE;
@@ -60,7 +59,7 @@ import static android.content.Context.CLIPBOARD_SERVICE;
  */
 public class WalletScreen extends BaseFragment implements WalletView {
 
-    private CompositeDisposable subscriptions = new CompositeDisposable();
+    private Disposable cardEventsDisposable;
 
     @Inject
     @Named(Screens.WALLET_SCREEN)
@@ -87,6 +86,10 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_tab_sliding_tabs) TabLayout tabs;
     @BindView(R.id.fragment_wallet_vp_swipe_slider) ViewPager slider;
     @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
+    @BindView(R.id.fragment_wallet_tv_last_transactions_title) TextView lastTransactionsTitle;
+    @BindView(R.id.fragment_wallet_pb_transfer_loader) ArcProgressLoader transactionsLoader;
+
+    private boolean isTabsNotRendered = true;
 
     public WalletScreen() {
         // Required empty public constructor
@@ -110,13 +113,22 @@ public class WalletScreen extends BaseFragment implements WalletView {
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 CurrencyCardItem item = currencyCardAdapter.getItem(position);
                 if (item != null){
+                    String pattern = getString(R.string.fragment_wallet_last_transactions_title);
+                    pattern = String.format(Locale.ENGLISH, pattern, item.getAbbreviation());
+                    lastTransactionsTitle.setText(pattern);
+
                     presenter.onSelectCurrencyCard(item);
                 }
             }
 
             @Override
             public void onPageSelected(int position) {
+                TabLayout.Tab tab = tabs.getTabAt(position);
 
+                if (tab != null) {
+                    currencyCardAdapter.setSelectedIndex(position);
+                    tab.select();
+                }
             }
 
             @Override
@@ -125,25 +137,63 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
-        tabs.setupWithViewPager(slider);
+//        tabs.setupWithViewPager(slider);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        tabs.addOnTabSelectedListener(new TabLayout.BaseOnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int nextPosition = tab.getPosition();
+                int currentPosition = slider.getCurrentItem();
+
+                if (nextPosition != currentPosition) {
+                    slider.setCurrentItem(nextPosition, true);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(),
-                ((LinearLayoutManager) layoutManager).getOrientation());
-        lastTransactions.addItemDecoration(dividerItemDecoration);
 
+        Drawable divider = ContextCompat.getDrawable(lastTransactions.getContext(), R.drawable.line_divider);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(lastTransactions.getContext(), layoutManager.getOrientation());
+
+        if (divider != null) {
+            dividerItemDecoration.setDrawable(divider);
+        }
+
+        lastTransactions.addItemDecoration(dividerItemDecoration);
 
         setHasOptionsMenu(true);
         return view;
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        currencyTransfersAdapter.setOnClickedLister(presenter::onTransactionClicked);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         WeakReference<WalletPresenter> thisReference = new WeakReference<>(presenter);
-        Disposable subscribe = currencyCardAdapter
+
+        if (cardEventsDisposable != null) {
+            cardEventsDisposable.dispose();
+        }
+
+        cardEventsDisposable = currencyCardAdapter
                 .getObservable()
                 .subscribe(event -> {
                     WalletPresenter presenter = thisReference.get();
@@ -158,26 +208,40 @@ public class WalletScreen extends BaseFragment implements WalletView {
                             break;
                     }
                 });
-
-        subscriptions.add(subscribe);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         presenter.onStopTransfersUpdate();
-        subscriptions.dispose();
-        subscriptions.clear();
+        cardEventsDisposable.dispose();
+        cardEventsDisposable = null;
+    }
+
+    @OnClick(R.id.fragment_wallet_tv_see_all)
+    public void onClickShowAllButton() {
+        presenter.onClickShowAllTransfers();
     }
 
     @Override
     public void showCurrencyCards(List<CurrencyCardItem> currencyCardItems) {
         currencyCardAdapter.addCardItems(currencyCardItems);
+
+        if (isTabsNotRendered) {
+            renderTabs();
+            isTabsNotRendered = false;
+        }
     }
 
     @Override
     public void showLastTransfers(List<CurrencyTransferEntity> currencyTransferEntities) {
         currencyTransfersAdapter.refreshItems(currencyTransferEntities);
+        transactionsLoader.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void startTransfersLoad() {
+        transactionsLoader.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -200,12 +264,25 @@ public class WalletScreen extends BaseFragment implements WalletView {
         if (activity != null){
             Bundle bundle = new Bundle();
             bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, address);
-
+            bundle.putBoolean(ShowQrCodeScreen.ARG_SHOW_CONTENT, true);
+            bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
             Intent intent = new Intent(activity.getApplicationContext(), ShowQrCodeScreen.class);
             intent.putExtras(bundle);
 
             startActivity(intent);
         }
+    }
+
+    private void renderTabs() {
+        //Set Tabs
+        for (int i = 0; i < currencyCardAdapter.getCount(); i++) {
+            TabLayout.Tab tab = tabs.newTab();
+            View tabCustomView = currencyCardAdapter.getTabCustomView(i, getLayoutInflater(),null);
+            tab.setCustomView(tabCustomView);
+            tabs.addTab(tab);
+        }
+
+        currencyCardAdapter.setSelectedIndex(0);
     }
 
 }

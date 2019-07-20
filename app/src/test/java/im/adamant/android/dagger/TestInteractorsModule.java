@@ -6,18 +6,23 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
-import im.adamant.android.interactors.GetContactsInteractor;
+import im.adamant.android.interactors.HasNewMessagesInteractor;
 import im.adamant.android.interactors.LogoutInteractor;
-import im.adamant.android.interactors.RefreshChatsInteractor;
 import im.adamant.android.interactors.SaveContactsInteractor;
-import im.adamant.android.interactors.SaveKeypairInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.interactors.SendFundsInteractor;
 import im.adamant.android.interactors.ServerNodeInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.interactors.wallets.WalletFacade;
 
 import static org.mockito.Mockito.mock;
 
@@ -49,14 +54,14 @@ public abstract class TestInteractorsModule {
 
     @Singleton
     @Provides
-    public static SaveKeypairInteractor provideKeypairInteractor() {
-        return mock(SaveKeypairInteractor.class);
+    public static SecurityInteractor provideKeypairInteractor() {
+        return mock(SecurityInteractor.class);
     }
 
     @Singleton
     @Provides
-    public static SubscribeToPushInteractor provideSubscribeToPushInteractor() {
-        return mock(SubscribeToPushInteractor.class);
+    public static SwitchPushNotificationServiceInteractor provideSubscribeToPushInteractor() {
+        return mock(SwitchPushNotificationServiceInteractor.class);
     }
 
     @Singleton
@@ -73,18 +78,6 @@ public abstract class TestInteractorsModule {
 
     @Singleton
     @Provides
-    public static RefreshChatsInteractor provideRefreshInteractor() {
-        return mock(RefreshChatsInteractor.class);
-    }
-
-    @Singleton
-    @Provides
-    public static GetContactsInteractor provideGetContactsInteractor() {
-        return mock(GetContactsInteractor.class);
-    }
-
-    @Singleton
-    @Provides
     public static SaveContactsInteractor provideSaveContactsInteractor() {
         return mock(SaveContactsInteractor.class);
     }
@@ -93,5 +86,17 @@ public abstract class TestInteractorsModule {
     @Provides
     public static LogoutInteractor provideLogoutInteractor() {
         return mock(LogoutInteractor.class);
+    }
+
+    @Singleton
+    @Provides
+    public static HasNewMessagesInteractor provideHasNewMessagesInteractor() {
+        return mock(HasNewMessagesInteractor.class);
+    }
+
+    @Singleton
+    @Provides
+    public static TransferDetailsInteractor transferDetailsInteractor() {
+        return mock(TransferDetailsInteractor.class);
     }
 }

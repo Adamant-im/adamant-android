@@ -1,24 +1,23 @@
 package im.adamant.android.ui.fragments;
 
 
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
-import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -27,6 +26,8 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import im.adamant.android.R;
+import im.adamant.android.helpers.AnimationUtils;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.ChatsPresenter;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.entities.Chat;
@@ -52,15 +53,18 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     }
 
     //--ButterKnife
-    @BindView(R.id.activity_chats_rv_chats)
+    @BindView(R.id.fragment_chats_rv_chats)
     RecyclerView chatList;
-    @BindView(R.id.shimmer_view_container)
-    ShimmerFrameLayout shimmer;
+
+    @BindView(R.id.fragment_chats_pb_progress)
+    ProgressBar progressBar;
+
+    @BindView(R.id.fragment_chats_fab_add_chat)
+    FloatingActionButton addChatFab;
 
     public ChatsScreen() {
         // Required empty public constructor
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,14 +86,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
 
-        int[] ATTRS = new int[]{android.R.attr.listDivider};
-
-        TypedArray a = chatList.getContext().obtainStyledAttributes(ATTRS);
-        Drawable divider = a.getDrawable(0);
+        Drawable divider = ContextCompat.getDrawable(chatList.getContext(), R.drawable.line_divider);
         int avatarWidth = getResources().getDimensionPixelSize(R.dimen.list_item_avatar_size);
         int itemPadding = getResources().getDimensionPixelSize(R.dimen.list_item_chat_padding);
         InsetDrawable insetDivider = new InsetDrawable(divider, avatarWidth + (itemPadding * 2), 0, 0, 0);
-        a.recycle();
 
         DividerItemDecoration itemDecoration = new DividerItemDecoration(chatList.getContext(), layoutManager.getOrientation());
         itemDecoration.setDrawable(insetDivider);
@@ -97,32 +97,35 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
 
         adapter.setListener(this);
 
+        chatList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && addChatFab.getVisibility() == View.VISIBLE) {
+                    addChatFab.hide();
+                } else if (dy < 0 && addChatFab.getVisibility() != View.VISIBLE) {
+                    addChatFab.show();
+                }
+            }
+        });
+
+        addChatFab.setOnClickListener(v -> presenter.onClickCreateNewChatButton(buildRevealSettings()));
+
         return view;
     }
 
     @Override
     public void showChats(List<Chat> chats) {
         adapter.updateDataset(chats);
-        shimmer.stopShimmerAnimation();
-        chatList.setVisibility(View.VISIBLE);
-        shimmer.setVisibility(View.GONE);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        chatList.setVisibility(View.GONE);
-        shimmer.setVisibility(View.VISIBLE);
-        shimmer.startShimmerAnimation();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        shimmer.stopShimmerAnimation();
-        chatList.setVisibility(View.VISIBLE);
-        shimmer.setVisibility(View.GONE);
+    public void progress(boolean value) {
+        if (value) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -130,19 +133,18 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         presenter.onChatWasSelected(chat);
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.fragment_chats_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_create_new_chat:
-                presenter.onClickCreateNewChatButton();
-                break;
+    private AnimationUtils.RevealAnimationSetting buildRevealSettings() {
+        if (getActivity() != null) {
+            View containerView = getActivity().findViewById(R.id.main_screen_content);
+            return AnimationUtils.RevealAnimationSetting.with(
+                    (int) (addChatFab.getX() + addChatFab.getWidth() / 2),
+                    (int) (addChatFab.getY() + addChatFab.getHeight() / 2),
+                    containerView.getWidth(),
+                    containerView.getHeight());
+        } else {
+            return null;
         }
 
-        return super.onOptionsItemSelected(item);
     }
+
 }

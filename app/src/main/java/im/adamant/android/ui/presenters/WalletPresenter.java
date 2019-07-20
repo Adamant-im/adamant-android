@@ -1,5 +1,7 @@
 package im.adamant.android.ui.presenters;
 
+import android.os.Bundle;
+
 import com.arellomobile.mvp.InjectViewState;
 
 import java.util.concurrent.TimeUnit;
@@ -7,37 +9,43 @@ import java.util.concurrent.TimeUnit;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
+import im.adamant.android.ui.AllTransactionsScreen;
+import im.adamant.android.ui.TransferDetailsScreen;
 import im.adamant.android.ui.entities.CurrencyCardItem;
+import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import im.adamant.android.ui.mvp_view.WalletView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
-public class WalletPresenter extends BasePresenter<WalletView> {
-    private Router router;
+public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
     private WalletInteractor walletInteractor;
     private Disposable lastTransfersSubscription;
+    private Disposable walletCardsSubscription;
     private CurrencyCardItem currencyCardItem;
 
     public WalletPresenter(
             Router router,
-            WalletInteractor walletInteractor,
-            CompositeDisposable subscription
+            AccountInteractor accountInteractor,
+            WalletInteractor walletInteractor
     ) {
-        super(subscription);
+        super(router, accountInteractor);
         this.walletInteractor = walletInteractor;
-        this.router = router;
     }
 
     @Override
     public void attachView(WalletView view) {
         super.attachView(view);
 
-        Disposable subscribe = walletInteractor
+        if (walletCardsSubscription != null) {
+            walletCardsSubscription.dispose();
+        }
+
+        walletCardsSubscription = walletInteractor
                 .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
@@ -46,11 +54,11 @@ public class WalletPresenter extends BasePresenter<WalletView> {
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
 
-        subscriptions.add(subscribe);
-
     }
 
     public void onSelectCurrencyCard(CurrencyCardItem cardItem){
+
+        getViewState().startTransfersLoad();
 
         if (lastTransfersSubscription != null) {
             lastTransfersSubscription.dispose();
@@ -87,6 +95,11 @@ public class WalletPresenter extends BasePresenter<WalletView> {
             lastTransfersSubscription.dispose();
             lastTransfersSubscription = null;
         }
+
+        if (walletCardsSubscription != null){
+            walletCardsSubscription.dispose();
+            walletCardsSubscription = null;
+        }
     }
 
     public void onClickCopyCurrentCardAddress() {
@@ -103,6 +116,20 @@ public class WalletPresenter extends BasePresenter<WalletView> {
             }
             getViewState().createQrCode(address);
         }
+    }
+
+    public void onClickShowAllTransfers() {
+        Bundle bundle = new Bundle();
+        bundle.putString(AllTransactionsScreen.ARG_CURRENCY_ABBR, currencyCardItem.getAbbreviation());
+
+        router.navigateTo(Screens.ALL_TRANSACTIONS_SCREEN, bundle);
+    }
+
+    public void onTransactionClicked(CurrencyTransferEntity currencyTransferEntity){
+        Bundle bundle = new Bundle();
+        bundle.putString(TransferDetailsScreen.ARG_TRANSFER_ID_KEY, currencyTransferEntity.getId());
+        bundle.putString(TransferDetailsScreen.ARG_CURRENCY_ABBR, currencyTransferEntity.getCurrencyAbbreviation());
+        router.navigateTo(Screens.TRANSFER_DETAILS_SCREEN, bundle);
     }
 
 }

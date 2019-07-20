@@ -18,6 +18,7 @@ import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionWasProcessed;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.AdamantTransferMessage;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -50,9 +51,12 @@ public class AdamantTransferMessageProcessor extends AbstractMessageProcessor<Ad
 
         long currentMessageCost = this.calculateMessageCostInAdamant(message);
         if (currentMessageCost > account.getBalance()){
+            String errorMessage = "Not enough adamant. Cost:" + currentMessageCost + ". Balance:" + account.getBalance();
+            message.setError(errorMessage);
+
             return Single.error(
                     new NotEnoughAdamantBalanceException(
-                            "Not enough adamant. Cost:" + currentMessageCost + ". Balance:" + account.getBalance()
+                            errorMessage
                     )
             );
         }
@@ -74,6 +78,15 @@ public class AdamantTransferMessageProcessor extends AbstractMessageProcessor<Ad
 
         return api
                 .sendAdmTransferTransaction(processTransaction)
+                .doOnError(error -> message.setError(error.getMessage()))
+                .doOnNext(transactionWasProcessed -> {
+                    if (transactionWasProcessed.isSuccess()) {
+                        message.setTransactionId(transactionWasProcessed.getTransactionId());
+                        message.setStatus(AbstractMessage.Status.DELIVERED);
+                    } else {
+                        message.setError(transactionWasProcessed.getError());
+                    }
+                })
                 .singleOrError();
     }
 

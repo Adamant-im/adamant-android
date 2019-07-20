@@ -12,6 +12,7 @@ import im.adamant.android.ui.entities.CurrencyCardItem;
 public interface WalletView extends MvpView {
     void showCurrencyCards(List<CurrencyCardItem> currencyCardItems);
     void showLastTransfers(List<CurrencyTransferEntity> currencyTransferEntities);
+    void startTransfersLoad();
 
     @StateStrategyType(SkipStrategy.class)
     void putAddressToClipboard(String address);

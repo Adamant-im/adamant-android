@@ -3,8 +3,12 @@ package im.adamant.android.ui.holders;
 import android.content.Context;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -15,14 +19,17 @@ import io.reactivex.subjects.PublishSubject;
 
 public class ServerNodeHolder extends RecyclerView.ViewHolder {
     private Context context;
-    private PublishSubject<Integer> subject;
 
     private TextView serverNameView;
     private TextView serverStatusView;
-    private ImageButton deleteButton;
+    private ImageView deleteButton;
 
-
-    public ServerNodeHolder(View itemView, Context context, PublishSubject<Integer> subject) {
+    public ServerNodeHolder(
+            View itemView,
+            Context context,
+            PublishSubject<Integer> deleteSubject,
+            PublishSubject<Integer> switchSubject
+    ) {
         super(itemView);
 
         this.context = context;
@@ -31,19 +38,52 @@ public class ServerNodeHolder extends RecyclerView.ViewHolder {
         serverStatusView = itemView.findViewById(R.id.list_item_servernode_tv_status);
         deleteButton = itemView.findViewById(R.id.list_item_servernode_ibtn_delete);
 
-        deleteButton.setOnClickListener(v -> subject.onNext(getAdapterPosition()));
+        deleteButton.setOnClickListener(v -> deleteSubject.onNext(getAdapterPosition()));
+        itemView.setOnTouchListener(new View.OnTouchListener() {
+            private GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {
+                    switchSubject.onNext(getAdapterPosition());
+                    return super.onDoubleTap(e);
+                }
+            });
+
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                gestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
     }
 
     public void bind(ServerNode serverNode){
         if (serverNode != null){
             serverNameView.setText(serverNode.getUrl());
+
+            if (serverNode.getStatus() == ServerNode.Status.UNAVAILABLE) {
+                serverNameView.setTextColor(ContextCompat.getColor(context, R.color.statusUnavailable));
+            } else {
+                serverNameView.setTextColor(ContextCompat.getColor(context, R.color.onPrimary));
+            }
+
             serverStatusView.setTextColor(ContextCompat.getColor(context, detectStatusColor(serverNode)));
-            String statusString = String.format(
-                    Locale.ENGLISH,
-                    context.getString(R.string.activity_nodes_list_node_status),
-                    detectStatus(serverNode),
-                    serverNode.getPingInMilliseconds()
-            );
+
+            String statusString = "";
+            if (serverNode.getStatus() == ServerNode.Status.ACTIVE || serverNode.getStatus() == ServerNode.Status.CONNECTED) {
+                statusString = String.format(
+                        Locale.ENGLISH,
+                        context.getString(R.string.activity_nodes_list_active_node_status),
+                        detectStatus(serverNode),
+                        serverNode.getPingInMilliseconds()
+                );
+            } else {
+                statusString = String.format(
+                        Locale.ENGLISH,
+                        context.getString(R.string.activity_nodes_list_inactive_node_status),
+                        detectStatus(serverNode)
+                );
+            }
 
             serverStatusView.setText(statusString);
         }

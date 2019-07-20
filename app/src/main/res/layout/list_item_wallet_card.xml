@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/list_item_wallet_card_cv_card"
@@ -15,11 +14,10 @@
         app:cardCornerRadius="10dp"
         app:cardUseCompatPadding="true"
         app:layout_constraintDimensionRatio="H,3:2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="spread_inside">
-
 
         <ImageView
             android:layout_width="match_parent"
@@ -27,12 +25,11 @@
             android:scaleType="fitXY"
             android:src="@drawable/currency_card_background" />
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="20dp">
+            android:layout_margin="@dimen/list_item_wallet_card_padding">
 
             <ImageView
                 android:id="@+id/list_item_wallet_card_background_logo"
@@ -51,6 +48,7 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_title"
+                style="@style/AdamantLight.TextHeadline"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textAlignment="textEnd"
@@ -62,11 +60,12 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_balance_title"
+                style="@style/AdamantLight.TextExplanation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/fragment_wallet_balance_title"
-                android:textSize="12sp"
+                android:textSize="@dimen/list_item_wallet_card_subtitle_size"
                 app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_title"
                 app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_title"
                 tools:layout_conversion_absoluteHeight="16dp"
@@ -74,12 +73,12 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_balance"
+                style="@style/AdamantLight.TextExplanationEnlarged"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
                 android:text="TextView"
                 android:textColor="@android:color/black"
-                app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_card_tv_get_free_token"
+                android:textSize="@dimen/list_item_wallet_card_content_size"
                 app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_balance_title"
                 app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance_title"
                 tools:layout_conversion_absoluteHeight="19dp"
@@ -87,11 +86,15 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_address_title"
-                android:layout_width="wrap_content"
+                style="@style/AdamantLight.TextExplanation"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="9dp"
+                android:layout_marginEnd="8dp"
                 android:text="@string/fragment_wallet_address_title"
-                android:textSize="12sp"
+                android:textSize="@dimen/list_item_wallet_card_subtitle_size"
+                app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_card_ib_create_qr"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_balance"
                 app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance"
                 tools:layout_conversion_absoluteHeight="16dp"
@@ -99,47 +102,67 @@
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_address"
+                style="@style/AdamantLight.TextExplanationEnlarged"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:maxLines="3"
+                android:layout_marginEnd="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="TextView"
                 android:textColor="@android:color/black"
-                app:layout_constraintEnd_toEndOf="parent"
+                android:textSize="@dimen/list_item_wallet_card_content_size"
+                app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_card_ib_create_qr"
                 app:layout_constraintStart_toStartOf="@+id/list_item_wallet_card_tv_address_title"
                 app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_address_title"
                 tools:layout_conversion_absoluteHeight="59dp"
                 tools:layout_conversion_absoluteWidth="1dp" />
 
             <TextView
-                android:id="@+id/list_item_wallet_card_tv_create_qr"
-                android:layout_width="wrap_content"
+                android:id="@+id/list_item_wallet_card_tv_send_funds"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/fragment_wallet_create_qrcode_title"
-                android:textAllCaps="true"
+                android:text="@string/fragment_wallet_send_funds"
                 android:textColor="@color/secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <TextView
-                android:id="@+id/list_item_wallet_card_tv_copy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/copy"
-                android:textAllCaps="true"
-                android:textColor="@color/secondary"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:textSize="@dimen/list_item_wallet_card_content_size"
+                app:layout_constraintBottom_toTopOf="@+id/list_item_wallet_card_tv_get_free_token"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/list_item_wallet_card_tv_get_free_token"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/fragment_wallet_free_tokens_title"
-                android:textAllCaps="true"
                 android:textColor="@color/secondary"
+                android:textSize="@dimen/list_item_wallet_card_content_size"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance_title" />
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/list_item_wallet_card_ib_copy"
+                style="@style/AdamantLight.IconActive"
+                android:layout_width="40dp"
+                android:tint="@color/secondary"
+                android:scaleType="centerCrop"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/list_item_wallet_card_background_logo"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance"
+                app:srcCompat="@drawable/ic_copy" />
+
+            <ImageButton
+                android:id="@+id/list_item_wallet_card_ib_create_qr"
+                style="@style/AdamantLight.IconActive"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:scaleType="centerCrop"
+                android:tint="@color/secondary"
+                app:layout_constraintEnd_toStartOf="@+id/list_item_wallet_card_ib_copy"
+                app:layout_constraintTop_toBottomOf="@+id/list_item_wallet_card_tv_balance"
+                app:srcCompat="@drawable/ic_qr_scan" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

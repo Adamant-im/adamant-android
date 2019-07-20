@@ -11,8 +11,14 @@ import dagger.Provides;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.core.kvs.ApiKvsProvider;
+import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.chats.ContactsSource;
+import im.adamant.android.interactors.chats.HistoryTransactionsSource;
+import im.adamant.android.interactors.chats.LastTransactionInChatsSource;
+import im.adamant.android.interactors.chats.NewTransactionsSource;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.ui.mappers.LocalizedChatMapper;
 import im.adamant.android.ui.mappers.LocalizedMessageMapper;
@@ -26,6 +32,7 @@ import im.adamant.android.ui.messages_support.factories.BinanceTransferMessageFa
 import im.adamant.android.ui.messages_support.factories.EthereumTransferMessageFactory;
 import im.adamant.android.ui.messages_support.factories.FallbackMessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import ru.terrakok.cicerone.Router;
 
 @Module
 public abstract class MessagesModule {
@@ -44,8 +51,8 @@ public abstract class MessagesModule {
             Encryptor encryptor,
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
-            Avatar avatar
-    ) {
+            Avatar avatar, Router router
+            ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
@@ -75,7 +82,7 @@ public abstract class MessagesModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE,
-                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar)
+                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar,router)
         );
 
         return provider;
@@ -85,17 +92,16 @@ public abstract class MessagesModule {
     @Provides
     public static TransactionToMessageMapper providesTransactionsToMessageMapper(
             Encryptor encryptor,
-            PublicKeyStorage publicKeyStorage,
             AdamantApiWrapper api,
             MessageFactoryProvider factoryProvider
     ) {
-        return new TransactionToMessageMapper(encryptor, publicKeyStorage, api, factoryProvider);
+        return new TransactionToMessageMapper(encryptor, api, factoryProvider);
     }
 
     @Singleton
     @Provides
-    public static TransactionToChatMapper providesTransactionsToChatMapper(AdamantApiWrapper api, PublicKeyStorage publicKeyStorage) {
-        return new TransactionToChatMapper(api, publicKeyStorage);
+    public static TransactionToChatMapper providesChatTransactionToChatMapper(AdamantApiWrapper api) {
+        return new TransactionToChatMapper(api);
     }
 
     @Singleton
@@ -110,4 +116,27 @@ public abstract class MessagesModule {
         return new LocalizedChatMapper(ctx);
     }
 
+    @Singleton
+    @Provides
+    public static NewTransactionsSource providesNewTransactionSource(AdamantApiWrapper api) {
+        return new NewTransactionsSource(api);
+    }
+
+    @Singleton
+    @Provides
+    public static LastTransactionInChatsSource providesLastTransactionInChatsSource(AdamantApiWrapper api) {
+        return new LastTransactionInChatsSource(api);
+    }
+
+    @Singleton
+    @Provides
+    public static HistoryTransactionsSource providesHistoryTransactionsSource(AdamantApiWrapper api) {
+        return new HistoryTransactionsSource(api);
+    }
+
+    @Singleton
+    @Provides
+    public static ContactsSource providesContactsSource(KvsHelper kvsHelper, ApiKvsProvider kvsProvider) {
+        return new ContactsSource(kvsProvider, kvsHelper);
+    }
 }

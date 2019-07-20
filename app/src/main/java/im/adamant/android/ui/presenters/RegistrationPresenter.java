@@ -29,12 +29,9 @@ public class RegistrationPresenter extends BasePresenter<RegistrationView> {
     private List<Pair<String, String>> passphrases = new ArrayList<>();
     private int currentItemIndex = 0;
 
-    public RegistrationPresenter(Router router, AuthorizeInteractor authorizeInteractor, CompositeDisposable subscriptions) {
-        super(subscriptions);
+    public RegistrationPresenter(Router router, AuthorizeInteractor authorizeInteractor) {
         this.authorizeInteractor = authorizeInteractor;
         this.router = router;
-
-//        passphrases.add(currentItemIndex, new Pair<>("", ""));
 
         onClickGeneratePassphrases();
     }

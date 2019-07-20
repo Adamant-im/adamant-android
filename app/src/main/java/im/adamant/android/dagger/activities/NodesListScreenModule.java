@@ -15,26 +15,17 @@ import io.reactivex.disposables.CompositeDisposable;
 public class NodesListScreenModule {
     @ActivityScope
     @Provides
-    public static NodesListPresenter provideNodesListPresenter(
-            ServerNodeInteractor serverNodeInteractor,
-            @Named(Screens.NODES_LIST_SCREEN) CompositeDisposable subscriptions
-    ) {
-        return new NodesListPresenter(
-                serverNodeInteractor,
-                subscriptions
-        );
-    }
-
-    @ActivityScope
-    @Provides
-    @Named(Screens.NODES_LIST_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
-
-    @ActivityScope
-    @Provides
     public ServerNodeAdapter provideAdapter(Settings settings){
         return new ServerNodeAdapter(settings.getNodes());
+    }
+
+    @ActivityScope
+    @Provides
+    public static NodesListPresenter provideNodesListPresenter(
+            ServerNodeInteractor serverNodeInteractor
+    ) {
+        return new NodesListPresenter(
+                serverNodeInteractor
+        );
     }
 }

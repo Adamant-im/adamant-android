@@ -11,11 +11,7 @@
         android:id="@+id/main_screen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="@dimen/app_bar_bottom_height"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_behavior=".ui.transformations.FragmentContainerStickyBottomBehavior"/>
 
 
     <!--<im.adamant.android.ui.custom_view.NoSwipePager-->
@@ -28,37 +24,28 @@
         <!--app:layout_constraintStart_toStartOf="parent"-->
         <!--app:layout_constraintTop_toTopOf="parent" />-->
 
-    <!--<com.google.android.material.bottomnavigation.BottomNavigationView-->
-        <!--android:id="@+id/main_screen_navigation"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="?android:attr/windowBackground"-->
-        <!--app:itemIconTint="@drawable/bottom_navigation_item_color"-->
-        <!--app:itemTextColor="@drawable/bottom_navigation_item_color"-->
-        <!--app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--app:layout_constraintLeft_toLeftOf="parent"-->
-        <!--app:layout_constraintRight_toRightOf="parent"-->
-        <!--app:menu="@menu/navigation" />-->
-
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_appbar"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/activity_main_bnv_navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        app:fabAlignmentMode="end"
-        app:backgroundTint="@color/primary"
-        app:navigationIcon="@drawable/ic_menu"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:itemIconTint="@drawable/bottom_navigation_item_color"
+        app:itemTextColor="@drawable/bottom_navigation_item_color"
+        app:menu="@menu/navigation" />
 
-        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--app:backgroundTint="@color/colorPrimary"-->
-            <!--android:layout_gravity="bottom|center_horizontal"-->
-            <!--android:src="@mipmap/ic_launcher_foreground"-->
-            <!--app:layout_anchor="@+id/bottom_appbar"/>-->
+    <!--<com.google.android.material.bottomappbar.BottomAppBar-->
+        <!--android:id="@+id/activity_main_bottom_appbar"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--app:fabAlignmentMode="end"-->
+        <!--app:hideOnScroll="true"-->
+        <!--app:layout_scrollFlags="scroll|enterAlways"-->
+        <!--app:backgroundTint="@color/primary"-->
+        <!--app:fabCradleMargin="5dp"-->
+        <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
+        <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />-->
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

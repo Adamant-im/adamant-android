@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="fragment_wallet_card_height">424dp</dimen>
+    <dimen name="list_item_wallet_card_padding">20dp</dimen>
+    <dimen name="list_item_wallet_card_subtitle_size">12sp</dimen>
+    <dimen name="list_item_wallet_card_content_size">14sp</dimen>
+</resources>

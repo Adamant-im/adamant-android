@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.TextAppearance">
-        <item name="android:textSize">14sp</item>
+    <style name="AdamantLight.ButtonTextAppearance" parent="AdamantLight.BaseButtonTextAppearance">
         <item name="android:fontWeight">300</item>
         <item name="fontWeight">300</item>
+    </style>
+
+    <style name="AdamantLight.TextAppearance" parent="AdamantLight.BaseTextAppearance">
+        <!--<item name="android:letterSpacing">0.15</item>-->
+        <item name="android:fontWeight">300</item>
+        <item name="fontWeight">300</item>
+    </style>
+
+    <style name="AdamantLight.TextHeadline" parent="AdamantLight.TextRegularEnlarged">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:fontWeight">100</item>
+    </style>
+
+    <style name="AdamantLight.TextHeader" parent="AdamantLight.BaseTextHeader">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="AdamantLight.TextRegularEnlargedBold" parent="AdamantLight.BaseTextRegularEnlargedBold">
+        <item name="android:fontWeight">900</item>
     </style>
 </resources>

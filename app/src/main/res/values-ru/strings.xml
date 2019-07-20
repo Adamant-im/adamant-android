@@ -14,6 +14,9 @@
     <string name="activity_login_tv_login_by_qr">Войти через сохраненный QR-код:</string>
     <string name="activity_login_btn_new_account">Создать новый</string>
 
+    <string name="activity_show_qrcode_title_passphrase">QR-код парольной фразы</string>
+    <string name="activity_show_qrcode_title_address">QR-код адреса</string>
+
     <string name="activity_registration_tv_title">Создание нового адреса</string>
     <string name="activity_registration_btn_refresh_passphrase">Сгенерировать другие пассфразы</string>
     <string name="activity_registration_tv_generate_passphrase">Сгенерируйте пассфразу</string>
@@ -21,10 +24,19 @@
     <string name="activity_registration_btn_create_address">Войти</string>
 
     <string name="activity_nodes_list_title">Список нод</string>
-    <string name="activity_nodes_list_new_node_placeholder">Новая нода</string>
+    <string name="activity_nodes_list_new_node_placeholder">protocol://IP:port</string>
     <string name="activity_nodes_list_add_new_node">Добавить ноду</string>
     <string name="activity_nodes_list_dialog_delete_node">Вы действительно хотите удалить ноду?</string>
-    <string name="activity_nodes_list_node_status">Нода %s, Пинг: %.0f мс</string>
+    <string name="activity_nodes_list_active_node_status">Нода %s, Пинг: %.0f мс</string>
+    <string name="activity_nodes_list_inactive_node_status">Нода %s</string>
+    <string name="activity_nodes_reset_to_defaults">Сброс списка нод</string>
+
+    <string name="activity_all_transactions_title">%s транзакции</string>
+
+    <string name="activity_pincode_enter_pincode">Введите пин-код</string>
+    <string name="activity_pincode_enter_new_pincode">Введите новый пин-код</string>
+    <string name="activity_pincode_confirm">Подтвердите пин-код</string>
+    <string name="activity_pincode_remove_pin">Сбросить пин-код</string>
 
     <string name="activity_show_qr_code_title">QR-код</string>
     <string name="activity_show_qr_code_btn_save">Сохранить qr-код в галерею</string>
@@ -40,17 +52,33 @@
 
     <string name="activity_messages_btn_send">Отправить</string>
     <string name="activity_messages_tv_cost_text">Стоимость сообщения</string>
-    <string name="activity_messages_ev_message_placeholder">Введите текст сообщения…</string>
+    <string name="activity_messages_ev_message_placeholder">~0.001 ADM</string>
 
     <string name="activity_messages_action_rename">Переименовать</string>
-    <string name="activity_messages_action_copy">Копировать</string>
+    <string name="activity_messages_action_copy">Копировать адрес</string>
     <string name="activity_messages_action_qrcode">Показать QR-код</string>
 
     <string name="activity_scan_qrcode_title">Сканировать QR-код</string>
 
-    <string name="activity_currency_send_title">Отправить средства</string>
-    <string name="activity_currency_send_dialog_funds_title">Подтверждение перевода</string>
-    <string name="activity_currency_send_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
+    <string name="activity_push_subscription_title">Уведомления</string>
+    <string name="activity_push_subscription_notifications_type">Тип сервиса уведомлений</string>
+    <string name="activity_push_subscription_about_title">О типах сервисов уведомлений</string>
+    <string name="activity_push_subscription_select_type_title">Выберите тип уведомлений</string>
+
+    <string name="activity_send_funds_title">Отправить средства</string>
+    <string name="activity_send_funds_dialog_funds_title">Подтверждение перевода</string>
+    <string name="activity_send_funds_recipient_address_hint">Адрес получателя</string>
+    <string name="activity_send_funds_dialog_funds_message">Подтвердите перевод %s %s на кошелек %s.</string>
+
+    <string name="activity_transfer_details_amount">Сумма</string>
+    <string name="activity_transfer_details_status">Статус</string>
+    <string name="activity_transfer_details_date">Дата</string>
+    <string name="activity_transfer_details_confirmations">Количество подтверждений</string>
+    <string name="activity_transfer_details_from">Отправитель</string>
+    <string name="activity_transfer_details_to">Получатель</string>
+    <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
+    <string name="activity_transfer_details_go_to_chat">Перейти к чату</string>
+    <string name="activity_transfer_details_fee">Комиссия</string>
 
     <string name="bottom_menu_title_wallet">Кошелек</string>
     <string name="bottom_menu_title_chats">Чаты</string>
@@ -66,7 +94,9 @@
     <string name="fragment_wallet_balance_title">Баланс</string>
     <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
-    <string name="fragment_wallet_exit_title">Выход</string>
+    <string name="fragment_wallet_send_funds">Отправить %s</string>
+    <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>
+    <string name="fragment_wallet_see_all">Все</string>
 
     <string name="fragment_settings_general_title">Общие</string>
 
@@ -76,7 +106,7 @@
     <string name="fragment_settings_nodes">Управление нодами</string>
     <string name="fragment_settings_store_keypair">Сохранить авторизацию</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления</string>
-    <string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>
+    <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>-->
     <string name="fragment_settings_success_saved">Настройки успешно сохранены</string>
 
     <string name="address_was_copied">Адрес скопирован</string>
@@ -101,6 +131,25 @@
     <string name="encrypt_keypair_notification_message">Выполняется шифрование пары ключей</string>
     <string name="save_contacts_notification_message">Выполняется сохранение контактов</string>
     <string name="default_notification_message">У Вас новое сообщение</string>
+    <string name="new_message_scanning_notification_message">Поиск новых сообщений</string>
+
+    <string name="fcm_notification_service_short">FCM</string>
+    <string name="fcm_notification_service_change_token_title">FCM обновил токен</string>
+    <string name="fcm_notification_service_change_token_message">FCM обновил токен. С вашего счета списано %s ADM</string>
+    <string name="fcm_notification_service_full">Firebase Messaging Service</string>
+    <string name="fcm_notification_service_description">
+        Уведомления о новых сообщениях присылаются сервисом ADAMANT Notification Service (Транспортом до вашего устройства является сервис Firebase Messaging Service).
+        Уведомляения приходят практически мгновенно, но необходима регистрация устройства в сервисе. Это безопасно и сохраняет высокий уровень секретности. Стоимость подписки, отписки и смены токена (FCM может заменить его в любой момент, но это происходит редко) составляет 0.001 ADM.
+    </string>
+
+    <string name="local_notification_service_short">Фоновый сервис</string>
+    <string name="local_notification_service_full">Фоновый сервис</string>
+    <!--TODO: Write decription-->
+    <string name="local_notification_service_description">Описание фонового сервиса</string>
+
+    <string name="disabled_notification_service_short">Отключены</string>
+    <string name="disabled_notification_service_full">Уведомления отключены</string>
+    <string name="disabled_notification_service_description">Не присылать никаких уведомлений</string>
 
 
     <!--ERRORS-->
@@ -116,6 +165,15 @@
     <string name="invalid_count_words_in_passphrase">Парольная фраза состоит из 12 слов. Уже введено %d, осталось %d</string>
     <string name="invalid_checksum_in_passphrase">Некорректная контрольная сумма</string>
     <string name="not_a_number">Это значение должно быть числом</string>
+    <string name="encryption_error">Ошибка при шифровании</string>
+    <string name="empty_pincode">Пин-код не может быть пустым!</string>
+    <string name="wrong_pincode">Пин-код не верен</string>
+    <string name="wrong_pincode_length">Неверная длинна пин-кода (ожидалось: %s символов)</string>
+    <string name="wrong_pincode_one_symbol">Для пин-кода нельзя использовать последовательность из одной цифры</string>
+    <string name="pincode_unconfirmed">Пин-коды не совпадают, попробуйте снова</string>
+    <string name="pincode_exceeding_the_number_of_attempts">Превышение количества попыток ввода пин-кода. Осталось %d секунд</string>
+    <string name="tee_not_supported">Мы не сумели подтвердить что ваше устройство использует Trusted Environment Execution, сохранение авторизации может быть не безопасным.
+        Некоторые устройства эмулируют TEE, посредством файлов доступных при наличии root доступа. Продолжить?</string>
 
     <!--HELLO-->
     <string name="hello_message_ico_name">Токены ADAMANT</string>
@@ -123,6 +181,25 @@
 
     <string name="hello_message_baunty_name">ADAMANT Bounty</string>
     <string name="hello_message_baunty"><p>Добро пожаловать в самый анонимный и безопасный мессенджер АДАМАНТ. Помните, что безопасность и анонимность зависит и от вас самих. Не переходите по ссылкам, которые вы получаете в чатах, иначе ваш IP-адрес может быть определен. Не доверяйте расширениям браузера. Лучше всего передавать ваш ADM-адрес собеседникам лично, а не через другие мессенджеры. Храните вашу секретную фразу (пароль) от аккаунта в тайне. Установите на ваше устройство пароль или закрываете вкладку браузера после завершения диалогов.</p><p>Более полную информацию о безопасности и анонимности читайте на странице <a href="https://adamant.im/ru-staysecured/" target="_blank">https://adamant.im/staysecured/</a>.</p><p>Все транзакции в блокчейне требуют минимальной комиссии. Это необходимо для поддержания инфраструктуры сети. Чтобы начать общаться, <b>получите бесплатные токены</b> — перейдите на вкладку Кошелек и нажмите Бесплатные токены. Затем на вкладке Диалоги нажмите Новый чат и введите адрес собеседника или сканируйте его QR-код. Чтобы скопировать ваш адрес, нажмите Идентификатор кошелька на вкладке Кошелек.</p><p>Не отвечайте на это сообщение, этот адрес служебный. Если же у вас остались вопросы, напишите в аккаунт U15677078342684640219.</p></string>
+
+    <!--WELCOME CARDS-->
+    <string name="welcome_card_1">Добро пожаловать в АДАМАНТ, настоящий мессенджер на &lt;b&gt;блокчейне&lt;/b&gt;.</string>
+    <string name="welcome_card_2">
+        АДАМАНТ — это &lt;b&gt;анонимность&lt;/b&gt; и &lt;b&gt;защищенность&lt;/b&gt; вашей переписки, и передача криптовалют в чатах.&lt;br/&gt;&lt;br/&gt;
+        &lt;a href="https://medium.com/adamant-im/adamant-security-features-e7cc836ff52c"&gt;Почему другие мессенджеры небезопасны?&lt;/a&gt;
+    </string>
+    <string name="welcome_card_3">
+        У инфраструктуры АДАМАНТа нет владельца, она &lt;b&gt;децентрализована&lt;/b&gt;.&lt;br/&gt;&lt;br/&gt;
+        Для ее поддержания все сообщения в мессенджере оплачиваются токенами ADM. Новым аккаунтам — бесплатные токены для тестирования.
+    </string>
+    <string name="welcome_card_4">
+        Чтобы начать переписку, просто создайте новый аккаунт в один клик (&lt;b&gt;никаких реквизитов не нужно&lt;/b&gt;), и добавьте вашего собеседника.&lt;br/&gt;&lt;br/&gt;
+        Если вам важна анонимность, мы рекомендуем передавать адреса АДАМАНТа &lt;b&gt;лично&lt;/b&gt;.
+    </string>
+    <string name="welcome_card_5">
+        Исходный код проекта &lt;a href="https://github.com/Adamant-im/"&gt;полностью открыт&lt;/a&gt;. Приложение в разработке, и новые функции добавляются постоянно&lt;br/&gt;&lt;br/&gt;
+        Если вы разработчик — приглашаем вас принять участие.
+    </string>
 
     <!--LOCALIZED URLS-->
     <string name="free_token_url">https://adamant.im/ru-free-adm-tokens/?wallet=</string>
@@ -132,6 +209,8 @@
     <string name="node_status_connected">подключена</string>
     <string name="node_status_unavailable">недоступна</string>
     <string name="node_status_connecting">подключение…</string>
+    <string name="transaction_status_pending">Ожидание</string>
+    <string name="transaction_status_success">Подтверждена</string>
 
     <!--GENERAL-->
     <string name="yes">Да</string>
@@ -146,4 +225,6 @@
     <string name="received">Получено: </string>
     <string name="send">Отправить</string>
     <string name="cancel">Отмена</string>
+    <string name="exit">Выход</string>
+    <string name="transaction_address_me">Я</string>
 </resources>

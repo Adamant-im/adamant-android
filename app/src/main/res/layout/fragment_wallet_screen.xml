@@ -8,10 +8,11 @@
     android:background="@drawable/tile_bg"
     tools:context=".ui.fragments.WalletScreen">
 
+    <!--TODO: If elements become more add these lines: android:layout_width="wrap_content" android:layout_gravity="center_horizontal" app:tabMode="scrollable" -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/fragment_wallet_tab_sliding_tabs"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="96dp"
         android:background="@android:color/transparent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,8 +40,9 @@
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/fragment_wallet_vp_swipe_slider"
         android:layout_width="match_parent"
-        android:layout_height="284dp"
+        android:layout_height="@dimen/fragment_wallet_card_height"
         android:layout_gravity="bottom"
+        android:layout_marginTop="20dp"
         android:clipToPadding="false"
         android:overScrollMode="never"
         android:paddingStart="@dimen/fragment_wallet_card_padding"
@@ -52,24 +54,56 @@
         app:layout_constraintHeight_percent="0.46"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator">
+        app:layout_constraintTop_toBottomOf="@+id/separator" />
 
-        <!--<androidx.viewpager.widget.PagerTabStrip-->
-        <!--android:id="@+id/fragment_wallet_pts_tabs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="top"-->
-        <!--android:backgroundTint="@color/colorPrimaryDark"-->
-        <!--android:paddingTop="15dp"-->
-        <!--android:paddingBottom="15dp"-->
-        <!--android:textColor="@color/colorPrimaryDark" />-->
+    <TextView
+        android:id="@+id/fragment_wallet_tv_last_transactions_title"
+        style="@style/AdamantLight.TextHeader"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="@+id/separator2"
+        app:layout_constraintEnd_toStartOf="@+id/fragment_wallet_tv_see_all"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    </androidx.viewpager.widget.ViewPager>
+    <TextView
+        android:id="@+id/fragment_wallet_tv_see_all"
+        style="@style/AdamantLight.TextRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:text="@string/fragment_wallet_see_all"
+        app:layout_constraintBottom_toBottomOf="@+id/fragment_wallet_tv_last_transactions_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/fragment_wallet_tv_last_transactions_title" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_wallet_rv_last_transactions"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/separator2" />
+
+    <com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader
+        android:id="@+id/fragment_wallet_pb_transfer_loader"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:arcprogress_arcColorsArray="@array/shy_progressbar_colors"
+        app:arcprogress_arcRadius="24dp"
+        app:arcprogress_arcWidth="3dp"
+        app:arcprogress_incrementalAngle="7.0"
+        app:arcprogress_maxArcAngle="220.0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

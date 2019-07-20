@@ -5,8 +5,6 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import dagger.multibindings.IntoMap;
-import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.helpers.ChatsStorage;
 import im.adamant.android.interactors.wallets.AdamantWalletFacade;
 import im.adamant.android.interactors.wallets.BinanceWalletFacade;
 import im.adamant.android.interactors.wallets.EthereumWalletFacade;

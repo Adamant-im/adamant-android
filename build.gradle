@@ -9,10 +9,14 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.1'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath "pl.allegro.tech.build:axion-release-plugin:1.9.1"
         classpath 'com.google.gms:google-services:4.2.0'
     }
+}
+
+plugins {
+    id "org.sonarqube" version "2.7"
 }
 
 allprojects {

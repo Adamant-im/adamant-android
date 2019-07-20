@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
-import im.adamant.android.helpers.ChatsStorage;
+import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -18,7 +19,7 @@ public class EthereumWalletFacade implements WalletFacade {
 
     @Override
     public String getAddress() {
-        return "Coming soon";
+        return "0x000000000000000000000000000000000000000000";
     }
 
     @Override
@@ -49,6 +50,16 @@ public class EthereumWalletFacade implements WalletFacade {
     @Override
     public Single<List<CurrencyTransferEntity>> getLastTransfers() {
         return Single.just(new ArrayList<>());
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNewTransfers() {
+        return Flowable.empty();
+    }
+
+    @Override
+    public Flowable<CurrencyTransferEntity> getNextTransfers(int offset) {
+        return Flowable.empty();
     }
 
     @Override
@@ -83,11 +94,21 @@ public class EthereumWalletFacade implements WalletFacade {
 
     @Override
     public int getIconForEditText() {
-        return 0;
+        return R.drawable.ic_ethereum_line;
     }
 
     @Override
     public boolean isSupportComment() {
         return true;
+    }
+
+    @Override
+    public Flowable<TransferDetails> getTransferDetails(String id) {
+        return Flowable.empty();
+    }
+
+    @Override
+    public String getExplorerUrl(String transactionId) {
+        return null;
     }
 }

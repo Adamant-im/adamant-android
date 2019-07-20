@@ -4,14 +4,10 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,25 +17,16 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding3.widget.RxTextView;
-
-import im.adamant.android.AdamantApplication;
-import im.adamant.android.R;
-import im.adamant.android.Screens;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.services.SaveContactsService;
-import im.adamant.android.ui.presenters.MessagesPresenter;
-import im.adamant.android.ui.adapters.MessagesAdapter;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.entities.MessageListContent;
-import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -50,14 +37,27 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import io.reactivex.Observable;
+import im.adamant.android.AdamantApplication;
+import im.adamant.android.Constants;
+import im.adamant.android.R;
+import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
+import im.adamant.android.services.SaveContactsService;
+import im.adamant.android.ui.adapters.MessagesAdapter;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
+import im.adamant.android.ui.mvp_view.MessagesView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
+import im.adamant.android.ui.presenters.MessagesPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
-import ru.terrakok.cicerone.commands.Command;
+import ru.terrakok.cicerone.commands.Back;
+import ru.terrakok.cicerone.commands.BackTo;
 import ru.terrakok.cicerone.commands.Forward;
+import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 public class MessagesScreen extends BaseActivity implements MessagesView {
@@ -88,7 +88,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
-    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
+    @BindView(R.id.activity_messages_tv_cost) TextInputLayout messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -144,14 +144,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         presenter.onResume();
         navigatorHolder.setNavigator(navigator);
 
-        Observable<String> obs = RxTextView
+        MessagesPresenter localPresenter = presenter;
+        Disposable subscribe = RxTextView
                 .textChanges(newMessageText)
                 .filter(charSequence -> charSequence.length() > 0)
                 .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString);
-
-        MessagesPresenter localPresenter = presenter;
-        Disposable subscribe = obs.subscribe(localPresenter::onChangeMessageText);
+                .map(CharSequence::toString)
+                .doOnNext(localPresenter::onChangeMessageText)
+                .subscribe();
 
         compositeDisposable.add(subscribe);
     }
@@ -191,6 +191,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
+    public void dropMessageCost() {
+        messageCostView.setHint(getString(R.string.activity_messages_ev_message_placeholder));
+    }
+
+    @Override
     public void changeTitles(String title, String subTitle) {
         setTitle(title);
         setSubTitle(subTitle);
@@ -201,12 +206,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
-        messageCostView.setText("");
+        messageCostView.setHint("");
     }
 
     @Override
     public void showMessageCost(String cost) {
-        runOnUiThread( () -> messageCostView.setText(cost));
+        runOnUiThread( () -> messageCostView.setHint(cost));
     }
 
     @Override
@@ -296,6 +301,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     public void showQrCodeCompanionId(String companionId) {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
@@ -358,36 +364,47 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
 
-    private Navigator navigator = new Navigator() {
+    private Navigator navigator = new DefaultNavigator(this) {
         @Override
-        public void applyCommands(Command[] commands) {
-            for (Command command : commands){
-                apply(command);
+        protected void forward(Forward forwardCommand) {
+            switch (forwardCommand.getScreenKey()){
+                case Screens.SEND_CURRENCY_TRANSFER_SCREEN: {
+                    Intent intent = new Intent(getApplicationContext(), SendFundsScreen.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(SendFundsScreen.ARG_COMPANION_ID, (String)forwardCommand.getTransitionData());
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
+                case Screens.TRANSFER_DETAILS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
+                    intent.putExtras(bundle);
+
+                    startActivity(intent);
+                }
+                break;
             }
         }
 
-        private void apply(Command command){
-            if(command instanceof SystemMessage){
-                SystemMessage message = (SystemMessage) command;
-                Toast.makeText(getApplicationContext(), message.getMessage(), Toast.LENGTH_LONG).show();
-            } else if(command instanceof Forward) {
-                Forward forward = ((Forward) command);
-                switch (forward.getScreenKey()){
-                    case Screens.LOGIN_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), LoginScreen.class);
-                        startActivity(intent);
-                        MessagesScreen.this.finish();
-                    }
-                    break;
-                    case Screens.SEND_CURRENCY_TRANSFER_SCREEN: {
-                        Intent intent = new Intent(getApplicationContext(), SendFundsScreen.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(SendFundsScreen.ARG_COMPANION_ID, (String)forward.getTransitionData());
-                        intent.putExtras(bundle);
-                        startActivity(intent);
-                    }
-                }
-            }
+        @Override
+        protected void back(Back backCommand) {
+
+        }
+
+        @Override
+        protected void backTo(BackTo backToCommand) {
+
+        }
+
+        @Override
+        protected void message(SystemMessage systemMessageCommand) {
+            Toast.makeText(getApplicationContext(), systemMessageCommand.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        protected void replace(Replace replaceCommand) {
+
         }
     };
 }

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import im.adamant.android.core.entities.Transaction;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.FallbackMessage;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
@@ -33,7 +34,7 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
 
         if (transaction != null){
             message.setOwnerPublicKey(transaction.getSenderPublicKey());
-            message.setProcessed(true);
+            message.setStatus(AbstractMessage.Status.DELIVERED);
             message.setTransactionId(transaction.getId());
         }
 
@@ -46,6 +47,8 @@ public class FallbackMessageBuilder implements MessageBuilder<FallbackMessage> {
         Gson gson = new Gson();
         try {
             MessageDescription description = gson.fromJson(decryptedMessage, MessageDescription.class);
+
+            if (description == null) {return;}
             messageContainer.setFallbackMessage(description.textFallback);
             messageContainer.setFallbackType(description.type);
         }catch (Exception ex){

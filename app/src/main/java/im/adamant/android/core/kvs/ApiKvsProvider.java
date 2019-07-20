@@ -1,5 +1,8 @@
 package im.adamant.android.core.kvs;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
@@ -44,7 +47,8 @@ public class ApiKvsProvider implements KvsProvider {
             } else {
                 return Flowable.error(new EmptyAdamantKeyValueStorage());
             }
-        });
+        })
+        .onErrorReturn(error -> new Transaction<>());
     }
 
     @Override

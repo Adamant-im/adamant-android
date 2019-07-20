@@ -4,38 +4,39 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import im.adamant.android.Screens;
+import im.adamant.android.Constants;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.interactors.SaveKeypairInteractor;
-import im.adamant.android.interactors.SubscribeToPushInteractor;
+import im.adamant.android.interactors.AccountInteractor;
+import im.adamant.android.interactors.LogoutInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
+import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.ui.presenters.SettingsPresenter;
-import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.Scheduler;
 import ru.terrakok.cicerone.Router;
 
 @Module
 public class SettingsScreenModule {
+
     @FragmentScope
     @Provides
     public static SettingsPresenter provideSettingsPresenter(
             Router router,
             AdamantApiWrapper api,
-            SaveKeypairInteractor saveKeypairInteractor,
-            SubscribeToPushInteractor subscribeToPushInteractor,
-            @Named(Screens.SETTINGS_SCREEN) CompositeDisposable subscriptions
+            AccountInteractor accountInteractor,
+            LogoutInteractor logoutInteractor,
+            SecurityInteractor securityInteractor,
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            @Named(Constants.UI_SCHEDULER) Scheduler observableScheduler
     ) {
         return new SettingsPresenter(
                 router,
+                accountInteractor,
+                logoutInteractor,
                 api,
-                saveKeypairInteractor,
-                subscribeToPushInteractor,
-                subscriptions
+                securityInteractor,
+                switchPushNotificationServiceInteractor,
+                observableScheduler
         );
     }
 
-    @FragmentScope
-    @Provides
-    @Named(Screens.SETTINGS_SCREEN)
-    public CompositeDisposable provideComposite() {
-        return new CompositeDisposable();
-    }
 }

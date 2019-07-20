@@ -4,30 +4,23 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.arellomobile.mvp.MvpDelegate;
 import com.franmontiel.localechanger.LocaleChanger;
 
-import androidx.appcompat.app.AppCompatActivity;
 import butterknife.ButterKnife;
 import im.adamant.android.R;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.AdamantBalanceUpdateService;
 import im.adamant.android.services.ServerNodesPingService;
-import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
-
-import static android.content.pm.PackageManager.GET_META_DATA;
 /**
  * This class has been redesigned to work with the Moxy framework.
  * This is necessary because if you use the MvpAppCompatActivity class, then the syntax highlighting breaks.
@@ -42,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ServiceConnection admBalanceServiceConnection;
 
     private ImageView titleIconView;
-    private TextView titleView;
+    protected TextView titleView;
     private TextView subTitleView;
     private View customTitleView;
 
@@ -248,6 +241,15 @@ public abstract class BaseActivity extends AppCompatActivity {
             });
             // Apply the custom view
             actionBar.setCustomView(customTitleView);
+
+            Toolbar parent = null;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                parent = (Toolbar) customTitleView.getParent();
+                parent.setPadding(0,0,0,0);//for tab otherwise give space in tab
+                parent.setContentInsetsAbsolute(0,0);
+                parent.setTitleMargin(0,0,0,0);
+                parent.setContentInsetStartWithNavigation(0);
+            }
         }
     }
 

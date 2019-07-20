@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="start|center">
+    android:gravity="start|center_vertical">
 
     <ImageView
         android:id="@+id/actionbarIcon"
@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
         android:gravity="start" />
-
 
     <LinearLayout
         android:orientation="vertical"
@@ -24,7 +23,7 @@
             android:id="@+id/actionbarTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            style="@style/AdamantLight.TextRegularEnlarged"
             android:text="@string/app_name"/>
 
         <TextView
@@ -32,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            android:textSize="12sp" />
+            style="@style/AdamantLight.TextExplanation" />
 
     </LinearLayout>
 </LinearLayout>

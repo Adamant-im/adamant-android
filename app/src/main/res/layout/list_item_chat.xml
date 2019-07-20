@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/list_item_chat_padding"
-    android:background="@android:color/transparent"
-    app:cardElevation="3dp">
+    android:background="@android:color/transparent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
@@ -20,27 +19,27 @@
 
         <TextView
             android:id="@+id/list_item_chat_name"
-            style="@style/AdamantLight.TextViewSubHeader"
+            style="@style/AdamantLight.TextRegularEnlargedBold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:maxLines="1"
             android:text="TextView"
+            android:ellipsize="end"
             app:layout_constraintEnd_toStartOf="@+id/list_item_chat_last_message_date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/list_item_chat_last_message"
-            style="@style/AdamantLight.TextViewNormal"
+            style="@style/AdamantLight.TextExplanationEnlarged"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:background="@android:color/transparent"
             android:maxLines="1"
             android:text="TextView"
-            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,12 +47,11 @@
 
         <com.github.curioustechizen.ago.RelativeTimeTextView
             android:id="@+id/list_item_chat_last_message_date"
+            style="@style/AdamantLight.TextExplanation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="3dp"
             android:background="@android:color/transparent"
-            android:textSize="10sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
