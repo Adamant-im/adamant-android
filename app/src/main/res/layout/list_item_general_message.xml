@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="11:00"
                 app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="4dp"
                 app:layout_constraintRight_toLeftOf="@id/list_item_message_processed"/>
 
             <FrameLayout
