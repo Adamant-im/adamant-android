@@ -40,7 +40,7 @@
     <dimen name="list_item_message_bubble_content_max_width">200dp</dimen>
     <dimen name="list_item_message_bubble_content_min_width">80dp</dimen>
     <dimen name="list_item_message_last_message_padding">16dp</dimen>
-    <dimen name="list_item_message_same_sender_padding">4dp</dimen>
+    <dimen name="list_item_message_same_sender_padding">6dp</dimen>
     <dimen name="list_item_message_not_same_sender_padding">10dp</dimen>
 
     <dimen name="tablerow_default_margin_horizontal">16dp</dimen>
