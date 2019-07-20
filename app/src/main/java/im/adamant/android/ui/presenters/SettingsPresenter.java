@@ -23,7 +23,6 @@ import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.mvp_view.SettingsView;
 import io.reactivex.Scheduler;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
@@ -47,7 +46,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
     ) {
         super(router, accountInteractor);
         this.api = api;
-        this.observeScheduler =observeScheduler;
+        this.observeScheduler = observeScheduler;
         this.securityInteractor = securityInteractor;
         this.logoutInteractor = logoutInteractor;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
@@ -82,9 +81,14 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
                 }
             }
 
-            Bundle bundle = new Bundle();
-            bundle.putSerializable(PinCodeView.ARG_MODE, (value) ? PinCodeView.MODE.CREATE : PinCodeView.MODE.DROP);
-            router.navigateTo(Screens.PINCODE_SCREEN, bundle);
+            if (value) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.CREATE);
+                router.navigateTo(Screens.PINCODE_SCREEN, bundle);
+            }else {
+                securityInteractor.forceDropPassphrase()
+                        .subscribe();
+            }
         }
     }
 
