@@ -45,7 +45,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="11:00"
-                android:layout_marginRight="2dp"
                 app:layout_constraintLeft_toRightOf="@id/list_item_message_content"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_message_content"
                 app:layout_constraintRight_toLeftOf="@id/list_item_message_processed"/>
@@ -54,8 +53,9 @@
                 android:id="@+id/list_item_message_processed"
                 android:layout_width="@dimen/list_item_message_processed"
                 android:layout_height="@dimen/list_item_message_processed"
+                android:layout_marginLeft="2dp"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_message_time"
-                app:layout_constraintHorizontal_chainStyle="packed"
+                app:layout_constraintLeft_toRightOf="@id/list_item_message_time"
                 app:layout_constraintTop_toTopOf="@id/list_item_message_time"
                 app:layout_constraintRight_toRightOf="parent"
                 app:srcCompat="@drawable/ic_sending" />

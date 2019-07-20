@@ -6,12 +6,12 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.transition.TransitionManager;
+
+import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
@@ -142,7 +142,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         switch (message.getStatus()) {
             case DELIVERED: {
                 if (!message.isiSay()) {
-                    processedView.setVisibility(View.INVISIBLE);
+                    processedView.setVisibility(View.GONE);
                     processedView.setImageResource(R.drawable.ic_delivered);
                 } else {
                     processedView.setVisibility(View.VISIBLE);
@@ -151,11 +151,13 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
             }
             break;
             case SENDING_AND_VALIDATION: {
+                processedView.setVisibility(View.VISIBLE);
                 processedView.setImageResource(R.drawable.ic_sending);
             }
             break;
             case INVALIDATED:
             case NOT_SENDED: {
+                processedView.setVisibility(View.VISIBLE);
                 processedView.setImageResource(R.drawable.ic_not_sended);
             }
         }
