@@ -348,7 +348,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
        if (loading) {
            progressView.setVisibility(View.VISIBLE);
        } else {
-           progressView.setVisibility(View.INVISIBLE);
+           progressView.setVisibility(View.GONE);
        }
     }
 

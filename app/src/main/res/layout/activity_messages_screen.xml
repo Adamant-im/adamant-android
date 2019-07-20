@@ -1,36 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:background="@drawable/tile_bg"
-    android:layout_height="match_parent">
-    <androidx.core.widget.ContentLoadingProgressBar
-        android:id="@+id/progress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="8dp"
-        android:indeterminate="true"
-        android:scaleY="2"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/activity_messages_rv_messages"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        app:layout_constraintBottom_toTopOf="@+id/activity_messages_cl_new_message_block"
-        app:layout_constraintTop_toBottomOf="@id/progress" />
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
 
         android:id="@+id/activity_messages_cl_empty_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         app:layout_constraintBottom_toTopOf="@+id/activity_messages_cl_new_message_block"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -49,11 +27,23 @@
             app:srcCompat="@drawable/empty_view_background" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/activity_messages_rv_messages"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_messages_cl_new_message_block"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_gravity="bottom"
         android:background="@android:color/white"
         android:elevation="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -130,4 +120,16 @@
             app:srcCompat="@drawable/ic_wallet" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:indeterminate="true"
+        android:scaleY="2"
+        android:layout_marginBottom="-3dp"
+        android:layout_marginTop="-3dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="parent" />
+</FrameLayout>
