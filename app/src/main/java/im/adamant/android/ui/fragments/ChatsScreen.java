@@ -147,7 +147,7 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         if (value) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
