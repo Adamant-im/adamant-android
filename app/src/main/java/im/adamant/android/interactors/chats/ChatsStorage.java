@@ -20,7 +20,6 @@ public class ChatsStorage {
     private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
-    private Calendar separatorCalendar = Calendar.getInstance();
     private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
     private MessageComparator messageComparator = new MessageComparator();
 
@@ -149,9 +148,8 @@ public class ChatsStorage {
         isLoaded = false;
     }
 
-    private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
-        //Получи дату сообщения и проверь что сепаратор для этого сообщения уже добавлен в специальный список
-        //если его нет то создай
+    private synchronized void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
+        Calendar separatorCalendar = Calendar.getInstance();
         separatorCalendar.setTimeInMillis(message.getTimestamp());
         separatorCalendar.set(Calendar.HOUR_OF_DAY, 0);
         separatorCalendar.set(Calendar.MINUTE, 0);
