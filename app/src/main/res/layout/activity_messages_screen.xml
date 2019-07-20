@@ -35,6 +35,7 @@
         android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
+        android:paddingBottom="65dp"
         android:focusableInTouchMode="true"/>
 
 
