@@ -65,7 +65,7 @@ public class ChatsStorage {
         }
     }
 
-    public void updateLastMessages() {
+    public synchronized void updateLastMessages() {
         //Setting last message to chats
         for(Chat chat : chats) {
             List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
