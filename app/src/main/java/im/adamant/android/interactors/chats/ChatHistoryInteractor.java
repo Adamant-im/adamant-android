@@ -78,7 +78,7 @@ public class ChatHistoryInteractor {
     @MainThread
     public Flowable<List<MessageListContent>> loadMoreMessages() {
         if (chatId == null) {
-            throw new IllegalStateException("Chat setChatId must be called");
+            return Flowable.error(new IllegalStateException("Chat setChatId must be called"));
         }
         if (!haveMoreMessages()) {
             return Flowable.fromCallable(() -> chatsStorage.getMessagesByCompanionId(chatId));
