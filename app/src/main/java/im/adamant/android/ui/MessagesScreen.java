@@ -17,6 +17,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 
 import java.util.List;
@@ -38,10 +38,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
-import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -88,10 +88,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
-    @BindView(R.id.activity_messages_tv_cost) TextInputLayout messageCostView;
+    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    Disposable messageInputDisposable;
 
 
     //--Activity
@@ -145,21 +146,24 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         navigatorHolder.setNavigator(navigator);
 
         MessagesPresenter localPresenter = presenter;
-        Disposable subscribe = RxTextView
+        messageInputDisposable = RxTextView
                 .textChanges(newMessageText)
-                .filter(charSequence -> charSequence.length() > 0)
-                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
-                .doOnNext(localPresenter::onChangeMessageText)
-                .subscribe();
-
-        compositeDisposable.add(subscribe);
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        localPresenter::onChangeMessageText,
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+
+        messageInputDisposable.dispose();
+        messageInputDisposable = null;
+
         compositeDisposable.dispose();
         compositeDisposable.clear();
     }
@@ -192,7 +196,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void dropMessageCost() {
-        messageCostView.setHint(getString(R.string.activity_messages_ev_message_placeholder));
+        messageCostView.setText(getString(R.string.activity_messages_ev_message_placeholder));
     }
 
     @Override
@@ -206,12 +210,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
-        messageCostView.setHint("");
+        messageCostView.setText("");
     }
 
     @Override
     public void showMessageCost(String cost) {
-        runOnUiThread( () -> messageCostView.setHint(cost));
+        messageCostView.setText(cost);
     }
 
     @Override

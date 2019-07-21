@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import im.adamant.android.markdown.renderers.InlineRenderer;
 
 public class ItalicRenderer implements InlineRenderer {
-    public static final Pattern PATTERN = Pattern.compile("_([^*]+)_");
+    public static final Pattern PATTERN = Pattern.compile("_([^*]+?)_|\\*([^*]+?)\\*");
 
     @Override
     public Pattern providePattern() {
@@ -15,8 +15,14 @@ public class ItalicRenderer implements InlineRenderer {
 
     @Override
     public void renderItem(StringBuilder itemBuilder, Matcher matcher) {
-        itemBuilder.append("<i>");
-        itemBuilder.append(matcher.group(1));
-        itemBuilder.append("</i>");
+        if (matcher.group(2) != null) {
+            itemBuilder.append("<i>");
+            itemBuilder.append(matcher.group(2));
+            itemBuilder.append("</i>");
+        } else if (matcher.group(1) != null) {
+            itemBuilder.append("<i>");
+            itemBuilder.append(matcher.group(1));
+            itemBuilder.append("</i>");
+        }
     }
 }

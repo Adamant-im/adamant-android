@@ -3,10 +3,12 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
@@ -21,10 +23,6 @@ import im.adamant.android.ui.messages_support.factories.AdamantBasicMessageFacto
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import im.adamant.android.ui.mvp_view.MessagesView;
-
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
@@ -172,6 +170,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe((transaction -> {
                             getViewState().messageWasSended(messageEntity);
+                            getViewState().showChatMessages(chatsStorage.getMessagesByCompanionId(currentChat.getCompanionId()));
                         }),
                         (error) -> {
                             router.showSystemMessage(error.getMessage());
@@ -187,12 +186,14 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         }
     }
 
-    public void onChangeMessageText(String text) {
-        if (text == null || text.isEmpty()) {
+    public void onChangeMessageText(CharSequence charSequence) {
+        if (charSequence == null || charSequence.length() == 0) {
             getViewState().dropMessageCost();
             return;
         }
-        //TODO: You need to navigate by the type of message that is being edited
+
+        String text = charSequence.toString();
+
         try {
             AdamantBasicMessageFactory messageFactory = (AdamantBasicMessageFactory) messageFactoryProvider.getFactoryByType(SupportedMessageListContentType.ADAMANT_BASIC);
             AdamantBasicMessage messageEntity = getAdamantMessage(text, messageFactory);

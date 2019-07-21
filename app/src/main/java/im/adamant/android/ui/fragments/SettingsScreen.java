@@ -46,6 +46,7 @@ import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
@@ -122,7 +123,9 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
         storeKeypairViewDisposable = RxCompoundButton
                 .checkedChanges(storeKeypairView)
-                .delay(50, TimeUnit.MILLISECONDS)
+                .debounce(150, TimeUnit.MILLISECONDS)
+                .delay(150, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         value -> presenter.onSetCheckedStoreKeypair(value, false),
                         error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)

@@ -112,4 +112,8 @@ public class TransferDetailsPresenter extends ProtectedBasePresenter<TransferDet
     public void toGroupClicked() {
         getViewState().share(uiTransferDetails.getToId());
     }
+
+    public void idGroupClicked() {
+        getViewState().share(transactionId);
+    }
 }

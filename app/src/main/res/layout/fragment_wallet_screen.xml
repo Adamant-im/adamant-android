@@ -57,26 +57,25 @@
         app:layout_constraintTop_toBottomOf="@+id/separator" />
 
     <TextView
+        android:layout_marginStart="16dp"
         android:id="@+id/fragment_wallet_tv_last_transactions_title"
         style="@style/AdamantLight.TextHeader"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="@+id/separator2"
-        app:layout_constraintEnd_toStartOf="@+id/fragment_wallet_tv_see_all"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/fragment_wallet_tv_see_all"
-        style="@style/AdamantLight.TextRegular"
+        style="@style/AdamantLight.TextActive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
         android:paddingLeft="8dp"
-        android:paddingRight="8dp"
+        android:paddingRight="16dp"
         android:text="@string/fragment_wallet_see_all"
+        android:textAlignment="textEnd"
         app:layout_constraintBottom_toBottomOf="@+id/fragment_wallet_tv_last_transactions_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/fragment_wallet_tv_last_transactions_title" />
