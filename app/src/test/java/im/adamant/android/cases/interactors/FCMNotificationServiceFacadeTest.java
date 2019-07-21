@@ -69,7 +69,7 @@ public class FCMNotificationServiceFacadeTest {
 
     @Test
     public void testSubscribeHttpExceptionFail() {
-        when(processor.sendMessage(any())).thenReturn(Single.error(mock(HttpException.class)));
+        when(processor.sendTransaction(any())).thenReturn(Single.error(mock(HttpException.class)));
 
        facade
            .subscribe()

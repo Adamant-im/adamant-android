@@ -164,11 +164,13 @@ dependencies {
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     testAnnotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
-    testImplementation "junit:junit:4.12"
+    testImplementation 'androidx.test.ext:junit:1.1.1'
     testImplementation "org.mockito:mockito-core:2.19.1"
     testImplementation 'org.robolectric:robolectric:4.1'
-    androidTestImplementation "androidx.test:runner:1.1.1"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.1.1"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.1"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.1"
