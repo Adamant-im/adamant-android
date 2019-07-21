@@ -50,19 +50,19 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
-            android:id="@+id/activity_messages_tv_cost_text"
+            android:id="@+id/activity_messages_tv_cost"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             app:layout_constraintTop_toTopOf="parent"
             android:text="@string/activity_messages_ev_message_placeholder"
-            app:layout_constraintLeft_toLeftOf="@id/activity_messages_tv_cost"
+            app:layout_constraintLeft_toLeftOf="@id/activity_messages_til_new_message_layout"
             style="@style/AdamantLight.TextExplanation"
-            app:layout_constraintBottom_toTopOf="@+id/activity_messages_tv_cost"/>
+            app:layout_constraintBottom_toTopOf="@+id/activity_messages_til_new_message_layout"/>
 
         <com.google.android.material.textfield.TextInputLayout
             android:padding="0dp"
-            android:id="@+id/activity_messages_tv_cost"
+            android:id="@+id/activity_messages_til_new_message_layout"
             style="@style/AdamantLight.TextInput2LayoutStyle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/activity_messages_btn_send"
             app:layout_constraintStart_toEndOf="@+id/activity_messages_btn_currency_transfer"
-            app:layout_constraintTop_toBottomOf="@id/activity_messages_tv_cost_text">
+            app:layout_constraintTop_toBottomOf="@id/activity_messages_tv_cost">
 
 
             <EditText
@@ -79,6 +79,7 @@
                 android:theme="@style/AdamantLight.TextInput2Theme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:paddingTop="0dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 android:hint="@string/activity_messages_action_type"
@@ -91,8 +92,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:src="@drawable/send"
-            app:layout_constraintBottom_toBottomOf="@id/activity_messages_tv_cost"
-            app:layout_constraintTop_toTopOf="@id/activity_messages_tv_cost"
+            app:layout_constraintBottom_toBottomOf="@id/activity_messages_til_new_message_layout"
+            app:layout_constraintTop_toTopOf="@id/activity_messages_til_new_message_layout"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <!--<TextView-->
@@ -108,9 +109,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="@id/activity_messages_tv_cost"
+            app:layout_constraintTop_toTopOf="@id/activity_messages_til_new_message_layout"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/activity_messages_tv_cost"
+            app:layout_constraintBottom_toBottomOf="@id/activity_messages_til_new_message_layout"
             app:srcCompat="@drawable/ic_wallet" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,6 +41,7 @@ import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -87,10 +88,11 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
-    @BindView(R.id.activity_messages_tv_cost_text) TextView messageCostView;
+    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    Disposable messageInputDisposable;
 
 
     //--Activity
@@ -144,22 +146,24 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         navigatorHolder.setNavigator(navigator);
 
         MessagesPresenter localPresenter = presenter;
-        Disposable subscribe = RxTextView
+        messageInputDisposable = RxTextView
                 .textChanges(newMessageText)
-                .filter(charSequence -> charSequence.length() > 0)
-                .map(CharSequence::toString)
                 .debounce(500, TimeUnit.MILLISECONDS)
-                .doOnNext(localPresenter::onChangeMessageText)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe();
-
-        compositeDisposable.add(subscribe);
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        localPresenter::onChangeMessageText,
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+
+        messageInputDisposable.dispose();
+        messageInputDisposable = null;
+
         compositeDisposable.dispose();
         compositeDisposable.clear();
     }
@@ -211,7 +215,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void showMessageCost(String cost) {
-        runOnUiThread( () -> messageCostView.setText(cost));
+        messageCostView.setText(cost);
     }
 
     @Override
