@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,6 +28,7 @@ import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatHistoryInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.chats.ContactsSource;
@@ -111,8 +113,8 @@ public abstract class InteractorsModule {
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
-            TransactionToMessageMapper messageMapper
-    ) {
+            TransactionToMessageMapper messageMapper, Provider<ChatHistoryInteractor> provider
+            ) {
         return new ChatInteractor(
                 publicKeyStorage,
                 newTransactionsSource,
@@ -121,7 +123,7 @@ public abstract class InteractorsModule {
                 contactsSource,
                 chatsStorage,
                 chatMapper,
-                messageMapper
+                messageMapper,provider
         );
     }
 

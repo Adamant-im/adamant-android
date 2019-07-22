@@ -25,6 +25,7 @@ import im.adamant.android.ui.messages_support.processors.MessageProcessor;
 import im.adamant.android.ui.mvp_view.MessagesView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
@@ -37,7 +38,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
 
     private Chat currentChat;
     private List<MessageListContent> messages;
-    private int currentMessageCount = 0;
+    private int previousMessagesCount = 0;
 
     private Disposable syncSubscription;
 
@@ -58,6 +59,12 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         this.api = api;
     }
 
+    public void setMessages(List<MessageListContent> messages) {
+        int addedCount = messages.size() - previousMessagesCount;
+        this.messages = messages;
+        getViewState().showChatMessages(messages, addedCount);
+        previousMessagesCount = messages.size();
+    }
 
     @Override
     public void attachView(MessagesView view) {
@@ -74,44 +81,56 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         }
     }
 
+    private String companionId;
+
+    private void subscribeToUpdates(){
+        Disposable updateDisposable = chatInteractor
+                .update()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterSuccess(cnt -> {
+                    if (cnt > 0) {
+                        getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
+                        refreshMessageList(companionId);
+                    }
+                })
+                .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
+                .subscribe();
+        subscriptions.add(updateDisposable);
+    }
+
     public void onShowChatByCompanionId(String companionId){
+        this.companionId = companionId;
+
         currentChat = chatsStorage.findChatByCompanionId(companionId);
         if (currentChat == null){return;}
 
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
-        Disposable subscribe = chatInteractor
-                .loadHistory(companionId)
-                .ignoreElements()
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> {
-                    refreshMessageList(companionId);
-                    getViewState().goToLastMessage();
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        () -> {
-                            Disposable updateDisposable = chatInteractor
-                                    .update()
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .doAfterSuccess(cnt -> {
-                                        if (cnt > 0) {
-                                            getViewState().showAvatarInTitle(currentChat.getCompanionPublicKey());
-                                            refreshMessageList(companionId);
-                                        }
-                                    })
-                                    .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
-                                    .subscribe();
-                            subscriptions.add(updateDisposable);
-                        },
-                        (error) -> {
-                            router.showSystemMessage(error.getMessage());
-                            LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
-                        }
-                );
-
-        subscriptions.add(subscribe);
-
+        List<MessageListContent> messages = chatsStorage.getMessagesByCompanionId(companionId);
+        setMessages(messages);
+        getViewState().showLoading(messages.isEmpty());
+        if (messages.isEmpty()) {
+            Disposable subscribe = chatInteractor.loadMoreChatMessages(companionId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(newMessages -> {
+                        getViewState().showLoading(false);
+                        setMessages(newMessages);
+                        getViewState().goToLastMessage();
+                    })
+                    .ignoreElements()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            this::subscribeToUpdates,
+                            (error) -> {
+                                router.showSystemMessage(error.getMessage());
+                                LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
+                            }
+                    );
+                subscriptions.add(subscribe);
+        } else {
+            subscribeToUpdates();
+            getViewState().goToLastMessage();
+        }
     }
 
     public void onResume() {
@@ -145,7 +164,6 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         chatUpdatePublicKeyInteractor.execute(chat);
         chatsStorage.addNewChat(chat);
         onShowChatByCompanionId(address);
-
     }
 
     public void onClickSendAdamantBasicMessage(String message){
@@ -229,6 +247,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         messages = chatsStorage.getMessagesByCompanionId(
                 companionId
         );
+        previousMessagesCount = messages.size();
 
         getViewState().showChatMessages(messages);
     }
@@ -255,6 +274,20 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     public void onClickSendCurrencyButton() {
         if (currentChat != null){
             router.navigateTo(Screens.SEND_CURRENCY_TRANSFER_SCREEN, currentChat.getCompanionId());
+        }
+    }
+
+    public void loadMore(){
+        if (chatInteractor.haveMoreChatMessages(companionId)) {
+            getViewState().showLoading(true);
+            Disposable disposable = chatInteractor.loadMoreChatMessages(companionId)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(contents -> {
+                        getViewState().showLoading(false);
+                        setMessages(messages);
+                    });
+            subscriptions.add(disposable);
         }
     }
 }
