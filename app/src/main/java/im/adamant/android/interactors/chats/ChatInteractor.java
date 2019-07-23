@@ -90,6 +90,8 @@ public class ChatInteractor {
         return chatsSource.getCount() > getCurrentOffset();
     }
 
+    private boolean contactsLoaded;
+
     @MainThread
     public Flowable<List<Chat>> loadMoreChats(){
         if(!haveMoreChats()){
@@ -117,8 +119,16 @@ public class ChatInteractor {
                         if(!(e instanceof IOException)){
                             currentPage++;
                         }
-                    })
-            .share();
+                    });
+
+            if (!contactsLoaded) {
+                loadingChatsFlowable = loadContacts().andThen(loadingChatsFlowable)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(()->{
+                    contactsLoaded  = true;
+                });
+            }
+            loadingChatsFlowable = loadingChatsFlowable.share();
         }
         return loadingChatsFlowable;
     }
@@ -126,7 +136,7 @@ public class ChatInteractor {
     public Completable loadContacts() {
         return contactsSource
                 .execute()
-                .doOnNext(contacts -> chatsStorage.refreshContacts(contacts))
+                .doOnNext(contacts -> chatsStorage.saveContacts(contacts))
                 .ignoreElements();
     }
     public Single<Long> update() {

@@ -41,9 +41,18 @@ public class ChatsStorage {
         return requestedMessages;
     }
 
-    public void addNewChat(Chat chat) {
+    public synchronized void addNewChat(Chat chat) {
         int index = chats.indexOf(chat);
         if (index == -1){
+            if (contacts != null) {
+               Contact contact= contacts.get(chat.getCompanionId());
+               if(contact!=null) {
+                   String name = contact.getDisplayName();
+                   if(name!=null&&!name.isEmpty()){
+                       chat.setTitle(name);
+                   }
+               }
+            }
             chats.add(chat);
             messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
         }
@@ -88,7 +97,14 @@ public class ChatsStorage {
         }
     }
 
-    public void refreshContacts(Map<String, Contact> contacts) {
+    private Map<String, Contact> contacts = null;
+
+    public synchronized void saveContacts(Map<String, Contact> contacts) {
+        this.contacts = contacts;
+        refreshContacts();
+    }
+
+    public void refreshContacts() {
         for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
             String companionId = contactEntry.getKey();
             Contact contact = contactEntry.getValue();
