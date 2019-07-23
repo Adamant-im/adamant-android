@@ -220,4 +220,13 @@ public class ChatInteractor {
                     }
                 });
     }
+
+    @MainThread
+    public void resetPagingState(){
+        loadingChatsFlowable = null;
+        chatsInteractors.clear();;
+        contactsLoaded = false;
+        currentPage = 0;
+        chatsSource.resetState();
+    }
 }

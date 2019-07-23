@@ -139,9 +139,11 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            ChatInteractor chatInteractor
     ) {
-        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor);
+        return new LogoutInteractor(chatsStorage, settings, api,
+                switchPushNotificationServiceInteractor, chatInteractor);
     }
 
     @Singleton

@@ -70,4 +70,9 @@ public class LastTransactionInChatsSource {
                 .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
                 .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
+
+    @MainThread
+    public void resetState(){
+        count = Integer.MAX_VALUE;
+    }
 }
