@@ -27,6 +27,8 @@ import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static im.adamant.android.ui.messages_support.SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE;
+
 public class ChatInteractor {
     //TODO: Schedulers must be injected through Dagger for comfort unit-testing
 
@@ -139,15 +141,39 @@ public class ChatInteractor {
                 .doOnNext(contacts -> chatsStorage.saveContacts(contacts))
                 .ignoreElements();
     }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean haveText(AbstractMessage message) {
+        if (message.getSupportedType() == ADAMANT_TRANSFER_MESSAGE) {
+            return false;
+        }
+        //TODO return false on type 8 with empty text
+        return true;
+    }
+
     public Single<Long> update() {
        return newItemsSource
                 .execute(maxHeight)
                 .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
+               .doOnNext(transaction -> {
+                           keyStorage.setPublicKey(transaction.getRecipientId(), transaction.getRecipientPublicKey());
+                           keyStorage.setPublicKey(transaction.getSenderId(), transaction.getSenderPublicKey());
+                       }
+               )
                 .flatMap(transaction -> Flowable
                         .fromCallable(() -> keyStorage.combinePublicKeyWithTransaction(transaction))
                         .map(transactionPair -> messageMapper.apply(transactionPair))
-                        .doOnNext(message -> chatsStorage.addMessageToChat(message))
                         .onErrorReturn(throwable -> new FallbackMessage())
+                        .groupBy(AbstractMessage::getCompanionId)
+                        .map(chatMessagesFlowable -> chatMessagesFlowable.filter(this::haveText))
+                        .map(chatMessagesFlowable -> chatMessagesFlowable.doOnNext(message -> {
+                            Chat chat = new Chat();
+                            chat.setTitle(message.getCompanionId());
+                            chat.setCompanionId(message.getCompanionId());
+                            chatsStorage.addNewChat(chat);
+                        }))
+                        .flatMap(chatMessagesFlowable -> chatMessagesFlowable)
+                        .doOnNext(message -> chatsStorage.addMessageToChat(message))
                 )
                 .count()
                 .doAfterSuccess(count -> {
