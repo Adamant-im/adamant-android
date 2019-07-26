@@ -62,21 +62,6 @@
                 tools:minHeight="80dp"
                 tools:minWidth="1930dp" >
 
-                <TextView
-                    android:id="@+id/list_item_message_content_tv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginRight="4dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@id/list_item_message_time"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_default="wrap"
-                    android:lineSpacingExtra="1dp"
-                    android:text="TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView TextView" />
             </FrameLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 

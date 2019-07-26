@@ -270,6 +270,7 @@ U15423595369615486571"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:focusable="true"
+                android:minWidth="0dp"
                 android:paddingLeft="0dp"
                 android:text="@string/activity_transfer_details_go_to_chat" />
         </LinearLayout>

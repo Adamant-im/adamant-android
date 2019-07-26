@@ -15,6 +15,7 @@
         android:clickable="false"
         android:text="TextView"
         android:textSize="18sp"
+        android:lineSpacingExtra="3dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
