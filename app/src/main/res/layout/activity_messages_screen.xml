@@ -92,6 +92,10 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:src="@drawable/send"
+            android:paddingLeft="12dp"
+            android:paddingTop="8dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="8dp"
             app:layout_constraintBottom_toBottomOf="@id/activity_messages_til_new_message_layout"
             app:layout_constraintTop_toTopOf="@id/activity_messages_til_new_message_layout"
             app:layout_constraintEnd_toEndOf="parent" />
