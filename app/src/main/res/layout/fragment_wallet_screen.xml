@@ -32,6 +32,7 @@
         android:id="@+id/separator2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_marginTop="24dp"
         android:background="@color/disabled"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,8 +51,7 @@
         android:paddingEnd="@dimen/fragment_wallet_card_padding"
         android:paddingRight="@dimen/fragment_wallet_card_padding"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.46"
+        app:layout_constraintHeight_default="wrap"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/separator" />

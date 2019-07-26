@@ -244,10 +244,13 @@ U15423595369615486571"
             android:padding="16dp">
 
             <TextView
-                style="@style/AdamantLight.TextRegular"
+                android:id="@+id/explorerTextView"
+                style="@style/AdamantLight.TextActive"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:clickable="false"
+                android:paddingLeft="0dp"
                 android:text="@string/activity_transfer_details_open_explorer" />
         </LinearLayout>
 
@@ -261,9 +264,14 @@ U15423595369615486571"
             android:padding="16dp">
 
             <TextView
-                android:id="@+id/chatLabel"
-                android:layout_width="match_parent"
+                android:id="@+id/chatTextView"
+                style="@style/AdamantLight.TextActive"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="false"
+                android:focusable="true"
+                android:minWidth="0dp"
+                android:paddingLeft="0dp"
                 android:text="@string/activity_transfer_details_go_to_chat" />
         </LinearLayout>
 

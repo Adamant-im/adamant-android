@@ -93,7 +93,7 @@
 
     <string name="fragment_wallet_address_title">Number</string>
     <string name="fragment_wallet_balance_title">Balance</string>
-    <string name="fragment_wallet_free_tokens_title">Free tokens</string>
+    <string name="fragment_wallet_free_tokens_title">🎁 Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
     <string name="fragment_wallet_send_funds">Send %s</string>
     <string name="fragment_wallet_see_all">All</string>
