@@ -93,7 +93,7 @@
 
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
-    <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
+    <string name="fragment_wallet_free_tokens_title">🎁 Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_send_funds">Отправить %s</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>

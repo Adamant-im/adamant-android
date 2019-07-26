@@ -36,6 +36,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     protected TextView errorView;
     protected View messageBlockView;
     protected FrameLayout contentBlock;
+//    protected TextView contentBlock;
     protected Context context;
     protected ConstraintLayout constraintLayout;
     protected ConstraintSet constraintSet = new ConstraintSet();
@@ -72,6 +73,7 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
         timeView = itemView.findViewById(R.id.list_item_message_time);
         errorView = itemView.findViewById(R.id.list_item_message_error_text);
         contentBlock = itemView.findViewById(R.id.list_item_message_content);
+//        contentBlock = itemView.findViewById(R.id.list_item_message_content_tv);
     }
 
     @Override
