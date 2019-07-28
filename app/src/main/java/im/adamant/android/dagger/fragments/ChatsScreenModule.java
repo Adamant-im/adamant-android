@@ -17,10 +17,11 @@ public class ChatsScreenModule {
     @FragmentScope
     @Provides
     public ChatsAdapter provideAdapter(
+            ChatsStorage storage,
             ChatsScreen chatsScreen,
             Avatar avatar
     ){
-        return new ChatsAdapter(null, chatsScreen, avatar);
+        return new ChatsAdapter(storage.getChatList(), chatsScreen, avatar);
     }
 
     @FragmentScope

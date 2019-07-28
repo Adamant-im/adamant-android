@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import im.adamant.android.rx.AbstractObservableRxList;
+import im.adamant.android.rx.ThreadUnsafeObservableRxList;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.Contact;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
@@ -17,33 +19,29 @@ import im.adamant.android.ui.messages_support.entities.Separator;
 
 public class ChatsStorage {
     //TODO: Multithreaded access to properties can cause problems in the future
-    private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
-    private List<Chat> chats = new ArrayList<>();
+    private HashMap<String, AbstractObservableRxList<MessageListContent>> messagesByChats = new HashMap<>();
+    private AbstractObservableRxList<Chat> chats = new ThreadUnsafeObservableRxList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
     private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
     private MessageComparator messageComparator = new MessageComparator();
 
     private boolean isLoaded = false;
 
-    public List<Chat> getChatList() {
+    public AbstractObservableRxList<Chat> getChatList() {
         return chats;
     }
 
-    public List<Chat> getChats(int from, int to){
-        return new ArrayList<>(chats.subList(from,Math.min(to,chats.size())));
-    }
+    public AbstractObservableRxList<MessageListContent> getMessagesByCompanionId(String companionId) {
+        AbstractObservableRxList<MessageListContent> requestedMessages = messagesByChats.get(companionId);
 
-    public List<MessageListContent> getMessagesByCompanionId(String companionId) {
-        List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
-
-        if (requestedMessages == null){return new ArrayList<>();}
+        if (requestedMessages == null){return new ThreadUnsafeObservableRxList<>();}
 
         return requestedMessages;
     }
 
     public synchronized void addNewChat(Chat chat) {
         int index = chats.indexOf(chat);
-        if (index == -1){
+        if (index == -1) {
             if (contacts != null) {
                Contact contact= contacts.get(chat.getCompanionId());
                if(contact!=null) {
@@ -54,15 +52,15 @@ public class ChatsStorage {
                }
             }
             chats.add(chat);
-            messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
+            messagesByChats.put(chat.getCompanionId(), new ThreadUnsafeObservableRxList<>());
         }
     }
 
     public void addMessageToChat(MessageListContent message) {
-        List<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
+        AbstractObservableRxList<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
 
         if (messages == null) {
-            messages = new ArrayList<>();
+            messages = new ThreadUnsafeObservableRxList<>();
             messagesByChats.put(message.getCompanionId(), messages);
         }
 
@@ -92,7 +90,7 @@ public class ChatsStorage {
 
         Collections.sort(chats, chatComparator);
 
-        for (Map.Entry<String, List<MessageListContent>> entry : messagesByChats.entrySet()){
+        for (Map.Entry<String, AbstractObservableRxList<MessageListContent>> entry : messagesByChats.entrySet()){
             Collections.sort(entry.getValue(), messageComparator);
         }
     }

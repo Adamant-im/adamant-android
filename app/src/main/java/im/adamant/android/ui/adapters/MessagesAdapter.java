@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import im.adamant.android.R;
+import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.AbstractObservableRxList;
+import im.adamant.android.rx.ThreadUnsafeObservableRxList;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
@@ -18,17 +21,21 @@ import im.adamant.android.ui.messages_support.factories.MessageFactory;
 import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
 import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
 import im.adamant.android.ui.messages_support.holders.SeparatorViewHolder;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 
 public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListContentViewHolder> {
 
-    private List<MessageListContent> messages = new ArrayList<>();
+    private AbstractObservableRxList<MessageListContent> messages = new ThreadUnsafeObservableRxList<>();
     private MessageFactoryProvider messageFactoryProvider;
+    private Disposable messageListUpdateSubscription;
 
-    public MessagesAdapter(MessageFactoryProvider messageFactoryProvider, List<MessageListContent> messages) {
+    public MessagesAdapter(MessageFactoryProvider messageFactoryProvider, AbstractObservableRxList<MessageListContent> messages) {
         this.messageFactoryProvider = messageFactoryProvider;
 
         if (messages != null){
             this.messages = messages;
+            subscribe(messages);
         }
     }
 
@@ -75,24 +82,24 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
         return messages.size();
     }
 
-    public void updateDataset(List<MessageListContent> messages){
-        if (messages != null){
+    public void updateDataset(AbstractObservableRxList<MessageListContent> messages){
+        //If not same object, its right check
+        if (messages != null && this.messages != messages) {
             this.messages = messages;
-        } else {
-            this.messages.clear();
+            notifyDataSetChanged();
+            subscribe(messages);
         }
-
-        notifyDataSetChanged();
     }
 
-    public void updateDataset(List<MessageListContent> messages,int topAddedCount){
-        if (messages != null){
-            this.messages = messages;
-        } else {
-            this.messages.clear();
-        }
-
-        notifyItemRangeInserted(0, topAddedCount);
+    private void subscribe(AbstractObservableRxList<MessageListContent> messages) {
+        if (this.messageListUpdateSubscription != null) { this.messageListUpdateSubscription.dispose();}
+        messageListUpdateSubscription = messages
+                .getEventObservable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        event -> notifyItemChanged(event.getPosition(), event.getCount()),
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
     }
 
     private boolean detectNextMessageWithSameSender(int position) {
@@ -113,5 +120,11 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
         } while (nextMessage.getSupportedType() == SupportedMessageListContentType.SEPARATOR);
 
         return ((AbstractMessage)currentMessage).isiSay() == ((AbstractMessage)nextMessage).isiSay();
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (this.messageListUpdateSubscription != null) { this.messageListUpdateSubscription.dispose();}
+        super.finalize();
     }
 }

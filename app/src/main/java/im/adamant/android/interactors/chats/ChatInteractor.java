@@ -15,6 +15,7 @@ import javax.inject.Provider;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.mappers.TransactionToChatMapper;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
@@ -30,6 +31,9 @@ import io.reactivex.schedulers.Schedulers;
 import static im.adamant.android.ui.messages_support.SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE;
 
 public class ChatInteractor {
+
+    public static final int PAGE_SIZE = 25;
+
     //TODO: Schedulers must be injected through Dagger for comfort unit-testing
 
     //TODO: The current height should be "Atomic" changed
@@ -41,7 +45,6 @@ public class ChatInteractor {
     private PublicKeyStorage keyStorage;
     private NewTransactionsSource newItemsSource;
     private LastTransactionInChatsSource chatsSource;
-    private HistoryTransactionsSource historySource;
     private ContactsSource contactsSource;
     private ChatsStorage chatsStorage;
     private TransactionToChatMapper chatMapper;
@@ -49,12 +52,15 @@ public class ChatInteractor {
     private Provider<ChatHistoryInteractor> chatHistoryInteractorProvider;
 
     private int maxHeight = 1;
+    private int currentPage = 0;
+    private boolean contactsLoaded;
+    private Flowable<AbstractObservableRxList<Chat>> loadingChatsFlowable;
+    private Map<String,ChatHistoryInteractor> chatsInteractors = new TreeMap<>();
 
     public ChatInteractor(
             PublicKeyStorage keyStorage,
             NewTransactionsSource newItemsSource,
             LastTransactionInChatsSource chatsSource,
-            HistoryTransactionsSource historySource,
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
@@ -63,7 +69,6 @@ public class ChatInteractor {
         this.keyStorage = keyStorage;
         this.newItemsSource = newItemsSource;
         this.chatsSource = chatsSource;
-        this.historySource = historySource;
         this.contactsSource = contactsSource;
         this.chatsStorage = chatsStorage;
         this.chatMapper = chatMapper;
@@ -71,16 +76,10 @@ public class ChatInteractor {
         this.chatHistoryInteractorProvider = chatInteractorProvider;
     }
 
-    public static final int PAGE_SIZE = 25;
-
-    private int currentPage = 0;
-
     @MainThread
     public int getCurrentPage() {
         return currentPage;
     }
-
-    private Flowable<List<Chat>> loadingChatsFlowable;
 
     @MainThread
     private int getCurrentOffset() {
@@ -92,10 +91,8 @@ public class ChatInteractor {
         return chatsSource.getCount() > getCurrentOffset();
     }
 
-    private boolean contactsLoaded;
-
     @MainThread
-    public Flowable<List<Chat>> loadMoreChats(){
+    public Flowable<AbstractObservableRxList<Chat>> loadMoreChats(){
         if(!haveMoreChats()){
             return Flowable.fromCallable(()-> chatsStorage.getChatList());
         }
@@ -184,8 +181,6 @@ public class ChatInteractor {
 
     }
 
-    private Map<String,ChatHistoryInteractor> chatsInteractors = new TreeMap<>();
-
     @MainThread
     private ChatHistoryInteractor getInteractorForChat(String chatId){
         if(!chatsInteractors.containsKey(chatId)) {
@@ -204,7 +199,7 @@ public class ChatInteractor {
     }
 
     @MainThread
-    public Flowable<List<MessageListContent>> loadMoreChatMessages(String chatId) {
+    public Flowable<AbstractObservableRxList<MessageListContent>> loadMoreChatMessages(String chatId) {
         ChatHistoryInteractor chatHistoryInteractor = getInteractorForChat(chatId);
         return chatHistoryInteractor.loadMoreMessages()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -250,7 +245,7 @@ public class ChatInteractor {
     @MainThread
     public void resetPagingState(){
         loadingChatsFlowable = null;
-        chatsInteractors.clear();;
+        chatsInteractors.clear();
         contactsLoaded = false;
         currentPage = 0;
         chatsSource.resetState();

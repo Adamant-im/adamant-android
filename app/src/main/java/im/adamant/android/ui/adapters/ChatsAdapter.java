@@ -5,25 +5,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.AbstractObservableRxList;
+import im.adamant.android.rx.ThreadUnsafeObservableRxList;
 import im.adamant.android.ui.entities.Chat;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
-    private List<Chat> chats = new ArrayList<>();
+    private AbstractObservableRxList<Chat> chats = new ThreadUnsafeObservableRxList<>();
     private SelectItemListener listener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Avatar avatar;
@@ -94,7 +92,7 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     }
 
     public ChatsAdapter(
-            List<Chat> chats,
+            AbstractObservableRxList<Chat> chats,
             SelectItemListener listener,
             Avatar avatar
     ) {
@@ -102,6 +100,14 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
 
         if (chats != null){
             this.chats = chats;
+            Disposable disposable = chats
+                    .getEventObservable()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            event -> notifyDataSetChanged(),
+                            error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                    );
+            compositeDisposable.add(disposable);
         }
 
         if (listener != null){
@@ -129,17 +135,6 @@ public class ChatsAdapter extends RecyclerView.Adapter<ChatsAdapter.ViewHolder>{
     public int getItemCount() {
         return chats.size();
     }
-
-    public void updateDataset(List<Chat> chats){
-        if (chats != null){
-            this.chats = chats;
-        } else {
-            this.chats.clear();
-        }
-
-        notifyDataSetChanged();
-    }
-
 
     public void setListener(SelectItemListener listener) {
         this.listener = listener;

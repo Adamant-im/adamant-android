@@ -8,16 +8,17 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
 
 import java.util.List;
 
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
 public interface MessagesView extends MvpView {
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void showChatMessages(List<MessageListContent> messages, int addedCount);
+    void showChatMessages(AbstractObservableRxList<MessageListContent> messages);
 
     @StateStrategyType(AddToEndSingleStrategy.class)
-    void showChatMessages(List<MessageListContent> messages);
+    void emptyView(boolean show);
 
     @StateStrategyType(OneExecutionStateStrategy.class)
     void goToLastMessage();

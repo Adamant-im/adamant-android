@@ -27,6 +27,7 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.helpers.AnimationUtils;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
 import im.adamant.android.ui.entities.Chat;
@@ -117,8 +118,8 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     }
 
     @Override
-    public void showChats(List<Chat> chats) {
-        adapter.updateDataset(chats);
+    public void showChats() {
+//        adapter.updateDataset(chats);
         if (endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless scroll
         }

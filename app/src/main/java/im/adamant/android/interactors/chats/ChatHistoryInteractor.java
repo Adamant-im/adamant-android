@@ -7,6 +7,7 @@ import java.util.List;
 
 import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.mappers.TransactionToMessageMapper;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
@@ -22,7 +23,31 @@ public class ChatHistoryInteractor {
 
     private String chatId;
 
+
+    private ChatsStorage chatsStorage;
+    private PublicKeyStorage
+            keyStorage;
+
+    private TransactionToMessageMapper messageMapper;
+
+    private Flowable<AbstractObservableRxList<MessageListContent>> loadingMessagesFlowable;
+    private HistoryTransactionsSource historySource;
+
+    private int maxHeight = 1;
     private int currentPage = 0;
+
+    public ChatHistoryInteractor(HistoryTransactionsSource historySource, ChatsStorage chatsStorage,
+                                 PublicKeyStorage keyStorage,
+                                 TransactionToMessageMapper messageMapper) {
+        this.historySource = historySource;
+        this.chatsStorage = chatsStorage;
+        this.keyStorage = keyStorage;
+        this.messageMapper = messageMapper;
+    }
+
+    public boolean haveMoreMessages() {
+        return historySource.getCount() > getCurrentOffset();
+    }
 
     @MainThread
     public int getCurrentPage() {
@@ -34,36 +59,10 @@ public class ChatHistoryInteractor {
         return getCurrentPage() * PAGE_SIZE;
     }
 
-    protected HistoryTransactionsSource historySource;
-
     @MainThread
     public void setChatId(String chatId) {
         this.chatId = chatId;
     }
-
-    private ChatsStorage chatsStorage;
-    private PublicKeyStorage
-            keyStorage;
-
-    private TransactionToMessageMapper messageMapper;
-
-    public ChatHistoryInteractor(HistoryTransactionsSource historySource, ChatsStorage chatsStorage,
-                                 PublicKeyStorage keyStorage,
-                                 TransactionToMessageMapper messageMapper) {
-        this.historySource = historySource;
-        this.chatsStorage = chatsStorage;
-        this.keyStorage = keyStorage;
-        this.messageMapper = messageMapper;
-    }
-
-
-    private Flowable<List<MessageListContent>> loadingMessagesFlowable;
-
-    public boolean haveMoreMessages() {
-        return historySource.getCount() > getCurrentOffset();
-    }
-
-    private int maxHeight = 1;
 
     @MainThread
     public int getMaxHeight() {
@@ -76,7 +75,7 @@ public class ChatHistoryInteractor {
     }
 
     @MainThread
-    public Flowable<List<MessageListContent>> loadMoreMessages() {
+    public Flowable<AbstractObservableRxList<MessageListContent>> loadMoreMessages() {
         if (chatId == null) {
             return Flowable.error(new IllegalStateException("Chat setChatId must be called"));
         }

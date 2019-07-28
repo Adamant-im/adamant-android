@@ -42,6 +42,7 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
 import im.adamant.android.ui.custom_view.EndlessUpScrollListener;
@@ -96,6 +97,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     Disposable messageInputDisposable;
 
+    private EndlessUpScrollListener endlessScrollListener;
+    private LinearLayoutManager layoutManager;
 
     //--Activity
     @Override
@@ -107,8 +110,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     public boolean withBackButton() {
         return true;
     }
-
-    private LinearLayoutManager layoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,8 +142,6 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         super.onNewIntent(intent);
         showByAddress(intent);
     }
-
-    private EndlessUpScrollListener endlessScrollListener;
 
     @Override
     protected void onResume() {
@@ -182,39 +181,25 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         compositeDisposable.clear();
     }
 
-    @Override
-    public void showChatMessages(List<MessageListContent> messages, int addedCount) {
-        if (endlessScrollListener!=null) {
-            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
-        }
-        if (messages != null) {
-            adapter.updateDataset(messages, addedCount);
-
-            if (messages.size() == 0) {
-                emptyView.setVisibility(View.VISIBLE);
-                messagesList.setVisibility(View.GONE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-                messagesList.setVisibility(View.VISIBLE);
-            }
-        }
-    }
 
     @Override
-    public void showChatMessages(List<MessageListContent> messages) {
+    public void showChatMessages(AbstractObservableRxList<MessageListContent> messages) {
         if (endlessScrollListener!=null) {
             endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
         }
         if (messages != null) {
             adapter.updateDataset(messages);
+        }
+    }
 
-            if (messages.size() == 0) {
-                emptyView.setVisibility(View.VISIBLE);
-                messagesList.setVisibility(View.GONE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-                messagesList.setVisibility(View.VISIBLE);
-            }
+    @Override
+    public void emptyView(boolean show) {
+        if (show) {
+            emptyView.setVisibility(View.VISIBLE);
+            messagesList.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            messagesList.setVisibility(View.VISIBLE);
         }
     }
 

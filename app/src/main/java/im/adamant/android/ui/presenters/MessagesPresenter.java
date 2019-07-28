@@ -15,6 +15,7 @@ import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.ChatUpdatePublicKeyInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 import im.adamant.android.ui.messages_support.entities.AdamantBasicMessage;
@@ -37,8 +38,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     private AdamantApiWrapper api;
 
     private Chat currentChat;
-    private List<MessageListContent> messages;
-    private int previousMessagesCount = 0;
+    private AbstractObservableRxList<MessageListContent> messages;
 
     private Disposable syncSubscription;
 
@@ -59,17 +59,17 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         this.api = api;
     }
 
-    public void setMessages(List<MessageListContent> messages) {
-        int addedCount = messages.size() - previousMessagesCount;
+    public void setMessages(AbstractObservableRxList<MessageListContent> messages) {
         this.messages = messages;
-        getViewState().showChatMessages(messages, addedCount);
-        previousMessagesCount = messages.size();
+        boolean isEmpty = (messages == null || messages.size() == 0);
+
+        getViewState().emptyView(isEmpty);
+        getViewState().showChatMessages(messages);
     }
 
     @Override
     public void attachView(MessagesView view) {
         super.attachView(view);
-
     }
 
     @Override
@@ -106,7 +106,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
 
         getViewState().changeTitles(currentChat.getTitle(), currentChat.getCompanionId());
 
-        List<MessageListContent> messages = chatsStorage.getMessagesByCompanionId(companionId);
+        AbstractObservableRxList<MessageListContent> messages = chatsStorage.getMessagesByCompanionId(companionId);
         setMessages(messages);
         getViewState().showLoading(messages.isEmpty());
         if (messages.isEmpty()) {
@@ -247,7 +247,6 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
         messages = chatsStorage.getMessagesByCompanionId(
                 companionId
         );
-        previousMessagesCount = messages.size();
 
         getViewState().showChatMessages(messages);
     }

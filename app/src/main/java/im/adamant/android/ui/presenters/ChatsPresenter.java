@@ -26,6 +26,7 @@ import ru.terrakok.cicerone.Router;
 public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
     private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
+    private List<Chat> chatList = Collections.emptyList();
 
     public ChatsPresenter(
             Router router,
@@ -38,12 +39,10 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         this.chatsStorage = chatsStorage;
     }
 
-    private List<Chat> chatList = Collections.emptyList();
-
     @MainThread
     private void showChats(List<Chat> chats) {
         this.chatList = chats;
-        getViewState().showChats(chatList);
+        getViewState().showChats();
     }
 
     private void subscribeToUpdates() {
@@ -79,7 +78,7 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                     .share()
                     .subscribe(chats -> {
                         getViewState().progress(false);
-                        getViewState().showChats(chats);
+                        getViewState().showChats();
                         subscribeToUpdates();
                     });
 
