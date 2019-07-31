@@ -18,7 +18,6 @@
         android:singleLine="false"
         android:text="TextView"
         android:lineSpacingExtra="3dp"
-        android:textIsSelectable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
