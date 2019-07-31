@@ -90,19 +90,7 @@ public class ChatHistoryInteractor {
                     .map(transaction -> keyStorage.combinePublicKeyWithTransaction(transaction))
                     .flatMap(pair -> Flowable.just(pair)
                             .map(transaction -> (MessageListContent) messageMapper.apply(transaction))
-                            .onErrorReturn(throwable -> {
-                                FallbackMessage fallbackMessage = new FallbackMessage();
-                                fallbackMessage.setError(throwable.getMessage());
-                                fallbackMessage.setSupportedType(SupportedMessageListContentType.FALLBACK);
-                                if (throwable instanceof MessageDecryptException) {
-                                    fallbackMessage.setCompanionId(((MessageDecryptException) throwable).getCompanionId());
-                                    fallbackMessage.setiSay(((MessageDecryptException) throwable).isISay());
-                                    fallbackMessage.setTimestamp(((MessageDecryptException) throwable).getTimestamp());
-                                    fallbackMessage.setStatus(AbstractMessage.Status.INVALIDATED);
-                                    fallbackMessage.setTransactionId(((MessageDecryptException) throwable).getTransactionId());
-                                }
-                                return fallbackMessage;
-                            })
+                            .onErrorReturn(FallbackMessage::createMessageFromThrowable)
                     )
                     .toList()
                     .toFlowable()

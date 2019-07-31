@@ -150,17 +150,24 @@ public class ChatInteractor {
 
     public Single<Long> update() {
        return newItemsSource
-                .execute(maxHeight)
-                .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
+               .execute(maxHeight)
+               .doOnNext(transaction -> {if (transaction.getHeight() > maxHeight) {maxHeight = transaction.getHeight();}})
                .doOnNext(transaction -> {
-                           keyStorage.setPublicKey(transaction.getRecipientId(), transaction.getRecipientPublicKey());
-                           keyStorage.setPublicKey(transaction.getSenderId(), transaction.getSenderPublicKey());
-                       }
-               )
-                .flatMap(transaction -> Flowable
+                   if (transaction.getRecipientPublicKey() != null && !transaction.getRecipientPublicKey().isEmpty()) {
+                       keyStorage.setPublicKey(transaction.getRecipientId(), transaction.getRecipientPublicKey());
+                   }
+
+                   if (transaction.getSenderPublicKey() != null && !transaction.getSenderPublicKey().isEmpty()) {
+                       keyStorage.setPublicKey(transaction.getSenderId(), transaction.getSenderPublicKey());
+                   }
+               })
+               .flatMap(transaction -> Flowable
                         .fromCallable(() -> keyStorage.combinePublicKeyWithTransaction(transaction))
                         .map(transactionPair -> messageMapper.apply(transactionPair))
-                        .onErrorReturn(throwable -> new FallbackMessage())
+                        .onErrorReturn(throwable -> {
+                            LoggerHelper.e(getClass().getSimpleName(), throwable.getMessage(), throwable);
+                            return FallbackMessage.createMessageFromThrowable(throwable);
+                        })
                         .groupBy(AbstractMessage::getCompanionId)
                         .map(chatMessagesFlowable -> chatMessagesFlowable.filter(this::haveText))
                         .map(chatMessagesFlowable -> chatMessagesFlowable.doOnNext(message -> {
@@ -171,13 +178,13 @@ public class ChatInteractor {
                         }))
                         .flatMap(chatMessagesFlowable -> chatMessagesFlowable)
                         .doOnNext(message -> chatsStorage.addMessageToChat(message))
-                )
-                .count()
-                .doAfterSuccess(count -> {
+               )
+               .count()
+               .doAfterSuccess(count -> {
                     if (count > 0) {
                         chatsStorage.updateLastMessages();
                     }
-                });
+               });
 
     }
 

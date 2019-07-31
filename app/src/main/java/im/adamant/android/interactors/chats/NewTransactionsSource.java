@@ -34,6 +34,7 @@ public class NewTransactionsSource {
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
+    //TODO: Simplify load updates. Just enough get transactions by maxHeight without type
     private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(int height, int offset) {
         return api
                 .getMessageTransactionsByHeightAndOffset(height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
