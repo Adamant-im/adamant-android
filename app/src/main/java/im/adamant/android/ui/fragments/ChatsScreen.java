@@ -4,16 +4,16 @@ package im.adamant.android.ui.fragments;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -27,11 +27,13 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import im.adamant.android.R;
 import im.adamant.android.helpers.AnimationUtils;
-import im.adamant.android.ui.fragments.base.BaseFragment;
-import im.adamant.android.ui.presenters.ChatsPresenter;
+import im.adamant.android.rx.AbstractObservableRxList;
 import im.adamant.android.ui.adapters.ChatsAdapter;
+import im.adamant.android.ui.custom_view.EndlessRecyclerViewScrollListener;
 import im.adamant.android.ui.entities.Chat;
+import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.mvp_view.ChatsView;
+import im.adamant.android.ui.presenters.ChatsPresenter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -48,7 +50,7 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     ChatsPresenter presenter;
 
     @ProvidePresenter
-    public ChatsPresenter getPresenter(){
+    public ChatsPresenter getPresenter() {
         return presenterProvider.get();
     }
 
@@ -77,12 +79,13 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
         return R.layout.fragment_chats_screen;
     }
 
+    private LinearLayoutManager layoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        layoutManager = new LinearLayoutManager(this.getContext());
         chatList.setLayoutManager(layoutManager);
         chatList.setAdapter(adapter);
 
@@ -115,16 +118,37 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     }
 
     @Override
-    public void showChats(List<Chat> chats) {
-        adapter.updateDataset(chats);
+    public void showChats() {
+//        adapter.updateDataset(chats);
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless scroll
+        }
+    }
+
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.onLoadMore();
+            }
+        };
+        endlessRecyclerViewScrollListener.setVisibleThreshold(12);
+        chatList.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
     @Override
     public void progress(boolean value) {
+        if (endlessRecyclerViewScrollListener != null) {
+            endlessRecyclerViewScrollListener.setLoading(value);
+        }
         if (value) {
             progressBar.setVisibility(View.VISIBLE);
         } else {
-            progressBar.setVisibility(View.GONE);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 

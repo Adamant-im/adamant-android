@@ -5,12 +5,18 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.google.android.material.button.MaterialButton;
-import com.yarolegovich.discretescrollview.DiscreteScrollView;
-
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.button.MaterialButton;
+import com.yarolegovich.discretescrollview.DiscreteScrollView;
+
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.OnClick;
+import dagger.android.AndroidInjection;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
@@ -19,15 +25,9 @@ import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.interactors.AuthorizeInteractor;
 import im.adamant.android.ui.adapters.WelcomeCardsAdapter;
-import im.adamant.android.ui.fragments.BottomLoginFragment;
-
-import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.OnClick;
-import dagger.android.AndroidInjection;
-import im.adamant.android.ui.navigators.DefaultNavigator;
 import im.adamant.android.ui.custom_view.SimpleDotIndicatorDecoration;
+import im.adamant.android.ui.fragments.BottomLoginFragment;
+import im.adamant.android.ui.navigators.DefaultNavigator;
 import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
@@ -38,7 +38,7 @@ import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
 
 
-public class LoginScreen extends BaseActivity implements  HasSupportFragmentInjector {
+public class LoginScreen extends BaseActivity implements HasSupportFragmentInjector {
 
     @Inject
     WelcomeCardsAdapter adapter;
@@ -56,6 +56,8 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @BindView(R.id.activity_login_btn_generate_new_passphrase) MaterialButton creteNewButtonView;
 
     private BottomLoginFragment loginFragment;
+
+    public static final String BOTTOM_LOGIN_TAG = "BottomLogin";
 
     //--Activity
     @Override
@@ -77,6 +79,8 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
             });
         }
         super.onCreate(savedInstanceState);
+
+        loginFragment = (BottomLoginFragment) getSupportFragmentManager().findFragmentByTag(BOTTOM_LOGIN_TAG);
 
         if (loginFragment == null) {
             loginFragment = new BottomLoginFragment();
@@ -105,9 +109,9 @@ public class LoginScreen extends BaseActivity implements  HasSupportFragmentInje
     @OnClick(R.id.activity_login_btn_login)
     public void loginButtonClick() {
         FragmentManager supportFragmentManager = getSupportFragmentManager();
-        Fragment fragment = supportFragmentManager.findFragmentByTag(loginFragment.getTag());
+        Fragment fragment = supportFragmentManager.findFragmentByTag(BOTTOM_LOGIN_TAG);
         if (fragment == null) {
-            loginFragment.show(supportFragmentManager, loginFragment.getTag());
+            loginFragment.show(supportFragmentManager, BOTTOM_LOGIN_TAG);
         }
     }
 

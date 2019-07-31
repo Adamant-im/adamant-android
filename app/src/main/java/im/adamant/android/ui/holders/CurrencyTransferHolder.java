@@ -4,26 +4,45 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
 import java.util.Locale;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import im.adamant.android.R;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 public class CurrencyTransferHolder extends RecyclerView.ViewHolder {
+    public static interface OnClicked{
+        void onClicked(int adapterPosition);
+    }
+
     private Context context;
 
     private TextView addressView;
     private TextView amountView;
     private TextView titleView;
     private RelativeTimeTextView dateView;
+    private OnClicked onClickedListener;
+
+    public void setOnClickedListener(OnClicked onClickedListener) {
+        this.onClickedListener = onClickedListener;
+    }
 
     public CurrencyTransferHolder(@NonNull View itemView, Context context) {
         super(itemView);
+
+        itemView.setOnClickListener(v->{
+            int position = getAdapterPosition();
+            if(position!=NO_POSITION && onClickedListener != null){
+                    onClickedListener.onClicked(position);
+            }
+        });
 
         this.context = context;
 

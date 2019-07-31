@@ -1,6 +1,5 @@
 package im.adamant.android.ui.fragments;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,23 +8,23 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.navigation.NavigationView;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.ui.presenters.MainPresenter;
-import ru.terrakok.cicerone.Router;
 
 //TODO: Parrent class must be the BaseBottomFragment
 public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
@@ -62,12 +61,14 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         this.mainPresenter = mainPresenter;
     }
 
+    private Unbinder unbinder;
+
     //TODO: Think about whether there is a presenter and a refactor code
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_bottom_navigation, container, false);
-        ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view);
 
         if (api.isAuthorized()){
             avatar.build(
@@ -107,5 +108,11 @@ public class BottomNavigationDrawerFragment extends BottomSheetDialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 }

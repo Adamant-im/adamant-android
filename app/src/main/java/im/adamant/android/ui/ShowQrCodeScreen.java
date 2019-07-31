@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.ui.mvp_view.ShowQrCodeView;
 import im.adamant.android.ui.presenters.ShowQrCodePresenter;
@@ -31,6 +32,7 @@ import im.adamant.android.ui.presenters.ShowQrCodePresenter;
 public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
     public static final String ARG_DATA_FOR_QR_CODE = "data";
     public static final String ARG_SHOW_CONTENT = "show_content";
+    public static final String ARG_TITLE_RESOURCE = "title";
 
     @Inject
     Provider<ShowQrCodePresenter> presenterProvider;
@@ -65,10 +67,14 @@ public class ShowQrCodeScreen extends BaseActivity implements ShowQrCodeView {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
 
-        setTitle(getString(R.string.activity_show_qr_code_title));
+        //setTitle(getString(R.string.activity_show_qr_code_title));
 
         Intent intent = getIntent();
         if (intent != null) {
+            if (intent.hasExtra(ARG_TITLE_RESOURCE)) {
+                setTitle(getString(intent.getIntExtra(ARG_TITLE_RESOURCE,0)));
+            }
+
             if (intent.hasExtra(ARG_DATA_FOR_QR_CODE)) {
                 final int backgroundColor = ContextCompat.getColor(this, R.color.alternate_background);
                 final int onColor = ContextCompat.getColor(this, R.color.onPrimary);

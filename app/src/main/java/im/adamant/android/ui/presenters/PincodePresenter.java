@@ -2,28 +2,21 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import java.util.concurrent.TimeUnit;
-
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.helpers.CharSequenceHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor securityInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
-    private CharSequence pincodeForConfirmation;
+    private String pincodeForConfirmation;
     private int attemptsCount = 0;
-    private long lastAttemptTimestamp = 0;
     private Disposable currentOperation;
-    private Disposable timerErrorDisposable;
 
     public PincodePresenter(SecurityInteractor securityInteractor) {
         this.securityInteractor = securityInteractor;
@@ -31,7 +24,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void setMode(PinCodeView.MODE mode) {
         this.mode = mode;
-        switch (mode){
+        switch (mode) {
             case CREATE: {
                 getViewState().setSuggestion(R.string.activity_pincode_enter_new_pincode);
                 getViewState().setCancelButtonText(R.string.cancel);
@@ -42,35 +35,33 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 getViewState().setCancelButtonText(R.string.activity_pincode_remove_pin);
             }
             break;
-            case DROP: {
-                getViewState().setSuggestion(R.string.activity_pincode_enter_pincode);
-                getViewState().setCancelButtonText(R.string.cancel);
-            }
-            break;
         }
     }
 
     public void onInputPincodeWasCompleted(CharSequence pinCode) {
-        if (!validate(pinCode)) {
-            return;
+        String pinCodeString = pinCode.toString();
+        if (mode == PinCodeView.MODE.CREATE) {
+            if (!validate(pinCodeString)) {
+                return;
+            }
         }
 
         if (currentOperation != null) {
             currentOperation.dispose();
         }
 
-        switch (mode){
+        switch (mode) {
             case CREATE: {
                 mode = PinCodeView.MODE.CONFIRM;
-                pincodeForConfirmation = pinCode;
+                pincodeForConfirmation = pinCodeString;
                 getViewState().setSuggestion(R.string.activity_pincode_confirm);
             }
             break;
             case CONFIRM: {
-                if (CharSequenceHelper.equalsCaseSensitive(pinCode, pincodeForConfirmation)){
+                if (pinCodeString.equals(pincodeForConfirmation)) {
                     getViewState().startProcess();
                     currentOperation = securityInteractor
-                            .savePassphrase(pinCode)
+                            .savePassphrase(pinCodeString)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(
                                     () -> {
@@ -96,13 +87,9 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
             case ACCESS_TO_APP: {
                 attemptsCount++;
 
-                if (waitTimeOut()) { return; }
-
-                lastAttemptTimestamp = System.currentTimeMillis();
-
                 getViewState().startProcess();
                 currentOperation = securityInteractor
-                        .restoreAuthorizationByPincode(pinCode)
+                        .restoreAuthorizationByPincode(pinCodeString)
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (authorization) -> {
@@ -115,27 +102,16 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 },
                                 error -> {
                                     getViewState().stopProcess(false);
-                                    getViewState().showError(R.string.wrong_pincode);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
-                                }
-                        );
-            }
-            break;
-            case DROP: {
-                getViewState().startProcess();
-                currentOperation = securityInteractor
-                        .dropPassphrase(pinCode)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                (value) -> {
-                                    LoggerHelper.e("PINCODE", "SUCCESS SUBSCRIBE");
-                                    getViewState().stopProcess(true);
-                                    getViewState().close();
-                                },
-                                error -> {
-                                    getViewState().stopProcess(false);
-                                    getViewState().showError(R.string.wrong_pincode);
-                                    LoggerHelper.e("PINCODE", error.getMessage(), error);
+                                    if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
+                                        securityInteractor.forceDropPassphrase()
+                                                .subscribe();
+                                        getViewState().stopProcess(true);
+                                        getViewState().showError(R.string.pincode_exceeded_limit);
+                                        getViewState().goToSplash();
+                                    } else {
+                                        getViewState().showWrongPin(BuildConfig.MAX_WRONG_PINCODE_ATTEMTS - attemptsCount);
+                                    }
                                 }
                         );
             }
@@ -145,7 +121,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
     public void onClickCancelButton() {
         switch (mode) {
-            case DROP:
             case CREATE:
             case CONFIRM:
                 getViewState().close();
@@ -167,39 +142,6 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
 
                 subscriptions.add(pincodeReset);
         }
-    }
-
-    private boolean waitTimeOut() {
-        if (attemptsCount > BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-            if (lastAttemptTimestamp < (System.currentTimeMillis() - BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS)) {
-                attemptsCount = 0;
-                return false;
-            } else {
-                lastAttemptTimestamp = System.currentTimeMillis();
-
-                if (timerErrorDisposable != null) {
-                    timerErrorDisposable.dispose();
-                }
-
-                int waitSeconds = BuildConfig.WRONG_PINCODE_WAIT_MILISECONDS / 1000;
-
-                timerErrorDisposable = Observable
-                        .interval(1, TimeUnit.SECONDS)
-                        .take(waitSeconds)
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(
-                                (second) -> {
-                                    LoggerHelper.e("INTERVAL", Long.toString(second));
-                                    getViewState().showRepeatableError(R.string.pincode_exceeding_the_number_of_attempts, waitSeconds - second.intValue());
-                                },
-                                (error) -> LoggerHelper.e("PINCODE", error.getMessage()),
-                                () -> getViewState().clearError()
-                        );
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private boolean validate(CharSequence pincode) {

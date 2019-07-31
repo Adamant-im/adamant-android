@@ -1,14 +1,10 @@
 package im.adamant.android.markdown;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.markdown.renderers.BlockRenderer;
 import im.adamant.android.markdown.renderers.InlineRenderer;
 
@@ -77,8 +73,8 @@ public class AdamantMarkdownProcessor {
     private String render(InlineRenderer renderer, String s) {
         Matcher matcher = renderer.providePattern().matcher(s);
         StringBuffer buffer = new StringBuffer();
-        StringBuilder itemBuilder = new StringBuilder();
         while (matcher.find()){
+            StringBuilder itemBuilder = new StringBuilder();
             renderer.renderItem(itemBuilder, matcher);
             matcher.appendReplacement(buffer, itemBuilder.toString());
         }

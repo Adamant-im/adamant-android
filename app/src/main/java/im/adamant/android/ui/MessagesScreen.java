@@ -4,14 +4,10 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,24 +20,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.jakewharton.rxbinding3.widget.RxTextView;
-
-import im.adamant.android.AdamantApplication;
-import im.adamant.android.R;
-import im.adamant.android.Screens;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.services.SaveContactsService;
-import im.adamant.android.ui.navigators.DefaultNavigator;
-import im.adamant.android.ui.presenters.MessagesPresenter;
-import im.adamant.android.ui.adapters.MessagesAdapter;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.entities.MessageListContent;
-import im.adamant.android.ui.mvp_view.MessagesView;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +37,20 @@ import javax.inject.Provider;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
-import io.reactivex.Observable;
+import im.adamant.android.AdamantApplication;
+import im.adamant.android.R;
+import im.adamant.android.Screens;
+import im.adamant.android.avatars.Avatar;
+import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.rx.AbstractObservableRxList;
+import im.adamant.android.services.SaveContactsService;
+import im.adamant.android.ui.adapters.MessagesAdapter;
+import im.adamant.android.ui.custom_view.EndlessUpScrollListener;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
+import im.adamant.android.ui.mvp_view.MessagesView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
+import im.adamant.android.ui.presenters.MessagesPresenter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -60,7 +58,6 @@ import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
-import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
@@ -93,11 +90,15 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_rv_messages) RecyclerView messagesList;
     @BindView(R.id.activity_messages_et_new_msg_text) EditText newMessageText;
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
-    @BindView(R.id.activity_messages_tv_cost) TextInputLayout messageCostView;
+    @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
+    @BindView(R.id.progress) View progressView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
+    Disposable messageInputDisposable;
 
+    private EndlessUpScrollListener endlessScrollListener;
+    private LinearLayoutManager layoutManager;
 
     //--Activity
     @Override
@@ -114,8 +115,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         messagesList.setLayoutManager(layoutManager);
         messagesList.setAdapter(adapter);
 
@@ -150,41 +150,56 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         navigatorHolder.setNavigator(navigator);
 
         MessagesPresenter localPresenter = presenter;
-        Disposable subscribe = RxTextView
+        messageInputDisposable = RxTextView
                 .textChanges(newMessageText)
-                .filter(charSequence -> charSequence.length() > 0)
-                .debounce(500, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-                .map(CharSequence::toString)
-                .doOnNext(localPresenter::onChangeMessageText)
-                .subscribe();
+                .debounce(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        localPresenter::onChangeMessageText,
+                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+                );
 
-        compositeDisposable.add(subscribe);
+        endlessScrollListener = new EndlessUpScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.loadMore();
+            }
+        };
+        endlessScrollListener.setVisibleThreshold(12);
+        messagesList.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         navigatorHolder.removeNavigator();
+
+        messageInputDisposable.dispose();
+        messageInputDisposable = null;
+
         compositeDisposable.dispose();
         compositeDisposable.clear();
     }
 
+
     @Override
-    public void showChatMessages(List<MessageListContent> messages) {
-        if (messages != null){
-            adapter.updateDataset(
-                    messages
-            );
+    public void showChatMessages(AbstractObservableRxList<MessageListContent> messages) {
+        if (endlessScrollListener!=null) {
+            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
+        }
+        if (messages != null) {
+            adapter.updateDataset(messages);
+        }
+    }
 
-            if (messages.size() == 0){
-                emptyView.setVisibility(View.VISIBLE);
-                messagesList.setVisibility(View.GONE);
-            } else {
-                emptyView.setVisibility(View.GONE);
-                messagesList.setVisibility(View.VISIBLE);
-            }
-
-            goToLastMessage();
+    @Override
+    public void emptyView(boolean show) {
+        if (show) {
+            emptyView.setVisibility(View.VISIBLE);
+            messagesList.setVisibility(View.GONE);
+        } else {
+            emptyView.setVisibility(View.GONE);
+            messagesList.setVisibility(View.VISIBLE);
         }
     }
 
@@ -197,7 +212,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
 
     @Override
     public void dropMessageCost() {
-        messageCostView.setHint(getString(R.string.activity_messages_ev_message_placeholder));
+        messageCostView.setText(getString(R.string.activity_messages_ev_message_placeholder));
     }
 
     @Override
@@ -211,12 +226,12 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         if (balanceUpdateService != null){
             balanceUpdateService.updateBalanceImmediately();
         }
-        messageCostView.setHint("");
+        messageCostView.setText("");
     }
 
     @Override
     public void showMessageCost(String cost) {
-        runOnUiThread( () -> messageCostView.setHint(cost));
+        messageCostView.setText(cost);
     }
 
     @Override
@@ -296,7 +311,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         ClipData clip = ClipData.newPlainText("adamant_address", companionId);
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
 
-        if(clipboard != null){
+        if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
             Toast.makeText(this.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
         }
@@ -306,11 +321,25 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     public void showQrCodeCompanionId(String companionId) {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, companionId);
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_address);
 
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+
+    @Override
+    public void showLoading(boolean loading) {
+        if(endlessScrollListener != null) {
+            endlessScrollListener.setLoading(false);
+        }
+       if (loading) {
+           progressView.setVisibility(View.VISIBLE);
+       } else {
+           progressView.setVisibility(View.GONE);
+       }
     }
 
     @OnClick(R.id.activity_messages_btn_send)
@@ -377,6 +406,14 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                     Bundle bundle = new Bundle();
                     bundle.putString(SendFundsScreen.ARG_COMPANION_ID, (String)forwardCommand.getTransitionData());
                     intent.putExtras(bundle);
+                    startActivity(intent);
+                }
+                break;
+                case Screens.TRANSFER_DETAILS_SCREEN: {
+                    Bundle bundle = (Bundle) forwardCommand.getTransitionData();
+                    Intent intent = new Intent(getApplicationContext(), TransferDetailsScreen.class);
+                    intent.putExtras(bundle);
+
                     startActivity(intent);
                 }
                 break;

@@ -131,6 +131,7 @@
     <style name="AdamantLight.TextActive" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:textAppearance">@style/AdamantLight.ButtonTextAppearance</item>
         <item name="android:textColor">@drawable/flat_button_selector_text</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="AdamantLight.IconActive" parent="@style/Widget.MaterialComponents.Button.TextButton"/>
@@ -196,7 +197,7 @@
     <style name="AdamantLight.TableRowStyle">
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:layout_height">@dimen/tablerow_default_height</item>
+        <item name="android:minHeight">@dimen/tablerow_default_height</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:gravity">center_vertical</item>
     </style>

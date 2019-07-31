@@ -2,33 +2,35 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
-import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
-import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.ui.mvp_view.MainView;
-import io.reactivex.Completable;
 import io.reactivex.disposables.Disposable;
 import ru.terrakok.cicerone.Router;
 
 @InjectViewState
 public class MainPresenter extends ProtectedBasePresenter<MainView> {
     private SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor;
+    private ChatInteractor chatInteractor;
 
     public MainPresenter(
             Router router,
             SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
-            AccountInteractor accountInteractor
-    ) {
+            AccountInteractor accountInteractor, ChatInteractor chatInteractor
+            ) {
         super(router, accountInteractor);
         this.pushNotificationServiceInteractor = pushNotificationServiceInteractor;
+        this.chatInteractor = chatInteractor;
     }
 
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
+        chatInteractor.startInitialLoading();
+
         PushNotificationServiceFacade currentFacade = pushNotificationServiceInteractor.getCurrentFacade();
         if (currentFacade != null) {
             Disposable pushSubscription = currentFacade

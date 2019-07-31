@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.entities.ServerNode;
-import im.adamant.android.rx.ObservableRxList;
+import im.adamant.android.rx.ThreadSafeObservableRxList;
 import io.reactivex.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -14,11 +14,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AdamantApiBuilder {
 
-    private ObservableRxList<ServerNode> nodes;
+    private ThreadSafeObservableRxList<ServerNode> nodes;
     private ServerNode currentServerNode;
     private Gson gson;
 
-    public AdamantApiBuilder(ObservableRxList<ServerNode> nodes, Gson gson) {
+    public AdamantApiBuilder(ThreadSafeObservableRxList<ServerNode> nodes, Gson gson) {
         this.nodes = nodes;
         this.gson = gson;
     }

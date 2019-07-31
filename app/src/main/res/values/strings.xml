@@ -13,6 +13,9 @@
     <string name="activity_login_tv_login_by_qr">Login by stored QR-code:</string>
     <string name="activity_login_btn_new_account">Or create new anonymous address</string>
 
+    <string name="activity_show_qrcode_title_passphrase">QR-code of passphrase</string>
+    <string name="activity_show_qrcode_title_address">QR-code of address</string>
+
     <string name="activity_registration_tv_title">Creating new address</string>
     <string name="activity_registration_btn_refresh_passphrase">Generate other passphrases</string>
     <string name="activity_registration_tv_generate_passphrase">Generate passphrase</string>
@@ -45,11 +48,12 @@
 
     <string name="activity_messages_btn_send">Send</string>
     <string name="activity_messages_tv_cost_text">Cost of message</string>
-    <string name="activity_messages_ev_message_placeholder">Enter your message…</string>
+    <string name="activity_messages_ev_message_placeholder">~0.001 ADM</string>
 
     <string name="activity_messages_action_rename">Rename</string>
     <string name="activity_messages_action_copy">Copy address</string>
     <string name="activity_messages_action_qrcode">Show QR-code</string>
+    <string name="activity_messages_action_type">Type message</string>
 
     <string name="activity_show_qr_code_title">QR-Code</string>
     <string name="activity_show_qr_code_btn_save">Save qr-code in gallery</string>
@@ -65,6 +69,17 @@
     <string name="activity_send_funds_recipient_address_hint">Recipient address</string>
     <string name="activity_send_funds_dialog_funds_title">Transfer confirmation</string>
     <string name="activity_send_funds_dialog_funds_message">Confirm transfer of %s %s to address %s.</string>
+    
+    <string name="activity_transfer_details_amount">Amount</string>
+    <string name="activity_transfer_details_status">Status</string>
+    <string name="activity_transfer_details_date">Date</string>
+    <string name="activity_transfer_details_confirmations">Confirmations</string>
+    <string name="activity_transfer_details_fee">Fee</string>
+    <string name="activity_transfer_details_id">Transfer Id</string>
+    <string name="activity_transfer_details_from">From</string>
+    <string name="activity_transfer_details_to">To</string>
+    <string name="activity_transfer_details_open_explorer">Open in Explorer</string>
+    <string name="activity_transfer_details_go_to_chat">Go to chat</string>
 
     <string name="bottom_menu_title_wallet">Wallet</string>
     <string name="bottom_menu_title_chats">Chats</string>
@@ -78,7 +93,7 @@
 
     <string name="fragment_wallet_address_title">Number</string>
     <string name="fragment_wallet_balance_title">Balance</string>
-    <string name="fragment_wallet_free_tokens_title">Free tokens</string>
+    <string name="fragment_wallet_free_tokens_title">🎁 Free tokens</string>
     <string name="fragment_wallet_create_qrcode_title">Show QR-code</string>
     <string name="fragment_wallet_send_funds">Send %s</string>
     <string name="fragment_wallet_see_all">All</string>
@@ -126,11 +141,12 @@
     <string name="not_a_number">This value must be a number.</string>
     <string name="empty_pincode">PIN-code can not be empty</string>
     <string name="encryption_error">Encryption error</string>
-    <string name="wrong_pincode">Wrong PIN-code</string>
+    <string name="wrong_pincode">Wrong PIN-code. %1$d attempts left until PIN reset</string>
     <string name="wrong_pincode_length">Wrong PIN-code length (expected: %s)</string>
     <string name="wrong_pincode_one_symbol">For pin-code can not use a sequence of one digit</string>
     <string name="pincode_unconfirmed">PIN codes do not match, try again</string>
     <string name="pincode_exceeding_the_number_of_attempts">Exceeding the number of attempts to enter a pin code. %d seconds left.</string>
+    <string name="pincode_exceeded_limit">Exceeding the number of attempts to enter a pin code. Pin code was cleared.</string>
     <string name="tee_not_supported">We were unable to confirm that your device is using Trusted Environment Execution, saving the authorization may not be secure.
         Some devices emulate TEE using files available with root access. Continue?</string>
 
@@ -196,7 +212,8 @@
     <string name="node_status_connected">connected</string>
     <string name="node_status_unavailable">unreachable</string>
     <string name="node_status_connecting">connecting…</string>
-
+    <string name="transaction_status_pending">Pending</string>
+    <string name="transaction_status_success">Success</string>
 
     <!--GENERAL-->
     <string name="yes">Yes</string>
@@ -212,4 +229,5 @@
     <string name="send">Send</string>
     <string name="cancel">Cancel</string>
     <string name="exit">Exit</string>
+    <string name="transaction_address_me">Me</string>
 </resources>

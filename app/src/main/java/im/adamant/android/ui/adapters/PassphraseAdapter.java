@@ -8,20 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.goterl.lazycode.lazysodium.utils.KeyPair;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+
 import im.adamant.android.R;
 import im.adamant.android.avatars.Avatar;
-import im.adamant.android.core.encryption.AdamantKeyGenerator;
-import im.adamant.android.helpers.LoggerHelper;
-import im.adamant.android.rx.ObservableRxList;
 import im.adamant.android.ui.transformations.PassphraseAvatarOutlineProvider;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;

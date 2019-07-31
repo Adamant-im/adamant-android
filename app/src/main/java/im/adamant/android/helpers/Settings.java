@@ -9,7 +9,7 @@ import java.util.Set;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
-import im.adamant.android.rx.ObservableRxList;
+import im.adamant.android.rx.ThreadSafeObservableRxList;
 import im.adamant.android.core.entities.ServerNode;
 import io.reactivex.disposables.Disposable;
 
@@ -23,7 +23,7 @@ public class Settings {
     private static final String LAST_TRANSACTION_TIMESTAMP = "last_transaction_timestamp";
     private static final String UNSUBSCRIBE_PUSH_NOTIFICATION_TRANSACTION = "unsubscribe_fcm_service_transaction";
 
-    private ObservableRxList<ServerNode> nodes = new ObservableRxList<>();
+    private ThreadSafeObservableRxList<ServerNode> nodes = new ThreadSafeObservableRxList<>();
     private String accountPassphrase = "";
     private String accountPincode = "";
     private String accountSign = "";
@@ -77,7 +77,7 @@ public class Settings {
         }
     }
 
-    public ObservableRxList<ServerNode> getNodes() {
+    public ThreadSafeObservableRxList<ServerNode> getNodes() {
         return nodes;
     }
 
@@ -166,7 +166,7 @@ public class Settings {
     }
 
     private void updateNodes() {
-        Disposable subscribe = nodes.getCurrentList()
+        Disposable subscribe = nodes.getItemObservable()
                 .map(ServerNode::getUrl)
                 .toList()
                 .subscribe((list) -> {

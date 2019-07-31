@@ -10,7 +10,7 @@ import java.lang.ref.WeakReference;
 
 import im.adamant.android.R;
 import im.adamant.android.core.entities.ServerNode;
-import im.adamant.android.rx.ObservableRxList;
+import im.adamant.android.rx.ThreadSafeObservableRxList;
 import im.adamant.android.ui.holders.ServerNodeHolder;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -19,10 +19,10 @@ import io.reactivex.subjects.PublishSubject;
 public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
     private PublishSubject<Integer> removeClickSubject = PublishSubject.create();
     private PublishSubject<Integer> switchClickSubject = PublishSubject.create();
-    private ObservableRxList<ServerNode> items = new ObservableRxList<>();
+    private ThreadSafeObservableRxList<ServerNode> items = new ThreadSafeObservableRxList<>();
     private Disposable subscription;
 
-    public ServerNodeAdapter(ObservableRxList<ServerNode> items) {
+    public ServerNodeAdapter(ThreadSafeObservableRxList<ServerNode> items) {
         if (items != null){
             this.items = items;
             startListenChanges();
@@ -62,7 +62,7 @@ public class ServerNodeAdapter extends RecyclerView.Adapter<ServerNodeHolder> {
         if (items != null){
             WeakReference<RecyclerView.Adapter> adapterWeakReference = new WeakReference<>(this);
             subscription = items
-                    .getObservable()
+                    .getEventObservable()
                     .subscribe(serverNodeRxList -> {
                         RecyclerView.Adapter adapter = adapterWeakReference.get();
                         if (adapter != null){

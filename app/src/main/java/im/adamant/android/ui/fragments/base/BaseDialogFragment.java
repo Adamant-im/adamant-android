@@ -6,13 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.arellomobile.mvp.MvpDelegate;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+
+import com.arellomobile.mvp.MvpDelegate;
+
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 import dagger.android.support.AndroidSupportInjection;
 
 public abstract class BaseDialogFragment extends DialogFragment {
@@ -20,6 +22,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
     private boolean mIsStateSaved;
     private MvpDelegate<? extends BaseDialogFragment> mMvpDelegate;
 
+    private Unbinder unbinder;
 
     @Override
     public void onStart() {
@@ -48,7 +51,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View view = super.onCreateView(inflater, container, savedInstanceState);
         if (view != null) {
-            ButterKnife.bind(this, view);
+            unbinder = ButterKnife.bind(this, view);
         }
 
         return view;
@@ -84,6 +87,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
         getMvpDelegate().onDetach();
         getMvpDelegate().onDestroyView();
+        unbinder.unbind();
     }
 
     @Override

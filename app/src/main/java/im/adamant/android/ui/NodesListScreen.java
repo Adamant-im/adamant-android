@@ -6,7 +6,12 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.ImageView;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -16,10 +21,6 @@ import com.jakewharton.rxbinding3.widget.RxTextView;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
@@ -56,7 +57,7 @@ public class NodesListScreen extends BaseActivity implements NodesListView {
     EditText newNodeAddressView;
 
     @BindView(R.id.activity_nodes_btn_add_new_node)
-    ImageButton addNodeButton;
+    ImageView addNodeButton;
 
     @BindView(R.id.activity_nodes_btn_reset)
     MaterialButton resetButtonView;

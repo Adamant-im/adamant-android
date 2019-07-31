@@ -16,9 +16,18 @@ import im.adamant.android.ui.holders.CurrencyTransferHolder;
 
 public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTransferHolder> {
     private List<CurrencyTransferEntity> transfers = new ArrayList<>();
+    private OnTransferClickedLister onClickedLister;
+
+    public static interface OnTransferClickedLister {
+        public void onTransferClicked(CurrencyTransferEntity currencyTransferEntity);
+    }
+
+    public void setOnClickedLister(OnTransferClickedLister onClickedLister) {
+        this.onClickedLister = onClickedLister;
+    }
 
     public void refreshItems(List<CurrencyTransferEntity> transfers) {
-        if (transfers != null){
+        if (transfers != null) {
             this.transfers = transfers;
         }
         notifyDataSetChanged();
@@ -39,12 +48,28 @@ public class CurrencyTransfersAdapter extends RecyclerView.Adapter<CurrencyTrans
         notifyDataSetChanged();
     }
 
+    private CurrencyTransferHolder.OnClicked holderOnClick = new CurrencyTransferHolder.OnClicked() {
+        @Override
+        public void onClicked(int adapterPosition) {
+            if (adapterPosition >= 0 && adapterPosition < transfers.size()) {
+                CurrencyTransferEntity currencyTransferEntity = transfers.get(adapterPosition);
+                if (onClickedLister != null) {
+                    onClickedLister.onTransferClicked(currencyTransferEntity);
+                }
+            }
+        }
+    };
+
     @NonNull
     @Override
     public CurrencyTransferHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_wallet_transfer, parent, false);
-        return new CurrencyTransferHolder(v, parent.getContext());
+        CurrencyTransferHolder holder = new CurrencyTransferHolder(v, parent.getContext());
+        if (onClickedLister != null) {
+            holder.setOnClickedListener(holderOnClick);
+        }
+        return holder;
     }
 
     @Override

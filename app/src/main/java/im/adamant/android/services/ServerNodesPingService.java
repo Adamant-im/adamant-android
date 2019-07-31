@@ -24,7 +24,7 @@ import im.adamant.android.core.entities.ServerNode;
 import im.adamant.android.dagger.services.ServerNodePingServiceModule;
 import im.adamant.android.helpers.AlternativePingHelper;
 import im.adamant.android.helpers.Settings;
-import im.adamant.android.rx.ObservableRxList;
+import im.adamant.android.rx.ThreadSafeObservableRxList;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -62,10 +62,10 @@ public class ServerNodesPingService extends Service {
         return binder;
     }
 
-    private void pingServers(ObservableRxList<ServerNode> nodes) {
+    private void pingServers(ThreadSafeObservableRxList<ServerNode> nodes) {
         Context ctx = getApplicationContext();
         Disposable disposable = nodes
-                .getCurrentList()
+                .getItemObservable()
                 .observeOn(Schedulers.io())
                 .doOnNext(serverNode -> {
                     try {

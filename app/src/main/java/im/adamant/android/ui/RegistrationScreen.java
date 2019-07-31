@@ -1,62 +1,46 @@
 package im.adamant.android.ui;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.MotionEvent;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.core.content.ContextCompat;
 
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.TedPermission;
 import com.jakewharton.rxbinding3.widget.RxTextView;
 import com.yarolegovich.discretescrollview.DiscreteScrollView;
 
-import net.glxn.qrgen.android.QRCode;
-import net.glxn.qrgen.core.image.ImageType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.inject.Provider;
 
-import androidx.core.content.ContextCompat;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
-import im.adamant.android.avatars.Avatar;
-import im.adamant.android.helpers.DrawableColorHelper;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.QrCodeHelper;
-import im.adamant.android.ui.navigators.DefaultNavigator;
-import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.adapters.PassphraseAdapter;
 import im.adamant.android.ui.mvp_view.RegistrationView;
+import im.adamant.android.ui.navigators.DefaultNavigator;
+import im.adamant.android.ui.presenters.RegistrationPresenter;
 import im.adamant.android.ui.transformations.PassphraseAvatarTransformation;
-import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -65,7 +49,6 @@ import ru.terrakok.cicerone.Navigator;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.commands.Back;
 import ru.terrakok.cicerone.commands.BackTo;
-import ru.terrakok.cicerone.commands.Command;
 import ru.terrakok.cicerone.commands.Forward;
 import ru.terrakok.cicerone.commands.Replace;
 import ru.terrakok.cicerone.commands.SystemMessage;
@@ -197,7 +180,7 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     public void onClickSaveQrCode() {
         Bundle bundle = new Bundle();
         bundle.putString(ShowQrCodeScreen.ARG_DATA_FOR_QR_CODE, inputPassphraseView.getText().toString());
-
+        bundle.putInt(ShowQrCodeScreen.ARG_TITLE_RESOURCE,R.string.activity_show_qrcode_title_passphrase);
         Intent intent = new Intent(getApplicationContext(), ShowQrCodeScreen.class);
         intent.putExtras(bundle);
 
@@ -231,10 +214,9 @@ public class RegistrationScreen extends BaseActivity implements RegistrationView
     @Override
     public void onEnteredValidPassphrase() {
         Drawable copyButton = ContextCompat.getDrawable(this, R.drawable.ic_copy);
-        Drawable copyBtn = DrawableColorHelper.changeDrawable(this, R.color.textMuted, PorterDuff.Mode.SRC_IN, copyButton);
 
         inputLayoutView.setError("");
-        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyBtn, null);
+        inputPassphraseView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, copyButton, null);
         saveQrCodeButton.setEnabled(true);
 //        createAddressButton.setEnabled(true);
     }

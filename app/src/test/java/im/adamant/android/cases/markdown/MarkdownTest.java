@@ -85,7 +85,7 @@ public class MarkdownTest {
 
     @Test
     public void testBold() {
-        String message = "sentence (*bold*), next sentence";
+        String message = "sentence (**bold**), next sentence";
 
         BoldRenderer bold = new BoldRenderer();
 

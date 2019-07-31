@@ -36,7 +36,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
     }
 
     @Override
-    public void bind(MessageListContent message, boolean isNextMessageWithSameSender) {
+    public void bind(MessageListContent message, boolean isNextMessageWithSameSender, boolean isLastMessage) {
         boolean isCorruptedMessage = (message == null) || (message.getSupportedType() != SupportedMessageListContentType.ADAMANT_BASIC);
 
         if (isCorruptedMessage) {
@@ -44,7 +44,7 @@ public class AdamantBasicMessageViewHolder extends AbstractMessageViewHolder {
             return;
         }
 
-        super.bind(message, isNextMessageWithSameSender);
+        super.bind(message, isNextMessageWithSameSender, isLastMessage);
 
         AdamantBasicMessage basicMessage = (AdamantBasicMessage) message;
 

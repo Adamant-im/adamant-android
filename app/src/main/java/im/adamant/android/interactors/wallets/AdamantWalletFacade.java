@@ -13,13 +13,15 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.NotUsedAsset;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
+import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.helpers.BalanceConvertHelper;
 import im.adamant.android.interactors.chats.ChatsStorage;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
+import im.adamant.android.interactors.wallets.entities.ADMTransferDetails;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.CurrencyTransferEntity;
 import io.reactivex.Flowable;
-import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 
 public class AdamantWalletFacade implements WalletFacade {
@@ -133,11 +135,8 @@ public class AdamantWalletFacade implements WalletFacade {
     public boolean isAvailableAirdropLink() {
         boolean isZeroBalance = (getBalance().compareTo(BigDecimal.ZERO) == 0);
         boolean isEmptyTransactionList = (isReceivedTransactionList && this.isEmptyTransactionList);
-        if (isZeroBalance && isEmptyTransactionList) {
-            return true;
-        } else {
-            return false;
-        }
+
+        return isZeroBalance && isEmptyTransactionList;
     }
 
     @Override
@@ -176,10 +175,45 @@ public class AdamantWalletFacade implements WalletFacade {
         return false;
     }
 
+    @Override
+    public Flowable<TransferDetails> getTransferDetails(String id) {
+        return  mapTransactionDetailsResponseToTransfer(api.getTransactionDetails(id))
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public String getExplorerUrl(String transactionId) {
+        return "https://explorer.adamant.im/tx/" + transactionId;
+    }
+
+    private TransferDetails transferDetailsFromTransaction(Transaction t){
+        return new ADMTransferDetails()
+                .setAmount(BalanceConvertHelper.convert(t.getAmount()))
+                .setConfirmations(t.getConfirmations())
+                .setId(t.getId())
+                .setUnixTransferDate(t.getUnixTimestamp())
+                .setFromId(t.getSenderId())
+                .setToId(t.getRecipientId())
+                .setReceiverPublicKey(t.getRecipientPublicKey())
+                .setSenderPublicKey(t.getSenderPublicKey())
+                .setFee(BalanceConvertHelper.convert(t.getFee()));
+    }
+
+    private Flowable<TransferDetails> mapTransactionDetailsResponseToTransfer(Flowable<TransactionDetailsResponse> response){
+        return response.flatMap(transferDetails->{
+                Transaction t = transferDetails.getTransaction();
+                if (transferDetails.isSuccess()){
+                    return Flowable.just(transferDetailsFromTransaction(t));
+                } else {
+                    return Flowable.error(new Exception(transferDetails.getError()));
+                }
+        });
+    }
+
     private String getTransferTitle(boolean iRecipient, Transaction<NotUsedAsset> transaction) {
         String title = "";
         if (chatsStorage == null){ return "";}
-        String address = "";
+        String address;
         if (iRecipient){
             address = transaction.getSenderId();
         } else {
@@ -213,8 +247,10 @@ public class AdamantWalletFacade implements WalletFacade {
 
     private CurrencyTransferEntity mapTransactionToTransfer(Transaction transaction, String myAddress) {
         CurrencyTransferEntity entity = new CurrencyTransferEntity();
+        entity.setId(transaction.getId());
         entity.setUnixTransferDate(transaction.getUnixTimestamp());
         entity.setPrecision(getPrecision());
+        entity.setCurrencyAbbreviation(SupportedWalletFacadeType.ADM.toString());
         entity.setAmount(
                 BalanceConvertHelper.convert(
                         transaction.getAmount()
@@ -235,5 +271,4 @@ public class AdamantWalletFacade implements WalletFacade {
 
         return entity;
     }
-
 }
