@@ -5,6 +5,7 @@ import dagger.Provides;
 import im.adamant.android.avatars.Avatar;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.ui.adapters.ChatsAdapter;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import im.adamant.android.ui.presenters.ChatsPresenter;
@@ -27,8 +28,9 @@ public class ChatsScreenModule {
     public static ChatsPresenter provideChatsPresenter(
             Router router,
             ChatInteractor chatInteractor,
-            AccountInteractor accountInteractor
+            AccountInteractor accountInteractor,
+            ChatsStorage chatsStorage
     ){
-        return new ChatsPresenter(router, accountInteractor, chatInteractor);
+        return new ChatsPresenter(router, accountInteractor, chatInteractor, chatsStorage);
     }
 }

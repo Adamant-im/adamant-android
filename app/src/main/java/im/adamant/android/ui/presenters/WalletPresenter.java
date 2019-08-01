@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
+import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.WalletInteractor;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
@@ -49,7 +50,10 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
                 .getCurrencyItemCards()
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext((cards) -> getViewState().showCurrencyCards(cards))
-                .doOnError((error) -> router.showSystemMessage(error.getMessage()))
+                .doOnError((error) -> {
+                    LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
+                    router.showSystemMessage(error.getMessage());
+                })
                 .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .repeatWhen((completed) -> completed.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .subscribe();
@@ -75,6 +79,7 @@ public class WalletPresenter extends ProtectedBasePresenter<WalletView> {
                     if (error instanceof NotAuthorizedException){
                         router.navigateTo(Screens.SPLASH_SCREEN);
                     } else {
+                        LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error);
                         router.showSystemMessage(error.getMessage());
                     }
                 })

@@ -34,11 +34,13 @@ public class ChatsStorage {
 
     private boolean isLoaded = false;
 
+    private Map<String, Contact> contacts = null;
+
     public AbstractObservableRxList<Chat> getChatList() {
         chatsReadLock.lock();
         try {
             //TODO: Protect via readonly decorator
-            return new ArrayList<>(chats);
+            return new ThreadUnsafeObservableRxList<>(chats);
         } finally {
             chatsReadLock.unlock();
         }
@@ -50,9 +52,9 @@ public class ChatsStorage {
             AbstractObservableRxList<MessageListContent> requestedMessages = messagesByChats.get(companionId);
             if (requestedMessages == null) {
                 //TODO: Protect via readonly decorator
-                return new ArrayList<>();
+                return new ThreadUnsafeObservableRxList<>();
             }
-            return new ArrayList<>(requestedMessages);
+            return new ThreadUnsafeObservableRxList<>(requestedMessages);
         } finally {
             chatsReadLock.unlock();
         }
@@ -90,7 +92,7 @@ public class ChatsStorage {
                 messagesByChats.put(message.getCompanionId(), messages);
             }
 
-            //If we sent this message and it's already in the list
+            //If we sent this message and it's already in the delegateCollection
             if (!messages.contains(message)){
                 addSeparatorIfNeeded(messages, message);
                 messages.add(message);
@@ -101,34 +103,42 @@ public class ChatsStorage {
     }
 
     public synchronized void updateLastMessages() {
-        //Setting last message to chats
-        for(Chat chat : chats) {
-            List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
-            if (messages != null && messages.size() > 0){
-                for (int i = (messages.size() - 1); i >= 0; i--){
-                    MessageListContent mes = messages.get(i);
-                    boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
-                    if (isMessageWithContent){
-                        AbstractMessage message = (AbstractMessage)mes;
-                        chat.setLastMessage(message);
-                        break;
+        chatsWriteLock.lock();
+        try {
+            //Setting last message to chats
+            for (Chat chat : chats) {
+                List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
+                if (messages != null && messages.size() > 0) {
+                    for (int i = (messages.size() - 1); i >= 0; i--) {
+                        MessageListContent mes = messages.get(i);
+                        boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
+                        if (isMessageWithContent) {
+                            AbstractMessage message = (AbstractMessage) mes;
+                            chat.setLastMessage(message);
+                            break;
+                        }
                     }
                 }
             }
-        }
 
-        Collections.sort(chats, chatComparator);
+            Collections.sort(chats, chatComparator);
 
-        for (Map.Entry<String, AbstractObservableRxList<MessageListContent>> entry : messagesByChats.entrySet()){
-            Collections.sort(entry.getValue(), messageComparator);
+            for (Map.Entry<String, AbstractObservableRxList<MessageListContent>> entry : messagesByChats.entrySet()) {
+                Collections.sort(entry.getValue(), messageComparator);
+            }
+        } finally {
+            chatsWriteLock.unlock();
         }
     }
 
-    private Map<String, Contact> contacts = null;
-
     public synchronized void saveContacts(Map<String, Contact> contacts) {
-        this.contacts = contacts;
-        refreshContacts();
+        chatsWriteLock.lock();
+        try {
+            this.contacts = contacts;
+            refreshContacts();
+        } finally {
+            chatsWriteLock.unlock();
+        }
     }
 
     public void refreshContacts() {
