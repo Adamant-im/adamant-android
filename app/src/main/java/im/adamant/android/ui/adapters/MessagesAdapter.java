@@ -97,7 +97,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
                 .getEventObservable()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        event -> notifyItemChanged(event.getPosition(), event.getCount()),
+                        event -> {
+                            notifyItemChanged(event.getPosition(), event.getCount());
+                        },
                         error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
                 );
     }

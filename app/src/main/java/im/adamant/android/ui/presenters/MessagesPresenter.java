@@ -186,6 +186,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
             Disposable subscription = messageProcessor
                     .sendMessage(messageEntity)
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally(() -> chatsStorage.messageStateWasChanged(messageEntity))
                     .subscribe((transaction -> {
                             getViewState().messageWasSended(messageEntity);
                             getViewState().showChatMessages(chatsStorage.getMessagesByCompanionId(currentChat.getCompanionId()));

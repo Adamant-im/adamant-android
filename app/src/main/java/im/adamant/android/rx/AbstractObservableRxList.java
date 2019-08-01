@@ -257,6 +257,8 @@ public abstract class AbstractObservableRxList<T> implements List<T> {
 
         public RxListEvent(ChangeType changeType, int position, int count) {
             this.changeType = changeType;
+            this.position = position;
+            this.count = count;
         }
 
         public ChangeType getChangeType() {

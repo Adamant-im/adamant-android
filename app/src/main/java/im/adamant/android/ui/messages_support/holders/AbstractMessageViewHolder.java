@@ -136,14 +136,10 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
     }
 
     protected void displayProcessedStatus(AbstractMessage message) {
-        if (message.getStatus() == null) {
-            return;
-        }
         switch (message.getStatus()) {
             case DELIVERED: {
                 if (!message.isiSay()) {
                     processedView.setVisibility(View.GONE);
-                    processedView.setImageResource(R.drawable.ic_delivered);
                 } else {
                     processedView.setVisibility(View.VISIBLE);
                     processedView.setImageResource(R.drawable.ic_delivered);
@@ -160,6 +156,9 @@ public abstract class AbstractMessageViewHolder extends AbstractMessageListConte
                 processedView.setVisibility(View.VISIBLE);
                 processedView.setImageResource(R.drawable.ic_not_sended);
             }
+            default:
+                processedView.setVisibility(View.VISIBLE);
+                processedView.setImageResource(R.drawable.ic_sending);
         }
     }
 

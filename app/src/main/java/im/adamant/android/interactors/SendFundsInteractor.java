@@ -69,6 +69,7 @@ public class SendFundsInteractor {
         MessageProcessor<AdamantTransferMessage> messageProcessor = factory.getMessageProcessor();
         return messageProcessor
                 .sendMessage(message)
+                .doFinally(() -> chatsStorage.messageStateWasChanged(message))
                 .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

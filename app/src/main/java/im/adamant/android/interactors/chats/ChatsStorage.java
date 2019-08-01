@@ -71,6 +71,13 @@ public class ChatsStorage {
         }
     }
 
+    public void messageStateWasChanged(MessageListContent message) {
+        AbstractObservableRxList<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
+        if (messages != null) {
+            messages.wasUpdated(message);
+        }
+    }
+
     public synchronized void updateLastMessages() {
         //Setting last message to chats
         for(Chat chat : chats) {
