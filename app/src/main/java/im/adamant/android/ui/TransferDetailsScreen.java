@@ -1,6 +1,7 @@
 package im.adamant.android.ui;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -43,11 +44,13 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
     @BindView(R.id.date) TextView date;
     @BindView(R.id.confirmations) TextView confirmations;
     @BindView(R.id.fee) TextView fee;
+    @BindView(R.id.transactionId) TextView id;
     @BindView(R.id.from) TextView from;
     @BindView(R.id.to) TextView to;
+    @BindView(R.id.explorerTextView) TextView explorerTextView;
     @BindView(R.id.explorerGroup) View explorerGroup;
     @BindView(R.id.chatGroup) View chatGroup;
-    @BindView(R.id.chatLabel) TextView chatLabel;
+    @BindView(R.id.chatTextView) TextView chatTextView;
     @BindView(R.id.amountGroup) View amountGroup;
     @BindView(R.id.statusGroup) View statusGroup;
     @BindView(R.id.dateGroup) View dateGroup;
@@ -55,6 +58,7 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
     @BindView(R.id.feeGroup) View feeGroup;
     @BindView(R.id.fromGroup) View fromGroup;
     @BindView(R.id.toGroup) View toGroup;
+    @BindView(R.id.idGroup) View idGroup;
 
 
     @Inject
@@ -103,8 +107,12 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         }
         ButterKnife.bind(this);
         initTitle();
+        id.setText(transferId);
+
         explorerGroup.setOnClickListener(v -> presenter.showExplorerClicked());
+        explorerTextView.setPaintFlags(explorerTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         chatGroup.setOnClickListener(v -> presenter.chatClicked());
+        chatTextView.setPaintFlags(explorerTextView.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         amountGroup.setOnClickListener(v -> presenter.amountGroupClicked());
         statusGroup.setOnClickListener(v -> presenter.statusGroupClicked());
         dateGroup.setOnClickListener(v -> presenter.dateGroupClicked());
@@ -112,6 +120,7 @@ public class TransferDetailsScreen extends BaseActivity implements TransferDetai
         feeGroup.setOnClickListener(v -> presenter.feeGroupClicked());
         fromGroup.setOnClickListener(v -> presenter.fromGroupClicked());
         toGroup.setOnClickListener(v -> presenter.toGroupClicked());
+        idGroup.setOnClickListener(v -> presenter.idGroupClicked());
     }
 
     @Inject

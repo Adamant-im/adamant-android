@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "im.adamant.android"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode getVersionCode(minSdkVersion, scmVersion.version)
         versionName scmVersion.version
@@ -16,8 +16,7 @@ android {
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField "int", "MAX_WRONG_PINCODE_ATTEMTS", "3"
-        buildConfigField "int", "WRONG_PINCODE_WAIT_MILISECONDS", "30000"
+        buildConfigField "int", "MAX_WRONG_PINCODE_ATTEMTS", "5"
         buildConfigField "int", "DEFAULT_OPERATION_TIMEOUT_SECONDS", "60"
         buildConfigField "int", "LOCAL_NOTIFICATION_SERVICE_CALL_MINUTES_DELAY", "5"
         buildConfigField "int", "MAX_ERRORS_FOR_CHANGE_NODE", "3"

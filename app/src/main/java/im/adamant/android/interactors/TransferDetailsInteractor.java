@@ -16,8 +16,8 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.wallets.SupportedWalletFacadeType;
-import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.interactors.wallets.WalletFacade;
+import im.adamant.android.interactors.wallets.entities.TransferDetails;
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.UITransferDetails;
 import io.reactivex.Flowable;
@@ -78,6 +78,7 @@ public class TransferDetailsInteractor {
         accountId = api.getAccount().getAddress();
 
         UITransferDetails result = new UITransferDetails()
+                .setId(details.getId())
                 .setAmount(formatValue(details.getAmount()))
                 .setConfirmations(details.getConfirmations())
                 .setFee(formatValue(details.getFee()))

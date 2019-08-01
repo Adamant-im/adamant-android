@@ -6,13 +6,30 @@ import android.text.Spanned;
 import java.util.Locale;
 
 import im.adamant.android.R;
+import im.adamant.android.core.exceptions.MessageDecryptException;
 import im.adamant.android.markdown.AdamantMarkdownProcessor;
 import im.adamant.android.helpers.HtmlHelper;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
 
 public class FallbackMessage extends AbstractMessage {
     private String fallbackMessage;
     private String fallbackType = "none";
     private transient Spanned htmlFallBackMessage;
+
+    public static FallbackMessage createMessageFromThrowable(Throwable throwable) {
+        FallbackMessage fallbackMessage = new FallbackMessage();
+        fallbackMessage.setError(throwable.getMessage());
+        fallbackMessage.setSupportedType(SupportedMessageListContentType.FALLBACK);
+
+        if (throwable instanceof MessageDecryptException) {
+            fallbackMessage.setCompanionId(((MessageDecryptException) throwable).getCompanionId());
+            fallbackMessage.setiSay(((MessageDecryptException) throwable).isISay());
+            fallbackMessage.setTimestamp(((MessageDecryptException) throwable).getTimestamp());
+            fallbackMessage.setStatus(AbstractMessage.Status.INVALIDATED);
+            fallbackMessage.setTransactionId(((MessageDecryptException) throwable).getTransactionId());
+        }
+        return fallbackMessage;
+    }
 
     @Override
     public String getShortedMessage(Context context, int preferredLimit) {

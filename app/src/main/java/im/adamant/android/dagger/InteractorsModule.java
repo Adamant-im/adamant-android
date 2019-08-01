@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 import java.util.Map;
 
+import javax.inject.Provider;
 import javax.inject.Singleton;
 
 import dagger.Module;
@@ -27,6 +28,7 @@ import im.adamant.android.interactors.ServerNodeInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
 import im.adamant.android.interactors.TransferDetailsInteractor;
 import im.adamant.android.interactors.WalletInteractor;
+import im.adamant.android.interactors.chats.ChatHistoryInteractor;
 import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.chats.ContactsSource;
@@ -107,21 +109,19 @@ public abstract class InteractorsModule {
             PublicKeyStorage publicKeyStorage,
             NewTransactionsSource newTransactionsSource,
             LastTransactionInChatsSource lastTransactionInChatsSource,
-            HistoryTransactionsSource historyTransactionsSource,
             ContactsSource contactsSource,
             ChatsStorage chatsStorage,
             TransactionToChatMapper chatMapper,
-            TransactionToMessageMapper messageMapper
-    ) {
+            TransactionToMessageMapper messageMapper, Provider<ChatHistoryInteractor> provider
+            ) {
         return new ChatInteractor(
                 publicKeyStorage,
                 newTransactionsSource,
                 lastTransactionInChatsSource,
-                historyTransactionsSource,
                 contactsSource,
                 chatsStorage,
                 chatMapper,
-                messageMapper
+                messageMapper,provider
         );
     }
 
@@ -137,9 +137,11 @@ public abstract class InteractorsModule {
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            ChatInteractor chatInteractor
     ) {
-        return new LogoutInteractor(chatsStorage, settings, api, switchPushNotificationServiceInteractor);
+        return new LogoutInteractor(chatsStorage, settings, api,
+                switchPushNotificationServiceInteractor, chatInteractor);
     }
 
     @Singleton

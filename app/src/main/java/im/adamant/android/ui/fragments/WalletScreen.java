@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,7 +38,6 @@ import javax.inject.Provider;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import im.adamant.android.Constants;
 import im.adamant.android.R;
 import im.adamant.android.Screens;
 import im.adamant.android.helpers.QrCodeHelper;
@@ -88,6 +88,7 @@ public class WalletScreen extends BaseFragment implements WalletView {
     @BindView(R.id.fragment_wallet_rv_last_transactions) RecyclerView lastTransactions;
     @BindView(R.id.fragment_wallet_tv_last_transactions_title) TextView lastTransactionsTitle;
     @BindView(R.id.fragment_wallet_pb_transfer_loader) ArcProgressLoader transactionsLoader;
+    @BindView(R.id.fragment_wallet_tv_see_all) TextView allText;
 
     private boolean isTabsNotRendered = true;
 
@@ -161,7 +162,12 @@ public class WalletScreen extends BaseFragment implements WalletView {
             }
         });
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this.getContext()){
+            @Override
+            public int computeVerticalScrollRange(RecyclerView.State state) {
+                return (int) (getItemCount() * getResources().getDimension(R.dimen.list_item_transfers_height));
+            }
+        };
         lastTransactions.setLayoutManager(layoutManager);
         lastTransactions.setAdapter(currencyTransfersAdapter);
 
@@ -182,6 +188,8 @@ public class WalletScreen extends BaseFragment implements WalletView {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         currencyTransfersAdapter.setOnClickedLister(presenter::onTransactionClicked);
+
+        allText.setPaintFlags(allText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
     }
 
     @Override

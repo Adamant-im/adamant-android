@@ -75,8 +75,9 @@
     <string name="activity_transfer_details_date">Дата</string>
     <string name="activity_transfer_details_confirmations">Количество подтверждений</string>
     <string name="activity_transfer_details_from">Отправитель</string>
+    <string name="activity_transfer_details_id">Id Транзакции</string>
     <string name="activity_transfer_details_to">Получатель</string>
-    <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
+    <string name="activity_transfer_details_open_explorer">Открыть в Explorer</string>
     <string name="activity_transfer_details_go_to_chat">Перейти к чату</string>
     <string name="activity_transfer_details_fee">Комиссия</string>
 
@@ -92,7 +93,7 @@
 
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
-    <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
+    <string name="fragment_wallet_free_tokens_title">🎁 Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_send_funds">Отправить %s</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>
@@ -167,11 +168,12 @@
     <string name="not_a_number">Это значение должно быть числом</string>
     <string name="encryption_error">Ошибка при шифровании</string>
     <string name="empty_pincode">Пин-код не может быть пустым!</string>
-    <string name="wrong_pincode">Пин-код не верен</string>
+    <string name="wrong_pincode">Пин-код не верен. Осталось попыток до сброса: %1$d</string>
     <string name="wrong_pincode_length">Неверная длинна пин-кода (ожидалось: %s символов)</string>
     <string name="wrong_pincode_one_symbol">Для пин-кода нельзя использовать последовательность из одной цифры</string>
     <string name="pincode_unconfirmed">Пин-коды не совпадают, попробуйте снова</string>
     <string name="pincode_exceeding_the_number_of_attempts">Превышение количества попыток ввода пин-кода. Осталось %d секунд</string>
+    <string name="pincode_exceeded_limit">Превышение количества попыток ввода пин-кода. Пинкод был удален.</string>
     <string name="tee_not_supported">Мы не сумели подтвердить что ваше устройство использует Trusted Environment Execution, сохранение авторизации может быть не безопасным.
         Некоторые устройства эмулируют TEE, посредством файлов доступных при наличии root доступа. Продолжить?</string>
 

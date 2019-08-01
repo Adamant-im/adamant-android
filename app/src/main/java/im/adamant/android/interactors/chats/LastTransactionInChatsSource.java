@@ -1,17 +1,16 @@
 package im.adamant.android.interactors.chats;
 
+import androidx.annotation.MainThread;
+
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.responses.ChatList;
 import im.adamant.android.helpers.LoggerHelper;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Emitter;
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class LastTransactionInChatsSource {
@@ -24,31 +23,44 @@ public class LastTransactionInChatsSource {
     public Flowable<ChatList.ChatDescription> execute() {
         if (!api.isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return getTransactionsBatch(0);
+        return getTransactionsBatch(0,AdamantApi.DEFAULT_TRANSACTIONS_LIMIT);
     }
 
 
-    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset) {
+    public Flowable<ChatList.ChatDescription> execute(int offset,int limit) {
+        if (!api.isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
+
+        return getTransactionsBatch(offset,limit);
+    }
+
+    private int count = Integer.MAX_VALUE;
+
+    @MainThread
+    public int getCount() {
+        return count;
+    }
+
+    @MainThread
+    private void setCount(int count){
+        this.count = count;
+    }
+
+    private Flowable<ChatList.ChatDescription> getTransactionsBatch(int offset, int limit) {
         Flowable<ChatList> transactionFlowable = null;
-        if (offset > 0){
-            transactionFlowable = api.getChatsByOffset(offset, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
-        } else {
-            transactionFlowable = api.getChats(AdamantApi.ORDER_BY_TIMESTAMP_DESC);
-        }
+        transactionFlowable = api.getChatsByOffset(offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
 
         return transactionFlowable
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(transactionList -> {
+                    if (transactionList.isSuccess()) {
+                        setCount(transactionList.getCount());
+                    }
+                })
                 .observeOn(Schedulers.computation())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {
-                        int count = transactionList.getCount();
-                        int newOffset = offset + AdamantApi.MAX_TRANSACTIONS_PER_REQUEST;
-
                         Flowable<ChatList.ChatDescription> result = Flowable
                                 .fromIterable(transactionList.getChats());
-
-                        if (newOffset <= count) {
-                            return result.concatWith(getTransactionsBatch(newOffset));
-                        }
 
                         return result;
                     } else {
@@ -57,5 +69,10 @@ public class LastTransactionInChatsSource {
                 })
                 .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
                 .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+    }
+
+    @MainThread
+    public void resetState(){
+        count = Integer.MAX_VALUE;
     }
 }

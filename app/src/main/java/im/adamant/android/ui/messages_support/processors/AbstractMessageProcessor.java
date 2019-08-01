@@ -6,13 +6,11 @@ import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.core.entities.Transaction;
-import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 import im.adamant.android.core.exceptions.NotAuthorizedException;
 import im.adamant.android.core.exceptions.NotEnoughAdamantBalanceException;
 import im.adamant.android.core.requests.ProcessTransaction;
 import im.adamant.android.core.responses.TransactionWasProcessed;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import io.reactivex.Single;
@@ -88,11 +86,12 @@ public abstract class AbstractMessageProcessor<T extends AbstractMessage> implem
                             .subscribeOn(Schedulers.io())
                             .observeOn(Schedulers.computation())
             ))
-            .doAfterSuccess(transactionWasProcessed -> {
+            .map(transactionWasProcessed -> {
                 if (transactionWasProcessed.isSuccess()) {
                     message.setTransactionId(transactionWasProcessed.getTransactionId());
                     message.setStatus(AbstractMessage.Status.DELIVERED);
                 }
+                return transactionWasProcessed;
             })
             .doOnError(throwable -> {
                 message.setStatus(AbstractMessage.Status.NOT_SENDED);

@@ -1,8 +1,5 @@
 package im.adamant.android.ui.mvp_view;
 
-import android.content.Context;
-import android.os.Bundle;
-
 import com.arellomobile.mvp.MvpView;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
@@ -13,8 +10,7 @@ public interface PinCodeView extends MvpView {
     enum MODE {
         ACCESS_TO_APP,
         CREATE,
-        CONFIRM,
-        DROP
+        CONFIRM
     }
 
     @StateStrategyType(SkipStrategy.class)
@@ -38,6 +34,8 @@ public interface PinCodeView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showError(int resourceId);
+
+    void showWrongPin(int attemptsRemained);
 
     @StateStrategyType(SkipStrategy.class)
     void showRepeatableError(int resourceId, int secondsLeft);

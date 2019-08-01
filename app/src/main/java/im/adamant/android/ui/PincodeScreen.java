@@ -11,6 +11,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.agrawalsuneet.loaderspack.loaders.ArcProgressLoader;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
@@ -21,8 +24,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Provider;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.OnClick;
 import dagger.android.AndroidInjection;
@@ -33,7 +34,6 @@ import im.adamant.android.ui.custom_view.LTRGridLayoutManager;
 import im.adamant.android.ui.custom_view.PinIndicatorLayout;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import im.adamant.android.ui.presenters.PincodePresenter;
-
 
 import static android.view.View.OVER_SCROLL_NEVER;
 
@@ -161,6 +161,12 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
     public void showError(int resourceId) {
 //        errorView.setText(getString(resourceId));
         Toast.makeText(this, resourceId, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showWrongPin(int attemptsRemained) {
+        Toast.makeText(this, getString(R.string.wrong_pincode,attemptsRemained), Toast.LENGTH_LONG)
+                .show();
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import im.adamant.android.markdown.renderers.InlineRenderer;
 
 public class BoldRenderer implements InlineRenderer {
-    public static final Pattern PATTERN = Pattern.compile("\\*([^*]+)\\*");
+    public static final Pattern PATTERN = Pattern.compile("\\*\\*([^*]+?)\\*\\*");
 
     @Override
     public Pattern providePattern() {

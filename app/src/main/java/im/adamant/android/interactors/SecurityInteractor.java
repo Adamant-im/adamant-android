@@ -5,7 +5,6 @@ import android.security.keystore.KeyInfo;
 
 import com.google.gson.Gson;
 
-import java.security.InvalidKeyException;
 import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
@@ -18,7 +17,6 @@ import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.helpers.Settings;
 import io.reactivex.Completable;
-import io.reactivex.Flowable;
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
 
@@ -74,17 +72,6 @@ public class SecurityInteractor {
         })
         .subscribeOn(Schedulers.computation())
         .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
-    }
-
-    public Single<CombinedPassphrase> dropPassphrase(CharSequence pincode) {
-        return validatePincode(pincode)
-                .flatMap(combinedPassphrase -> pushNotificationServiceInteractor
-                        .resetNotificationFacade(true)
-                        .toSingleDefault(combinedPassphrase)
-                )
-                .doAfterSuccess((combinedPassphrase) -> clearSettings())
-                .subscribeOn(Schedulers.computation())
-                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 
     public Completable forceDropPassphrase() {
