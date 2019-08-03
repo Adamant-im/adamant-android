@@ -63,6 +63,10 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     @BindView(R.id.fragment_chats_fab_add_chat)
     FloatingActionButton addChatFab;
 
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+
+    private LinearLayoutManager layoutManager;
+
     public ChatsScreen() {
         // Required empty public constructor
     }
@@ -77,8 +81,6 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
     public int getLayoutId() {
         return R.layout.fragment_chats_screen;
     }
-
-    private LinearLayoutManager layoutManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -123,8 +125,6 @@ public class ChatsScreen extends BaseFragment implements ChatsView, ChatsAdapter
             endlessRecyclerViewScrollListener.onScrolled(chatList, 0, 0); //Invalidate for endless scroll
         }
     }
-
-    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
 
     @Override
     public void onResume() {

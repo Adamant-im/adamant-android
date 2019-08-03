@@ -26,6 +26,7 @@ import ru.terrakok.cicerone.Router;
 public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
     private ChatInteractor chatInteractor;
     private ChatsStorage chatsStorage;
+    private List<Chat> chatList = Collections.emptyList();
 
     public ChatsPresenter(
             Router router,
@@ -37,8 +38,6 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         this.chatInteractor = chatInteractor;
         this.chatsStorage = chatsStorage;
     }
-
-    private List<Chat> chatList = Collections.emptyList();
 
     @MainThread
     private void showChats(List<Chat> chats) {
@@ -105,12 +104,14 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         }
     }
 
-//    @Override
-//    public void attachView(ChatsView view) {
-//        super.attachView(view);
-//
-//        getViewState().showChats(chatsStorage.getChatList());
-//    }
+    @Override
+    public void attachView(ChatsView view) {
+        super.attachView(view);
+
+        if (this.chatList != null) {
+            getViewState().showChats(this.chatList);
+        }
+    }
 
     public void onChatWasSelected(Chat chat) {
         router.navigateTo(Screens.MESSAGES_SCREEN, chat.getCompanionId());
