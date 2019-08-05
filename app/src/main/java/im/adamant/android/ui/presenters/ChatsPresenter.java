@@ -109,6 +109,9 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
         super.attachView(view);
 
         if (this.chatList != null) {
+            //TODO: Think about redesign chastorage. Because new ArrayList created every time when a view is attached.
+            chatsStorage.updateLastMessages();
+            this.chatList = chatsStorage.getChatList();
             getViewState().showChats(this.chatList);
         }
     }
