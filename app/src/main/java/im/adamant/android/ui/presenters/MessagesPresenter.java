@@ -69,7 +69,7 @@ public class MessagesPresenter extends ProtectedBasePresenter<MessagesView>{
     @Override
     public void attachView(MessagesView view) {
         super.attachView(view);
-
+        getViewState().showChatMessages(messages);
     }
 
     @Override
