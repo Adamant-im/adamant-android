@@ -247,7 +247,7 @@ public class ChatInteractor {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe(chats -> {
-                    for(Chat chat:chats.subList(0,Math.min(5,chats.size()))){
+                    for(Chat chat:chats.subList(0, Math.min(5, chats.size()))) {
                         loadMoreChatMessages(chat.getCompanionId())
                                 .subscribe();
                     }
