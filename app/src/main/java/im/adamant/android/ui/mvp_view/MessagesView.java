@@ -1,19 +1,27 @@
 package im.adamant.android.ui.mvp_view;
 
-import android.graphics.Bitmap;
-
 import com.arellomobile.mvp.MvpView;
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy;
+import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy;
 import com.arellomobile.mvp.viewstate.strategy.SkipStrategy;
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType;
+
+import java.util.List;
 
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 
-import java.util.List;
-
 public interface MessagesView extends MvpView {
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showChatMessages(List<MessageListContent> messages, int addedCount);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
     void showChatMessages(List<MessageListContent> messages);
+
+    @StateStrategyType(OneExecutionStateStrategy.class)
     void goToLastMessage();
+
     void dropMessageCost();
     void changeTitles(String title, String subTitle);
     void messageWasSended(AbstractMessage message);
@@ -31,4 +39,7 @@ public interface MessagesView extends MvpView {
 
     @StateStrategyType(SkipStrategy.class)
     void showQrCodeCompanionId(String companionId);
+
+    @StateStrategyType(AddToEndSingleStrategy.class)
+    void showLoading(boolean loading);
 }

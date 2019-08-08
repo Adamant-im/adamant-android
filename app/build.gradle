@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "im.adamant.android"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode getVersionCode(minSdkVersion, scmVersion.version)
         versionName scmVersion.version

@@ -1,24 +1,23 @@
 package im.adamant.android.ui.adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
-import im.adamant.android.R;
-import im.adamant.android.ui.messages_support.entities.AbstractMessage;
-import im.adamant.android.ui.messages_support.entities.MessageListContent;
-import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
-import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
-import im.adamant.android.ui.messages_support.factories.MessageFactory;
-import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
-import im.adamant.android.ui.messages_support.holders.SeparatorViewHolder;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import im.adamant.android.R;
+import im.adamant.android.ui.messages_support.SupportedMessageListContentType;
+import im.adamant.android.ui.messages_support.entities.AbstractMessage;
+import im.adamant.android.ui.messages_support.entities.MessageListContent;
+import im.adamant.android.ui.messages_support.factories.MessageFactory;
+import im.adamant.android.ui.messages_support.factories.MessageFactoryProvider;
+import im.adamant.android.ui.messages_support.holders.AbstractMessageListContentViewHolder;
+import im.adamant.android.ui.messages_support.holders.SeparatorViewHolder;
 
 public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListContentViewHolder> {
 
@@ -84,6 +83,16 @@ public class MessagesAdapter extends RecyclerView.Adapter<AbstractMessageListCon
         }
 
         notifyDataSetChanged();
+    }
+
+    public void updateDataset(List<MessageListContent> messages,int topAddedCount){
+        if (messages != null){
+            this.messages = messages;
+        } else {
+            this.messages.clear();
+        }
+
+        notifyItemRangeInserted(0, topAddedCount);
     }
 
     private boolean detectNextMessageWithSameSender(int position) {

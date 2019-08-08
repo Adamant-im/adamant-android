@@ -16,6 +16,7 @@ import im.adamant.android.dagger.fragments.SettingsScreenModule;
 import im.adamant.android.dagger.fragments.WalletScreenModule;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
+import im.adamant.android.interactors.chats.ChatInteractor;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.adapters.FragmentsAdapter;
 import im.adamant.android.ui.fragments.ChatsScreen;
@@ -47,7 +48,7 @@ public abstract class MainScreenModule {
     @Named("main")
     @ActivityScope
     @Provides
-    public static FragmentsAdapter provideFragmentAdapter(MainScreen mainScreen){
+    public static FragmentsAdapter provideFragmentAdapter(MainScreen mainScreen) {
 
         List<FragmentClassHolder> holders = Arrays.asList(
                 new FragmentClassHolder(R.string.bottom_menu_title_wallet, WalletScreen.class),
@@ -63,9 +64,11 @@ public abstract class MainScreenModule {
     public static MainPresenter provideMainPresenter(
             Router router,
             AccountInteractor accountInteractor,
-            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor
-    ){
-        return new MainPresenter(router, pushNotificationServiceInteractor, accountInteractor);
+            SwitchPushNotificationServiceInteractor pushNotificationServiceInteractor,
+            ChatInteractor chatInteractor
+    ) {
+        return new MainPresenter(router, pushNotificationServiceInteractor, accountInteractor,
+                chatInteractor);
     }
 
 }

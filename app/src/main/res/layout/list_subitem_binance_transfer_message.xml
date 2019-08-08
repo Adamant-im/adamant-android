@@ -18,9 +18,9 @@
         android:linksClickable="true"
         android:maxWidth="@dimen/list_item_message_bubble_content_max_width"
         android:minWidth="@dimen/list_item_message_bubble_content_min_width"
+        android:lineSpacingExtra="3dp"
         android:singleLine="false"
         android:text="TextView"
-        android:textIsSelectable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list_item_message_amount" />
@@ -32,6 +32,7 @@
         android:layout_marginTop="6dp"
         android:text="TextView"
         android:textSize="18sp"
+        android:lineSpacingExtra="3dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

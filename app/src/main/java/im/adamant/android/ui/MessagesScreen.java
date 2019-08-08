@@ -44,6 +44,7 @@ import im.adamant.android.avatars.Avatar;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.services.SaveContactsService;
 import im.adamant.android.ui.adapters.MessagesAdapter;
+import im.adamant.android.ui.custom_view.EndlessUpScrollListener;
 import im.adamant.android.ui.messages_support.entities.AbstractMessage;
 import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.mvp_view.MessagesView;
@@ -90,6 +91,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     @BindView(R.id.activity_messages_btn_send) ImageButton buttonSend;
     @BindView(R.id.activity_messages_tv_cost) TextView messageCostView;
     @BindView(R.id.activity_messages_cl_empty_view) View emptyView;
+    @BindView(R.id.progress) View progressView;
 
     CompositeDisposable compositeDisposable = new CompositeDisposable();
     Disposable messageInputDisposable;
@@ -106,12 +108,13 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         return true;
     }
 
+    private LinearLayoutManager layoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
-
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         messagesList.setLayoutManager(layoutManager);
         messagesList.setAdapter(adapter);
 
@@ -139,6 +142,8 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         showByAddress(intent);
     }
 
+    private EndlessUpScrollListener endlessScrollListener;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -154,6 +159,15 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
                         localPresenter::onChangeMessageText,
                         error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
                 );
+
+        endlessScrollListener = new EndlessUpScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.loadMore();
+            }
+        };
+        endlessScrollListener.setVisibleThreshold(12);
+        messagesList.addOnScrollListener(endlessScrollListener);
     }
 
     @Override
@@ -169,21 +183,38 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
     }
 
     @Override
-    public void showChatMessages(List<MessageListContent> messages) {
-        if (messages != null){
-            adapter.updateDataset(
-                    messages
-            );
+    public void showChatMessages(List<MessageListContent> messages, int addedCount) {
+        if (endlessScrollListener!=null) {
+            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
+        }
+        if (messages != null) {
+            adapter.updateDataset(messages, addedCount);
 
-            if (messages.size() == 0){
+            if (messages.size() == 0) {
                 emptyView.setVisibility(View.VISIBLE);
                 messagesList.setVisibility(View.GONE);
             } else {
                 emptyView.setVisibility(View.GONE);
                 messagesList.setVisibility(View.VISIBLE);
             }
+        }
+    }
 
-            goToLastMessage();
+    @Override
+    public void showChatMessages(List<MessageListContent> messages) {
+        if (endlessScrollListener!=null) {
+            endlessScrollListener.onScrolled(messagesList, 0, 0); //Invalidate for endless scroll
+        }
+        if (messages != null) {
+            adapter.updateDataset(messages);
+
+            if (messages.size() == 0) {
+                emptyView.setVisibility(View.VISIBLE);
+                messagesList.setVisibility(View.GONE);
+            } else {
+                emptyView.setVisibility(View.GONE);
+                messagesList.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -295,7 +326,7 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         ClipData clip = ClipData.newPlainText("adamant_address", companionId);
         ClipboardManager clipboard = (ClipboardManager) this.getSystemService(CLIPBOARD_SERVICE);
 
-        if(clipboard != null){
+        if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
             Toast.makeText(this.getApplicationContext(), R.string.address_was_copied, Toast.LENGTH_LONG).show();
         }
@@ -311,6 +342,19 @@ public class MessagesScreen extends BaseActivity implements MessagesView {
         intent.putExtras(bundle);
 
         startActivity(intent);
+    }
+
+
+    @Override
+    public void showLoading(boolean loading) {
+        if(endlessScrollListener != null) {
+            endlessScrollListener.setLoading(false);
+        }
+       if (loading) {
+           progressView.setVisibility(View.VISIBLE);
+       } else {
+           progressView.setVisibility(View.GONE);
+       }
     }
 
     @OnClick(R.id.activity_messages_btn_send)

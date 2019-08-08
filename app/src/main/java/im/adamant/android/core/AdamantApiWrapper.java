@@ -126,10 +126,14 @@ public class AdamantApiWrapper {
 
     //TODO: refactor duplicate code. May be use transformation
     public Flowable<ChatList> getChatsByOffset(int offset, String order) {
+        return getChatsByOffset(offset,AdamantApi.DEFAULT_TRANSACTIONS_LIMIT, order);
+    }
+
+    public Flowable<ChatList> getChatsByOffset(int offset,int limit, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getChatsByOffset(account.getAddress(), offset, order)
+                .getChatsByOffset(account.getAddress(), offset,limit, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
@@ -148,10 +152,16 @@ public class AdamantApiWrapper {
     }
 
     public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset, String order) {
+        return getMessagesByOffset(companionAddress, offset,
+                AdamantApi.DEFAULT_TRANSACTIONS_LIMIT, order);
+    }
+
+
+    public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset,int limit, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
         return api
-                .getMessagesByOffset(account.getAddress(), companionAddress, offset, order)
+                .getMessagesByOffset(account.getAddress(), companionAddress, offset, limit, order)
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))

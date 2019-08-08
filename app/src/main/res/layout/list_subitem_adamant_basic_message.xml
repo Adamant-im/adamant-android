@@ -17,7 +17,7 @@
         android:linksClickable="true"
         android:singleLine="false"
         android:text="TextView"
-        android:textIsSelectable="true"
+        android:lineSpacingExtra="3dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

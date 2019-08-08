@@ -77,7 +77,7 @@
     <string name="activity_transfer_details_from">Отправитель</string>
     <string name="activity_transfer_details_id">Id Транзакции</string>
     <string name="activity_transfer_details_to">Получатель</string>
-    <string name="activity_transfer_details_open_explorer">Открыть в обозревателе</string>
+    <string name="activity_transfer_details_open_explorer">Открыть в Explorer</string>
     <string name="activity_transfer_details_go_to_chat">Перейти к чату</string>
     <string name="activity_transfer_details_fee">Комиссия</string>
 
@@ -93,7 +93,7 @@
 
     <string name="fragment_wallet_address_title">Номер</string>
     <string name="fragment_wallet_balance_title">Баланс</string>
-    <string name="fragment_wallet_free_tokens_title">Бесплатные токены</string>
+    <string name="fragment_wallet_free_tokens_title">🎁 Бесплатные токены</string>
     <string name="fragment_wallet_create_qrcode_title">Показать QR-код</string>
     <string name="fragment_wallet_send_funds">Отправить %s</string>
     <string name="fragment_wallet_last_transactions_title">Последние транзакции %s</string>

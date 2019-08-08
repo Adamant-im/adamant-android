@@ -7,6 +7,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import im.adamant.android.ui.entities.Chat;
 import im.adamant.android.ui.entities.Contact;
@@ -16,138 +19,207 @@ import im.adamant.android.ui.messages_support.entities.MessageListContent;
 import im.adamant.android.ui.messages_support.entities.Separator;
 
 public class ChatsStorage {
+    private static final ReadWriteLock chatsLock = new ReentrantReadWriteLock();
+    private static final Lock chatsReadLock = chatsLock.readLock();
+    private static final Lock chatsWriteLock = chatsLock.writeLock();
+
     //TODO: Multithreaded access to properties can cause problems in the future
     private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
-    private Calendar separatorCalendar = Calendar.getInstance();
     private ChatsByLastMessageComparator chatComparator = new ChatsByLastMessageComparator();
     private MessageComparator messageComparator = new MessageComparator();
-
-    private boolean isLoaded = false;
+    private Map<String, Contact> contacts = null;
 
     public List<Chat> getChatList() {
-        return chats;
+        chatsReadLock.lock();
+        try {
+            return new ArrayList<>(chats);
+        } finally {
+            chatsReadLock.unlock();
+        }
     }
 
     public List<MessageListContent> getMessagesByCompanionId(String companionId) {
-        List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
+        chatsReadLock.lock();
+        try {
+            List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
 
-        if (requestedMessages == null){return new ArrayList<>();}
+            if (requestedMessages == null){return new ArrayList<>();}
 
-        return requestedMessages;
+            return requestedMessages;
+        } finally {
+            chatsReadLock.unlock();
+        }
     }
 
-    public void addNewChat(Chat chat) {
-        int index = chats.indexOf(chat);
-        if (index == -1){
-            chats.add(chat);
-            messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
+    public synchronized void addNewChat(Chat chat) {
+        chatsWriteLock.lock();
+        try {
+            int index = chats.indexOf(chat);
+            if (index == -1){
+                if (contacts != null) {
+                   Contact contact= contacts.get(chat.getCompanionId());
+                   if(contact!=null) {
+                       String name = contact.getDisplayName();
+                       if(name!=null&&!name.isEmpty()){
+                           chat.setTitle(name);
+                       }
+                   }
+                }
+                chats.add(chat);
+                messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
+            }
+        } finally {
+            chatsWriteLock.unlock();
         }
     }
 
     public void addMessageToChat(MessageListContent message) {
-        List<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
+        chatsWriteLock.lock();
+        try {
+            List<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
 
-        if (messages == null) {
-            messages = new ArrayList<>();
-            messagesByChats.put(message.getCompanionId(), messages);
-        }
+            if (messages == null) {
+                messages = new ArrayList<>();
+                messagesByChats.put(message.getCompanionId(), messages);
+            }
 
-        //If we sent this message and it's already in the list
-        if (!messages.contains(message)){
-            addSeparatorIfNeeded(messages, message);
-            messages.add(message);
+            //If we sent this message and it's already in the list
+            if (!messages.contains(message)){
+                addSeparatorIfNeeded(messages, message);
+                messages.add(message);
+            }
+
+            Chat chat = new Chat();
+            chat.setCompanionId(message.getCompanionId());
+
+            if (message.getSupportedType() != SupportedMessageListContentType.SEPARATOR) {
+                int i = chats.indexOf(chat);
+                if (i >= 0){
+                    Chat storedChat = chats.get(i);
+                    storedChat.setLastMessage((AbstractMessage) message);
+                }
+            }
+        } finally {
+            chatsWriteLock.unlock();
         }
     }
 
     public void updateLastMessages() {
-        //Setting last message to chats
-        for(Chat chat : chats) {
-            List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
-            if (messages != null && messages.size() > 0){
-                for (int i = (messages.size() - 1); i >= 0; i--){
-                    MessageListContent mes = messages.get(i);
-                    boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
-                    if (isMessageWithContent){
-                        AbstractMessage message = (AbstractMessage)mes;
-                        chat.setLastMessage(message);
-                        break;
+        chatsWriteLock.lock();
+        try {
+            //Setting last message to chats
+            //TODO: Think about how to remove this code, it is too resource-intensive
+            for(Chat chat : chats) {
+                List<MessageListContent> messages = messagesByChats.get(chat.getCompanionId());
+                if (messages != null && messages.size() > 0){
+                    for (int i = (messages.size() - 1); i >= 0; i--){
+                        MessageListContent mes = messages.get(i);
+                        boolean isMessageWithContent = (mes != null && mes.getSupportedType() != SupportedMessageListContentType.SEPARATOR);
+                        if (isMessageWithContent){
+                            AbstractMessage message = (AbstractMessage)mes;
+                            chat.setLastMessage(message);
+                            break;
+                        }
                     }
                 }
             }
-        }
 
-        Collections.sort(chats, chatComparator);
+            Collections.sort(chats, chatComparator);
 
-        for (Map.Entry<String, List<MessageListContent>> entry : messagesByChats.entrySet()){
-            Collections.sort(entry.getValue(), messageComparator);
+            for (Map.Entry<String, List<MessageListContent>> entry : messagesByChats.entrySet()){
+                Collections.sort(entry.getValue(), messageComparator);
+            }
+        } finally {
+            chatsWriteLock.unlock();
         }
     }
 
-    public void refreshContacts(Map<String, Contact> contacts) {
-        for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
-            String companionId = contactEntry.getKey();
-            Contact contact = contactEntry.getValue();
+    public void saveContacts(Map<String, Contact> contacts) {
+        chatsWriteLock.lock();
+        try {
+            this.contacts = contacts;
+            refreshContacts();
+        } finally {
+            chatsWriteLock.unlock();
+        }
+    }
 
-            if (contact.getDisplayName() == null || contact.getDisplayName().isEmpty()) {
-                continue;
+    public void refreshContacts() {
+        chatsWriteLock.lock();
+        try {
+            for (Map.Entry<String, Contact> contactEntry : contacts.entrySet()) {
+                String companionId = contactEntry.getKey();
+                Contact contact = contactEntry.getValue();
+
+                if (contact.getDisplayName() == null || contact.getDisplayName().isEmpty()) {
+                    continue;
+                }
+
+                Chat chat = new Chat();
+                chat.setCompanionId(companionId);
+
+                if (chats.contains(chat)) {
+                    int index = chats.indexOf(chat);
+                    Chat originalChat = chats.get(index);
+                    originalChat.setTitle(contact.getDisplayName());
+                }
             }
-
-            Chat chat = new Chat();
-            chat.setCompanionId(companionId);
-
-            if (chats.contains(chat)) {
-                int index = chats.indexOf(chat);
-                Chat originalChat = chats.get(index);
-                originalChat.setTitle(contact.getDisplayName());
-            }
+        } finally {
+            chatsWriteLock.unlock();
         }
     }
 
     public Chat findChatByCompanionId(String companionId) {
-        Chat chat = new Chat();
-        chat.setCompanionId(companionId);
+        chatsReadLock.lock();
+        try {
+            Chat chat = new Chat();
+            chat.setCompanionId(companionId);
 
-        if (chats.contains(chat)){
-            int index = chats.indexOf(chat);
-            return chats.get(index);
-        } else {
-            return null;
+            if (chats.contains(chat)){
+                int index = chats.indexOf(chat);
+                return chats.get(index);
+            } else {
+                return null;
+            }
+        } finally {
+            chatsReadLock.unlock();
         }
     }
 
     public Map<String, Contact> getContacts() {
-        Map<String, Contact> contacts = new HashMap<>();
+        chatsReadLock.lock();
+        try {
+            Map<String, Contact> contacts = new HashMap<>();
 
-        for (Chat chat : chats) {
-            if (!chat.getTitle().equalsIgnoreCase(chat.getCompanionId())){
-                Contact contact = new Contact();
-                contact.setDisplayName(chat.getTitle());
-                contacts.put(chat.getCompanionId(), contact);
+            for (Chat chat : chats) {
+                if (!chat.getTitle().equalsIgnoreCase(chat.getCompanionId())){
+                    Contact contact = new Contact();
+                    contact.setDisplayName(chat.getTitle());
+                    contacts.put(chat.getCompanionId(), contact);
+                }
             }
+
+            return contacts;
+        } finally {
+            chatsReadLock.unlock();
         }
-
-        return contacts;
-    }
-
-    public boolean isLoaded() {
-        return isLoaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        isLoaded = loaded;
     }
 
     public void cleanUp() {
-        chats.clear();
-        messagesByChats.clear();
-        isLoaded = false;
+        chatsWriteLock.lock();
+        try {
+            chats.clear();
+            messagesByChats.clear();
+            separators.clear();
+        } finally {
+            chatsWriteLock.unlock();
+        }
     }
 
-    private void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
-        //Получи дату сообщения и проверь что сепаратор для этого сообщения уже добавлен в специальный список
-        //если его нет то создай
+    private synchronized void addSeparatorIfNeeded(List<MessageListContent> messages, MessageListContent message) {
+        Calendar separatorCalendar = Calendar.getInstance();
         separatorCalendar.setTimeInMillis(message.getTimestamp());
         separatorCalendar.set(Calendar.HOUR_OF_DAY, 0);
         separatorCalendar.set(Calendar.MINUTE, 0);

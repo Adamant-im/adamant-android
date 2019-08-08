@@ -4,8 +4,9 @@ import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.AdamantApiWrapper;
-import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.interactors.chats.ChatInteractor;
+import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.rx.Irrelevant;
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -21,17 +22,20 @@ public class LogoutInteractor {
     private PublishSubject<Irrelevant> publisher = PublishSubject.create();
     private Flowable eventBus = publisher.toFlowable(BackpressureStrategy.LATEST);
     private Disposable logoutDisposable;
+    private ChatInteractor chatInteractor;
 
     public LogoutInteractor(
             ChatsStorage chatsStorage,
             Settings settings,
             AdamantApiWrapper api,
-            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor
+            SwitchPushNotificationServiceInteractor switchPushNotificationServiceInteractor,
+            ChatInteractor chatInteractor
     ) {
         this.chatsStorage = chatsStorage;
         this.settings = settings;
         this.api = api;
         this.switchPushNotificationServiceInteractor = switchPushNotificationServiceInteractor;
+        this.chatInteractor = chatInteractor;
     }
 
     public Flowable<Irrelevant> getEventBus() {
@@ -39,6 +43,9 @@ public class LogoutInteractor {
     }
 
     public void logout() {
+        chatInteractor.resetPagingState();
+
+
         if (logoutDisposable != null) {
             logoutDisposable.dispose();
         }

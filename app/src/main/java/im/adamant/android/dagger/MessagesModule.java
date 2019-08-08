@@ -14,6 +14,7 @@ import im.adamant.android.core.encryption.Encryptor;
 import im.adamant.android.core.kvs.ApiKvsProvider;
 import im.adamant.android.helpers.KvsHelper;
 import im.adamant.android.helpers.PublicKeyStorage;
+import im.adamant.android.interactors.chats.ChatHistoryInteractor;
 import im.adamant.android.interactors.chats.ChatsStorage;
 import im.adamant.android.interactors.chats.ContactsSource;
 import im.adamant.android.interactors.chats.HistoryTransactionsSource;
@@ -52,7 +53,7 @@ public abstract class MessagesModule {
             AdamantApiWrapper api,
             PublicKeyStorage publicKeyStorage,
             Avatar avatar, Router router
-            ) {
+    ) {
         MessageFactoryProvider provider = new MessageFactoryProvider();
 
         provider.registerFactory(
@@ -82,7 +83,7 @@ public abstract class MessagesModule {
 
         provider.registerFactory(
                 SupportedMessageListContentType.ADAMANT_TRANSFER_MESSAGE,
-                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar,router)
+                new AdamantTransferMessageFactory(adamantAddressProcessor, encryptor, api, publicKeyStorage, avatar, router)
         );
 
         return provider;
@@ -128,10 +129,17 @@ public abstract class MessagesModule {
         return new LastTransactionInChatsSource(api);
     }
 
-    @Singleton
     @Provides
     public static HistoryTransactionsSource providesHistoryTransactionsSource(AdamantApiWrapper api) {
         return new HistoryTransactionsSource(api);
+    }
+
+    @Provides
+    public static ChatHistoryInteractor providesChatHistoryInteractor(HistoryTransactionsSource historySource,
+                                                                      ChatsStorage chatsStorage,
+                                                                      PublicKeyStorage keyStorage,
+                                                                      TransactionToMessageMapper messageMapper) {
+        return new ChatHistoryInteractor(historySource, chatsStorage, keyStorage, messageMapper);
     }
 
     @Singleton

@@ -90,7 +90,7 @@ public class CreateChatPresenter extends ProtectedBasePresenter<CreateChatView>{
         WalletFacade facade = wallets.get(SupportedWalletFacadeType.ADM);
         if (facade != null) {
             String address = facade.getAddress();
-            getViewState().showQrCode(address);
+            getViewState().showQrCode("adm:" + address);
         }
     }
 }
