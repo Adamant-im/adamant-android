@@ -1,0 +1,89 @@
+package im.adamant.android;
+
+import android.content.Context;
+import android.util.Log;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.test.espresso.IdlingRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.IOException;
+
+import im.adamant.android.base.ActivityWithMockingNetworkUITest;
+import im.adamant.android.dispatchers.SuccessAuthorizeDispatcher;
+import im.adamant.android.idling_resources.ActivityIdlingResosurce;
+import im.adamant.android.idling_resources.DialogFragmentIdlingResource;
+import im.adamant.android.ui.LoginScreen;
+import im.adamant.android.ui.MainScreen;
+import im.adamant.android.ui.NodesListScreen;
+import im.adamant.android.utils.AssetReaderUtil;
+import im.adamant.android.utils.InstrumentedTestConstants;
+import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
+
+import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.intent.Intents.intended;
+import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+@RunWith(AndroidJUnit4.class)
+public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginScreen> {
+    @Override
+    protected Class<LoginScreen> provideActivityClass() {
+        return LoginScreen.class;
+    }
+
+    @Override
+    protected Dispatcher provideDispatcher(String testName) {
+        return new SuccessAuthorizeDispatcher(InstrumentationRegistry.getInstrumentation().getTargetContext());
+    }
+
+    @Test
+    @LargeTest
+    public void uiNetSuccessLogin() {
+
+        LoginScreen activity = activityRule.getActivity();
+        FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
+
+        DialogFragmentIdlingResource dialogFragmentIdlingResource = new DialogFragmentIdlingResource(
+                LoginScreen.BOTTOM_LOGIN_TAG,
+                supportFragmentManager
+        );
+
+        onView(withId(R.id.activity_login_btn_login)).perform(click());
+
+        idlingBlock(dialogFragmentIdlingResource, () -> {
+            onView(withId(R.id.fragment_login_et_passphrase))
+                    .check(matches(isDisplayed()));
+
+            onView(withId(R.id.fragment_login_et_passphrase))
+                    .perform(typeText(InstrumentedTestConstants.PASSPHRASE))
+                    .perform(closeSoftKeyboard());
+
+            onView(withId(R.id.fragment_login_btn_enter)).perform(click());
+        });
+
+        String mainActivity = MainScreen.class.getName();
+        ActivityIdlingResosurce activityIdlingResosurce = new ActivityIdlingResosurce(mainActivity);
+
+        idlingBlock(activityIdlingResosurce, () -> {
+//            onData(withId(R.id.list_item_wallet_card_tv_balance)).check(matches(withText("0.100")));
+            intended(hasComponent(MainScreen.class.getName()));
+        });
+    }
+
+}

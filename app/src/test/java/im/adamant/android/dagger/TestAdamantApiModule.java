@@ -5,6 +5,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.core.AdamantApiBuilder;
+import im.adamant.android.core.DefaultAdamantApiBuilderImpl;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.helpers.PublicKeyStorageImpl;
 import im.adamant.android.helpers.PublicKeyStorage;
@@ -16,7 +17,7 @@ public abstract class TestAdamantApiModule {
     @Singleton
     @Provides
     public static AdamantApiBuilder provideApiBuilder() {
-        return mock(AdamantApiBuilder.class);
+        return mock(DefaultAdamantApiBuilderImpl.class);
     }
 
     @Singleton

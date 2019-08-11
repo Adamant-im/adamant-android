@@ -12,6 +12,7 @@ import androidx.test.espresso.Espresso;
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
 import im.adamant.android.idling_resources.DialogFragmentIdlingResource;
@@ -32,29 +33,32 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 public class LoginUITest {
 
     @Rule
-    public final ActivityTestRule<LoginScreen> mActivityRule = new ActivityTestRule<>(LoginScreen.class);
+    public final ActivityTestRule<LoginScreen> mActivityRule = new ActivityTestRule<>(LoginScreen.class, true, false);
 
     @Before
     public void before() {
         Intents.init();
+        mActivityRule.launchActivity(null);
     }
 
     @After
     public void after() {
         Intents.release();
+        mActivityRule.finishActivity();
     }
 
     @Test
+    @LargeTest
     public void uiShowLoginFragment() {
         LoginScreen activity = mActivityRule.getActivity();
-        FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
 
+        onView(withId(R.id.activity_login_btn_login)).perform(click());
+
+        FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
         DialogFragmentIdlingResource dialogFragmentIdlingResource = new DialogFragmentIdlingResource(
                 LoginScreen.BOTTOM_LOGIN_TAG,
                 supportFragmentManager
         );
-
-        onView(withId(R.id.activity_login_btn_login)).perform(click());
 
         IdlingRegistry.getInstance().register(dialogFragmentIdlingResource);
 
@@ -65,6 +69,7 @@ public class LoginUITest {
     }
 
     @Test
+    @LargeTest
     public void uiShowRegistrationScreen() {
         onView(withId(R.id.activity_login_ib_node_list)).check(matches(isDisplayed()));
         onView(withId(R.id.activity_login_ib_node_list)).perform(click());

@@ -22,9 +22,10 @@ import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
 import im.adamant.android.dagger.DaggerAppComponent;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.LogoutInteractor;
 import io.reactivex.plugins.RxJavaPlugins;
 
-public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
+public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector, ClosableApplication {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
@@ -34,6 +35,15 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
 
     @Inject
     List<Locale> supportedLocales;
+
+    @Inject
+    LogoutInteractor logoutInteractor;
+
+    private static ClosableApplication closableApplication;
+
+    public static ClosableApplication getClosableApplication() {
+        return closableApplication;
+    }
 
     @Override
     public void onCreate() {
@@ -48,6 +58,8 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
                 .inject(this);
 
         LocaleChanger.initialize(getApplicationContext(), supportedLocales);
+
+        closableApplication = this;
 
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            // This process is dedicated to LeakCanary for heap analysis.
@@ -97,4 +109,10 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
         LocaleChanger.onConfigurationChanged();
     }
 
+    @Override
+    public void close() {
+        if (logoutInteractor != null) {
+            logoutInteractor.logout();
+        }
+    }
 }

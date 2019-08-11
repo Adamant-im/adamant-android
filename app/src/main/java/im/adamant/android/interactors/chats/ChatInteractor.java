@@ -242,16 +242,17 @@ public class ChatInteractor {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @SuppressLint("CheckResult")
     @MainThread
-    public void startInitialLoading(){
-        loadMoreChats()
+    public Completable startInitialLoading() {
+        return loadMoreChats()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe(chats -> {
+                .doOnNext(chats -> {
                     for(Chat chat:chats.subList(0,Math.min(5,chats.size()))){
                         loadMoreChatMessages(chat.getCompanionId())
                                 .subscribe();
                     }
-                });
+                })
+                .ignoreElements();
     }
 
     @MainThread

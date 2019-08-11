@@ -7,6 +7,7 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.core.AdamantApiBuilder;
+import im.adamant.android.core.DefaultAdamantApiBuilderImpl;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.helpers.PublicKeyStorageImpl;
@@ -19,7 +20,7 @@ public abstract class AdamantApiModule {
     @Singleton
     @Provides
     public static AdamantApiBuilder provideApiBuilder(Settings settings, Gson gson) {
-        return new AdamantApiBuilder(settings.getNodes(), gson);
+        return new DefaultAdamantApiBuilderImpl(settings.getNodes(), gson);
     }
 
     @Singleton

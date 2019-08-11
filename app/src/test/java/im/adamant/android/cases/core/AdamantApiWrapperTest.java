@@ -21,7 +21,7 @@ import java.util.concurrent.Future;
 
 import im.adamant.android.TestConstants;
 import im.adamant.android.core.AdamantApi;
-import im.adamant.android.core.AdamantApiBuilder;
+import im.adamant.android.core.DefaultAdamantApiBuilderImpl;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
@@ -40,7 +40,7 @@ public class AdamantApiWrapperTest {
     public MockitoRule mockitoRule = MockitoJUnit.rule();
 
     @Mock
-    AdamantApiBuilder apiBuilder;
+    DefaultAdamantApiBuilderImpl apiBuilder;
 
     @Mock
     AdamantKeyGenerator keyGenerator;

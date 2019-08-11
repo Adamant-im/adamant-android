@@ -12,8 +12,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class AdamantApiBuilder {
-
+public abstract class AdamantApiBuilder {
     private ObservableRxList<ServerNode> nodes;
     private ServerNode currentServerNode;
     private Gson gson;
@@ -31,11 +30,7 @@ public class AdamantApiBuilder {
         return Observable.fromCallable(() -> {
             OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 
-            if (BuildConfig.DEBUG){
-                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                httpClient.addInterceptor(logging);
-            }
+            addInterceptors(httpClient);
 
             if (currentServerNode != null){
                 currentServerNode.setStatus(ServerNode.Status.CONNECTING);
@@ -61,4 +56,6 @@ public class AdamantApiBuilder {
 
         return index;
     }
+
+    protected abstract void addInterceptors(OkHttpClient.Builder httpClient);
 }

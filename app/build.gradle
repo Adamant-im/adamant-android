@@ -30,14 +30,6 @@ android {
         buildConfigField "String", "MESSAGE_CTNCR_ADDR", "\"U7047165086065693428\""
         buildConfigField "boolean", "RELEASE_LOG", "false"
 
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_1", "\"https://clown.adamant.im\""
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_2", "\"https://lake.adamant.im\""
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_3", "\"https://endless.adamant.im\""
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_4", "\"https://debate.adamant.im\""
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_5", "\"https://bid.adamant.im\""
-        buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"https://unusual.adamant.im\""
-
-        buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
     }
 
     buildTypes {
@@ -74,6 +66,35 @@ android {
         sourceCompatibility 1.8
     }
 
+    flavorDimensions "server_availablity"
+    productFlavors {
+        withServer {
+            dimension "server_availablity"
+
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_1", "\"https://clown.adamant.im\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_2", "\"https://lake.adamant.im\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_3", "\"https://endless.adamant.im\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_4", "\"https://debate.adamant.im\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_5", "\"https://bid.adamant.im\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"https://unusual.adamant.im\""
+
+            buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://163.172.132.38:36667\""
+        }
+
+        withoutServer {
+            dimension "server_availablity"
+
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_1", "\"http://127.0.0.1:8080\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_2", "\"http://127.0.0.1:8080\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_3", "\"http://127.0.0.1:8080\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_4", "\"http://127.0.0.1:8080\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_5", "\"http://127.0.0.1:8080\""
+            buildConfigField "String", "PROD_NET_DEFAULT_NODE_6", "\"http://127.0.0.1:8080\""
+
+            buildConfigField "String", "TEST_NET_DEFAULT_NODE_1", "\"http://127.0.0.1:8080\""
+        }
+    }
+
     applicationVariants.all { variant ->
         variant.outputs.all { output ->
             if (variant.buildType.name == "debug") {
@@ -83,6 +104,7 @@ android {
             }
         }
     }
+
 }
 
 def getPropTestNet(String propName) {
@@ -171,6 +193,7 @@ dependencies {
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     androidTestImplementation "androidx.test.espresso:espresso-intents:3.2.0"
+    androidTestImplementation "com.squareup.okhttp3:mockwebserver:3.10.0"
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:1.6.1"
     releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:1.6.1"
