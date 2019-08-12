@@ -15,6 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 
+import im.adamant.android.base.BaseTest;
 import im.adamant.android.idling_resources.DialogFragmentIdlingResource;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
@@ -30,7 +31,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
 @RunWith(AndroidJUnit4.class)
-public class LoginUITest {
+public class LoginUITest extends BaseTest {
 
     @Rule
     public final ActivityTestRule<LoginScreen> mActivityRule = new ActivityTestRule<>(LoginScreen.class, true, false);
@@ -60,12 +61,10 @@ public class LoginUITest {
                 supportFragmentManager
         );
 
-        IdlingRegistry.getInstance().register(dialogFragmentIdlingResource);
-
-        onView(withId(R.id.fragment_login_et_passphrase))
-                .check(matches(isDisplayed()));
-
-        IdlingRegistry.getInstance().unregister(dialogFragmentIdlingResource);
+        idlingBlock(dialogFragmentIdlingResource, () -> {
+            onView(withId(R.id.fragment_login_et_passphrase))
+                    .check(matches(isDisplayed()));
+        });
     }
 
     @Test

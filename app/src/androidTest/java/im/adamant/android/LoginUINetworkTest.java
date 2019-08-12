@@ -1,35 +1,23 @@
 package im.adamant.android;
 
-import android.content.Context;
-import android.util.Log;
-
 import androidx.fragment.app.FragmentManager;
-import androidx.test.espresso.IdlingRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
-
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
-import im.adamant.android.dispatchers.SuccessAuthorizeDispatcher;
+import im.adamant.android.dispatchers.SuccessAuthorizationDispatcher;
 import im.adamant.android.idling_resources.ActivityIdlingResosurce;
 import im.adamant.android.idling_resources.DialogFragmentIdlingResource;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
-import im.adamant.android.ui.NodesListScreen;
-import im.adamant.android.utils.AssetReaderUtil;
 import im.adamant.android.utils.InstrumentedTestConstants;
 import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
 
-import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -49,7 +37,13 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
 
     @Override
     protected Dispatcher provideDispatcher(String testName) {
-        return new SuccessAuthorizeDispatcher(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        switch (testName) {
+            case "uiNetSuccessLogin": {
+                return new SuccessAuthorizationDispatcher(InstrumentationRegistry.getInstrumentation().getTargetContext());
+            }
+        }
+
+        return null;
     }
 
     @Test
@@ -81,7 +75,6 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
         ActivityIdlingResosurce activityIdlingResosurce = new ActivityIdlingResosurce(mainActivity);
 
         idlingBlock(activityIdlingResosurce, () -> {
-//            onData(withId(R.id.list_item_wallet_card_tv_balance)).check(matches(withText("0.100")));
             intended(hasComponent(MainScreen.class.getName()));
         });
     }

@@ -19,19 +19,19 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.ClosableApplication;
 import okhttp3.mockwebserver.Dispatcher;
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
-public abstract class ActivityWithMockingNetworkUITest<T extends Activity> {
+public abstract class ActivityWithMockingNetworkUITest<T extends Activity> extends BaseTest {
     @Rule
     public final ActivityTestRule<T> activityRule;
 
     @Rule
     public final TestName testNameRule = new TestName();
-
-    private Set<IdlingResource> registeredResources = new HashSet<>();
 
     protected MockWebServer mockWebServer = new MockWebServer();
 
@@ -45,8 +45,11 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> {
 
     @Before
     public void setup() throws IOException {
+        Dispatcher dispatcher = provideDispatcher(testNameRule.getMethodName());
+        if (dispatcher != null) {
+            mockWebServer.setDispatcher(dispatcher);
+        }
         mockWebServer.start(8080);
-        mockWebServer.setDispatcher(provideDispatcher(testNameRule.getMethodName()));
 
         Intents.init();
 
@@ -55,9 +58,7 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> {
 
     @After
     public void teardown() throws IOException {
-        for (IdlingResource resource : registeredResources) {
-            IdlingRegistry.getInstance().unregister(resource);
-        }
+        super.teardown();
         activityRule.finishActivity();
 
         Intents.release();
@@ -66,11 +67,5 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> {
         ClosableApplication application = (ClosableApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
         application.close();
 
-    }
-
-    protected void idlingBlock(IdlingResource idlingResource, Runnable runnable) {
-        IdlingRegistry.getInstance().register(idlingResource);
-        registeredResources.add(idlingResource);
-        runnable.run();
     }
 }
