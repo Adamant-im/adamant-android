@@ -16,9 +16,12 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Constants;
+import im.adamant.android.InstrumentationTestFacade;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.helpers.Settings;
+import im.adamant.android.interactors.LogoutInteractor;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import ru.terrakok.cicerone.Cicerone;
@@ -86,5 +89,14 @@ public abstract class GeneralModule {
     @Provides
     public static Scheduler provideUIObserveScheduler() {
         return AndroidSchedulers.mainThread();
+    }
+
+    @Singleton
+    @Provides
+    public static InstrumentationTestFacade provideInstrumentationTestFacade(
+            LogoutInteractor logoutInteractor,
+            AdamantApiWrapper adamantApiWrapper
+    ) {
+        return new InstrumentationTestFacade(logoutInteractor, adamantApiWrapper);
     }
 }

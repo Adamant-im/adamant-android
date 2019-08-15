@@ -1,5 +1,9 @@
 package im.adamant.android.utils;
 
 public interface InstrumentedTestConstants {
-    public static final String PASSPHRASE = "sword custom cushion around skin chair magic call evidence dynamic main suspect";
+    String PASSPHRASE = "sword custom cushion around skin chair magic call evidence dynamic main suspect";
+    String ADDRESS = "U15650841420785452182";
+    long DEFAULT_BALANCE = 10000000;
+    String PUBLIC_KEY = "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4";
+    String SECRET_KEY = "8898aa6df66f98eba31be8517f69880dc65a3f2cf6e09a2abb9843e050d706308c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4";
 }

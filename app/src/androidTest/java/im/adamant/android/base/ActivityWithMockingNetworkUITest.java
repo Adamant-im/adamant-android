@@ -1,11 +1,7 @@
 package im.adamant.android.base;
 
 import android.app.Activity;
-import android.content.Context;
-import android.util.Log;
 
-import androidx.test.espresso.IdlingRegistry;
-import androidx.test.espresso.IdlingResource;
 import androidx.test.espresso.intent.Intents;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -15,15 +11,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
-import im.adamant.android.ClosableApplication;
+import im.adamant.android.AdamantApplication;
+import im.adamant.android.InstrumentationTestFacade;
 import okhttp3.mockwebserver.Dispatcher;
-import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 
 public abstract class ActivityWithMockingNetworkUITest<T extends Activity> extends BaseTest {
@@ -45,6 +37,7 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> exten
 
     @Before
     public void setup() throws IOException {
+        super.setup();
         Dispatcher dispatcher = provideDispatcher(testNameRule.getMethodName());
         if (dispatcher != null) {
             mockWebServer.setDispatcher(dispatcher);
@@ -64,8 +57,9 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> exten
         Intents.release();
         mockWebServer.shutdown();
 
-        ClosableApplication application = (ClosableApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
-        application.close();
+        AdamantApplication application = (AdamantApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
+        InstrumentationTestFacade instrumentationTestFacade = application.getInstrumentationTestFacade();
+        instrumentationTestFacade.logout();
 
     }
 }

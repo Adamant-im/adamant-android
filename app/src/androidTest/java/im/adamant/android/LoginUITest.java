@@ -48,6 +48,11 @@ public class LoginUITest extends BaseTest {
         mActivityRule.finishActivity();
     }
 
+    @Override
+    protected boolean isProtectedScreen() {
+        return false;
+    }
+
     @Test
     @LargeTest
     public void uiShowLoginFragment() {
@@ -74,6 +79,4 @@ public class LoginUITest extends BaseTest {
         onView(withId(R.id.activity_login_ib_node_list)).perform(click());
         intended(hasComponent(NodesListScreen.class.getName()));
     }
-
-    
 }

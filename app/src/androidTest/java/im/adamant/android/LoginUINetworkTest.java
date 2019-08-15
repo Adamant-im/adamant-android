@@ -46,6 +46,11 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
         return null;
     }
 
+    @Override
+    protected boolean isProtectedScreen() {
+        return false;
+    }
+
     @Test
     @LargeTest
     public void uiNetSuccessLogin() {

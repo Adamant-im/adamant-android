@@ -20,12 +20,13 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.HasServiceInjector;
+import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.dagger.DaggerAppComponent;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.LogoutInteractor;
 import io.reactivex.plugins.RxJavaPlugins;
 
-public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector, ClosableApplication {
+public class AdamantApplication extends MultiDexApplication implements HasActivityInjector, HasServiceInjector {
 
     @Inject
     DispatchingAndroidInjector<Activity> dispatchingAndroidActivityInjector;
@@ -37,12 +38,12 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
     List<Locale> supportedLocales;
 
     @Inject
-    LogoutInteractor logoutInteractor;
+    InstrumentationTestFacade instrumentationTestFacade;
 
-    private static ClosableApplication closableApplication;
+    private static AdamantApplication testableApplication;
 
-    public static ClosableApplication getClosableApplication() {
-        return closableApplication;
+    public static AdamantApplication getTestableApplication() {
+        return testableApplication;
     }
 
     @Override
@@ -58,8 +59,6 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
                 .inject(this);
 
         LocaleChanger.initialize(getApplicationContext(), supportedLocales);
-
-        closableApplication = this;
 
 //        if (LeakCanary.isInAnalyzerProcess(this)) {
 //            // This process is dedicated to LeakCanary for heap analysis.
@@ -109,10 +108,7 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
         LocaleChanger.onConfigurationChanged();
     }
 
-    @Override
-    public void close() {
-        if (logoutInteractor != null) {
-            logoutInteractor.logout();
-        }
+    public InstrumentationTestFacade getInstrumentationTestFacade() {
+        return instrumentationTestFacade;
     }
 }

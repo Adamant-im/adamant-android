@@ -72,6 +72,11 @@ public class AdamantApiWrapper {
                 .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
     }
 
+    public void setAuthorization(Account account, KeyPair keyPair) {
+        this.account = account;
+        this.keyPair = keyPair;
+    }
+
     public Completable updateBalance(){
         try {
             return api
