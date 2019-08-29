@@ -40,11 +40,6 @@ public class AdamantApplication extends MultiDexApplication implements HasActivi
     @Inject
     InstrumentationTestFacade instrumentationTestFacade;
 
-    private static AdamantApplication testableApplication;
-
-    public static AdamantApplication getTestableApplication() {
-        return testableApplication;
-    }
 
     @Override
     public void onCreate() {

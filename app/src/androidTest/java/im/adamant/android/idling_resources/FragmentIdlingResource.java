@@ -4,14 +4,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.test.espresso.IdlingResource;
 
-public class DialogFragmentIdlingResource implements IdlingResource {
+public class FragmentIdlingResource implements IdlingResource {
 
     private ResourceCallback resourceCallback;
     private FragmentManager fragmentManager;
 
     private String fragmentTag;
 
-    public DialogFragmentIdlingResource(String fragmentTag, FragmentManager fragmentManager) {
+    public FragmentIdlingResource(String fragmentTag, FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
         this.fragmentTag = fragmentTag;
     }

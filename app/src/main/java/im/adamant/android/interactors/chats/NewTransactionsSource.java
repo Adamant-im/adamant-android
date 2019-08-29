@@ -30,14 +30,14 @@ public class NewTransactionsSource {
                     if (transaction.getHeight() > maxHeight) {
                         maxHeight = transaction.getHeight();
                     }
-                })
-                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+                });
     }
 
     //TODO: Simplify load updates. Just enough get transactions by maxHeight without type
     private Flowable<Transaction<? super TransactionAsset>> getTransactionsBatch(int height, int offset) {
         return api
                 .getMessageTransactionsByHeightAndOffset(height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
+                .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .observeOn(Schedulers.computation())
                 .flatMap(transactionList -> {
                     if (transactionList.isSuccess()) {
@@ -62,6 +62,7 @@ public class NewTransactionsSource {
     private Flowable<Transaction<? super TransactionAsset>> getAllAdamantTransfers(int height, int offset) {
         return  api
                     .getAdamantAllFinanceTransactions(Transaction.SEND, height, offset, AdamantApi.ORDER_BY_TIMESTAMP_ASC)
+                    .retryWhen((retryHandler) -> retryHandler.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                     .observeOn(Schedulers.computation())
                     .flatMap(transactionList -> {
                         if (transactionList.isSuccess()){

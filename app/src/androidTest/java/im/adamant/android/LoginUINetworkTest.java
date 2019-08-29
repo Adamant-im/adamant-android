@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
 import im.adamant.android.dispatchers.SuccessAuthorizationDispatcher;
 import im.adamant.android.idling_resources.ActivityIdlingResosurce;
-import im.adamant.android.idling_resources.DialogFragmentIdlingResource;
+import im.adamant.android.idling_resources.FragmentIdlingResource;
 import im.adamant.android.ui.LoginScreen;
 import im.adamant.android.ui.MainScreen;
 import im.adamant.android.utils.InstrumentedTestConstants;
@@ -51,6 +51,11 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
         return false;
     }
 
+    @Override
+    protected void startActivity(String testName) {
+        activityRule.launchActivity(null);
+    }
+
     @Test
     @LargeTest
     public void uiNetSuccessLogin() {
@@ -58,7 +63,7 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
         LoginScreen activity = activityRule.getActivity();
         FragmentManager supportFragmentManager = activity.getSupportFragmentManager();
 
-        DialogFragmentIdlingResource dialogFragmentIdlingResource = new DialogFragmentIdlingResource(
+        FragmentIdlingResource dialogFragmentIdlingResource = new FragmentIdlingResource(
                 LoginScreen.BOTTOM_LOGIN_TAG,
                 supportFragmentManager
         );

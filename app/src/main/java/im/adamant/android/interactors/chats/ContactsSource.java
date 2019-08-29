@@ -31,6 +31,7 @@ public class ContactsSource {
     public Flowable<HashMap<String, Contact>> execute() {
         return apiKvsProvider
                 .get(Constants.KVS_CONTACT_LIST)
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .filter(transaction -> transaction.getTimestamp() != lastTimestamp)
                 .doOnNext(transaction -> lastTimestamp = transaction.getTimestamp())
                 .flatMap(transaction -> {
@@ -47,7 +48,6 @@ public class ContactsSource {
                         return Flowable.error(ex);
                     }
                 })
-                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+                .timeout(BuildConfig.DEFAULT_OPERATION_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     }
 }

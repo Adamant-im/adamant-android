@@ -108,7 +108,7 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     @Override
     public void showWalletScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new WalletScreen());
+        transaction.replace(R.id.main_screen_content, new WalletScreen(), WalletScreen.class.getName());
         transaction.commit();
     }
 
@@ -116,14 +116,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     public void showChatsScreen() {
         if (chatsScreen == null) { chatsScreen = new ChatsScreen(); }
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, chatsScreen);
+        transaction.replace(R.id.main_screen_content, chatsScreen, ChatsScreen.class.getName());
         transaction.commit();
     }
 
     @Override
     public void showSettingsScreen() {
         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.main_screen_content, new SettingsScreen());
+        transaction.replace(R.id.main_screen_content, new SettingsScreen(), SettingsScreen.class.getName());
         transaction.commit();
     }
 
@@ -131,6 +131,14 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        Intent intent = getIntent();
+        if (intent != null){
+            if (intent.hasExtra(ARG_CURRENT_SCREEN)){
+                String screenName = getIntent().getStringExtra(ARG_CURRENT_SCREEN);
+                presenter.goToFragment(screenName);
+            }
+        }
     }
 
     @Override

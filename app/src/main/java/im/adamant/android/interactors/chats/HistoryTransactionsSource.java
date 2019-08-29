@@ -47,6 +47,8 @@ public class HistoryTransactionsSource {
 
         return transactionFlowable
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .doOnNext(transactionList -> {
                     if (transactionList.isSuccess()) {
                         setCount(transactionList.getCount());
@@ -60,8 +62,6 @@ public class HistoryTransactionsSource {
                     } else {
                         return Flowable.error(new Exception(transactionList.getError()));
                     }
-                })
-                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+                });
     }
 }

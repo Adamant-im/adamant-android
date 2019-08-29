@@ -50,6 +50,8 @@ public class LastTransactionInChatsSource {
         transactionFlowable = api.getChatsByOffset(offset, limit, AdamantApi.ORDER_BY_TIMESTAMP_DESC);
 
         return transactionFlowable
+                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(transactionList -> {
                     if (transactionList.isSuccess()) {
@@ -67,8 +69,7 @@ public class LastTransactionInChatsSource {
                         return Flowable.error(new Exception(transactionList.getError()));
                     }
                 })
-                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error))
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+                .doOnError(error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error));
     }
 
     @MainThread

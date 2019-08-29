@@ -2,12 +2,16 @@ package im.adamant.android;
 
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.interactors.LogoutInteractor;
+import ru.terrakok.cicerone.Router;
 
 public class InstrumentationTestFacade {
     private LogoutInteractor logoutInteractor;
     private AdamantApiWrapper adamantApiWrapper;
 
-    public InstrumentationTestFacade(LogoutInteractor logoutInteractor, AdamantApiWrapper adamantApiWrapper) {
+    public InstrumentationTestFacade(
+            LogoutInteractor logoutInteractor,
+            AdamantApiWrapper adamantApiWrapper
+    ) {
         this.logoutInteractor = logoutInteractor;
         this.adamantApiWrapper = adamantApiWrapper;
     }

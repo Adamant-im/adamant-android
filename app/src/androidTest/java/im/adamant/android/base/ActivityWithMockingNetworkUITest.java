@@ -18,20 +18,9 @@ import im.adamant.android.InstrumentationTestFacade;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockWebServer;
 
-public abstract class ActivityWithMockingNetworkUITest<T extends Activity> extends BaseTest {
-    @Rule
-    public final ActivityTestRule<T> activityRule;
-
-    @Rule
-    public final TestName testNameRule = new TestName();
+public abstract class ActivityWithMockingNetworkUITest<T extends Activity> extends BaseTest<T> {
 
     protected MockWebServer mockWebServer = new MockWebServer();
-
-    public ActivityWithMockingNetworkUITest() {
-        activityRule = new ActivityTestRule<>(provideActivityClass(), true, false);
-    }
-
-    protected abstract Class<T> provideActivityClass();
 
     protected abstract Dispatcher provideDispatcher(String testName);
 
@@ -45,21 +34,16 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> exten
         mockWebServer.start(8080);
 
         Intents.init();
-
-        activityRule.launchActivity(null);
     }
 
     @After
     public void teardown() throws IOException {
-        super.teardown();
-        activityRule.finishActivity();
-
-        Intents.release();
-        mockWebServer.shutdown();
-
-        AdamantApplication application = (AdamantApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
         InstrumentationTestFacade instrumentationTestFacade = application.getInstrumentationTestFacade();
         instrumentationTestFacade.logout();
 
+        super.teardown();
+
+        Intents.release();
+        mockWebServer.shutdown();
     }
 }

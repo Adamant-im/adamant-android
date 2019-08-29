@@ -1,10 +1,16 @@
 package im.adamant.android.base;
 
+import android.app.Activity;
+
 import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.IdlingResource;
 import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
+
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -15,10 +21,24 @@ import im.adamant.android.InstrumentationTestFacade;
 import im.adamant.android.core.entities.Account;
 import im.adamant.android.utils.InstrumentedTestConstants;
 
-public abstract class BaseTest {
+public abstract class BaseTest<T extends Activity> {
+
+    @Rule
+    public final ActivityTestRule<T> activityRule;
+
+    @Rule
+    public final TestName testNameRule = new TestName();
+
     private Set<IdlingResource> registeredResources = new HashSet<>();
+    protected AdamantApplication application;
+
+    public BaseTest() {
+        activityRule = new ActivityTestRule<>(provideActivityClass(), true, false);
+    }
 
     protected abstract boolean isProtectedScreen();
+    protected abstract void startActivity(String testName);
+    protected abstract Class<T> provideActivityClass();
 
     protected void idlingBlock(IdlingResource idlingResource, Runnable runnable) {
         IdlingRegistry.getInstance().register(idlingResource);
@@ -28,8 +48,8 @@ public abstract class BaseTest {
     }
 
     public void setup() throws IOException {
+        application = (AdamantApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
         if (isProtectedScreen()) {
-            AdamantApplication application = (AdamantApplication) InstrumentationRegistry.getInstrumentation().getTargetContext().getApplicationContext();
             InstrumentationTestFacade instrumentationTestFacade = application.getInstrumentationTestFacade();
 
             Account account = new Account();
@@ -45,6 +65,8 @@ public abstract class BaseTest {
 
             instrumentationTestFacade.getApiWrapper().setAuthorization(account, keyPair);
         }
+
+        startActivity(testNameRule.getMethodName());
     }
 
     public void teardown() throws IOException {
@@ -52,5 +74,7 @@ public abstract class BaseTest {
         for (IdlingResource resource : registeredResources) {
             IdlingRegistry.getInstance().unregister(resource);
         }
+
+        activityRule.finishActivity();
     }
 }

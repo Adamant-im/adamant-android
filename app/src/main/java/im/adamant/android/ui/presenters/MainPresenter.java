@@ -2,6 +2,7 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import im.adamant.android.Screens;
 import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.AccountInteractor;
 import im.adamant.android.interactors.SwitchPushNotificationServiceInteractor;
@@ -52,6 +53,23 @@ public class MainPresenter extends ProtectedBasePresenter<MainView> {
         }
 
         onSelectedWalletScreen();
+    }
+
+    public void goToFragment(String name) {
+        switch (name) {
+            case Screens.WALLET_SCREEN : {
+                onSelectedWalletScreen();
+            }
+            break;
+            case Screens.CHATS_SCREEN : {
+                onSelectedChatsScreen();
+            }
+            break;
+            case Screens.SETTINGS_SCREEN : {
+                onSelectedSettingsScreen();
+            }
+            break;
+        }
     }
 
 

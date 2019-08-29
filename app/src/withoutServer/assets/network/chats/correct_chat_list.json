@@ -1,0 +1,69 @@
+{
+  "success": true,
+  "nodeTimestamp": 61564840,
+  "chats": [
+    {
+      "lastTransaction": {
+        "id": "8619248138475850790",
+        "height": 10840241,
+        "blockId": "16563737587614017905",
+        "type": 8,
+        "timestamp": 61564756,
+        "senderPublicKey": "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4",
+        "senderId": "U15650841420785452182",
+        "recipientId": "U1119781441708645832",
+        "recipientPublicKey": "716a3fe588d5b7130c8c3a553e4f421f01f7e72506e79638406008091ca32c20",
+        "amount": 0,
+        "fee": 100000,
+        "signatures": [],
+        "confirmations": null,
+        "asset": {
+          "chat": {
+            "message": "e7fc3d0c00972f1d08bc6cbd28860de18d03e78d7b9c4bb2a8",
+            "own_message": "9f9d876f7609571c114026ae412de347c095f34b4b8df29f",
+            "type": 1
+          }
+        }
+      },
+      "participants": [
+        {
+          "address": "U15650841420785452182",
+          "publicKey": "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4"
+        },
+        {
+          "address": "U1119781441708645832",
+          "publicKey": "716a3fe588d5b7130c8c3a553e4f421f01f7e72506e79638406008091ca32c20"
+        }
+      ]
+    },
+    {
+      "lastTransaction": {
+        "id": "12738792577025539780",
+        "height": 10440858,
+        "blockId": "8896761861382646679",
+        "type": 0,
+        "timestamp": 59541505,
+        "senderPublicKey": "cdab95b082b9774bd975677c868261618c7ce7bea97d02e0f56d483e30c077b6",
+        "senderId": "U15423595369615486571",
+        "recipientId": "U15650841420785452182",
+        "recipientPublicKey": "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4",
+        "amount": 10000000,
+        "fee": 50000000,
+        "signatures": [],
+        "confirmations": null,
+        "asset": {}
+      },
+      "participants": [
+        {
+          "address": "U15423595369615486571",
+          "publicKey": "cdab95b082b9774bd975677c868261618c7ce7bea97d02e0f56d483e30c077b6"
+        },
+        {
+          "address": "U15650841420785452182",
+          "publicKey": "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4"
+        }
+      ]
+    }
+  ],
+  "count": "2"
+}
