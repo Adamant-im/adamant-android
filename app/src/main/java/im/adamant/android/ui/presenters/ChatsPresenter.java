@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.Screens;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.helpers.AnimationUtils;
@@ -63,6 +64,16 @@ public class ChatsPresenter extends ProtectedBasePresenter<ChatsView> {
                 .subscribe();
 
         subscriptions.add(updatedDisposable);
+
+        Disposable contactsSubscription = chatInteractor
+                .loadContacts()
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> showChats(chatsStorage.getChatList()))
+                .repeatWhen((completed) -> completed.delay(BuildConfig.UPDATE_CONTACTS_SECONDS_DELAY, TimeUnit.SECONDS))
+                .retryWhen((completed) -> completed.delay(BuildConfig.UPDATE_CONTACTS_SECONDS_DELAY, TimeUnit.SECONDS))
+                .subscribe();
+
+        subscriptions.add(contactsSubscription);
     }
 
     @Override
