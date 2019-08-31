@@ -26,12 +26,13 @@ public abstract class ActivityWithMockingNetworkUITest<T extends Activity> exten
 
     @Before
     public void setup() throws IOException {
-        super.setup();
         Dispatcher dispatcher = provideDispatcher(testNameRule.getMethodName());
         if (dispatcher != null) {
             mockWebServer.setDispatcher(dispatcher);
         }
         mockWebServer.start(8080);
+
+        super.setup();
 
         Intents.init();
     }

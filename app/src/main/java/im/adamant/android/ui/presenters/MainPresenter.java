@@ -30,14 +30,7 @@ public class MainPresenter extends ProtectedBasePresenter<MainView> {
     @Override
     protected void onFirstViewAttach() {
         super.onFirstViewAttach();
-        Disposable startLoading = chatInteractor
-                .startInitialLoading()
-                .subscribe(
-                        () -> {
-                        },
-                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
-                );
-        subscriptions.add(startLoading);
+        chatInteractor.startInitialLoading();
 
         PushNotificationServiceFacade currentFacade = pushNotificationServiceInteractor.getCurrentFacade();
         if (currentFacade != null) {
