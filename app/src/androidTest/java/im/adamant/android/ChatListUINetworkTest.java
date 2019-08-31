@@ -6,7 +6,8 @@ import com.azimolabs.conditionwatcher.ConditionWatcher;
 import org.junit.Test;
 
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
-import im.adamant.android.dispatchers.ErroneousChatDispatcher;
+import im.adamant.android.dispatchers.ChatListPeriodicTimeoutDispatcher;
+import im.adamant.android.dispatchers.ContactsListPeriodicTimeoutDispatcher;
 import im.adamant.android.idling_resources.InFragmentRecyclerViewNotEmptyWatchInstruction;
 import im.adamant.android.idling_resources.FragmentIdlingResource;
 import im.adamant.android.ui.MainScreen;
@@ -27,7 +28,15 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
 
     @Override
     protected Dispatcher provideDispatcher(String testName) {
-        return new ErroneousChatDispatcher(application);
+        switch (testName) {
+            case "uiNetChatlistTimeoutRestoring" : {
+                return new ChatListPeriodicTimeoutDispatcher(application);
+            }
+            case "uiNetContactlistTimeoutRestoring" : {
+                return new ContactsListPeriodicTimeoutDispatcher(application);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -57,6 +66,24 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
             onView(withRecyclerView(R.id.fragment_chats_rv_chats)
                     .atPositionOnView(0, R.id.list_item_chat_name))
                     .check(matches(withText("U1119781441708645832")));
+        });
+    }
+
+    @Test
+    public void uiNetContactlistTimeoutRestoring() throws Exception {
+        MainScreen activity = activityRule.getActivity();
+        FragmentIdlingResource chatListIdlingResource = new FragmentIdlingResource(
+                ChatsScreen.class.getName(),
+                activity.getSupportFragmentManager()
+        );
+
+        idlingBlock(chatListIdlingResource, () -> {
+            ConditionWatcher.waitForCondition(new InFragmentRecyclerViewNotEmptyWatchInstruction(
+                    activity.getSupportFragmentManager(), ChatsScreen.class.getName())
+            );
+            onView(withRecyclerView(R.id.fragment_chats_rv_chats)
+                    .atPositionOnView(0, R.id.list_item_chat_name))
+                    .check(matches(withText("TestContactName")));
         });
     }
 }

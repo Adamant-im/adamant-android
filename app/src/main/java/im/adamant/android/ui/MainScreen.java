@@ -101,15 +101,6 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
 
             return false;
         });
-
-        Intent intent = getIntent();
-        if (intent != null){
-            if (intent.hasExtra(ARG_CURRENT_SCREEN)) {
-                String screenName = getIntent().getStringExtra(ARG_CURRENT_SCREEN);
-
-                presenter.goToFragment(screenName);
-            }
-        }
     }
 
     //TODO: Don't recreate fragments
@@ -140,6 +131,15 @@ public class MainScreen extends BaseActivity implements MainView, HasSupportFrag
     protected void onResume() {
         super.onResume();
         navigatorHolder.setNavigator(navigator);
+
+        Intent intent = getIntent();
+        if (intent != null){
+            if (intent.hasExtra(ARG_CURRENT_SCREEN)) {
+                String screenName = getIntent().getStringExtra(ARG_CURRENT_SCREEN);
+                intent.removeExtra(ARG_CURRENT_SCREEN);
+                presenter.goToFragment(screenName);
+            }
+        }
     }
 
     @Override
