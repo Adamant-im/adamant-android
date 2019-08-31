@@ -58,7 +58,7 @@ public class LoginUINetworkTest extends ActivityWithMockingNetworkUITest<LoginSc
 
     @Test
     @LargeTest
-    public void uiNetSuccessLogin() {
+    public void uiNetSuccessLogin() throws Exception {
 
         LoginScreen activity = activityRule.getActivity();
         FragmentManager supportFragmentManager = activity.getSupportFragmentManager();

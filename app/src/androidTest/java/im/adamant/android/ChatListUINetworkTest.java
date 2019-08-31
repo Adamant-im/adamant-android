@@ -3,7 +3,6 @@ package im.adamant.android;
 import android.content.Intent;
 
 import com.azimolabs.conditionwatcher.ConditionWatcher;
-
 import org.junit.Test;
 
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
@@ -14,7 +13,7 @@ import im.adamant.android.ui.MainScreen;
 import im.adamant.android.ui.fragments.ChatsScreen;
 import okhttp3.mockwebserver.Dispatcher;
 
-import static androidx.test.espresso.Espresso.onData;
+import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static im.adamant.android.ui.MainScreen.ARG_CURRENT_SCREEN;
@@ -44,7 +43,7 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
     }
 
     @Test
-    public void uiNetContactsNotLoaded() {
+    public void uiNetChatlistTimeoutRestoring() throws Exception {
         MainScreen activity = activityRule.getActivity();
         FragmentIdlingResource chatListIdlingResource = new FragmentIdlingResource(
                 ChatsScreen.class.getName(),
@@ -52,18 +51,12 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
         );
 
         idlingBlock(chatListIdlingResource, () -> {
-            try {
-                ConditionWatcher.waitForCondition(new InFragmentRecyclerViewNotEmptyWatchInstruction(
-                        activity.getSupportFragmentManager(), ChatsScreen.class.getName())
-                );
-                onData(withRecyclerView(R.id.fragment_chats_rv_chats)
-                        .atPositionOnView(1, R.id.list_item_chat_name))
-                        .check(matches(withText("U1119781441708645832")));
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            ConditionWatcher.waitForCondition(new InFragmentRecyclerViewNotEmptyWatchInstruction(
+                    activity.getSupportFragmentManager(), ChatsScreen.class.getName())
+            );
+            onView(withRecyclerView(R.id.fragment_chats_rv_chats)
+                    .atPositionOnView(0, R.id.list_item_chat_name))
+                    .check(matches(withText("U1119781441708645832")));
         });
-
-//        Assert.assertEquals(1, 1);
     }
 }

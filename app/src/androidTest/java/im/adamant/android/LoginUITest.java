@@ -60,7 +60,7 @@ public class LoginUITest extends BaseTest<LoginScreen> {
 
     @Test
     @LargeTest
-    public void uiShowLoginFragment() {
+    public void uiShowLoginFragment() throws Exception {
         LoginScreen activity = mActivityRule.getActivity();
 
         onView(withId(R.id.activity_login_btn_login)).perform(click());

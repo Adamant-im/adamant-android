@@ -15,6 +15,7 @@ import org.junit.rules.TestName;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import im.adamant.android.AdamantApplication;
 import im.adamant.android.InstrumentationTestFacade;
@@ -40,7 +41,7 @@ public abstract class BaseTest<T extends Activity> {
     protected abstract void startActivity(String testName);
     protected abstract Class<T> provideActivityClass();
 
-    protected void idlingBlock(IdlingResource idlingResource, Runnable runnable) {
+    protected void idlingBlock(IdlingResource idlingResource, Exceptionable runnable) throws Exception {
         IdlingRegistry.getInstance().register(idlingResource);
         registeredResources.add(idlingResource);
         runnable.run();
@@ -76,5 +77,10 @@ public abstract class BaseTest<T extends Activity> {
         }
 
         activityRule.finishActivity();
+    }
+
+    @FunctionalInterface
+    public interface Exceptionable {
+        void run() throws Exception;
     }
 }
