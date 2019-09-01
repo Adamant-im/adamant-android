@@ -4,6 +4,7 @@ package im.adamant.android.core;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
@@ -114,7 +115,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
 
@@ -126,7 +128,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     //TODO: refactor duplicate code. May be use transformation
@@ -142,7 +145,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<MessageList> getMessages(String companionAddress, String order) {
@@ -153,7 +157,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset, String order) {
@@ -170,7 +175,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<PublicKeyResponse> getPublicKey(String address) {
@@ -179,7 +185,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(publicKeyResponse -> calcDeltas(publicKeyResponse.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionWasNormalized<TransactionChatAsset>> getNormalizedTransaction(UnnormalizedTransactionMessage unnormalizedTransactionMessage) {
@@ -235,7 +242,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionList> getAdamantTransactions(int type, String order) {
@@ -244,7 +252,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(String order) {
@@ -253,7 +262,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(int type, int fromHeight, int offset, String order) {
@@ -262,7 +272,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(int fromHeight, int offset, String order) {
@@ -271,7 +282,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public Flowable<TransactionWasProcessed> sendAdmTransferTransaction(ProcessTransaction transaction) {
@@ -287,7 +299,8 @@ public class AdamantApiWrapper {
                 .subscribeOn(Schedulers.io())
                 .doOnError(this::checkNodeError)
                 .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
     }
 
     public boolean isAuthorized() {

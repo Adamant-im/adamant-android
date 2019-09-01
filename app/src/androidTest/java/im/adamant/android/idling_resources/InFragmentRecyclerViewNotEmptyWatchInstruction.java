@@ -11,12 +11,20 @@ import im.adamant.android.R;
 import im.adamant.android.ui.fragments.ChatsScreen;
 
 public class InFragmentRecyclerViewNotEmptyWatchInstruction extends Instruction {
-    private FragmentManager fragmentManager;
-    private String fragmentTag;
+    protected FragmentManager fragmentManager;
+    protected String fragmentTag;
+    protected int recyclerViewResource;
 
-    public InFragmentRecyclerViewNotEmptyWatchInstruction(FragmentManager fragmentManager, String fragmentTag) {
+    protected RecyclerView loadedRecyclerView;
+
+    public InFragmentRecyclerViewNotEmptyWatchInstruction(
+            FragmentManager fragmentManager,
+            String fragmentTag,
+            int recyclerViewResource
+    ) {
         this.fragmentManager = fragmentManager;
         this.fragmentTag = fragmentTag;
+        this.recyclerViewResource = recyclerViewResource;
     }
 
     @Override
@@ -31,10 +39,10 @@ public class InFragmentRecyclerViewNotEmptyWatchInstruction extends Instruction 
         View view = screen.getView();
 
         if (view == null) { return false; }
-        RecyclerView recyclerView = (RecyclerView)view.findViewById(R.id.fragment_chats_rv_chats);
+        loadedRecyclerView = (RecyclerView)view.findViewById(recyclerViewResource);
 
-        if (recyclerView == null) { return false; }
-        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        if (loadedRecyclerView == null) { return false; }
+        RecyclerView.Adapter adapter = loadedRecyclerView.getAdapter();
 
         if (adapter == null) { return false; }
         return adapter.getItemCount() > 0;

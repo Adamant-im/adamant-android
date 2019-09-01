@@ -66,8 +66,6 @@ public abstract class BaseTest<T extends Activity> {
 
             instrumentationTestFacade.getApiWrapper().setAuthorization(account, keyPair);
         }
-
-        startActivity(testNameRule.getMethodName());
     }
 
     public void teardown() throws IOException {

@@ -28,6 +28,6 @@ public class ContactsListPeriodicTimeoutDispatcher extends BasePeriodicTimeoutDi
 
     @Override
     protected int provideAttempts() {
-        return 3;
+        return 1;
     }
 }

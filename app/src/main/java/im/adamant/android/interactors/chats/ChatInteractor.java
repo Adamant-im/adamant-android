@@ -115,7 +115,6 @@ public class ChatInteractor {
                         loadingChatsFlowable = null;
                         currentPage++;
                     })
-                    .retry(throwable -> throwable instanceof IOException)
                     .doOnError(e -> {
                         loadingChatsFlowable = null;
                         if(!(e instanceof IOException)){

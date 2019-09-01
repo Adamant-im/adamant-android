@@ -28,19 +28,16 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 @RunWith(AndroidJUnit4.class)
 public class LoginUITest extends BaseTest<LoginScreen> {
 
-    @Rule
-    public final ActivityTestRule<LoginScreen> mActivityRule = new ActivityTestRule<>(LoginScreen.class, true, false);
-
     @Before
     public void before() {
         Intents.init();
-        mActivityRule.launchActivity(null);
+        startActivity(testNameRule.getMethodName());
     }
 
     @After
     public void after() {
         Intents.release();
-        mActivityRule.finishActivity();
+        activityRule.finishActivity();
     }
 
     @Override
@@ -61,7 +58,7 @@ public class LoginUITest extends BaseTest<LoginScreen> {
     @Test
     @LargeTest
     public void uiShowLoginFragment() throws Exception {
-        LoginScreen activity = mActivityRule.getActivity();
+        LoginScreen activity = activityRule.getActivity();
 
         onView(withId(R.id.activity_login_btn_login)).perform(click());
 

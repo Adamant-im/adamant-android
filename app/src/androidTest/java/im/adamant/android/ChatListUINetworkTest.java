@@ -8,6 +8,7 @@ import org.junit.Test;
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
 import im.adamant.android.dispatchers.ChatListPeriodicTimeoutDispatcher;
 import im.adamant.android.dispatchers.ContactsListPeriodicTimeoutDispatcher;
+import im.adamant.android.idling_resources.InFragmentRecyclerViewHasTextWatchInstruction;
 import im.adamant.android.idling_resources.InFragmentRecyclerViewNotEmptyWatchInstruction;
 import im.adamant.android.idling_resources.FragmentIdlingResource;
 import im.adamant.android.ui.MainScreen;
@@ -61,8 +62,10 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
 
         idlingBlock(chatListIdlingResource, () -> {
             ConditionWatcher.waitForCondition(new InFragmentRecyclerViewNotEmptyWatchInstruction(
-                    activity.getSupportFragmentManager(), ChatsScreen.class.getName())
-            );
+                    activity.getSupportFragmentManager(),
+                    ChatsScreen.class.getName(),
+                    R.id.fragment_chats_rv_chats
+            ));
             onView(withRecyclerView(R.id.fragment_chats_rv_chats)
                     .atPositionOnView(0, R.id.list_item_chat_name))
                     .check(matches(withText("U1119781441708645832")));
@@ -78,9 +81,14 @@ public class ChatListUINetworkTest extends ActivityWithMockingNetworkUITest<Main
         );
 
         idlingBlock(chatListIdlingResource, () -> {
-            ConditionWatcher.waitForCondition(new InFragmentRecyclerViewNotEmptyWatchInstruction(
-                    activity.getSupportFragmentManager(), ChatsScreen.class.getName())
-            );
+            ConditionWatcher.waitForCondition(new InFragmentRecyclerViewHasTextWatchInstruction(
+                    activity.getSupportFragmentManager(),
+                    ChatsScreen.class.getName(),
+                    R.id.fragment_chats_rv_chats,
+                    R.id.list_item_chat_name,
+                    0,
+                    "TestContactName"
+            ));
             onView(withRecyclerView(R.id.fragment_chats_rv_chats)
                     .atPositionOnView(0, R.id.list_item_chat_name))
                     .check(matches(withText("TestContactName")));
