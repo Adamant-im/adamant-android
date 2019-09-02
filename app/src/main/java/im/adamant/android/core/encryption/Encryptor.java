@@ -40,7 +40,7 @@ public class Encryptor {
             decryptedMessage = sodium.cryptoBoxOpenEasy(message, nonceBytes, curve25519KeyPair);
         } catch (SodiumException e) {
             LoggerHelper.e(getClass().getSimpleName(), e.getMessage(), e);
-            throw  new EncryptionException("Could not decrypt message");
+            throw new EncryptionException("Could not decrypt message");
 
         }
 

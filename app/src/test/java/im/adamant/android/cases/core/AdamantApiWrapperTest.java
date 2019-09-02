@@ -11,9 +11,11 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,11 +27,19 @@ import im.adamant.android.core.DefaultAdamantApiBuilderImpl;
 import im.adamant.android.core.AdamantApiWrapper;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
+import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.responses.Authorization;
+import im.adamant.android.core.responses.ChatList;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.subscribers.TestSubscriber;
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
+import retrofit2.HttpException;
+import retrofit2.Response;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class AdamantApiWrapperTest {
