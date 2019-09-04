@@ -1,8 +1,9 @@
 package im.adamant.android.core.responses;
 
 import im.adamant.android.core.entities.Account;
+import im.adamant.android.core.entities.HasNodeTimestamp;
 
-public class Authorization {
+public class Authorization implements HasNodeTimestamp {
     private int nodeTimestamp;
     private boolean success;
     private Account account;

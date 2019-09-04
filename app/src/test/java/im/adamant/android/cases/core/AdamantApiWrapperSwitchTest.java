@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import im.adamant.android.BuildConfig;
 import im.adamant.android.TestConstants;
 import im.adamant.android.core.AdamantApi;
 import im.adamant.android.core.AdamantApiWrapper;
@@ -28,6 +29,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.TestScheduler;
 import io.reactivex.subscribers.TestSubscriber;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -76,11 +78,13 @@ public class AdamantApiWrapperSwitchTest {
         when(keyGenerator.getKeyPairFromPassPhrase(TestConstants.TEST_PASS_PHRASE))
                 .thenReturn(new KeyPair(TestConstants.TEST_PUBLIC_KEY, TestConstants.TEST_SECRET_KEY));
 
-        AdamantApiWrapper wrapper = new AdamantApiWrapper(apiBuilder, keyGenerator);
+        TestScheduler scheduler = new TestScheduler();
+        AdamantApiWrapper wrapper = new AdamantApiWrapper(apiBuilder, keyGenerator, scheduler);
 
-        Authorization authorization = wrapper
+        wrapper
                 .authorize(TestConstants.TEST_PASS_PHRASE)
-                .blockingFirst();
+                .subscribe();
+        scheduler.advanceTimeBy(1, TimeUnit.SECONDS);
 
         TestSubscriber<ChatList> subscriber = new TestSubscriber<>();
 
@@ -88,7 +92,7 @@ public class AdamantApiWrapperSwitchTest {
                 .getChats(AdamantApi.ORDER_BY_TIMESTAMP_ASC)
                 .subscribe(subscriber);
 
-        subscriber.awaitTerminalEvent(60, TimeUnit.SECONDS);
+        scheduler.advanceTimeBy(AdamantApi.SYNCHRONIZE_DELAY_SECONDS * (2 + 1), TimeUnit.SECONDS);
         subscriber.assertValue(chatList);
     }
 
@@ -124,11 +128,11 @@ public class AdamantApiWrapperSwitchTest {
 
         mockedApi = mock(AdamantApi.class);
 
-        when(mockedApi.authorize(any(String.class)))
-                .thenReturn(Flowable.just(authorization));
-
         int cnt = counter.get();
-        if (cnt < 2) {
+        if (cnt < 1) {
+            when(mockedApi.authorize(any(String.class)))
+                    .thenReturn(Flowable.just(authorization));
+
             when(
                     mockedApi.getChats(
                         any(String.class),

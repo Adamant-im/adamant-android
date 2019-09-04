@@ -2,10 +2,11 @@ package im.adamant.android.core.responses;
 
 import java.util.List;
 
+import im.adamant.android.core.entities.HasNodeTimestamp;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
-public class ParametrizedTransactionList<Asset extends TransactionAsset> {
+public class ParametrizedTransactionList<Asset extends TransactionAsset> implements HasNodeTimestamp {
     private int nodeTimestamp;
     private boolean success;
     private List<Transaction<Asset>> transactions;

@@ -8,6 +8,7 @@ public interface Constants {
     String ADAMANT_SYSTEM_NOTIFICATION_CHANNEL_ID = "adamant_system_notification";
     String ADAMANT_DEFAULT_NOTIFICATION_CHANNEL_ID = "adamant_default_notification";
     String UI_SCHEDULER = "ui_scheduler";
+    String IO_SCHEDULER = "io_scheduler";
     String KEY = "key";
     String ADDRESS = "address";
     String PASSPHRASE = "passphrase";

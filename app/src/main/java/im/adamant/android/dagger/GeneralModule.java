@@ -24,6 +24,7 @@ import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.LogoutInteractor;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import ru.terrakok.cicerone.Cicerone;
 import ru.terrakok.cicerone.NavigatorHolder;
 import ru.terrakok.cicerone.Router;
@@ -89,6 +90,13 @@ public abstract class GeneralModule {
     @Provides
     public static Scheduler provideUIObserveScheduler() {
         return AndroidSchedulers.mainThread();
+    }
+
+    @Named(Constants.IO_SCHEDULER)
+    @Singleton
+    @Provides
+    public static Scheduler provideIoObserveScheduler() {
+        return Schedulers.io();
     }
 
     @Singleton

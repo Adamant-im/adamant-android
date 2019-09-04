@@ -1,6 +1,8 @@
 package im.adamant.android.core.responses;
 
-public class OperationComplete {
+import im.adamant.android.core.entities.HasNodeTimestamp;
+
+public class OperationComplete implements HasNodeTimestamp {
     private int nodeTimestamp;
     private boolean success;
     private String transactionId;

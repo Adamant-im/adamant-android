@@ -32,6 +32,7 @@ import im.adamant.android.core.responses.Authorization;
 import im.adamant.android.core.responses.ChatList;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.TestSubscriber;
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -63,7 +64,7 @@ public class AdamantApiWrapperTest {
     public void multiThreadingReadAndWriteAuthorization() throws Exception {
         configureMocks();
 
-        AdamantApiWrapper wrapper = new AdamantApiWrapper(apiBuilder, keyGenerator);
+        AdamantApiWrapper wrapper = new AdamantApiWrapper(apiBuilder, keyGenerator, Schedulers.io());
         provideAuthorizationRunnable(wrapper).call();
 
         List<Callable<Boolean>> tasks = new ArrayList<>(Collections.nCopies(TASK_COUNT, provideAuthorizationRunnable(wrapper)));

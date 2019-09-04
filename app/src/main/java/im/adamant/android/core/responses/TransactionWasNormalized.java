@@ -1,9 +1,10 @@
 package im.adamant.android.core.responses;
 
+import im.adamant.android.core.entities.HasNodeTimestamp;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
-public class TransactionWasNormalized<T extends TransactionAsset> {
+public class TransactionWasNormalized<T extends TransactionAsset> implements HasNodeTimestamp {
     private int nodeTimestamp;
     private boolean success;
     private Transaction<T> transaction;

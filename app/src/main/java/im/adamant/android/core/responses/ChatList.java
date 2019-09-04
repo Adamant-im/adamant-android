@@ -2,11 +2,12 @@ package im.adamant.android.core.responses;
 
 import java.util.List;
 
+import im.adamant.android.core.entities.HasNodeTimestamp;
 import im.adamant.android.core.entities.Participant;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.transaction_assets.TransactionAsset;
 
-public class ChatList {
+public class ChatList implements HasNodeTimestamp {
 
     public static class ChatDescription {
         private Transaction<? super TransactionAsset> lastTransaction;

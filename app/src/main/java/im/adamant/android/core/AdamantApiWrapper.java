@@ -4,11 +4,16 @@ package im.adamant.android.core;
 import com.goterl.lazycode.lazysodium.utils.KeyPair;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.xml.transform.Transformer;
 
 import im.adamant.android.BuildConfig;
 import im.adamant.android.core.encryption.AdamantKeyGenerator;
 import im.adamant.android.core.entities.Account;
+import im.adamant.android.core.entities.HasNodeTimestamp;
 import im.adamant.android.core.entities.Transaction;
 import im.adamant.android.core.entities.UnnormalizedTransactionMessage;
 import im.adamant.android.core.entities.transaction_assets.TransactionChatAsset;
@@ -26,8 +31,12 @@ import im.adamant.android.core.responses.TransactionDetailsResponse;
 import im.adamant.android.core.responses.TransactionList;
 import im.adamant.android.core.responses.TransactionWasNormalized;
 import im.adamant.android.core.responses.TransactionWasProcessed;
+import im.adamant.android.helpers.LoggerHelper;
 import io.reactivex.Completable;
 import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
@@ -46,9 +55,12 @@ public class AdamantApiWrapper {
     private volatile int serverTimeDelta;
     private int errorsCount;
 
-    public AdamantApiWrapper(AdamantApiBuilder apiBuilder, AdamantKeyGenerator keyGenerator) {
+    private Scheduler scheduler;
+
+    public AdamantApiWrapper(AdamantApiBuilder apiBuilder, AdamantKeyGenerator keyGenerator, Scheduler scheduler) {
         this.apiBuilder = apiBuilder;
         this.keyGenerator = keyGenerator;
+        this.scheduler = scheduler;
 
         buildApi();
     }
@@ -61,16 +73,12 @@ public class AdamantApiWrapper {
     }
 
     public Flowable<Authorization> authorize(KeyPair tempKeyPair) {
-        return api
-                .authorize(tempKeyPair.getPublicKeyString().toLowerCase())
-                .subscribeOn(Schedulers.io())
+        return Flowable.defer(() -> api.authorize(tempKeyPair.getPublicKeyString().toLowerCase()))
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
                 }))
-                .doOnError(this::checkNodeError)
-                .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .compose(requestControl());
     }
 
     public void setAuthorization(Account account, KeyPair keyPair) {
@@ -80,9 +88,7 @@ public class AdamantApiWrapper {
 
     public Completable updateBalance(){
         try {
-            return api
-                    .authorize(keyPair.getPublicKeyString().toLowerCase())
-                    .subscribeOn(Schedulers.io())
+            return Flowable.defer(() -> api.authorize(keyPair.getPublicKeyString().toLowerCase()))
                     .doOnNext((authorization -> {
                         if (authorization.getAccount() == null){return;}
 
@@ -95,41 +101,29 @@ public class AdamantApiWrapper {
                         this.account.setUnconfirmedBalance(authorization.getAccount().getUnconfirmedBalance());
 
                     }))
-                    .doOnError(this::checkNodeError)
-                    .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
-                    .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
+                    .compose(requestControl())
                     .ignoreElements();
         } catch (Exception ex){
             return Completable.error(ex);
         }
-
-
     }
 
     public Flowable<TransactionList> getMessageTransactionsByHeightAndOffset(int height, int offset, String order) {
 
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return api
-                .getMessageTransactions(account.getAddress(), height, offset, order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getMessageTransactions(account.getAddress(), height, offset, order))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
 
     public Flowable<ChatList> getChats(String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return api
-                .getChats(account.getAddress(), order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getChats(account.getAddress(), order))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     //TODO: refactor duplicate code. May be use transformation
@@ -140,25 +134,17 @@ public class AdamantApiWrapper {
     public Flowable<ChatList> getChatsByOffset(int offset,int limit, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return api
-                .getChatsByOffset(account.getAddress(), offset,limit, order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getChatsByOffset(account.getAddress(), offset,limit, order))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<MessageList> getMessages(String companionAddress, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return api
-                .getMessages(account.getAddress(), companionAddress, order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(chatList -> calcDeltas(chatList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getMessages(account.getAddress(), companionAddress, order))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset, String order) {
@@ -170,41 +156,25 @@ public class AdamantApiWrapper {
     public Flowable<MessageList> getMessagesByOffset(String companionAddress, int offset,int limit, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
 
-        return api
-                .getMessagesByOffset(account.getAddress(), companionAddress, offset, limit, order)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionList -> calcDeltas(transactionList.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getMessagesByOffset(account.getAddress(), companionAddress, offset, limit, order))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<PublicKeyResponse> getPublicKey(String address) {
-        return api
-                .getPublicKey(address)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(publicKeyResponse -> calcDeltas(publicKeyResponse.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getPublicKey(address))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionWasNormalized<TransactionChatAsset>> getNormalizedTransaction(UnnormalizedTransactionMessage unnormalizedTransactionMessage) {
-        return api
-                .getNormalizedTransaction(unnormalizedTransactionMessage)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionWasNormalized -> calcDeltas(transactionWasNormalized.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+        return Flowable.defer(() -> api.getNormalizedTransaction(unnormalizedTransactionMessage))
+                .compose(requestControl());
     }
 
     public Flowable<TransactionWasProcessed> processTransaction(ProcessTransaction transaction) {
-        return api
-                .processTransaction(transaction)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(transactionWasProcessed -> calcDeltas(transactionWasProcessed.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+        return Flowable.defer(() -> api.processTransaction(transaction))
+                .compose(requestControl());
     }
 
     public Flowable<Authorization> createNewAccount(CharSequence passPhrase) {
@@ -213,23 +183,17 @@ public class AdamantApiWrapper {
         NewAccount newAccount = new NewAccount();
         newAccount.setPublicKey(tempKeyPair.getPublicKeyString().toLowerCase());
 
-        return api.createNewAccount(newAccount)
-                .subscribeOn(Schedulers.io())
+        return Flowable.defer(() -> api.createNewAccount(newAccount))
                 .doOnNext((authorization -> {
                     this.account = authorization.getAccount();
                     this.keyPair = tempKeyPair;
                 }))
-                .doOnError(this::checkNodeError)
-                .doOnNext(authorization -> calcDeltas(authorization.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+                .compose(requestControl());
     }
 
     public Flowable<OperationComplete> sendToKeyValueStorage(Transaction<TransactionStateAsset> transaction) {
-        return api.sendToKeyValueStorage(new ProcessTransaction(transaction))
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+        return Flowable.defer(() -> api.sendToKeyValueStorage(new ProcessTransaction(transaction)))
+                .compose(requestControl());
     }
 
     public Flowable<ParametrizedTransactionList<TransactionStateAsset>> getFromKeyValueStorage(
@@ -238,69 +202,52 @@ public class AdamantApiWrapper {
             String order,
             int limit
     ) {
-        return api.getFromKeyValueStorage(senderId, key, order, limit)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getFromKeyValueStorage(senderId, key, order, limit))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionList> getAdamantTransactions(int type, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantTransactions(account.getAddress(), type, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+
+        return Flowable.defer(() -> api.getAdamantTransactions(account.getAddress(), type, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantAllFinanceTransactions(account.getAddress(),1, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+
+        return Flowable.defer(() -> api.getAdamantAllFinanceTransactions(account.getAddress(),1, 1, 0, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(int type, int fromHeight, int offset, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+
+        return Flowable.defer(() -> api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionList> getAdamantAllFinanceTransactions(int fromHeight, int offset, String order) {
         if (!isAuthorized()){return Flowable.error(new NotAuthorizedException("Not authorized"));}
-        return api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+
+        return Flowable.defer(() -> api.getAdamantAllFinanceTransactions(account.getAddress(), fromHeight, 1, offset, order, AdamantApi.DEFAULT_TRANSACTIONS_LIMIT))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public Flowable<TransactionWasProcessed> sendAdmTransferTransaction(ProcessTransaction transaction) {
-        return api.sendAdmTransferTransaction(transaction)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+        return Flowable.defer(() -> api.sendAdmTransferTransaction(transaction))
+                .compose(requestControl());
     }
 
     public Flowable<TransactionDetailsResponse> getTransactionDetails(String transactionId){
-        return api.getTransactionDetails(transactionId)
-                .subscribeOn(Schedulers.io())
-                .doOnError(this::checkNodeError)
-                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
-                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}})
-                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS));
+        return Flowable.defer(() -> api.getTransactionDetails(transactionId))
+                .compose(requestControl())
+                .compose(retryPolitics());
     }
 
     public boolean isAuthorized() {
@@ -355,7 +302,9 @@ public class AdamantApiWrapper {
         if ((e instanceof IOException) || (e instanceof HttpException)){
             errorsCount++;
 
-            if (errorsCount > BuildConfig.MAX_ERRORS_FOR_CHANGE_NODE){
+            LoggerHelper.e(getClass().getName(), e.getMessage(), e);
+
+            if (errorsCount >= BuildConfig.MAX_ERRORS_FOR_CHANGE_NODE){
                 errorsCount = 0;
                 buildApi();
             }
@@ -372,5 +321,18 @@ public class AdamantApiWrapper {
 
     public int getEpoch() {
         return (int) ((System.currentTimeMillis() - AdamantApi.BASE_TIMESTAMP) / 1000);
+    }
+
+    private <T extends HasNodeTimestamp> FlowableTransformer<T, T> requestControl() {
+        return observable -> observable
+                .subscribeOn(scheduler)
+                .doOnError(this::checkNodeError)
+                .doOnNext(operationComplete -> calcDeltas(operationComplete.getNodeTimestamp()))
+                .doOnNext((i) -> {if(errorsCount > 0) {errorsCount--;}});
+    }
+
+    private <T> FlowableTransformer<T, T> retryPolitics() {
+        return observable -> observable
+                .retryWhen(throwableFlowable -> throwableFlowable.delay(AdamantApi.SYNCHRONIZE_DELAY_SECONDS, TimeUnit.SECONDS, scheduler));
     }
 }
