@@ -167,6 +167,7 @@ public class AdamantApiWrapper {
                 .compose(retryPolitics());
     }
 
+    //TODO: Remove normalization procedure
     public Flowable<TransactionWasNormalized<TransactionChatAsset>> getNormalizedTransaction(UnnormalizedTransactionMessage unnormalizedTransactionMessage) {
         return Flowable.defer(() -> api.getNormalizedTransaction(unnormalizedTransactionMessage))
                 .compose(requestControl());
