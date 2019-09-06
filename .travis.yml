@@ -42,7 +42,7 @@ before_script:
   - unzip -o files.zip
   - mv google-services.json app/google-services.json
 script:
-  - "./gradlew clean :app:generateWithServerReleaseSources :app:assembleWithServerRelease -PdisablePreDex --stacktrace"
+  - "./gradlew clean test :app:generateWithServerReleaseSources :app:assembleWithServerRelease -PdisablePreDex --stacktrace"
 before_deploy:
   - cd app/build/outputs/apk/release
   - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks

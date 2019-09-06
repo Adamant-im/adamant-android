@@ -8,12 +8,18 @@ import org.robolectric.annotation.Config;
 
 import java.util.List;
 
+import im.adamant.android.TestApplication;
 import im.adamant.android.markdown.AdamantAddressEntity;
 import im.adamant.android.markdown.AdamantAddressExtractor;
 import im.adamant.android.shadows.LocaleChangerShadow;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = Config.TARGET_SDK, manifest = Config.NONE, shadows = {LocaleChangerShadow.class})
+@Config(
+        application = TestApplication.class,
+        sdk = Config.TARGET_SDK,
+        manifest = Config.NONE,
+        shadows = {LocaleChangerShadow.class}
+)
 public class AdamantAddressExtractorTest {
 
     @Test
@@ -24,6 +30,7 @@ public class AdamantAddressExtractorTest {
 
         List<AdamantAddressEntity> adamantAddressEntities = extractor.extractAdamantAddresses(addressString);
         Assert.assertNotNull(adamantAddressEntities);
+        Assert.assertTrue(adamantAddressEntities.size() > 0);
 
         AdamantAddressEntity adamantAddressEntity = adamantAddressEntities.get(0);
         Assert.assertNotNull(adamantAddressEntity);

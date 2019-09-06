@@ -28,6 +28,7 @@ public class AdamantAddressExtractor {
                 String paramsString = matcher.group(2);
                 if (paramsString != null){
                     Uri parsed = Uri.parse(paramsString);
+                    if (parsed == null) { continue; }
                     String label = parsed.getQueryParameter("label");
                     if (label != null){
                         adamantAddressEntity.setLabel(label);
