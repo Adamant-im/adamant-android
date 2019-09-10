@@ -23,7 +23,11 @@ public class ChatsStorage {
     private static final Lock chatsReadLock = chatsLock.readLock();
     private static final Lock chatsWriteLock = chatsLock.writeLock();
 
-    //TODO: Multithreaded access to properties can cause problems in the future
+    // ChatLock for messages and chats causes deadlock
+    private static final ReadWriteLock messagesLock = new ReentrantReadWriteLock();
+    private static final Lock messagesReadLock = messagesLock.readLock();
+    private static final Lock messagesWriteLock = messagesLock.writeLock();
+
     private HashMap<String, List<MessageListContent>> messagesByChats = new HashMap<>();
     private List<Chat> chats = new ArrayList<>();
     private Map<String, List<Long>> separators = new HashMap<>();
@@ -41,7 +45,7 @@ public class ChatsStorage {
     }
 
     public List<MessageListContent> getMessagesByCompanionId(String companionId) {
-        chatsReadLock.lock();
+        messagesReadLock.lock();
         try {
             List<MessageListContent> requestedMessages = messagesByChats.get(companionId);
 
@@ -49,7 +53,7 @@ public class ChatsStorage {
 
             return requestedMessages;
         } finally {
-            chatsReadLock.unlock();
+            messagesReadLock.unlock();
         }
     }
 
@@ -57,18 +61,18 @@ public class ChatsStorage {
         chatsWriteLock.lock();
         try {
             int index = chats.indexOf(chat);
-            if (index == -1){
+            if (index == -1) {
                 if (contacts != null) {
-                   Contact contact= contacts.get(chat.getCompanionId());
-                   if(contact!=null) {
+                   Contact contact = contacts.get(chat.getCompanionId());
+                   if(contact != null) {
                        String name = contact.getDisplayName();
-                       if(name!=null&&!name.isEmpty()){
+                       if(name != null && !name.isEmpty()) {
                            chat.setTitle(name);
                        }
                    }
                 }
                 chats.add(chat);
-                messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
+//                messagesByChats.put(chat.getCompanionId(), new ArrayList<>());
             }
         } finally {
             chatsWriteLock.unlock();
@@ -76,7 +80,7 @@ public class ChatsStorage {
     }
 
     public void addMessageToChat(MessageListContent message) {
-        chatsWriteLock.lock();
+        messagesWriteLock.lock();
         try {
             List<MessageListContent> messages = messagesByChats.get(message.getCompanionId());
 
@@ -86,7 +90,7 @@ public class ChatsStorage {
             }
 
             //If we sent this message and it's already in the list
-            if (!messages.contains(message)){
+            if (!messages.contains(message)) {
                 addSeparatorIfNeeded(messages, message);
                 messages.add(message);
             }
@@ -94,6 +98,7 @@ public class ChatsStorage {
             Chat chat = new Chat();
             chat.setCompanionId(message.getCompanionId());
 
+            chatsWriteLock.lock();
             if (message.getSupportedType() != SupportedMessageListContentType.SEPARATOR) {
                 int i = chats.indexOf(chat);
                 if (i >= 0){
@@ -103,11 +108,13 @@ public class ChatsStorage {
             }
         } finally {
             chatsWriteLock.unlock();
+            messagesWriteLock.unlock();
         }
     }
 
     public void updateLastMessages() {
         chatsWriteLock.lock();
+        messagesReadLock.lock();
         try {
             //Setting last message to chats
             //TODO: Think about how to remove this code, it is too resource-intensive
@@ -132,6 +139,7 @@ public class ChatsStorage {
                 Collections.sort(entry.getValue(), messageComparator);
             }
         } finally {
+            messagesReadLock.unlock();
             chatsWriteLock.unlock();
         }
     }
