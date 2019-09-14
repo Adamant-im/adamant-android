@@ -36,7 +36,7 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:paddingBottom="57dp" />
+        android:paddingBottom="50dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/activity_messages_cl_new_message_block"
