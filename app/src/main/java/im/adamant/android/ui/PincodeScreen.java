@@ -116,6 +116,7 @@ public class PincodeScreen extends BaseActivity implements PinCodeView, KeyPinAd
 
     @Override
     public void stopProcess(boolean success) {
+        //TODO: Обработай ошибку, сообщение или что-то типа того
         if (!success) {
             Animation outAnimation = AnimationUtils.makeInAnimation(this, false);
             keypadLayoutView.setAnimation(outAnimation);

@@ -9,6 +9,7 @@ cache:
   - "$HOME/.gradle/caches/"
   - "$HOME/.gradle/wrapper/"
   - "$HOME/.android/build-cache"
+  - "$HOME/google-cloud-sdk/"
 env:
   global:
   - ANDROID_API=28
@@ -41,8 +42,19 @@ before_script:
   - openssl aes-256-cbc -K $encrypted_4c1e3c09c6c3_key -iv $encrypted_4c1e3c09c6c3_iv -in files.zip.enc -out files.zip -d
   - unzip -o files.zip
   - mv google-services.json app/google-services.json
+  - gcloud version || true
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export $CLOUDSDK_CORE_DISABLE_PROMPTS; curl https://sdk.cloud.google.com | bash; fi
+  - source /home/travis/google-cloud-sdk/path.bash.inc # Add gcloud to $PATH
+  - gcloud version #check the version of gcloud
 script:
-  - "./gradlew clean test :app:generateWithServerReleaseSources :app:assembleWithServerRelease -PdisablePreDex --stacktrace"
+  - "./gradlew clean"
+  - "./gradlew test"
+  - "./gradlew clean :app:assembleWithoutServerRelease -PdisablePreDex --stacktrace"
+  - "gcloud firebase test android run --app app/build/outputs/apk/release/adamant.apk \
+      --device-ids=Nexus5 \
+      --os-version-ids=21 --locales=en_GB \
+      --orientations=portrait"
+  - "./gradlew clean :app:assembleWithServerRelease -PdisablePreDex --stacktrace"
 before_deploy:
   - cd app/build/outputs/apk/release
   - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks
