@@ -9,4 +9,7 @@ public interface InstrumentedTestConstants {
 
     String CHATROOMS_PATH = "/api/chatrooms/U15650841420785452182";
     String CONTACTS_PATH = "/api/states/get";
+    String NORMALIZE_PATH = "/api/chats/normalize";
+    String PROCESS_PATH = "/api/chats/process";
+    String ACCOUNT_PATH = "/api/accounts";
 }

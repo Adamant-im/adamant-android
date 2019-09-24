@@ -107,6 +107,7 @@
     <string name="fragment_settings_nodes">Управление нодами</string>
     <string name="fragment_settings_store_keypair">Сохранить авторизацию</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Подписаться на push-уведомления</string>
+    <string name="fragment_settings_tee_verifying">Проверка системы шифрования…</string>
     <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM за каждую смену токена</string>-->
     <string name="fragment_settings_success_saved">Настройки успешно сохранены</string>
 
@@ -174,6 +175,7 @@
     <string name="pincode_unconfirmed">Пин-коды не совпадают, попробуйте снова</string>
     <string name="pincode_exceeding_the_number_of_attempts">Превышение количества попыток ввода пин-кода. Осталось %d секунд</string>
     <string name="pincode_exceeded_limit">Превышение количества попыток ввода пин-кода. Пинкод был удален.</string>
+    <string name="unsubscribe_push_error">Отписка от уведомлений не удалась. Попробуйте снова.</string>
     <string name="tee_not_supported">Мы не сумели подтвердить что ваше устройство использует Trusted Environment Execution, сохранение авторизации может быть не безопасным.
         Некоторые устройства эмулируют TEE, посредством файлов доступных при наличии root доступа. Продолжить?</string>
 

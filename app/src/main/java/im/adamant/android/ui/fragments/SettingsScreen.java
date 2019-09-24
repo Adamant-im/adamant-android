@@ -86,6 +86,8 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
 
     Disposable storeKeypairViewDisposable;
 
+    private AlertDialog verifyingDialog;
+
     public SettingsScreen() {
         // Required empty public constructor
     }
@@ -209,6 +211,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         progressBarView.setVisibility(View.INVISIBLE);
     }
 
+    //TODO: REMOVE
     @Override
     public void setEnablePushServiceTypeOption(boolean value) {
 
@@ -247,6 +250,27 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
             builder.setPositiveButton(R.string.yes, (d, w) -> presenter.onSetCheckedStoreKeypair(true, true));
 
             builder.show();
+        }
+    }
+
+    @Override
+    public void showVerifyingDialog() {
+        AlertDialog.Builder builder = null;
+        FragmentActivity activity = getActivity();
+
+        if (activity != null) {
+            builder = new AlertDialog.Builder(activity);
+            builder.setMessage(R.string.fragment_settings_tee_verifying);
+            verifyingDialog = builder.create();
+            verifyingDialog.show();
+        }
+    }
+
+    @Override
+    public void hideVerifyingDialog() {
+        if (verifyingDialog != null) {
+            verifyingDialog.hide();
+            verifyingDialog = null;
         }
     }
 

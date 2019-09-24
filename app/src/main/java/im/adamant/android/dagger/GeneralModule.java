@@ -22,6 +22,7 @@ import im.adamant.android.core.retrofit.AdamantTransactonTypeAdapterFactory;
 import im.adamant.android.helpers.QrCodeHelper;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.LogoutInteractor;
+import im.adamant.android.interactors.SecurityInteractor;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -103,8 +104,9 @@ public abstract class GeneralModule {
     @Provides
     public static InstrumentationTestFacade provideInstrumentationTestFacade(
             LogoutInteractor logoutInteractor,
+            SecurityInteractor securityInteractor,
             AdamantApiWrapper adamantApiWrapper
     ) {
-        return new InstrumentationTestFacade(logoutInteractor, adamantApiWrapper);
+        return new InstrumentationTestFacade(logoutInteractor, securityInteractor, adamantApiWrapper);
     }
 }

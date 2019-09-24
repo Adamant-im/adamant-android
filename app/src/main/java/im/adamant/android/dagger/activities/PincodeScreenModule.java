@@ -5,6 +5,7 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import im.adamant.android.Screens;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.adapters.KeyPinAdapter;
 import im.adamant.android.ui.presenters.PincodePresenter;
@@ -22,8 +23,9 @@ public class PincodeScreenModule {
     @ActivityScope
     @Provides
     public static PincodePresenter providePincodePresenter(
-            SecurityInteractor securityInteractor
+            SecurityInteractor securityInteractor,
+            LogoutInteractor logoutInteractor
     ) {
-        return new PincodePresenter(securityInteractor);
+        return new PincodePresenter(securityInteractor, logoutInteractor);
     }
 }

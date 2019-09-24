@@ -71,9 +71,10 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
 
     public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
         if (value != securityInteractor.isKeyPairMustBeStored()) {
-
             if (value && !isUserConfirmed) {
+                getViewState().showVerifyingDialog();
                 boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
+                getViewState().hideVerifyingDialog();
 
                 if (!hardwareSecuredDevice) {
                     getViewState().showTEENotSupportedDialog();
@@ -85,9 +86,17 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.CREATE);
                 router.navigateTo(Screens.PINCODE_SCREEN, bundle);
-            }else {
-                securityInteractor.forceDropPassphrase()
-                        .subscribe();
+            } else {
+                Disposable drops = securityInteractor
+                        .forceDropPassphrase()
+                        .subscribe(
+                                () -> {},
+                                (error) -> {
+                                    getViewState().showMessage(R.string.unsubscribe_push_error);
+                                }
+                        );
+
+                subscriptions.add(drops);
             }
         }
     }

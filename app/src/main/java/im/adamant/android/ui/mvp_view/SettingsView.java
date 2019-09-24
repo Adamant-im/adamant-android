@@ -26,6 +26,12 @@ public interface SettingsView extends MvpView {
     void showTEENotSupportedDialog();
 
     @StateStrategyType(SkipStrategy.class)
+    void showVerifyingDialog();
+
+    @StateStrategyType(SkipStrategy.class)
+    void hideVerifyingDialog();
+
+    @StateStrategyType(SkipStrategy.class)
     void showMessage(String message);
 
     @StateStrategyType(SkipStrategy.class)

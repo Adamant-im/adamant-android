@@ -75,8 +75,8 @@ public class SecurityInteractor {
     }
 
     public Completable forceDropPassphrase() {
-        return pushNotificationServiceInteractor
-                .resetNotificationFacade(true)
+        return Completable.defer(() -> pushNotificationServiceInteractor
+                .resetNotificationFacade(true))
                 .doOnComplete(this::clearSettings);
     }
 

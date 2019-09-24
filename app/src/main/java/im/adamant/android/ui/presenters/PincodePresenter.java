@@ -5,6 +5,7 @@ import com.arellomobile.mvp.InjectViewState;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
+import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import im.adamant.android.ui.mvp_view.PinCodeView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -13,13 +14,18 @@ import io.reactivex.disposables.Disposable;
 @InjectViewState
 public class PincodePresenter extends BasePresenter<PinCodeView> {
     private SecurityInteractor securityInteractor;
+    private LogoutInteractor logoutInteractor;
     private PinCodeView.MODE mode = PinCodeView.MODE.ACCESS_TO_APP;
     private String pincodeForConfirmation;
     private int attemptsCount = 0;
     private Disposable currentOperation;
 
-    public PincodePresenter(SecurityInteractor securityInteractor) {
+    public PincodePresenter(
+            SecurityInteractor securityInteractor,
+            LogoutInteractor logoutInteractor
+    ) {
         this.securityInteractor = securityInteractor;
+        this.logoutInteractor = logoutInteractor;
     }
 
     public void setMode(PinCodeView.MODE mode) {
@@ -104,8 +110,8 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                     getViewState().stopProcess(false);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                     if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
-                                        securityInteractor.forceDropPassphrase()
-                                                .subscribe();
+                                        //TODO: Do this in rx-stream
+                                        logoutInteractor.logout();
                                         getViewState().stopProcess(true);
                                         getViewState().showError(R.string.pincode_exceeded_limit);
                                         getViewState().goToSplash();
@@ -127,20 +133,23 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 break;
             case ACCESS_TO_APP:
                 getViewState().startProcess();
-                Disposable pincodeReset = securityInteractor
-                        .forceDropPassphrase()
+                Disposable pincodeReset = logoutInteractor
+                        .getEventBus()
                         .subscribe(
-                                () -> {
+                                (irrelevant) -> {
                                     getViewState().stopProcess(true);
                                     getViewState().goToSplash();
                                 },
                                 (error) -> {
+                                    getViewState().showError(R.string.unsubscribe_push_error);
                                     getViewState().stopProcess(false);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
                                 }
                         );
 
                 subscriptions.add(pincodeReset);
+
+                logoutInteractor.logout();
         }
     }
 

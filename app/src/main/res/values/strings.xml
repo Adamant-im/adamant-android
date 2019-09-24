@@ -108,6 +108,7 @@
     <string name="fragment_settings_version">Version: %s</string>
     <string name="fragment_settings_store_keypair">Stay logged in</string>
     <string name="fragment_settings_subscribe_to_push_notifications">Push notifications</string>
+    <string name="fragment_settings_tee_verifying">Verifying encryption system…</string>
     <!--<string name="fragment_settings_subscribe_to_push_notifications_warning">0.001 ADM for each change of the token</string>-->
     <string name="fragment_settings_success_saved">Settings saved successfully</string>
 
@@ -147,6 +148,7 @@
     <string name="pincode_unconfirmed">PIN codes do not match, try again</string>
     <string name="pincode_exceeding_the_number_of_attempts">Exceeding the number of attempts to enter a pin code. %d seconds left.</string>
     <string name="pincode_exceeded_limit">Exceeding the number of attempts to enter a pin code. Pin code was cleared.</string>
+    <string name="unsubscribe_push_error">Failed to disable Push notification. Try again.</string>
     <string name="tee_not_supported">We were unable to confirm that your device is using Trusted Environment Execution, saving the authorization may not be secure.
         Some devices emulate TEE using files available with root access. Continue?</string>
 
