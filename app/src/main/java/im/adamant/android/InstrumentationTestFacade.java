@@ -1,6 +1,7 @@
 package im.adamant.android;
 
 import im.adamant.android.core.AdamantApiWrapper;
+import im.adamant.android.helpers.Settings;
 import im.adamant.android.interactors.LogoutInteractor;
 import im.adamant.android.interactors.SecurityInteractor;
 import ru.terrakok.cicerone.Router;
@@ -9,15 +10,18 @@ public class InstrumentationTestFacade {
     private LogoutInteractor logoutInteractor;
     private SecurityInteractor securityInteractor;
     private AdamantApiWrapper adamantApiWrapper;
+    private Settings settings;
 
     public InstrumentationTestFacade(
             LogoutInteractor logoutInteractor,
             SecurityInteractor securityInteractor,
-            AdamantApiWrapper adamantApiWrapper
+            AdamantApiWrapper adamantApiWrapper,
+            Settings settings
     ) {
         this.logoutInteractor = logoutInteractor;
         this.securityInteractor = securityInteractor;
         this.adamantApiWrapper = adamantApiWrapper;
+        this.settings = settings;
     }
 
     public void logout() {
@@ -29,6 +33,10 @@ public class InstrumentationTestFacade {
     }
 
     public SecurityInteractor getSecurityInteractor() {
-        return this.securityInteractor;
+        return securityInteractor;
+    }
+
+    public Settings getSettings() {
+        return settings;
     }
 }

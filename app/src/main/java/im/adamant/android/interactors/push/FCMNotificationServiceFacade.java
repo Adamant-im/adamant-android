@@ -127,9 +127,8 @@ public class FCMNotificationServiceFacade implements PushNotificationServiceFaca
 
     @Override
     public Completable unsubscribe() {
-        String notificationToken = settings.getNotificationToken();
         String unsubscribeTransactionJson = settings.getUnsubscribeFcmTransaction();
-        if (notificationToken == null || notificationToken.isEmpty() || unsubscribeTransactionJson == null || unsubscribeTransactionJson.isEmpty()) {
+        if (unsubscribeTransactionJson == null || unsubscribeTransactionJson.isEmpty()) {
             //TODO: Обязательно проверь в тестах кейс с выходом
             return Completable.complete();
         }

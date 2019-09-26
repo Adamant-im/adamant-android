@@ -135,6 +135,7 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                 getViewState().startProcess();
                 Disposable pincodeReset = logoutInteractor
                         .getEventBus()
+                        .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(
                                 (irrelevant) -> {
                                     getViewState().stopProcess(true);

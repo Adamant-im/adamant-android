@@ -105,8 +105,9 @@ public abstract class GeneralModule {
     public static InstrumentationTestFacade provideInstrumentationTestFacade(
             LogoutInteractor logoutInteractor,
             SecurityInteractor securityInteractor,
-            AdamantApiWrapper adamantApiWrapper
+            AdamantApiWrapper adamantApiWrapper,
+            Settings settings
     ) {
-        return new InstrumentationTestFacade(logoutInteractor, securityInteractor, adamantApiWrapper);
+        return new InstrumentationTestFacade(logoutInteractor, securityInteractor, adamantApiWrapper, settings);
     }
 }
