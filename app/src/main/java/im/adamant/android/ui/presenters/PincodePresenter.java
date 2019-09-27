@@ -2,6 +2,8 @@ package im.adamant.android.ui.presenters;
 
 import com.arellomobile.mvp.InjectViewState;
 
+import java.io.IOException;
+
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
 import im.adamant.android.helpers.LoggerHelper;
@@ -109,6 +111,12 @@ public class PincodePresenter extends BasePresenter<PinCodeView> {
                                 error -> {
                                     getViewState().stopProcess(false);
                                     LoggerHelper.e("PINCODE", error.getMessage(), error);
+
+                                    if (error instanceof IOException) {
+                                        getViewState().showError(R.string.pincode_authorization_error);
+                                        return;
+                                    }
+
                                     if (attemptsCount == BuildConfig.MAX_WRONG_PINCODE_ATTEMTS) {
                                         //TODO: Do this in rx-stream
                                         logoutInteractor.logout();

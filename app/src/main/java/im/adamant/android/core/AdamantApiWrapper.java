@@ -86,6 +86,10 @@ public class AdamantApiWrapper {
         this.keyPair = keyPair;
     }
 
+    public void setPassPhrase(String passPhrase) {
+        this.passPhrase = passPhrase;
+    }
+
     public Completable updateBalance(){
         try {
             return Flowable.defer(() -> api.authorize(keyPair.getPublicKeyString().toLowerCase()))

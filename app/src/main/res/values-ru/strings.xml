@@ -157,6 +157,7 @@
     <!--ERRORS-->
     <string name="wrong_passphrase">Неправильный пароль</string>
     <string name="authorization_error">Ошибка авторизации, пытаюсь переподключиться…</string>
+    <string name="pincode_authorization_error">Ошибка авторизации, сервер не доступен</string>
     <string name="account_not_found">Информация по аккаунту не найдена.</string>
     <string name="wrong_address">Неверный адрес получателя</string>
     <string name="empty_message">Сообщение не может быть пустым</string>

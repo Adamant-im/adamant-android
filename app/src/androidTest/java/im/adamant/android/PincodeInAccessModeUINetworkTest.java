@@ -2,7 +2,9 @@ package im.adamant.android;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
 
@@ -10,6 +12,7 @@ import java.io.IOException;
 
 import im.adamant.android.base.ActivityWithMockingNetworkUITest;
 import im.adamant.android.dispatchers.ServerDownOnSendMessageDispatcher;
+import im.adamant.android.dispatchers.SuccessAuthorizationDispatcher;
 import im.adamant.android.helpers.Settings;
 import im.adamant.android.idling_resources.ActivityIdlingResosurce;
 import im.adamant.android.interactors.SecurityInteractor;
@@ -27,11 +30,17 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItem;
+import static androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
 import static androidx.test.espresso.intent.Intents.intended;
 import static androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withChild;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static im.adamant.android.utils.TestUtils.withRecyclerView;
+import static org.hamcrest.Matchers.allOf;
 
 public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetworkUITest<PincodeScreen> {
     @Override
@@ -39,6 +48,9 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
         switch (testName) {
             case "uiNetDropPinWithFailFCMPushUnsubscribe": {
                 return new ServerDownOnSendMessageDispatcher(application);
+            }
+            case "uiNetSuccessAccessByPincode": {
+                return new SuccessAuthorizationDispatcher(application);
             }
             default:
                 return null;
@@ -56,7 +68,9 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
             case "uiNetDropPinWithFailFCMPushUnsubscribe": {
                 InstrumentationTestFacade testFacade = application.getInstrumentationTestFacade();
                 SecurityInteractor securityInteractor = testFacade.getSecurityInteractor();
-                securityInteractor.savePassphrase(InstrumentedTestConstants.PINCODE);
+                securityInteractor
+                        .savePassphrase(InstrumentedTestConstants.PINCODE)
+                        .blockingAwait();
 
                 Settings settings = testFacade.getSettings();
                 settings.setPushNotificationFacadeType(SupportedPushNotificationFacadeType.FCM);
@@ -83,10 +97,15 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
                 activityRule.launchActivity(provideIntent(PinCodeView.MODE.ACCESS_TO_APP));
             }
             break;
+            case "uiNetSuccessAccessByPincode":
+            case "uiNetFailAccessByPincodeServerNotResponse":
             case "uiDropPinDisabledPushUnsubscribe": {
                 InstrumentationTestFacade testFacade = application.getInstrumentationTestFacade();
+                testFacade.getApiWrapper().setPassPhrase(InstrumentedTestConstants.PASSPHRASE);
                 SecurityInteractor securityInteractor = testFacade.getSecurityInteractor();
-                securityInteractor.savePassphrase(InstrumentedTestConstants.PINCODE);
+                securityInteractor
+                        .savePassphrase(InstrumentedTestConstants.PINCODE)
+                        .blockingAwait();
 
                 Settings settings = testFacade.getSettings();
                 settings.setPushNotificationFacadeType(SupportedPushNotificationFacadeType.DISABLED);
@@ -122,6 +141,26 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
         });
     }
 
+    @Test
+    public void uiNetSuccessAccessByPincode() throws Exception {
+        typePincode(R.id.activity_pincode_plv_keyboard, InstrumentedTestConstants.PINCODE);
+
+        String mainActivity = MainScreen.class.getName();
+        ActivityIdlingResosurce activityIdlingResosurce = new ActivityIdlingResosurce(mainActivity);
+
+        idlingBlock(activityIdlingResosurce, () -> {
+            intended(hasComponent(MainScreen.class.getName()));
+        });
+    }
+
+    @Test
+    public void uiNetFailAccessByPincodeServerNotResponse() throws Exception {
+        typePincode(R.id.activity_pincode_plv_keyboard, InstrumentedTestConstants.PINCODE);
+
+        onView(withText(R.string.pincode_authorization_error)).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
+    }
+
     private Intent provideIntent(PinCodeView.MODE mode) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PinCodeView.ARG_MODE, mode);
@@ -131,5 +170,12 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
         intent.putExtras(bundle);
 
         return intent;
+    }
+
+    private void typePincode(int recyclerId, String pincode) {
+        for (int i = 0; i < pincode.length(); i++) {
+            onView(withId(recyclerId))
+                    .perform(actionOnItem(withChild(withText(pincode.substring(i, i + 1))), click()));
+        }
     }
 }

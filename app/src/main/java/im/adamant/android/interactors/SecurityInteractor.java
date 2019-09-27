@@ -109,6 +109,7 @@ public class SecurityInteractor {
                     return Single.just(decryptedPassphrase);
                 })
                 .doOnError((throwable) -> {
+                    //TODO: Move into presenter
                     boolean isCriticalError = (throwable instanceof EncryptionException);
                     if (isCriticalError) {
                         clearSettings();
