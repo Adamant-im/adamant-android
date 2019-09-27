@@ -8,9 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +23,6 @@ import android.widget.Toast;
 import com.arellomobile.mvp.presenter.InjectPresenter;
 import com.arellomobile.mvp.presenter.ProvidePresenter;
 import com.franmontiel.localechanger.LocaleChanger;
-import com.jakewharton.rxbinding3.widget.RxCompoundButton;
 
 import java.util.List;
 import java.util.Locale;
@@ -40,15 +37,16 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import im.adamant.android.BuildConfig;
 import im.adamant.android.R;
-import im.adamant.android.helpers.LoggerHelper;
 import im.adamant.android.interactors.push.PushNotificationServiceFacade;
 import im.adamant.android.interactors.push.SupportedPushNotificationFacadeType;
 import im.adamant.android.ui.fragments.base.BaseFragment;
 import im.adamant.android.ui.presenters.SettingsPresenter;
 import im.adamant.android.ui.mvp_view.SettingsView;
+import io.reactivex.Flowable;
+import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class SettingsScreen extends BaseFragment implements SettingsView {
 
@@ -123,15 +121,15 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     public void onResume() {
         super.onResume();
 
-        storeKeypairViewDisposable = RxCompoundButton
-                .checkedChanges(storeKeypairView)
-                .debounce(150, TimeUnit.MILLISECONDS)
-                .delay(150, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        value -> presenter.onSetCheckedStoreKeypair(value, false),
-                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
-                );
+//        storeKeypairViewDisposable = RxCompoundButton
+//                .checkedChanges(storeKeypairView)
+//                .debounce(150, TimeUnit.MILLISECONDS)
+//                .delay(150, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(
+//                        value -> presenter.onSetCheckedStoreKeypair(value, false),
+//                        error -> LoggerHelper.e(getClass().getSimpleName(), error.getMessage(), error)
+//                );
     }
 
     @Override
@@ -142,6 +140,11 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
             storeKeypairViewDisposable.dispose();
             storeKeypairViewDisposable = null;
         }
+    }
+
+    @OnCheckedChanged(R.id.fragment_settings_sw_store_keypair)
+    public void onSwitchStoreKeypair(CompoundButton button, boolean checked) {
+        presenter.onSetCheckedStoreKeypair(checked);
     }
 
     @OnClick(R.id.fragment_settings_tr_show_nodes)
@@ -164,11 +167,6 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
     @Override
     public void setCheckedStoreKeyPairOption(boolean value) {
         storeKeypairView.setChecked(value);
-    }
-
-    @Override
-    public void setEnableStoreKeyPairOption(boolean value) {
-        storeKeypairView.setEnabled(value);
     }
 
     @OnClick(R.id.fragment_settings_tr_store_keypair)
@@ -211,11 +209,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         progressBarView.setVisibility(View.INVISIBLE);
     }
 
-    //TODO: REMOVE
-    @Override
-    public void setEnablePushServiceTypeOption(boolean value) {
 
-    }
 
     @Override
     public void showExitDialog() {
@@ -247,7 +241,7 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
                 storeKeypairView.setChecked(false);
                 d.dismiss();
             });
-            builder.setPositiveButton(R.string.yes, (d, w) -> presenter.onSetCheckedStoreKeypair(true, true));
+            builder.setPositiveButton(R.string.yes, (d, w) -> presenter.onConfirmStoreKeyPair());
 
             builder.show();
         }
@@ -261,7 +255,20 @@ public class SettingsScreen extends BaseFragment implements SettingsView {
         if (activity != null) {
             builder = new AlertDialog.Builder(activity);
             builder.setMessage(R.string.fragment_settings_tee_verifying);
+
             verifyingDialog = builder.create();
+            verifyingDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialog) {
+                    Flowable
+                            .interval(500, TimeUnit.MILLISECONDS)
+                            .subscribeOn(Schedulers.computation())
+                            .take(1)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnComplete(() -> presenter.onVerifyTee())
+                            .subscribe();
+                }
+            });
             verifyingDialog.show();
         }
     }

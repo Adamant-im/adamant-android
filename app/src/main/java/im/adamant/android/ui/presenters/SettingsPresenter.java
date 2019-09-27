@@ -69,28 +69,34 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
         );
     }
 
-    public void onSetCheckedStoreKeypair(boolean value, boolean isUserConfirmed) {
+    public void onConfirmStoreKeyPair() {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.CREATE);
+        router.navigateTo(Screens.PINCODE_SCREEN, bundle);
+    }
+
+    public void onVerifyTee() {
+        boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
+        getViewState().hideVerifyingDialog();
+
+        if (hardwareSecuredDevice) {
+            onConfirmStoreKeyPair();
+        } else {
+            getViewState().showTEENotSupportedDialog();
+        }
+    }
+
+    public void onSetCheckedStoreKeypair(boolean value) {
         if (value != securityInteractor.isKeyPairMustBeStored()) {
-            if (value && !isUserConfirmed) {
-                getViewState().showVerifyingDialog();
-                boolean hardwareSecuredDevice = securityInteractor.isHardwareSecuredDevice();
-                getViewState().hideVerifyingDialog();
-
-                if (!hardwareSecuredDevice) {
-                    getViewState().showTEENotSupportedDialog();
-                    return;
-                }
-            }
-
             if (value) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable(PinCodeView.ARG_MODE, PinCodeView.MODE.CREATE);
-                router.navigateTo(Screens.PINCODE_SCREEN, bundle);
+                getViewState().showVerifyingDialog();
             } else {
                 Disposable drops = securityInteractor
                         .forceDropPassphrase()
                         .subscribe(
-                                () -> {},
+                                () -> {
+                                    getViewState().setEnablePushOption(false);
+                                },
                                 (error) -> {
                                     getViewState().showMessage(R.string.unsubscribe_push_error);
                                 }
@@ -139,7 +145,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
 
     public void onClickSetNewPushService(PushNotificationServiceFacade facade) {
         if (facade != null) {
-            getViewState().setEnablePushServiceTypeOption(false);
+            getViewState().setEnablePushOption(false);
             getViewState().startProgress();
             Disposable subscribe = switchPushNotificationServiceInteractor
                     .changeNotificationFacade(facade.getFacadeType())
@@ -147,7 +153,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
                     .observeOn(observeScheduler)
                     .subscribe(
                             () -> {
-                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().setEnablePushOption(true);
                                 getViewState().stopProgress();
                                 getViewState().showMessage(R.string.fragment_settings_success_saved);
                                 getViewState().displayCurrentNotificationFacade(
@@ -155,7 +161,7 @@ public class SettingsPresenter extends ProtectedBasePresenter<SettingsView> {
                                 );
                             },
                             (error) -> {
-                                getViewState().setEnablePushServiceTypeOption(true);
+                                getViewState().setEnablePushOption(true);
                                 getViewState().stopProgress();
                                 getViewState().showMessage(error.getMessage());
                                 getViewState().displayCurrentNotificationFacade(
