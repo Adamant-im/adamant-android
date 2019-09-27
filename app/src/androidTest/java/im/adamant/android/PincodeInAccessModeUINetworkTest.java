@@ -97,6 +97,7 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
                 activityRule.launchActivity(provideIntent(PinCodeView.MODE.ACCESS_TO_APP));
             }
             break;
+            case "uiNetWrongPincode":
             case "uiNetSuccessAccessByPincode":
             case "uiNetFailAccessByPincodeServerNotResponse":
             case "uiDropPinDisabledPushUnsubscribe": {
@@ -158,6 +159,16 @@ public class PincodeInAccessModeUINetworkTest extends ActivityWithMockingNetwork
         typePincode(R.id.activity_pincode_plv_keyboard, InstrumentedTestConstants.PINCODE);
 
         onView(withText(R.string.pincode_authorization_error)).inRoot(new ToastMatcher())
+                .check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void uiNetWrongPincode() {
+        typePincode(R.id.activity_pincode_plv_keyboard, "445544");
+
+        String errText = application.getString(R.string.wrong_pincode, BuildConfig.MAX_WRONG_PINCODE_ATTEMTS - 1);
+
+        onView(withText(errText)).inRoot(new ToastMatcher())
                 .check(matches(isDisplayed()));
     }
 
