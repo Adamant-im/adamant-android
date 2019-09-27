@@ -84,6 +84,10 @@ public class PinIndicatorLayout extends View {
         return length;
     }
 
+    public int getAnimationDelay() {
+        return animationDelay;
+    }
+
     private void init(@Nullable AttributeSet set) {
         if(set != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(set, R.styleable.PinIndicatorLayout);

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,9 @@ import im.adamant.android.ui.custom_view.PinIndicatorLayout;
 import im.adamant.android.ui.holders.KeyPinDigitHolder;
 import im.adamant.android.ui.holders.KeyPinHolder;
 import im.adamant.android.ui.holders.KeyPinIconHolder;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements KeyPinHolder.HolderClickListener {
     public static final int DIGIT_HOLDER_TYPE = 0;
@@ -137,8 +141,22 @@ public class KeyPinAdapter extends RecyclerView.Adapter<KeyPinHolder> implements
                     pcd.append(key.getDigit());
 
                     if ((pcd.length() == keyLength) && (listener != null)) {
-                        listener.onCompletePin(pcd);
-                        reset();
+                        if (indicator == null) {
+                            listener.onCompletePin(pcd);
+                            reset();
+                        } else {
+                            int animationDelay = indicator.getAnimationDelay();
+                            Flowable
+                                    .interval(animationDelay, TimeUnit.MILLISECONDS)
+                                    .subscribeOn(Schedulers.computation())
+                                    .take(1)
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .doOnComplete(() -> {
+                                        listener.onCompletePin(pcd);
+                                        reset();
+                                    })
+                                    .subscribe();
+                        }
                     }
                 }
             }
