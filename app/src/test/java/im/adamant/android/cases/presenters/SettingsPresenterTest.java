@@ -39,6 +39,8 @@ import ru.terrakok.cicerone.Router;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.nullable;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -132,11 +134,22 @@ public class SettingsPresenterTest {
 
     @Test
     public void testOnSetCheckedStoreKeypairInTrueState() {
+        doAnswer((i) -> {
+            presenter.onVerifyTee();
+            return null;
+        }).when(view).showVerifyingDialog();
+
+        doAnswer((i) -> {
+            presenter.onConfirmStoreKeyPair();
+            return null;
+        }).when(view).showTEENotSupportedDialog();
+
+        when(accountInteractor.isAuthorized()).thenReturn(true);
         when(securityInteractor.isKeyPairMustBeStored()).thenReturn(false);
         when(switchPushNotificationServiceInteractor.resetNotificationFacade(false)).thenReturn(Completable.complete());
 
         presenter.attachView(view);
-        presenter.onSetCheckedStoreKeypair(true, true);
+        presenter.onSetCheckedStoreKeypair(true);
 
         ArgumentCaptor<Boolean> enablePushArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
 
@@ -146,8 +159,6 @@ public class SettingsPresenterTest {
 
         verify(router).navigateTo(eq(Screens.PINCODE_SCREEN), any());
     }
-
-
 
     @Test
     public void testIfZeroBalanceSubscriptionOnNotificationsUnavailable() {
