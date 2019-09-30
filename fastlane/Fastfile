@@ -20,6 +20,6 @@ platform :android do
   lane :deploy do
     supply(track: "internal",
                package_name: "im.adamant.android",
-               apk: "app/build/outputs/apk/release/adamant.apk")
+               apk: "app/build/outputs/apk/withServer/release/adamant.apk")
   end
 end
