@@ -44,7 +44,7 @@ before_script:
 script:
   - "./gradlew clean test :app:generateWithServerReleaseSources :app:assembleWithServerRelease -PdisablePreDex --stacktrace"
 before_deploy:
-  - cd app/build/outputs/apk/release
+  - cd app/build/outputs/apk/withServer/release
   - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore ${TRAVIS_BUILD_DIR}/adamant-keystore.jks
     -storepass $storepass -keypass $keypass adamant-release.apk adamant
   - jarsigner -verify adamant-release.apk
@@ -56,7 +56,7 @@ deploy:
   - provider: releases
     api_key:
       secure: HirFiRAJSRrGbYz3aSAYmAUd4A82P0BI9GIsXnomNugxSm/EnxAvXGt6sZnyNWV4YjPO5muyOeF/LHVOtsp4PL7k41mfAkcVi2mgIeNI4PmTTMj4KJ8EynGtuwpk0BI9aL4M+eWoTvRgqvK2Aoz3Rzw5meOuHbYZFuNSdcXtXATmtZfboOx319UdW3zVUrCRxrgR6fYl6IpZTEb6YaxxcFIBC6BPZF/qhRSqvyk/eBP4tM6YgxM5V87PXgK41Z9+cwOOS+KjGz0UTkFrP7JumFkQsiob1SlzlFa+x1f9rt+qSENCx4MF9IuZ4QtUZdVIxorNCTfGfpUQYCWHg5+ZmUAgwi5WHB9LwKuac2q1Ax83olmCMTP0O/0jA4X++GivZz2jFG9tfDzfVpi73ojQCQhQS5/f5Q7Y6LriHz7V2OMdUqtYQ2xMoYDJiSTXMjX8KK5FFiLTG9sg73ky7PZhUw717nVhLEUc/FzUzePZMCNhh4Bc4sQesy0N1f1ca5wiYNfEBLniZPvCgbzKkO9ImZja+7QH3cTzqXxUhRjmXz5V8ipLDtNeWFLqfaK4ZAd7QoTDnZFktAfZqAuLiRrj0eszOzfbyvaFFYTcCqclp7b6XO8hU/Yas9bfIJXkkQN5HCjPiw2SgV8MX4UT28R0VH/MO6AKSi9IHVMlWnzuhY8=
-    file: app/build/outputs/apk/release/adamant.apk
+    file: app/build/outputs/apk/withServer/release/adamant.apk
     skip_cleanup: true
     on:
       repo: Adamant-im/adamant-android
