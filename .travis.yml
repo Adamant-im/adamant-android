@@ -51,7 +51,7 @@ before_deploy:
   - "${ANDROID_HOME}build-tools/${ANDROID_BUILD_TOOLS}/zipalign -v -f 4 adamant-release.apk
     adamant.apk"
   - cd -
-  - fastlane android deploy;
+  - fastlane android deploy --apk adamant.apk;
 deploy:
   - provider: releases
     api_key:
