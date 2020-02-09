@@ -13,7 +13,7 @@
       "recipientId": "U15650841420785452182",
       "recipientPublicKey": "8c0d033510fc5707418037bbb6ae1b1e8622fd442fe3b0b2ba47f13877355ba4",
       "amount": 10000000,
-      "fee": 50000000,
+      "fee": 50,
       "signature": "93764f0c571054bf15d2839fae6490ef7f5f9bfcf4e35dcedc2df5a8c4ed281c9188d3714f5f85a756237fc901f737f0fc38feb3b009af33f5bdcc1cc6d4d203",
       "signatures": [],
       "confirmations": 305625,
